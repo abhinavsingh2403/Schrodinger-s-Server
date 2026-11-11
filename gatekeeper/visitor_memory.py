@@ -15,6 +15,7 @@ import hashlib
 import hmac
 import os
 import sqlite3
+from contextlib import contextmanager
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -46,16 +47,21 @@ class VisitorMemory:
         self.salt = salt or os.environ.get("VISITOR_SALT", "schrodinger-dev-salt-2026").encode("utf-8")
         self._init_db()
 
-    def _get_connection(self) -> sqlite3.Connection:
+    @contextmanager
+    def _connection(self):
         conn = sqlite3.connect(self.db_path, timeout=5.0)
         conn.execute("PRAGMA journal_mode=WAL;")
         conn.row_factory = sqlite3.Row
-        return conn
+        try:
+            yield conn
+            conn.commit()
+        finally:
+            conn.close()
 
     def _init_db(self) -> None:
         """Create visitor table if not exists."""
         try:
-            with self._get_connection() as conn:
+            with self._connection() as conn:
                 conn.execute(
                     """
                     CREATE TABLE IF NOT EXISTS visitors (
@@ -85,7 +91,7 @@ class VisitorMemory:
         """
         try:
             visitor_id = derive_visitor_id(source_ip, self.salt)
-            with self._get_connection() as conn:
+            with self._connection() as conn:
                 row = conn.execute(
                     "SELECT * FROM visitors WHERE visitor_id = ?", (visitor_id,)
                 ).fetchone()
@@ -121,7 +127,7 @@ class VisitorMemory:
         visitor_id = derive_visitor_id(source_ip, self.salt)
 
         try:
-            with self._get_connection() as conn:
+            with self._connection() as conn:
                 existing = conn.execute(
                     "SELECT n_sessions, highest_tier_served FROM visitors WHERE visitor_id = ?",
                     (visitor_id,),

@@ -15,6 +15,7 @@ from __future__ import annotations
 import os
 import sqlite3
 import time
+from contextlib import contextmanager
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -30,26 +31,35 @@ class DecisionEngine:
     def __init__(
         self,
         db_path: str | Path = "gatekeeper/gatekeeper.db",
-        salt: bytes | None = None,
+        salt: bytes | str | None = None,
         policy: EscalationPolicy | None = None,
         model: Any | None = None,
+        memory: VisitorMemory | None = None,
     ) -> None:
         self.db_path = str(db_path)
-        self.salt = salt or os.environ.get("VISITOR_SALT", "schrodinger-dev-salt-2026").encode("utf-8")
-        self.memory = VisitorMemory(self.db_path, salt=self.salt)
+        if isinstance(salt, str):
+            self.salt = salt.encode("utf-8")
+        else:
+            self.salt = salt or os.environ.get("VISITOR_SALT", "schrodinger-dev-salt-2026").encode("utf-8")
+        self.memory = memory or VisitorMemory(self.db_path, salt=self.salt)
         self.policy = policy or EscalationPolicy(threshold_t2=0.50, threshold_t3=0.85)
         self.model = model  # Friend will plug in trained model here; fallback to rule if None
         self._init_decision_log()
 
-    def _get_connection(self) -> sqlite3.Connection:
+    @contextmanager
+    def _connection(self):
         conn = sqlite3.connect(self.db_path, timeout=5.0)
         conn.execute("PRAGMA journal_mode=WAL;")
         conn.row_factory = sqlite3.Row
-        return conn
+        try:
+            yield conn
+            conn.commit()
+        finally:
+            conn.close()
 
     def _init_decision_log(self) -> None:
         try:
-            with self._get_connection() as conn:
+            with self._connection() as conn:
                 conn.execute(
                     """
                     CREATE TABLE IF NOT EXISTS decision_log (
@@ -93,7 +103,11 @@ class DecisionEngine:
         elif stage in ("S3", "S4", "S5"):
             if features.get("s3_has_pty", 0) > 0:
                 return 0.80  # Terminal allocated: interactive candidate
-            if features.get("s4_cmd1_has_pipe", 0) > 0 or features.get("s4_cmd1_has_chain", 0) > 0:
+            if (
+                features.get("s4_cmd1_has_pipe", 0) > 0
+                or features.get("s4_cmd1_has_chain", 0) > 0
+                or features.get("chaining_ops_count", 0) > 0
+            ):
                 return 0.85  # Multi-stage or complex command
             return 0.20
 
@@ -102,25 +116,29 @@ class DecisionEngine:
     def decide(
         self,
         session_id: str,
-        source_ip: str,
-        stage: str,
-        features: dict[str, Any],
+        source_ip: str | None = None,
+        stage: str = "S0",
+        features: dict[str, Any] | None = None,
         current_tier: str = "T1",
+        visitor_ip: str | None = None,
     ) -> dict[str, Any]:
         """
         Evaluate session and return tier decision with strict fail-cheap safety.
+        Accepts either source_ip or visitor_ip.
         """
+        ip = source_ip or visitor_ip or "127.0.0.1"
+        feats = features or {}
         start_time = time.perf_counter()
         now = datetime.now(timezone.utc).isoformat()
-        visitor_id = derive_visitor_id(source_ip, self.salt)
-        masked_id = get_masked_id(source_ip, self.salt)
+        visitor_id = derive_visitor_id(ip, self.salt)
+        masked_id = get_masked_id(ip, self.salt)
 
         try:
             # 1. Visitor memory lookup
-            visitor = self.memory.get_visitor(source_ip)
+            visitor = self.memory.get_visitor(ip)
 
             # 2. Score computation
-            score = self.score_features(stage, features)
+            score = self.score_features(stage, feats)
 
             # 3. Policy evaluation (monotone upward-only)
             target_tier = self.policy.decide_tier(
@@ -133,7 +151,7 @@ class DecisionEngine:
 
             # 4. Asynchronous / safe decision log write
             try:
-                with self._get_connection() as conn:
+                with self._connection() as conn:
                     conn.execute(
                         """
                         INSERT INTO decision_log (
@@ -151,6 +169,7 @@ class DecisionEngine:
                 "stage": stage,
                 "score": round(score, 4),
                 "tier": target_tier,
+                "target_tier": target_tier,
                 "latency_ms": round(latency_ms, 3),
                 "fail_cheap": False,
             }
