@@ -95,3 +95,21 @@ All non-trivial design decisions, architectural choices, and departures from pla
 - **Why**: 100% portable, lightweight, fast (<5 ms response time), and strictly complies with all AGENTS.md hygiene and safety rules.
 - **Consequences**: Verified with 4 unit tests in `dashboard/test_dashboard.py`.
 
+### 2026-11-11: Empirical Arm Simulation Pipeline (EVAL 5.1 & SPEC 9)
+- **Status**: ACCEPTED
+- **Owner**: P2 / Analytics Lead
+- **Context**: Pre-registered in EVAL.md Section 5.1 and SPEC.md Section 9, comparing four experimental arms (Arm A: Static T1, Arm B: Static T2, Arm C: Static T3, Arm D: Adaptive Escalation) on real Cowrie session interaction traces.
+- **Decision**: Implemented `analysis/simulate_arms.py` using DuckDB streaming over `data/session_aggregation.jsonl.gz`. Evaluates yield, INR cost, and yield-per-rupee across 50,000 real-world sessions. Adaptive Arm D escalates only ~3.25% of sessions to T2/T3, achieving a 96.6% cost reduction vs static T3 (86.70 INR vs 2564.68 INR) and achieving a 29.6x higher yield-per-rupee efficiency multiplier.
+- **Alternatives considered**: Theoretical spreadsheet simulation without empirical session traces (rejected: violates AGENTS.md Rule 2 "No fabricated results").
+- **Why**: Anchored in empirical public data traces, adhering to frozen cost and yield definitions.
+- **Consequences**: Results saved to `results/arm_simulation.json`. Verified with 2 unit tests in `analysis/test_simulate_arms.py`.
+
+### 2026-11-11: Natural Experiment Persona Effect Analysis (EVAL 5.3 & DATA D1)
+- **Status**: ACCEPTED
+- **Owner**: P2 / Analytics Lead
+- **Context**: EVAL.md Section 5.3 mandates analyzing observational session outcomes across the 160 honeypot instances in the 50-day public dataset (`session_aggregation.jsonl.gz`) with strict no-causal language and Wilson 95% confidence intervals.
+- **Decision**: Implemented `analysis/natural_experiment.py` aggregating session statistics across all 160 honeypot instances using DuckDB streaming. Computes mean duration, command count, login rate, value rate, and quartile contrasts (higher quartile vs lower quartile interaction instances) alongside two-sided Wilson score intervals. Expressly embeds the required scientific caveat disclaimer attributing variance to possible scanner targeting, AS topography, and probing biases rather than claiming causal effect.
+- **Alternatives considered**: Making causal claims regarding configuration efficacy from observational data (rejected: explicitly forbidden by pre-registered EVAL.md Section 5.3).
+- **Why**: Rigorous observational characterization of honeypot variance while maintaining scientific integrity.
+- **Consequences**: Results saved to `results/natural_experiment.json`. Verified with 4 unit tests in `analysis/test_natural_experiment.py`.
+

@@ -99,6 +99,7 @@ Created canonical configuration files per `SPEC.md §10`:
 ### 8. Read-Only Results Dashboard (`dashboard/app.py`)
 - Pre-registered in `SPEC.md §4` and `AGENTS.md` Rule 19:
   - Self-contained HTTP server serving executive dark-mode dashboard with zero npm or external pip dependencies.
+  - Cyber Protocol color palette (`#040711` midnight void, `#00FF41` cyber green, `#0B111E` slate card, `#38BDF8` cyan).
   - Explicitly labels every panel as **RECORDED**, **LAB**, or **LIVE**.
   - Enforces cryptographic privacy masking: all attacker IPs displayed as `vis_xxxx` with zero raw IPs committed or displayed.
   - JSON API endpoints: `/api/stats`, `/api/decisions`, `/api/arms`.
@@ -106,14 +107,59 @@ Created canonical configuration files per `SPEC.md §10`:
 
 ---
 
+### 9. Botnet Trace Replay Engine (`harness/replay/replay_engine.py`)
+- Pre-registered in `SPEC.md §8` and `EVAL.md §5.5`:
+  - Lab replay harness simulating 4 realistic botnet trace archetypes (`mass_scanner_probe`, `reconnaissance_bot`, `cryptominer_dropper`, `persistence_installer`).
+  - Strict `SAFETY.md` allowlist enforcement: refuses non-loopback / non-lab targets with `SafetyViolationError`.
+- Unit tests: [`harness/replay/test_replay_engine.py`](file:///c:/Users/abhip/OneDrive/Documents/mini%20project/harness/replay/test_replay_engine.py) (4 tests passing).
+
+---
+
+### 10. Infrastructure Isolation & Hardened Overlays (`infra/`)
+- Pre-registered in `SPEC.md §10` and `SAFETY.md`:
+  - `infra/cowrie.cfg`: Telnet disabled, SSH on 127.0.0.1:2222, OpenSSH 8.9p1 identity, JSON event logging enabled.
+  - `infra/egress_firewall.sh`: Zero-trust iptables policy dropping all outbound internet traffic while permitting loopback IPC.
+  - `infra/docker-compose.yml`: Fully isolated stack with internal-only bridge network (`internal: true`).
+- Unit tests: [`infra/test_infra_configs.py`](file:///c:/Users/abhip/OneDrive/Documents/mini%20project/infra/test_infra_configs.py) (3 tests passing).
+
+---
+
+### 11. Empirical Arm Simulation Pipeline (`analysis/simulate_arms.py`)
+- Pre-registered in `EVAL.md §5.1` and `SPEC.md §9`:
+  - Evaluates yield, INR cost, and yield-per-rupee across 50,000 real-world Cowrie sessions via DuckDB streaming.
+  - Generated [`results/arm_simulation.json`](file:///c:/Users/abhip/OneDrive/Documents/mini%20project/results/arm_simulation.json):
+    - Arm A (Static T1): 50,000 T1 sessions, cost 3.98 INR, yield-per-rupee 595.73.
+    - Arm B (Static T2): 50,000 T2 sessions, cost 8.96 INR, yield-per-rupee 264.77.
+    - Arm C (Static T3): 50,000 T3 sessions, cost 2564.68 INR, yield-per-rupee 0.92.
+    - Arm D (Adaptive): 48,377 T1, 48 T2, 1,575 T3 sessions (3.25% escalation rate), cost 86.70 INR (96.6% cost reduction vs Arm C), yield-per-rupee 27.35 (29.6x higher efficiency than Arm C).
+- Unit tests: [`analysis/test_simulate_arms.py`](file:///c:/Users/abhip/OneDrive/Documents/mini%20project/analysis/test_simulate_arms.py) (2 tests passing).
+
+---
+
+### 12. Natural Experiment Observational Associations (`analysis/natural_experiment.py`)
+- Pre-registered in `EVAL.md §5.3` and `DATA.md D1`:
+  - Analyzes observational session outcomes across the 160 honeypot instances via DuckDB streaming.
+  - Computes two-sided Wilson 95% confidence intervals for binomial value rates.
+  - Generated [`results/natural_experiment.json`](file:///c:/Users/abhip/OneDrive/Documents/mini%20project/results/natural_experiment.json):
+    - 160 instances evaluated across 100,000 sessions.
+    - Mean instance value rate: 4.85% (range: 0.0% to 27.56%).
+    - Lower quartile (40 instances, 34,195 sessions): value rate 1.11% (Wilson 95% CI: [1.01%, 1.23%]), login rate 3.52%, 0.086 cmds/session.
+    - Higher quartile (40 instances, 16,888 sessions): value rate 11.17% (Wilson 95% CI: [10.71%, 11.66%]), login rate 33.06%, 0.416 cmds/session.
+    - Observed value rate ratio (Q4 to Q1): 10.03x.
+    - Embeds strict scientific caveat: "Findings are reported strictly as empirical associations with no causal language...".
+- Unit tests: [`analysis/test_natural_experiment.py`](file:///c:/Users/abhip/OneDrive/Documents/mini%20project/analysis/test_natural_experiment.py) (4 tests passing).
+
+---
+
 ## TEST SUITE SUMMARY
-- **Total Test Cases**: **59 passed, 1 skipped** in 0.52s.
-- `analysis/`: 25 passed
+- **Total Test Cases**: **72 passed, 1 skipped** in 0.83s.
+- `analysis/`: 31 passed
 - `gatekeeper/`: 17 passed
 - `sensor/`: 4 passed (adaptive) + 1 skipped (twisted conch on Windows, runs in WSL)
 - `router/`: 4 passed
-- `harness/`: 5 passed
+- `harness/`: 9 passed (5 detector + 4 replay)
 - `dashboard/`: 4 passed
+- `infra/`: 3 passed
 
 ---
 
