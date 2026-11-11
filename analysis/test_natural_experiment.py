@@ -127,6 +127,6 @@ def test_run_natural_experiment_pipeline_with_tempfile():
         with open(out_path, "r", encoding="utf-8") as f:
             data = json.load(f)
 
-        assert data["status"] == "NATURAL_EXPERIMENT_COMPLETE"
+        assert data["status"] == "EVAL_53_PERSONA_EFFECT_PENDING_EVENT_GROUP_DATA"
         assert "instances" in data
-        assert "aggregate_association" in data
+        assert "instance_variance_distribution" in data

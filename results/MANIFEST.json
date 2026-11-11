@@ -24,11 +24,11 @@
       "eval_ref": "EVAL.md Section 5.1 & SPIKES S3"
     },
     "results/arm_simulation.json": {
-      "md5": "d2ef835e4c78e34534d9bddc26fd0123",
+      "md5": "f3e610ab5e8235d54d10424d4e02b366",
       "eval_ref": "EVAL.md Section 5.1 & SPEC.md Section 9"
     },
     "results/natural_experiment.json": {
-      "md5": "36a5ce297cfeb8897caf19f98094de19",
+      "md5": "0c551d04140725e36e0413e15c722433",
       "eval_ref": "EVAL.md Section 5.3 & DATA.md Section D1"
     },
     "results/exp0/splits.json": {
@@ -38,6 +38,10 @@
     "results/exp0/grid.json": {
       "md5": "3cc732d1c5c8a22214001b388024b6df",
       "eval_ref": "EXPERIMENT0.md Section 6"
+    },
+    "results/s3_event_schema.json": {
+      "md5": "4da53787f25ec08ac76f58267c642316",
+      "eval_ref": "SPIKES.md Section S3 Part 2"
     }
   }
 }

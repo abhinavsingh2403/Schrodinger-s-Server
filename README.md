@@ -12,41 +12,44 @@
 
 ## 1. Project Overview & Core Thesis
 
-In Internet-facing SSH honeypots, the overwhelming majority of sessions are one-shot automated scans and credential brute-force probes. A published LLM-honeypot deployment recorded **147,752 non-interactive sessions out of 148,850 total (99.26%)**, and only **150 interactive sessions (0.10%)** ([CLAIMS.md](file:///c:/Users/abhip/OneDrive/Documents/mini%20project/CLAIMS.md) P2). Serving high-interaction deception (rich emulated environments, real sandboxed VMs, or LLM-driven backends) indiscriminately wastes significant compute and financial budget on shallow noise.
+In Internet-facing SSH honeypots, the overwhelming majority of sessions are one-shot automated scans and credential brute-force probes. A published LLM-honeypot deployment recorded **147,752 non-interactive sessions out of 148,850 total (99.26%)**, and only **150 interactive sessions (0.10%)** ([CLAIMS.md](CLAIMS.md) P2). Serving high-interaction deception (rich emulated environments, real sandboxed VMs, or LLM-driven backends) indiscriminately wastes significant compute and financial budget on shallow noise.
 
 > **Central Thesis:** A lightweight, cost-aware **gatekeeper** can infer early in an SSH session (handshake, authentication, or first command) whether the attacker is likely to yield interactive intelligence, escalating high-value visitors to higher-fidelity deception personas while serving cheap default emulation to automated noise—maximizing **intelligence yield per rupee**.
 
 ---
 
-## 2. Project Completion Status: ~42% (MVP) / ~26% (Full Scope)
+## 2. Project Completion Status & Progress Accounting
 
-The project follows a strict phased gating model ([SPEC.md §0](file:///c:/Users/abhip/OneDrive/Documents/mini%20project/SPEC.md#L8-L18), [WEEK1.md](file:///c:/Users/abhip/OneDrive/Documents/mini%20project/WEEK1.md)). Below is the exact progress breakdown:
+> **Branch Notice:** Active engineering code and test suites live on branch **[`aftertranning`](https://github.com/abhinavsingh2403/Schrodinger-s-Server/tree/aftertranning)**. The `main` branch tracks pre-registered specifications and documentation until Gate 0 verification is reached.
+
+| Dimension | Progress | Assessment Rationale |
+|---|:---:|---|
+| **Engineering (Code & Tests)** | **~55–60%** | 75 unit tests passing across all core modules (`gatekeeper/`, `sensor/`, `router/`, `harness/`, `infra/`, `analysis/`, `dashboard/`). |
+| **Science (Valid Empirical Results)** | **~15–20%** | S3 Part 1 (aggregate base rates) & S3 Part 2 (event schema & 52-day verification) completed; Experiment 0 model training and live trials remain gated. |
+| **Overall MVP** | **~35–38%** | Critical Gate 0 milestone (`EXPERIMENT0.md`) is at 0% pending model fitting and paired cluster-bootstrap validation. |
 
 ```
-[██████████████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░] 42% MVP Complete
-[█████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░] 26% Full Scope Complete
+[███████████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░] ~35–38% Overall MVP Complete
+[████████████████████████████░░░░░░░░░░░░░░░░░░░░░░] ~55–60% Engineering Complete
+[█████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░] ~15–20% Science / Valid Results
 ```
 
-| Phase / Component | Scope | Status | Weight | % Done |
-|---|---|---|:---:|:---:|
-| **G1: Repo Skeleton & Pinning** | Core | **DONE** (`ae7b342`) | 5% | 100% |
-| **G2: Streaming Verifier & Tooling** | Core | **DONE** (`2685e45`) | 5% | 100% |
-| **G3 / S3 Part 1: Data Reality Check & Base Rates** | Core | **DONE** (`3c92d32`, `90eaacc`) | 12% | 100% |
-| **O1: Read-Only Audit of Base Rates** | Core | **DONE** (`b019e71`) | 5% | 100% |
-| **O2 / S1: Cowrie Persona Switching Investigation & PoC** | Core | **DONE** (`bae4e27`) | 15% | 100% |
-| **Pre-Registration Tags (`eval-v1`, `exp0-v1`)** | Core | **DONE** (Applied & Pushed) | 3% | 100% |
-| **O3: Experiment 0 Implementation (`EXPERIMENT0.md`)** | Core (Gate 0) | *In Progress (Next)* | 20% | 0% |
-| **S3 Part 2: Event-level verification (2-3 days)** | Core (Gate 0) | *Pending O3* | 5% | 0% |
-| **Phase 1: Gatekeeper Engine & SQLite Memory** | MVP | *Planned* | 12% | 0% |
-| **Phase 1: Persona Configuration (T1 vs T2)** | MVP | *Planned* | 6% | 0% |
-| **Phase 2: Cost Model & Dashboard (`dashboard/`)** | MVP | *Planned* | 12% | 0% |
-| **Phase 2: Lab Adversary Harness (honeypot-auditor)** | Full Scope | *Gated* | - | 0% |
-| **Phase 3: Live VPS Trial (Shadow Mode)** | Full Scope | *Gated* | - | 0% |
-| **Phase 3: T3 Real-VM Pool Tier** | Deferred | *Deferred* | - | 0% |
-
-- **Phase 0 (Foundation & Gate 0 Spikes):** **~65% Complete**
-- **MVP Scope (Offline Study, Exp 0, T1/T2 Persona, Cost Model, Dashboard):** **~42% Complete**
-- **Full Life-Cycle Scope (including live VPS sensor, RCT, and deferred tiers):** **~26% Complete**
+| Phase / Component | Scope | Status | Details / Notes |
+|---|---|---|---|
+| **G1: Repo Skeleton & Pinning** | Core | **DONE** | Python 3.12, DuckDB 2.0.0, Pytest 9.2.0 pinned |
+| **G2: Streaming Verifier Tooling** | Core | **DONE** | Chunked MD5 streaming verifier (`verify_download.py`) |
+| **S3 Part 1: Aggregate Base Rates** | Core | **DONE** | 38.1M sessions analyzed; value=1 base rate = 3.23% (`results/base_rates.json`) |
+| **S3 Part 2: Event Archive Verification** | Core | **DONE** | Range request inspection of 19.4GB `data_all.zip`; confirmed 52 days and `group \in {1, 2, 3, 4}` |
+| **S1: Cowrie Persona Switching PoC** | Core | **DONE** | Plan A in-process Conch adapter subclass verified (`sensor/spike_s1_poc.py`) |
+| **Pre-Registration Tags (`eval-v1`, `exp0-v1`)** | Core | **LOCKED** | Pre-registered hypotheses, metrics, and decision rules frozen |
+| **O3: Experiment 0 (`EXPERIMENT0.md`)** | Core (Gate 0) | **0% (PENDING)** | Splits & rules ready; model fitting & paired cluster bootstrap pending execution |
+| **Phase 1: Gatekeeper Engine & Memory** | MVP | **BUILT (Code/Tests)** | SQLite WAL visitor memory, upward-only policy, parity extractor, decision API |
+| **Phase 1: Sensor & Router Subsystems** | MVP | **BUILT (Code/Tests)** | Adaptive Conch session server (`sensor/`), Plan B sticky asyncio router (`router/`) |
+| **Phase 2: Adversary Harness & Infra** | MVP | **BUILT (Code/Tests)** | Detector runner with safety allowlist, replay engine, isolated docker & egress firewall |
+| **Phase 2: Cost & Arm Simulation** | MVP | **ORACLE BOUND** | Nominal cost model; Arm D simulated as retrospective upper bound (uniform yield) |
+| **EVAL 5.3: Persona Natural Experiment** | MVP | **PENDING DATA** | Blocked on event-level `group` ingestion (absent from `session_aggregation`) |
+| **Phase 2: Results Dashboard** | MVP | **BUILT (Code/Tests)** | Cyber Protocol theme, privacy masking (`vis_xxxx`), zero npm dependencies |
+| **Phase 3: Live VPS Trial / T3 VM Pool** | Post-MVP | **DEFERRED** | Gated on Gate 0 pass and safety pre-launch checklist |
 
 ---
 
@@ -64,7 +67,7 @@ All empirical analysis is performed on open-access, peer-reviewed research data.
 - **Expected MD5**: `1f3897650fb420c97c14ff452398c3f8`
 - **Computed MD5**: `1f3897650fb420c97c14ff452398c3f8` (**MATCH**, verified via `analysis/verify_download.py`)
 
-### Dataset Ground Truth Findings ([results/base_rates.json](file:///c:/Users/abhip/OneDrive/Documents/mini%20project/results/base_rates.json))
+### Dataset Ground Truth Findings ([results/base_rates.json](results/base_rates.json))
 Computed over the complete dataset using DuckDB with zero dropped sessions:
 - **Total Sessions Analyzed**: `38,126,048`
 - **Temporal Span**: `52 continuous calendar days` (2025-06-27 to 2025-08-17 UTC)
@@ -99,10 +102,10 @@ Computed over the complete dataset using DuckDB with zero dropped sessions:
 ### 2. Spike S1 Outcome: Plan A (In-Process Hook) Verified
 - **Question**: Can Cowrie choose the persona per session after login without a deep fork?
 - **Finding**: **YES.** Subclassing Twisted Conch's session adapter (`cowrie.shell.session.SSHSessionForCowrieUser`) allows dynamic persona assignment (hostname, custom filesystem overlay) with **0 lines changed in Cowrie core**. Merge-pain risk on upstream updates is near zero.
-- **Proof-of-Concept**: [`sensor/spike_s1_poc.py`](file:///c:/Users/abhip/OneDrive/Documents/mini%20project/sensor/spike_s1_poc.py) verified:
+- **Proof-of-Concept**: [`sensor/spike_s1_poc.py`](sensor/spike_s1_poc.py) verified:
   - Session A (odd client port) assigned Persona 1 (`web-srv-01`, Ubuntu 22.04 T2 persona).
   - Session B (even client port) assigned Persona 2 (`generic-srv-02`, Debian 12 T1 persona).
-  - Automated test suite: [`sensor/test_spike_s1_poc.py`](file:///c:/Users/abhip/OneDrive/Documents/mini%20project/sensor/test_spike_s1_poc.py) passing (`2 passed`).
+  - Automated test suite: [`sensor/test_spike_s1_poc.py`](sensor/test_spike_s1_poc.py) passing (`2 passed`).
 
 ### 3. Pre-Registration Enforced
 - Git tags applied to lock experimental hypotheses prior to model training:
@@ -253,7 +256,7 @@ python -m pytest sensor/test_spike_s1_poc.py
 ---
 
 ## 9. Non-Negotiable Safety & Ethics Rules
-Per [`SAFETY.md`](file:///c:/Users/abhip/OneDrive/Documents/mini%20project/SAFETY.md):
+Per [`SAFETY.md`](SAFETY.md):
 1. **Offline Phase 0**: All early work uses public datasets and lab mock loops. No network-facing exposure.
 2. **Zero Fabrication**: Every reported metric and table value originates from a script. Never typed by hand.
 3. **No Attacks**: No scanning, probing, or counter-exploitation of third-party systems.
@@ -264,7 +267,7 @@ Per [`SAFETY.md`](file:///c:/Users/abhip/OneDrive/Documents/mini%20project/SAFET
 
 ## 10. References & Literature Cited
 
-All external datasets, academic papers, and security frameworks are tracked with their verification statuses in [`CLAIMS.md`](file:///c:/Users/abhip/OneDrive/Documents/mini%20project/CLAIMS.md).
+All external datasets, academic papers, and security frameworks are tracked with their verification statuses in [`CLAIMS.md`](CLAIMS.md).
 
 ### Datasets & Data Descriptors
 - **[D1] Large-Scale Empirical Dataset of 38 Million SSH Honeypot Sessions** (2025/2026). Zenodo Record 21260400. DOI: [`10.5281/zenodo.21260400`](https://zenodo.org/records/21260400). Licensed under CC BY 4.0.

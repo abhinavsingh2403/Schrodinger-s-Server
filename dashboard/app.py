@@ -176,8 +176,9 @@ class DashboardServer:
                     arms_payload["Arm D (Schrodinger Adaptive)"] = arms_payload["Arm D (Adaptive)"]
 
                 return {
-                    "label": "RECORDED (EVAL 5.1)",
-                    "adaptive_efficiency_multiplier": sim_data.get("adaptive_efficiency_multiplier", 1.0),
+                    "label": "SIMULATED_ORACLE (Hindsight Upper Bound)",
+                    "methodology": "Oracle Retrospective Simulation",
+                    "scientific_disclaimer": "Retrospective counter-based policy (Oracle Upper Bound); not an online early gatekeeper.",
                     **arms_payload,
                 }
             except Exception as e:

@@ -120,18 +120,41 @@ def run_arm_simulation_on_records(
 
 
 def summarize_simulation_results(results: Dict[str, Any]) -> Dict[str, Any]:
-    """Computes comparison ratios and summary metrics across arms."""
+    """Computes comparison ratios, caveats, and summary metrics across arms."""
     arm_a = results.get("Arm A (Static T1)", {})
+    arm_c = results.get("Arm C (Static T3)", {})
     arm_d = results.get("Arm D (Adaptive)", {})
 
     ypr_a = arm_a.get("yield_per_rupee", 1.0)
+    ypr_c = arm_c.get("yield_per_rupee", 1.0)
     ypr_d = arm_d.get("yield_per_rupee", 1.0)
 
-    multiplier = round(ypr_d / ypr_a, 2) if ypr_a > 0 else 1.0
+    ratio_d_to_a = round(ypr_d / ypr_a, 4) if ypr_a > 0 else 1.0
+    ratio_d_to_c = round(ypr_d / ypr_c, 2) if ypr_c > 0 else 1.0
 
     return {
-        "status": "SIMULATION_COMPLETE",
-        "adaptive_efficiency_multiplier": multiplier,
+        "status": "SIMULATION_COMPLETE_ORACLE_BOUND",
+        "methodology": "Oracle Retrospective Simulation (Post-Session Retrospective Hindsight)",
+        "scientific_disclaimers": {
+            "oracle_triage_nature": (
+                "Arm D triage policy relies on end-of-session cumulative counters (files, pivots, commands). "
+                "This serves as an Oracle Upper Bound (hindsight retrospective policy), NOT an online early triage gatekeeper."
+            ),
+            "uniform_yield_assumption": (
+                "Yield is modeled identically across all tiers (Y_observed), assuming attacker interaction is unaffected "
+                "by honeypot persona. Under this assumption, Arm A (Static T1) trivially yields highest Yield/Rs (595.7) "
+                "because its cost is near-zero (Rs 3.98), ignoring that detected low-interaction shells truncate deep attacker engagements."
+            ),
+            "strawman_caution": (
+                f"Arm D achieves {ratio_d_to_c}x higher yield-per-rupee than static full virtualization (Arm C, Rs 2564.68), "
+                f"but has {ratio_d_to_a}x the yield-per-rupee of static cheap shell (Arm A, Rs 3.98) under uniform yield."
+            ),
+            "cost_basis": "Nominal resource parameters based on Rs 2000/mo VPS assumption; empirical KVM benchmarks await Spike S2."
+        },
+        "efficiency_ratios": {
+            "yield_per_rupee_ratio_arm_d_vs_arm_c": ratio_d_to_c,
+            "yield_per_rupee_ratio_arm_d_vs_arm_a": ratio_d_to_a,
+        },
         "arms": results,
     }
 

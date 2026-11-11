@@ -69,3 +69,27 @@ What this changes in SPEC/EVAL:
   - Base rate of value=1 is 3.23% (~1.23M positive sessions). This is a solid, non-degenerate class imbalance well-suited for early stage gatekeeper triage and PR-AUC evaluation. No adjustment to `N_CMD=5` needed for the aggregate level.
 - **What this changes in SPEC/EVAL**:
   - Confirms feasibility of Experiment 0 sampling and base-rate tracking. Ready for Opus read-only review (Task O1).
+
+### S3 Data Reality Check (Part 2: Event-level Archive Verification)
+- **Date / owner**: 2026-11-11 / P2 (ML/Analysis)
+- **What was done**:
+  - Implemented `analysis/s3_event_sample.py` using HTTP Range requests against Zenodo Record 21260400 `data_all.zip` (19.37 GB).
+  - Located Zip64 End of Central Directory locator and extracted the 5,800-byte Central Directory table without downloading the full 19.4 GB archive.
+  - Parsed all 52 daily file entries (`../logs_by_day/2025-06-27.json.gz` to `../logs_by_day/2025-08-17.json.gz`).
+  - Streamed initial compressed DEFLATE chunks and decompressed gzip event records from `2025-06-27.json.gz`.
+  - Added unit test suite `analysis/test_s3_event_sample.py` (2 tests passing).
+- **Evidence**:
+  - `results/s3_event_schema.json`
+  - `analysis/s3_event_sample.py`
+  - `analysis/test_s3_event_sample.py`
+- **Result**:
+  - **Archive Contents**: Exactly 52 daily files covering continuous observation period 2025-06-27 through 2025-08-17.
+  - **Event Schema**: 57 unique fields discovered. All 10 required fields present: `ts`, `eventid`, `session`, `sensor`, `group`, `hassh`, `version`, `width`, `height`, `input`. Zero missing fields.
+  - **Configuration Group**: Confirmed present as an integer field `group \in {1, 2, 3, 4}` corresponding to the 4 configurations (Default Baseline, Enhanced hardened, and two persistence variants).
+  - **Selective Sampling**: Proved that daily event logs can be accessed on demand via HTTP range requests for Experiment 0 event-level feature extraction.
+- **Decision**:
+  - S3 Spike is **100% complete** across both aggregation and event-level tiers.
+  - Event-level features (HASSH, client version, terminal dimensions, command text, and configuration group) are verified present.
+- **What this changes in SPEC/EVAL**:
+  - Unblocks EVAL.md §5.3 (Persona effect natural experiment using the `group` field).
+  - Confirms data feasibility for Experiment 0 early features (S1 to S5). Gate 0 data preconditions fully verified.

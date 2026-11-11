@@ -180,10 +180,10 @@
             <h2 class="text-base font-bold text-[#E2E8F0] flex items-center gap-2">
               <span class="text-[#00FF41]">//</span> EXPERIMENTAL ARMS COMPARISON (SPEC §9)
             </h2>
-            <p class="text-xs text-[#94A3B8] mt-0.5">Yield per Rupee = ∑Y / ∑Cost across 120 controlled load test sessions</p>
+            <p class="text-xs text-[#94A3B8] mt-0.5">Yield per Rupee = ∑Y / ∑Cost (Theoretical Upper Bound vs Static Baselines)</p>
           </div>
-          <span class="text-xs font-semibold px-2 py-0.5 rounded bg-[#00FF41]/10 text-[#00FF41] border border-[#00FF41]/20">
-            ECONOMICS AUDIT
+          <span class="text-xs font-semibold px-2 py-0.5 rounded bg-[#38BDF8]/10 text-[#38BDF8] border border-[#38BDF8]/20">
+            SIMULATED ORACLE MODEL
           </span>
         </div>
 
@@ -247,8 +247,13 @@
             </div>
             <div class="flex justify-between text-xs text-[#00FF41]/90 mt-1.5 font-medium">
               <span>Monotone Upward Escalation &bull; Fail-Cheap Safe</span>
-              <span>+240% Intelligence Return on Investment</span>
+              <span>Theoretical Upper Bound vs Unpruned QEMU</span>
             </div>
+          </div>
+
+          <div class="p-2.5 rounded bg-[#060A13] border border-[#1A2639] text-[11px] text-[#94A3B8]">
+            <span class="text-amber-400 font-semibold">// METHODOLOGICAL CAVEAT:</span>
+            Arm D represents an <em>Oracle Retrospective Upper Bound</em>. In this simulation, yield is held invariant across tiers; under uniform yield, Arm A is mathematically cheapest per yield unit (Rs 3.98 cost) but fails to capture high-interaction payloads in live deployments.
           </div>
         </div>
       </div>

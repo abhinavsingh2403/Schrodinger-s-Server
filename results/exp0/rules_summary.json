@@ -1,0 +1,11 @@
+{
+  "status": "EMPTY_SPLITS_FOR_GIVEN_SAMPLE",
+  "counts": {
+    "train_rows": 0,
+    "val_rows": 0,
+    "test_rows": 0
+  },
+  "validation_recall_10pct": {},
+  "test_recall_10pct": {},
+  "best_validation_rule": "NONE"
+}

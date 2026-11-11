@@ -48,10 +48,14 @@ def test_arm_simulation_on_records():
 
 
 def test_summarize_simulation_results():
-    """Verify summary metrics calculation and formatting."""
+    """Verify summary metrics calculation, disclaimers, and formatting."""
     sim_data = {
         "Arm A (Static T1)": {"total_yield": 10.0, "total_cost": 2.0, "yield_per_rupee": 5.0, "tier_counts": {"T1": 10, "T2": 0, "T3": 0}},
+        "Arm C (Static T3)": {"total_yield": 10.0, "total_cost": 20.0, "yield_per_rupee": 0.5, "tier_counts": {"T1": 0, "T2": 0, "T3": 10}},
         "Arm D (Adaptive)": {"total_yield": 18.0, "total_cost": 1.2, "yield_per_rupee": 15.0, "tier_counts": {"T1": 8, "T2": 2, "T3": 0}},
     }
     summary = summarize_simulation_results(sim_data)
-    assert summary["adaptive_efficiency_multiplier"] == 3.0  # 15.0 / 5.0 = 3.0x
+    assert summary["status"] == "SIMULATION_COMPLETE_ORACLE_BOUND"
+    assert "scientific_disclaimers" in summary
+    assert summary["efficiency_ratios"]["yield_per_rupee_ratio_arm_d_vs_arm_a"] == 3.0  # 15.0 / 5.0
+    assert summary["efficiency_ratios"]["yield_per_rupee_ratio_arm_d_vs_arm_c"] == 30.0  # 15.0 / 0.5

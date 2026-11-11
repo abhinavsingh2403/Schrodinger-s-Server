@@ -20,12 +20,12 @@ This guide is for the person training the Experiment 0 models on the pre-declare
 
 ## 2. Pre-Declared Setup (Frozen per `exp0-v1`)
 
-- **Split Configuration**: [`results/exp0/splits.json`](file:///c:/Users/abhip/OneDrive/Documents/mini%20project/results/exp0/splits.json) (Seed `20261111`)
+- **Split Configuration**: [`results/exp0/splits.json`](../results/exp0/splits.json) (Seed `20261111`)
   - **Train Days (5)**: `['2025-07-07', '2025-07-14', '2025-07-19', '2025-07-25', '2025-07-26']`
   - **Validation Days (2)**: `['2025-08-03', '2025-08-06']`
   - **Test Days (2)**: `['2025-08-09', '2025-08-15']`
   - **Disjoint Source IP Grouping**: Handled automatically. IPs appearing in earlier folds are purged from later folds to guarantee zero leakage.
-- **Hyperparameter Grid**: [`results/exp0/grid.json`](file:///c:/Users/abhip/OneDrive/Documents/mini%20project/results/exp0/grid.json)
+- **Hyperparameter Grid**: [`results/exp0/grid.json`](../results/exp0/grid.json)
   - `LogisticRegression`: `C in [0.01, 0.1, 1.0, 10.0]`, L2 penalty, balanced class weight.
   - `HistGradientBoosting`: `max_iter in [100, 200]`, `learning_rate in [0.05, 0.1]`, `max_leaf_nodes in [15, 31]`.
 

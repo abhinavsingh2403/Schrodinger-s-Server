@@ -28,10 +28,13 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(me
 logger = logging.getLogger(__name__)
 
 EVAL_53_CAVEAT: str = (
-    "Findings are reported strictly as empirical associations with no causal language, "
-    "per pre-registered EVAL.md Section 5.3. Configuration assignment across instances and "
-    "regions may be confounded by scanner targeting patterns, Autonomous System topography, "
-    "and IP space probing biases. Causal validation is reserved for randomized live trials."
+    "SCIENTIFIC NOTICE: EVAL.md §5.3 mandates measuring the persona effect across the four Cowrie configurations "
+    "using the configuration 'group' field. However, 'session_aggregation.jsonl.gz' does not contain 'group'. "
+    "As established in DATA.md and SPIKES S3 Part 2, 'group' is only available in event-level logs (data_all.zip) "
+    "or external descriptor mapping. Therefore, analyzing session_aggregation by honeypot_ip reflects observational "
+    "variance across IP deployments, which is confounded by scanner targeting patterns, network topology, and IP probing biases. "
+    "Findings are descriptive associations only with no causal language; no causal claims regarding honeypot configuration "
+    "or persona can be drawn from this file."
 )
 
 
@@ -146,53 +149,38 @@ def summarize_natural_experiment(
             "n_instances": 0,
         }
 
-    # Sort instances by observed value rate
-    sorted_by_val = sorted(instances, key=lambda x: x["value_1_rate"])
-
-    # Split into observed lower and upper quartiles
-    q_size = max(1, n_instances // 4)
-    low_quartile = sorted_by_val[:q_size]
-    high_quartile = sorted_by_val[-q_size:]
-
-    def agg_quartile(inst_list: List[Dict[str, Any]]) -> Dict[str, Any]:
-        tot_s = sum(x.get("total_sessions", 0) for x in inst_list)
-        tot_v = sum(x.get("value_1_count", 0) for x in inst_list)
-        tot_l = sum(x.get("login_count", int(x.get("login_rate", 0.0) * x.get("total_sessions", 0))) for x in inst_list)
-        avg_cmd = sum(x.get("mean_commands", 0.0) * x.get("total_sessions", 0) for x in inst_list) / max(1, tot_s)
-        avg_dur = sum(x.get("mean_duration", 0.0) * x.get("total_sessions", 0) for x in inst_list) / max(1, tot_s)
-        v_rate = tot_v / max(1, tot_s)
-        ci_low, ci_high = wilson_score_interval(tot_v, tot_s)
-        return {
-            "instances_in_group": len(inst_list),
-            "total_sessions": tot_s,
-            "value_1_rate": round(v_rate, 6),
-            "value_1_ci_95": [ci_low, ci_high],
-            "login_rate": round(tot_l / max(1, tot_s), 6),
-            "mean_commands_per_session": round(avg_cmd, 4),
-            "mean_duration_seconds": round(avg_dur, 2),
-        }
-
-    q1_summary = agg_quartile(low_quartile)
-    q4_summary = agg_quartile(high_quartile)
-
-    val_rates = [x["value_1_rate"] for x in instances]
+    # Descriptive statistics across instances
+    val_rates = sorted([x["value_1_rate"] for x in instances])
     overall_mean_val = sum(val_rates) / n_instances
     min_val = min(val_rates)
     max_val = max(val_rates)
+    p25_val = val_rates[int(n_instances * 0.25)]
+    p50_val = val_rates[int(n_instances * 0.50)]
+    p75_val = val_rates[int(n_instances * 0.75)]
+
+    total_sessions_all = sum(x["total_sessions"] for x in instances)
+    total_val_all = sum(x["value_1_count"] for x in instances)
+    pooled_val_rate = total_val_all / max(1, total_sessions_all)
+    pooled_ci = wilson_score_interval(total_val_all, total_sessions_all)
 
     return {
-        "status": "NATURAL_EXPERIMENT_COMPLETE",
+        "status": "EVAL_53_PERSONA_EFFECT_PENDING_EVENT_GROUP_DATA",
+        "scientific_notice": (
+            "EVAL 5.3 persona evaluation requires the 'group' configuration field, which is absent from "
+            "session_aggregation.jsonl.gz. The data below documents empirical heterogeneity across the "
+            "160 honeypot IP deployments (unstratified by configuration)."
+        ),
         "caveat_disclaimer": EVAL_53_CAVEAT,
         "n_instances_evaluated": n_instances,
-        "aggregate_association": {
+        "instance_variance_distribution": {
+            "pooled_value_rate": round(pooled_val_rate, 6),
+            "pooled_value_rate_95_ci": list(pooled_ci),
             "mean_instance_value_rate": round(overall_mean_val, 6),
+            "p25_instance_value_rate": round(p25_val, 6),
+            "median_instance_value_rate": round(p50_val, 6),
+            "p75_instance_value_rate": round(p75_val, 6),
             "min_instance_value_rate": round(min_val, 6),
             "max_instance_value_rate": round(max_val, 6),
-            "lower_interaction_quartile": q1_summary,
-            "higher_interaction_quartile": q4_summary,
-            "observed_value_rate_ratio_q4_to_q1": round(
-                q4_summary["value_1_rate"] / max(1e-6, q1_summary["value_1_rate"]), 2
-            ),
         },
         "instances": instance_stats,
     }

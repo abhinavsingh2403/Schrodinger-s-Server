@@ -1,24 +1,33 @@
-# arms.yaml: Randomized Controlled Trial (RCT) arms and assignment salt
-# Specified in SPEC.md Section 10 and EVAL.md Section 2
+# arms.yaml: Randomized Controlled Trial (RCT) arms and assignment schema
+# Pre-registered in EVAL.md Section 5.6 and SPEC.md Section 10
 
 version: "1.0.0"
 
-assignment_salt: "schrodinger-salt-rct-2026"
+# Salt must be injected via environment variable (AGENTS.md Rule 6: Never commit secrets)
+assignment_salt_env_var: "ASSIGNMENT_SALT"
+assignment_salt_version: "v1"
 
+# Pre-registered arms per EVAL.md Section 5.6 (arm = hash(secret_salt + visitor_id) mod 3):
 arms:
   A:
-    name: "T1 Baseline Static"
-    description: "Default static baseline; all sessions served T1 Lite"
+    name: "Arm A — T1 Baseline Static"
+    description: "Default baseline: T1 (low-interaction shell) for all sessions"
     fixed_tier: "T1"
+    participating_tiers: ["T1"]
   B:
-    name: "T2 Hardened Static"
-    description: "All sessions served T2 Hardened"
+    name: "Arm B — T2 Hardened Static"
+    description: "Hardened baseline: T2 (enhanced decoy filesystem) for all sessions"
     fixed_tier: "T2"
+    participating_tiers: ["T2"]
   C:
-    name: "T3 Real VM Static"
-    description: "All sessions served T3 Real VM"
-    fixed_tier: "T3"
-  D:
-    name: "Schrodinger Adaptive"
-    description: "Dynamic early-triage gatekeeper escalates high-value sessions upward"
+    name: "Arm C — Full Adaptive System"
+    description: "Schrödinger adaptive gatekeeper: escalates from T1 to T2 or T3 based on early triage"
     adaptive: true
+    participating_tiers: ["T1", "T2", "T3"]
+
+# Offline-only theoretical comparison arm (for cost-model simulation, not live trial):
+offline_comparison_arms:
+  Static_T3:
+    name: "Static T3 Real VM"
+    description: "Theoretical baseline: T3 for all sessions (unfeasible in live VPS deployment)"
+    fixed_tier: "T3"
