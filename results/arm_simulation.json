@@ -1,0 +1,54 @@
+{
+  "status": "SIMULATION_COMPLETE",
+  "adaptive_efficiency_multiplier": 0.05,
+  "arms": {
+    "Arm A (Static T1)": {
+      "n_sessions": 50000,
+      "total_yield": 2371.3,
+      "total_cost": 3.980526,
+      "yield_per_rupee": 595.7253,
+      "escalation_rate": 0.0,
+      "tier_counts": {
+        "T1": 50000,
+        "T2": 0,
+        "T3": 0
+      }
+    },
+    "Arm B (Static T2)": {
+      "n_sessions": 50000,
+      "total_yield": 2371.3,
+      "total_cost": 8.956183,
+      "yield_per_rupee": 264.7668,
+      "escalation_rate": 1.0,
+      "tier_counts": {
+        "T1": 0,
+        "T2": 50000,
+        "T3": 0
+      }
+    },
+    "Arm C (Static T3)": {
+      "n_sessions": 50000,
+      "total_yield": 2371.3,
+      "total_cost": 2564.683541,
+      "yield_per_rupee": 0.9246,
+      "escalation_rate": 1.0,
+      "tier_counts": {
+        "T1": 0,
+        "T2": 0,
+        "T3": 50000
+      }
+    },
+    "Arm D (Adaptive)": {
+      "n_sessions": 50000,
+      "total_yield": 2371.3,
+      "total_cost": 86.69873,
+      "yield_per_rupee": 27.351,
+      "escalation_rate": 0.0325,
+      "tier_counts": {
+        "T1": 48377,
+        "T2": 48,
+        "T3": 1575
+      }
+    }
+  }
+}
