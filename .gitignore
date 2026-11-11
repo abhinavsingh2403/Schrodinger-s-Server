@@ -21,6 +21,9 @@ env/
 *.zip
 *.parquet
 
+# Upstream Cowrie source copy (study only)
+sensor/cowrie-src/
+
 # Operating System files
 .DS_Store
 Thumbs.db

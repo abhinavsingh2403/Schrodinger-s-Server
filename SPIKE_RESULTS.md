@@ -21,6 +21,30 @@ What this changes in SPEC/EVAL:
 
 ## Results Log
 
+### S1 Per-session persona / escalation in Cowrie
+- **Date / owner**: 2026-11-11 / P1 (Honeypot Lead)
+- **What was done (commands, versions, commit)**:
+  - Pinned Cowrie release tag `v3.1.6` (commit hash `ea9513eda9ea0dac05f6ace7db84ca95e0571501`) from `https://github.com/cowrie/cowrie.git`.
+  - Cloned read-only copy into `sensor/cowrie-src/` for source audit and verified against PyPI package.
+  - Audited code paths across Cowrie subsystems: SSH transport & version banner (`src/cowrie/ssh/transport.py`, `src/cowrie/ssh/factory.py`), key exchange & HASSH logging (`src/cowrie/ssh/transport.py`), userauth & login acceptance (`src/cowrie/ssh/userauth.py`, `src/cowrie/shell/realm.py`), shell protocol creation & fake filesystem loading (`src/cowrie/shell/session.py`, `src/cowrie/shell/fs.py`, `src/cowrie/core/honeyfs.py`), command dispatch (`src/cowrie/shell/honeypot.py`, `src/cowrie/shell/protocol.py`), and proxy/pool backends (`src/twisted/plugins/cowrie_plugin.py`).
+  - Built throwaway lab proof-of-concept in `sensor/spike_s1_poc.py` demonstrating odd/even client port persona switching post-login (odd port -> `web-srv-01` Ubuntu 22.04 T2 persona; even port -> `generic-srv-02` Debian 12 T1 persona).
+  - Added unit test suite `sensor/test_spike_s1_poc.py` (2 pytest test cases passing).
+- **Evidence (paths in results/ or logs)**:
+  - Source code citations with exact line numbers in pinned release `v3.1.6`.
+  - `sensor/spike_s1_poc.py` (execution output verified via Python & Twisted).
+  - `sensor/test_spike_s1_poc.py` (2 passed in 4.77s under pytest).
+  - Transcript showing Session A on odd port receiving `web-srv-01` + `PERSONA_1` + Ubuntu motd, while Session B on even port receives `generic-srv-02` + `PERSONA_2` + Debian motd.
+- **Result**:
+  - **Hook Point Identified**: Twisted Conch session adapter boundary (`components.registerAdapter` on `CowrieUser` to `ISession`, subclassing `cowrie.shell.session.SSHSessionForCowrieUser`).
+  - **Lines of Cowrie core that must change**: **0 lines**. No fork required.
+  - **Subclass / plugin sufficiency**: A subclass of `SSHSessionForCowrieUser` or a custom realm/session adapter registered in the application runner is completely sufficient.
+  - **Merge-pain risk**: **Extremely Low / None**. Because adaptation is done by subclassing/adapter registration outside Cowrie's internal package, upstream releases of Cowrie can be upgraded cleanly without merge conflicts.
+- **Decision (Plan A/B, go/no-go, fallback taken)**:
+  - **Plan A (achieved)**: In-process hook confirmed. Cowrie can cleanly switch persona (filesystem, hostname, banners, identity) per-session after login.
+- **What this changes in SPEC/EVAL**:
+  - Validates SPEC Section 4 Architecture (Plan A in-process hook is selected; Plan B fallback sticky routing is not required for T1/T2).
+  - Gate 0 requirement for S1 is fully satisfied.
+
 ### S3 Data Reality Check and Base Rates (Part 1: session_aggregation)
 - **Date / owner**: 2026-11-11 / P2 (ML/Analysis)
 - **What was done**:
