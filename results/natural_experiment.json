@@ -1,0 +1,2117 @@
+{
+  "status": "NATURAL_EXPERIMENT_COMPLETE",
+  "caveat_disclaimer": "Findings are reported strictly as empirical associations with no causal language, per pre-registered EVAL.md Section 5.3. Configuration assignment across instances and regions may be confounded by scanner targeting patterns, Autonomous System topography, and IP space probing biases. Causal validation is reserved for randomized live trials.",
+  "n_instances_evaluated": 160,
+  "aggregate_association": {
+    "mean_instance_value_rate": 0.04854,
+    "min_instance_value_rate": 0.0,
+    "max_instance_value_rate": 0.275556,
+    "lower_interaction_quartile": {
+      "instances_in_group": 40,
+      "total_sessions": 34195,
+      "value_1_rate": 0.011142,
+      "value_1_ci_95": [
+        0.010083,
+        0.012311
+      ],
+      "login_rate": 0.035151,
+      "mean_commands_per_session": 0.0857,
+      "mean_duration_seconds": 7.48
+    },
+    "higher_interaction_quartile": {
+      "instances_in_group": 40,
+      "total_sessions": 16888,
+      "value_1_rate": 0.111736,
+      "value_1_ci_95": [
+        0.107073,
+        0.116576
+      ],
+      "login_rate": 0.33059,
+      "mean_commands_per_session": 0.4155,
+      "mean_duration_seconds": 8.37
+    },
+    "observed_value_rate_ratio_q4_to_q1": 10.03
+  },
+  "instances": {
+    "52cf793a": {
+      "total_sessions": 245,
+      "value_1_count": 23,
+      "value_1_rate": 0.093878,
+      "value_1_ci_95": [
+        0.063371,
+        0.136923
+      ],
+      "login_count": 72,
+      "login_rate": 0.293878,
+      "mean_commands": 0.2857,
+      "mean_duration": 6.78
+    },
+    "28361557": {
+      "total_sessions": 395,
+      "value_1_count": 68,
+      "value_1_rate": 0.172152,
+      "value_1_ci_95": [
+        0.138126,
+        0.212493
+      ],
+      "login_count": 110,
+      "login_rate": 0.278481,
+      "mean_commands": 0.7114,
+      "mean_duration": 16.73
+    },
+    "0d087601": {
+      "total_sessions": 692,
+      "value_1_count": 17,
+      "value_1_rate": 0.024566,
+      "value_1_ci_95": [
+        0.015394,
+        0.038989
+      ],
+      "login_count": 33,
+      "login_rate": 0.047688,
+      "mean_commands": 0.1965,
+      "mean_duration": 8.28
+    },
+    "63f5f937": {
+      "total_sessions": 698,
+      "value_1_count": 18,
+      "value_1_rate": 0.025788,
+      "value_1_ci_95": [
+        0.016373,
+        0.040394
+      ],
+      "login_count": 37,
+      "login_rate": 0.053009,
+      "mean_commands": 0.1848,
+      "mean_duration": 4.82
+    },
+    "69f0687c": {
+      "total_sessions": 693,
+      "value_1_count": 16,
+      "value_1_rate": 0.023088,
+      "value_1_ci_95": [
+        0.014261,
+        0.037174
+      ],
+      "login_count": 45,
+      "login_rate": 0.064935,
+      "mean_commands": 0.1934,
+      "mean_duration": 5.9
+    },
+    "3d2a1f81": {
+      "total_sessions": 288,
+      "value_1_count": 53,
+      "value_1_rate": 0.184028,
+      "value_1_ci_95": [
+        0.143534,
+        0.232839
+      ],
+      "login_count": 120,
+      "login_rate": 0.416667,
+      "mean_commands": 0.3229,
+      "mean_duration": 8.63
+    },
+    "7a6a9a11": {
+      "total_sessions": 473,
+      "value_1_count": 45,
+      "value_1_rate": 0.095137,
+      "value_1_ci_95": [
+        0.071863,
+        0.124935
+      ],
+      "login_count": 121,
+      "login_rate": 0.255814,
+      "mean_commands": 0.37,
+      "mean_duration": 8.2
+    },
+    "9eac611a": {
+      "total_sessions": 1664,
+      "value_1_count": 19,
+      "value_1_rate": 0.011418,
+      "value_1_ci_95": [
+        0.007322,
+        0.017765
+      ],
+      "login_count": 35,
+      "login_rate": 0.021034,
+      "mean_commands": 0.0252,
+      "mean_duration": 4.91
+    },
+    "7248daa1": {
+      "total_sessions": 492,
+      "value_1_count": 30,
+      "value_1_rate": 0.060976,
+      "value_1_ci_95": [
+        0.043042,
+        0.085711
+      ],
+      "login_count": 109,
+      "login_rate": 0.221545,
+      "mean_commands": 0.311,
+      "mean_duration": 4.41
+    },
+    "6b1ab957": {
+      "total_sessions": 719,
+      "value_1_count": 57,
+      "value_1_rate": 0.079277,
+      "value_1_ci_95": [
+        0.061691,
+        0.101335
+      ],
+      "login_count": 206,
+      "login_rate": 0.286509,
+      "mean_commands": 0.2823,
+      "mean_duration": 5.96
+    },
+    "719cfa3a": {
+      "total_sessions": 467,
+      "value_1_count": 5,
+      "value_1_rate": 0.010707,
+      "value_1_ci_95": [
+        0.004582,
+        0.024816
+      ],
+      "login_count": 27,
+      "login_rate": 0.057816,
+      "mean_commands": 0.1777,
+      "mean_duration": 6.34
+    },
+    "387ac1c3": {
+      "total_sessions": 740,
+      "value_1_count": 26,
+      "value_1_rate": 0.035135,
+      "value_1_ci_95": [
+        0.024088,
+        0.050983
+      ],
+      "login_count": 36,
+      "login_rate": 0.048649,
+      "mean_commands": 0.1459,
+      "mean_duration": 6.18
+    },
+    "659804cd": {
+      "total_sessions": 525,
+      "value_1_count": 39,
+      "value_1_rate": 0.074286,
+      "value_1_ci_95": [
+        0.054815,
+        0.099941
+      ],
+      "login_count": 129,
+      "login_rate": 0.245714,
+      "mean_commands": 0.2171,
+      "mean_duration": 8.14
+    },
+    "c5720717": {
+      "total_sessions": 462,
+      "value_1_count": 27,
+      "value_1_rate": 0.058442,
+      "value_1_ci_95": [
+        0.040472,
+        0.083693
+      ],
+      "login_count": 136,
+      "login_rate": 0.294372,
+      "mean_commands": 0.6537,
+      "mean_duration": 5.78
+    },
+    "b76b4a74": {
+      "total_sessions": 596,
+      "value_1_count": 8,
+      "value_1_rate": 0.013423,
+      "value_1_ci_95": [
+        0.006817,
+        0.026261
+      ],
+      "login_count": 21,
+      "login_rate": 0.035235,
+      "mean_commands": 0.1057,
+      "mean_duration": 4.08
+    },
+    "8e660120": {
+      "total_sessions": 578,
+      "value_1_count": 18,
+      "value_1_rate": 0.031142,
+      "value_1_ci_95": [
+        0.019788,
+        0.048687
+      ],
+      "login_count": 31,
+      "login_rate": 0.053633,
+      "mean_commands": 0.3028,
+      "mean_duration": 4.67
+    },
+    "0a96b8b7": {
+      "total_sessions": 919,
+      "value_1_count": 15,
+      "value_1_rate": 0.016322,
+      "value_1_ci_95": [
+        0.009916,
+        0.026755
+      ],
+      "login_count": 30,
+      "login_rate": 0.032644,
+      "mean_commands": 0.049,
+      "mean_duration": 8.06
+    },
+    "276e80a8": {
+      "total_sessions": 374,
+      "value_1_count": 11,
+      "value_1_rate": 0.029412,
+      "value_1_ci_95": [
+        0.016501,
+        0.051891
+      ],
+      "login_count": 16,
+      "login_rate": 0.042781,
+      "mean_commands": 0.1952,
+      "mean_duration": 9.34
+    },
+    "4c22473e": {
+      "total_sessions": 595,
+      "value_1_count": 31,
+      "value_1_rate": 0.052101,
+      "value_1_ci_95": [
+        0.036945,
+        0.073003
+      ],
+      "login_count": 189,
+      "login_rate": 0.317647,
+      "mean_commands": 0.1983,
+      "mean_duration": 3.84
+    },
+    "62c6f987": {
+      "total_sessions": 455,
+      "value_1_count": 59,
+      "value_1_rate": 0.12967,
+      "value_1_ci_95": [
+        0.101877,
+        0.163665
+      ],
+      "login_count": 133,
+      "login_rate": 0.292308,
+      "mean_commands": 0.2989,
+      "mean_duration": 7.56
+    },
+    "43cecf12": {
+      "total_sessions": 1460,
+      "value_1_count": 9,
+      "value_1_rate": 0.006164,
+      "value_1_ci_95": [
+        0.003246,
+        0.011674
+      ],
+      "login_count": 36,
+      "login_rate": 0.024658,
+      "mean_commands": 0.0322,
+      "mean_duration": 27.45
+    },
+    "ac355467": {
+      "total_sessions": 590,
+      "value_1_count": 15,
+      "value_1_rate": 0.025424,
+      "value_1_ci_95": [
+        0.015467,
+        0.041521
+      ],
+      "login_count": 25,
+      "login_rate": 0.042373,
+      "mean_commands": 0.1847,
+      "mean_duration": 6.74
+    },
+    "2f7b2467": {
+      "total_sessions": 714,
+      "value_1_count": 48,
+      "value_1_rate": 0.067227,
+      "value_1_ci_95": [
+        0.051078,
+        0.088007
+      ],
+      "login_count": 50,
+      "login_rate": 0.070028,
+      "mean_commands": 0.091,
+      "mean_duration": 8.26
+    },
+    "3c7545e9": {
+      "total_sessions": 866,
+      "value_1_count": 10,
+      "value_1_rate": 0.011547,
+      "value_1_ci_95": [
+        0.006284,
+        0.021125
+      ],
+      "login_count": 34,
+      "login_rate": 0.039261,
+      "mean_commands": 0.0982,
+      "mean_duration": 3.55
+    },
+    "32713eb2": {
+      "total_sessions": 684,
+      "value_1_count": 14,
+      "value_1_rate": 0.020468,
+      "value_1_ci_95": [
+        0.012231,
+        0.034061
+      ],
+      "login_count": 32,
+      "login_rate": 0.046784,
+      "mean_commands": 0.2061,
+      "mean_duration": 7.62
+    },
+    "10bc55ac": {
+      "total_sessions": 449,
+      "value_1_count": 54,
+      "value_1_rate": 0.120267,
+      "value_1_ci_95": [
+        0.093357,
+        0.15362
+      ],
+      "login_count": 121,
+      "login_rate": 0.269488,
+      "mean_commands": 0.2806,
+      "mean_duration": 5.47
+    },
+    "a349f681": {
+      "total_sessions": 225,
+      "value_1_count": 62,
+      "value_1_rate": 0.275556,
+      "value_1_ci_95": [
+        0.221313,
+        0.337334
+      ],
+      "login_count": 107,
+      "login_rate": 0.475556,
+      "mean_commands": 0.4356,
+      "mean_duration": 12.68
+    },
+    "79cd86c8": {
+      "total_sessions": 905,
+      "value_1_count": 10,
+      "value_1_rate": 0.01105,
+      "value_1_ci_95": [
+        0.006013,
+        0.02022
+      ],
+      "login_count": 28,
+      "login_rate": 0.030939,
+      "mean_commands": 0.0298,
+      "mean_duration": 5.91
+    },
+    "a7770766": {
+      "total_sessions": 713,
+      "value_1_count": 17,
+      "value_1_rate": 0.023843,
+      "value_1_ci_95": [
+        0.014939,
+        0.03785
+      ],
+      "login_count": 33,
+      "login_rate": 0.046283,
+      "mean_commands": 0.2132,
+      "mean_duration": 6.03
+    },
+    "1c813679": {
+      "total_sessions": 904,
+      "value_1_count": 14,
+      "value_1_rate": 0.015487,
+      "value_1_ci_95": [
+        0.009247,
+        0.025827
+      ],
+      "login_count": 27,
+      "login_rate": 0.029867,
+      "mean_commands": 0.1095,
+      "mean_duration": 7.07
+    },
+    "b51f6fdb": {
+      "total_sessions": 622,
+      "value_1_count": 5,
+      "value_1_rate": 0.008039,
+      "value_1_ci_95": [
+        0.003438,
+        0.018678
+      ],
+      "login_count": 29,
+      "login_rate": 0.046624,
+      "mean_commands": 0.0,
+      "mean_duration": 5.96
+    },
+    "1149fee9": {
+      "total_sessions": 286,
+      "value_1_count": 32,
+      "value_1_rate": 0.111888,
+      "value_1_ci_95": [
+        0.080379,
+        0.153685
+      ],
+      "login_count": 75,
+      "login_rate": 0.262238,
+      "mean_commands": 0.2692,
+      "mean_duration": 9.23
+    },
+    "de2b1411": {
+      "total_sessions": 619,
+      "value_1_count": 14,
+      "value_1_rate": 0.022617,
+      "value_1_ci_95": [
+        0.01352,
+        0.037603
+      ],
+      "login_count": 19,
+      "login_rate": 0.030695,
+      "mean_commands": 0.2278,
+      "mean_duration": 11.98
+    },
+    "0d43dbc3": {
+      "total_sessions": 736,
+      "value_1_count": 8,
+      "value_1_rate": 0.01087,
+      "value_1_ci_95": [
+        0.005518,
+        0.021301
+      ],
+      "login_count": 11,
+      "login_rate": 0.014946,
+      "mean_commands": 0.0394,
+      "mean_duration": 7.42
+    },
+    "1d59a258": {
+      "total_sessions": 938,
+      "value_1_count": 7,
+      "value_1_rate": 0.007463,
+      "value_1_ci_95": [
+        0.00362,
+        0.015324
+      ],
+      "login_count": 13,
+      "login_rate": 0.013859,
+      "mean_commands": 0.0661,
+      "mean_duration": 3.88
+    },
+    "89eea38c": {
+      "total_sessions": 597,
+      "value_1_count": 6,
+      "value_1_rate": 0.01005,
+      "value_1_ci_95": [
+        0.004614,
+        0.021751
+      ],
+      "login_count": 17,
+      "login_rate": 0.028476,
+      "mean_commands": 0.0,
+      "mean_duration": 16.35
+    },
+    "115af7d9": {
+      "total_sessions": 875,
+      "value_1_count": 31,
+      "value_1_rate": 0.035429,
+      "value_1_ci_95": [
+        0.02507,
+        0.049849
+      ],
+      "login_count": 55,
+      "login_rate": 0.062857,
+      "mean_commands": 0.0549,
+      "mean_duration": 7.08
+    },
+    "8b0c2f5b": {
+      "total_sessions": 333,
+      "value_1_count": 47,
+      "value_1_rate": 0.141141,
+      "value_1_ci_95": [
+        0.107828,
+        0.182639
+      ],
+      "login_count": 85,
+      "login_rate": 0.255255,
+      "mean_commands": 0.7958,
+      "mean_duration": 13.81
+    },
+    "492f54e2": {
+      "total_sessions": 1601,
+      "value_1_count": 20,
+      "value_1_rate": 0.012492,
+      "value_1_ci_95": [
+        0.008101,
+        0.019217
+      ],
+      "login_count": 27,
+      "login_rate": 0.016864,
+      "mean_commands": 0.1362,
+      "mean_duration": 3.94
+    },
+    "1938c1a7": {
+      "total_sessions": 660,
+      "value_1_count": 18,
+      "value_1_rate": 0.027273,
+      "value_1_ci_95": [
+        0.01732,
+        0.042697
+      ],
+      "login_count": 37,
+      "login_rate": 0.056061,
+      "mean_commands": 0.1682,
+      "mean_duration": 10.19
+    },
+    "52db9d51": {
+      "total_sessions": 748,
+      "value_1_count": 50,
+      "value_1_rate": 0.066845,
+      "value_1_ci_95": [
+        0.051069,
+        0.087047
+      ],
+      "login_count": 166,
+      "login_rate": 0.221925,
+      "mean_commands": 0.4906,
+      "mean_duration": 6.7
+    },
+    "5fed148c": {
+      "total_sessions": 1268,
+      "value_1_count": 78,
+      "value_1_rate": 0.061514,
+      "value_1_ci_95": [
+        0.049568,
+        0.07611
+      ],
+      "login_count": 977,
+      "login_rate": 0.770505,
+      "mean_commands": 0.888,
+      "mean_duration": 3.21
+    },
+    "48b9e0c5": {
+      "total_sessions": 510,
+      "value_1_count": 17,
+      "value_1_rate": 0.033333,
+      "value_1_ci_95": [
+        0.020914,
+        0.05273
+      ],
+      "login_count": 20,
+      "login_rate": 0.039216,
+      "mean_commands": 0.5294,
+      "mean_duration": 3.91
+    },
+    "bc10cdb8": {
+      "total_sessions": 472,
+      "value_1_count": 8,
+      "value_1_rate": 0.016949,
+      "value_1_ci_95": [
+        0.008613,
+        0.033085
+      ],
+      "login_count": 10,
+      "login_rate": 0.021186,
+      "mean_commands": 0.2097,
+      "mean_duration": 3.89
+    },
+    "d7abb1ae": {
+      "total_sessions": 1002,
+      "value_1_count": 16,
+      "value_1_rate": 0.015968,
+      "value_1_ci_95": [
+        0.009852,
+        0.025781
+      ],
+      "login_count": 22,
+      "login_rate": 0.021956,
+      "mean_commands": 0.013,
+      "mean_duration": 6.73
+    },
+    "7207256d": {
+      "total_sessions": 427,
+      "value_1_count": 9,
+      "value_1_rate": 0.021077,
+      "value_1_ci_95": [
+        0.011128,
+        0.039567
+      ],
+      "login_count": 14,
+      "login_rate": 0.032787,
+      "mean_commands": 0.0164,
+      "mean_duration": 4.69
+    },
+    "d49e1407": {
+      "total_sessions": 549,
+      "value_1_count": 12,
+      "value_1_rate": 0.021858,
+      "value_1_ci_95": [
+        0.012547,
+        0.037814
+      ],
+      "login_count": 22,
+      "login_rate": 0.040073,
+      "mean_commands": 0.0765,
+      "mean_duration": 5.31
+    },
+    "b9e565f7": {
+      "total_sessions": 242,
+      "value_1_count": 49,
+      "value_1_rate": 0.202479,
+      "value_1_ci_95": [
+        0.156681,
+        0.257575
+      ],
+      "login_count": 73,
+      "login_rate": 0.301653,
+      "mean_commands": 0.3347,
+      "mean_duration": 11.46
+    },
+    "36419afb": {
+      "total_sessions": 412,
+      "value_1_count": 9,
+      "value_1_rate": 0.021845,
+      "value_1_ci_95": [
+        0.011534,
+        0.040989
+      ],
+      "login_count": 14,
+      "login_rate": 0.033981,
+      "mean_commands": 0.0607,
+      "mean_duration": 5.55
+    },
+    "4a7b9caa": {
+      "total_sessions": 876,
+      "value_1_count": 17,
+      "value_1_rate": 0.019406,
+      "value_1_ci_95": [
+        0.012151,
+        0.030858
+      ],
+      "login_count": 28,
+      "login_rate": 0.031963,
+      "mean_commands": 0.0616,
+      "mean_duration": 8.2
+    },
+    "5c6e632e": {
+      "total_sessions": 300,
+      "value_1_count": 46,
+      "value_1_rate": 0.153333,
+      "value_1_ci_95": [
+        0.116966,
+        0.198466
+      ],
+      "login_count": 84,
+      "login_rate": 0.28,
+      "mean_commands": 0.29,
+      "mean_duration": 13.89
+    },
+    "3514fdd7": {
+      "total_sessions": 595,
+      "value_1_count": 12,
+      "value_1_rate": 0.020168,
+      "value_1_ci_95": [
+        0.011574,
+        0.034918
+      ],
+      "login_count": 24,
+      "login_rate": 0.040336,
+      "mean_commands": 0.163,
+      "mean_duration": 6.96
+    },
+    "f3f8feb0": {
+      "total_sessions": 773,
+      "value_1_count": 13,
+      "value_1_rate": 0.016818,
+      "value_1_ci_95": [
+        0.009854,
+        0.02856
+      ],
+      "login_count": 35,
+      "login_rate": 0.045278,
+      "mean_commands": 0.1022,
+      "mean_duration": 8.18
+    },
+    "bc321508": {
+      "total_sessions": 536,
+      "value_1_count": 22,
+      "value_1_rate": 0.041045,
+      "value_1_ci_95": [
+        0.027259,
+        0.061362
+      ],
+      "login_count": 26,
+      "login_rate": 0.048507,
+      "mean_commands": 0.125,
+      "mean_duration": 4.65
+    },
+    "85cadca6": {
+      "total_sessions": 463,
+      "value_1_count": 17,
+      "value_1_rate": 0.036717,
+      "value_1_ci_95": [
+        0.023049,
+        0.05801
+      ],
+      "login_count": 29,
+      "login_rate": 0.062635,
+      "mean_commands": 0.378,
+      "mean_duration": 12.03
+    },
+    "11f5a117": {
+      "total_sessions": 647,
+      "value_1_count": 10,
+      "value_1_rate": 0.015456,
+      "value_1_ci_95": [
+        0.008417,
+        0.028215
+      ],
+      "login_count": 24,
+      "login_rate": 0.037094,
+      "mean_commands": 0.1036,
+      "mean_duration": 5.82
+    },
+    "ed6e832e": {
+      "total_sessions": 413,
+      "value_1_count": 15,
+      "value_1_rate": 0.03632,
+      "value_1_ci_95": [
+        0.022132,
+        0.059054
+      ],
+      "login_count": 27,
+      "login_rate": 0.065375,
+      "mean_commands": 0.2833,
+      "mean_duration": 6.96
+    },
+    "b32f4fd3": {
+      "total_sessions": 776,
+      "value_1_count": 0,
+      "value_1_rate": 0.0,
+      "value_1_ci_95": [
+        0.0,
+        0.004926
+      ],
+      "login_count": 23,
+      "login_rate": 0.029639,
+      "mean_commands": 0.0,
+      "mean_duration": 7.75
+    },
+    "fb60746b": {
+      "total_sessions": 337,
+      "value_1_count": 51,
+      "value_1_rate": 0.151335,
+      "value_1_ci_95": [
+        0.117016,
+        0.193513
+      ],
+      "login_count": 156,
+      "login_rate": 0.462908,
+      "mean_commands": 0.4065,
+      "mean_duration": 10.52
+    },
+    "4aa887e1": {
+      "total_sessions": 521,
+      "value_1_count": 31,
+      "value_1_rate": 0.059501,
+      "value_1_ci_95": [
+        0.042232,
+        0.083219
+      ],
+      "login_count": 169,
+      "login_rate": 0.324376,
+      "mean_commands": 0.3474,
+      "mean_duration": 5.53
+    },
+    "6fcc33d4": {
+      "total_sessions": 663,
+      "value_1_count": 79,
+      "value_1_rate": 0.119155,
+      "value_1_ci_95": [
+        0.096662,
+        0.146036
+      ],
+      "login_count": 164,
+      "login_rate": 0.24736,
+      "mean_commands": 0.5415,
+      "mean_duration": 7.79
+    },
+    "f45743c3": {
+      "total_sessions": 496,
+      "value_1_count": 79,
+      "value_1_rate": 0.159274,
+      "value_1_ci_95": [
+        0.129706,
+        0.194079
+      ],
+      "login_count": 166,
+      "login_rate": 0.334677,
+      "mean_commands": 0.6613,
+      "mean_duration": 8.54
+    },
+    "d29d8ed2": {
+      "total_sessions": 348,
+      "value_1_count": 35,
+      "value_1_rate": 0.100575,
+      "value_1_ci_95": [
+        0.073208,
+        0.136664
+      ],
+      "login_count": 103,
+      "login_rate": 0.295977,
+      "mean_commands": 0.2701,
+      "mean_duration": 7.54
+    },
+    "5b1e6529": {
+      "total_sessions": 394,
+      "value_1_count": 7,
+      "value_1_rate": 0.017766,
+      "value_1_ci_95": [
+        0.008632,
+        0.036213
+      ],
+      "login_count": 11,
+      "login_rate": 0.027919,
+      "mean_commands": 0.1726,
+      "mean_duration": 13.83
+    },
+    "549b80c6": {
+      "total_sessions": 854,
+      "value_1_count": 16,
+      "value_1_rate": 0.018735,
+      "value_1_ci_95": [
+        0.011565,
+        0.030216
+      ],
+      "login_count": 30,
+      "login_rate": 0.035129,
+      "mean_commands": 0.0246,
+      "mean_duration": 5.85
+    },
+    "e79f7c21": {
+      "total_sessions": 500,
+      "value_1_count": 21,
+      "value_1_rate": 0.042,
+      "value_1_ci_95": [
+        0.027632,
+        0.063352
+      ],
+      "login_count": 27,
+      "login_rate": 0.054,
+      "mean_commands": 0.042,
+      "mean_duration": 9.4
+    },
+    "2d8e5953": {
+      "total_sessions": 514,
+      "value_1_count": 8,
+      "value_1_rate": 0.015564,
+      "value_1_ci_95": [
+        0.007907,
+        0.030408
+      ],
+      "login_count": 216,
+      "login_rate": 0.420233,
+      "mean_commands": 0.4047,
+      "mean_duration": 3.58
+    },
+    "82cece37": {
+      "total_sessions": 135,
+      "value_1_count": 26,
+      "value_1_rate": 0.192593,
+      "value_1_ci_95": [
+        0.134956,
+        0.26724
+      ],
+      "login_count": 43,
+      "login_rate": 0.318519,
+      "mean_commands": 0.1704,
+      "mean_duration": 11.65
+    },
+    "93b944f8": {
+      "total_sessions": 554,
+      "value_1_count": 19,
+      "value_1_rate": 0.034296,
+      "value_1_ci_95": [
+        0.022064,
+        0.052942
+      ],
+      "login_count": 25,
+      "login_rate": 0.045126,
+      "mean_commands": 0.4296,
+      "mean_duration": 8.99
+    },
+    "11ecbf9a": {
+      "total_sessions": 504,
+      "value_1_count": 19,
+      "value_1_rate": 0.037698,
+      "value_1_ci_95": [
+        0.024265,
+        0.058126
+      ],
+      "login_count": 33,
+      "login_rate": 0.065476,
+      "mean_commands": 0.3849,
+      "mean_duration": 7.46
+    },
+    "2976a6e2": {
+      "total_sessions": 802,
+      "value_1_count": 39,
+      "value_1_rate": 0.048628,
+      "value_1_ci_95": [
+        0.035774,
+        0.065786
+      ],
+      "login_count": 54,
+      "login_rate": 0.067332,
+      "mean_commands": 0.0773,
+      "mean_duration": 7.18
+    },
+    "b25c9666": {
+      "total_sessions": 419,
+      "value_1_count": 12,
+      "value_1_rate": 0.02864,
+      "value_1_ci_95": [
+        0.016458,
+        0.049386
+      ],
+      "login_count": 22,
+      "login_rate": 0.052506,
+      "mean_commands": 0.2601,
+      "mean_duration": 5.36
+    },
+    "9f70f7f1": {
+      "total_sessions": 320,
+      "value_1_count": 50,
+      "value_1_rate": 0.15625,
+      "value_1_ci_95": [
+        0.120572,
+        0.200083
+      ],
+      "login_count": 112,
+      "login_rate": 0.35,
+      "mean_commands": 0.2906,
+      "mean_duration": 5.29
+    },
+    "580ca61d": {
+      "total_sessions": 781,
+      "value_1_count": 40,
+      "value_1_rate": 0.051216,
+      "value_1_ci_95": [
+        0.037835,
+        0.068991
+      ],
+      "login_count": 575,
+      "login_rate": 0.736236,
+      "mean_commands": 0.758,
+      "mean_duration": 5.31
+    },
+    "0f1e4e3f": {
+      "total_sessions": 681,
+      "value_1_count": 17,
+      "value_1_rate": 0.024963,
+      "value_1_ci_95": [
+        0.015643,
+        0.039612
+      ],
+      "login_count": 33,
+      "login_rate": 0.048458,
+      "mean_commands": 0.2658,
+      "mean_duration": 11.11
+    },
+    "7cd5f0f3": {
+      "total_sessions": 806,
+      "value_1_count": 15,
+      "value_1_rate": 0.01861,
+      "value_1_ci_95": [
+        0.01131,
+        0.030478
+      ],
+      "login_count": 30,
+      "login_rate": 0.037221,
+      "mean_commands": 0.1216,
+      "mean_duration": 7.72
+    },
+    "503b7acb": {
+      "total_sessions": 379,
+      "value_1_count": 28,
+      "value_1_rate": 0.073879,
+      "value_1_ci_95": [
+        0.051606,
+        0.104703
+      ],
+      "login_count": 199,
+      "login_rate": 0.525066,
+      "mean_commands": 0.5409,
+      "mean_duration": 9.33
+    },
+    "cc0f62b6": {
+      "total_sessions": 507,
+      "value_1_count": 8,
+      "value_1_rate": 0.015779,
+      "value_1_ci_95": [
+        0.008017,
+        0.030824
+      ],
+      "login_count": 14,
+      "login_rate": 0.027613,
+      "mean_commands": 0.0533,
+      "mean_duration": 8.0
+    },
+    "05d7f5da": {
+      "total_sessions": 711,
+      "value_1_count": 10,
+      "value_1_rate": 0.014065,
+      "value_1_ci_95": [
+        0.007657,
+        0.025695
+      ],
+      "login_count": 26,
+      "login_rate": 0.036568,
+      "mean_commands": 0.0492,
+      "mean_duration": 6.52
+    },
+    "758e179a": {
+      "total_sessions": 422,
+      "value_1_count": 12,
+      "value_1_rate": 0.028436,
+      "value_1_ci_95": [
+        0.01634,
+        0.04904
+      ],
+      "login_count": 19,
+      "login_rate": 0.045024,
+      "mean_commands": 0.1706,
+      "mean_duration": 6.36
+    },
+    "cc1958fe": {
+      "total_sessions": 547,
+      "value_1_count": 12,
+      "value_1_rate": 0.021938,
+      "value_1_ci_95": [
+        0.012593,
+        0.03795
+      ],
+      "login_count": 20,
+      "login_rate": 0.036563,
+      "mean_commands": 0.0,
+      "mean_duration": 21.29
+    },
+    "c59afa56": {
+      "total_sessions": 1197,
+      "value_1_count": 4,
+      "value_1_rate": 0.003342,
+      "value_1_ci_95": [
+        0.0013,
+        0.008561
+      ],
+      "login_count": 20,
+      "login_rate": 0.016708,
+      "mean_commands": 0.0,
+      "mean_duration": 6.83
+    },
+    "2f424838": {
+      "total_sessions": 408,
+      "value_1_count": 8,
+      "value_1_rate": 0.019608,
+      "value_1_ci_95": [
+        0.009968,
+        0.038209
+      ],
+      "login_count": 12,
+      "login_rate": 0.029412,
+      "mean_commands": 0.2623,
+      "mean_duration": 5.6
+    },
+    "d3577d82": {
+      "total_sessions": 489,
+      "value_1_count": 7,
+      "value_1_rate": 0.014315,
+      "value_1_ci_95": [
+        0.006951,
+        0.02925
+      ],
+      "login_count": 13,
+      "login_rate": 0.026585,
+      "mean_commands": 0.1329,
+      "mean_duration": 17.13
+    },
+    "06dad11b": {
+      "total_sessions": 1394,
+      "value_1_count": 16,
+      "value_1_rate": 0.011478,
+      "value_1_ci_95": [
+        0.007077,
+        0.018563
+      ],
+      "login_count": 25,
+      "login_rate": 0.017934,
+      "mean_commands": 0.066,
+      "mean_duration": 5.95
+    },
+    "f57cb61e": {
+      "total_sessions": 640,
+      "value_1_count": 35,
+      "value_1_rate": 0.054688,
+      "value_1_ci_95": [
+        0.039582,
+        0.075107
+      ],
+      "login_count": 51,
+      "login_rate": 0.079687,
+      "mean_commands": 0.1,
+      "mean_duration": 4.79
+    },
+    "62defba9": {
+      "total_sessions": 651,
+      "value_1_count": 59,
+      "value_1_rate": 0.09063,
+      "value_1_ci_95": [
+        0.070913,
+        0.11515
+      ],
+      "login_count": 210,
+      "login_rate": 0.322581,
+      "mean_commands": 0.2934,
+      "mean_duration": 4.06
+    },
+    "fabd006e": {
+      "total_sessions": 1195,
+      "value_1_count": 17,
+      "value_1_rate": 0.014226,
+      "value_1_ci_95": [
+        0.008901,
+        0.022664
+      ],
+      "login_count": 48,
+      "login_rate": 0.040167,
+      "mean_commands": 0.0845,
+      "mean_duration": 6.21
+    },
+    "3cfc1be6": {
+      "total_sessions": 295,
+      "value_1_count": 50,
+      "value_1_rate": 0.169492,
+      "value_1_ci_95": [
+        0.130991,
+        0.216489
+      ],
+      "login_count": 102,
+      "login_rate": 0.345763,
+      "mean_commands": 0.3254,
+      "mean_duration": 8.31
+    },
+    "593c9ca4": {
+      "total_sessions": 704,
+      "value_1_count": 15,
+      "value_1_rate": 0.021307,
+      "value_1_ci_95": [
+        0.012954,
+        0.034855
+      ],
+      "login_count": 40,
+      "login_rate": 0.056818,
+      "mean_commands": 0.267,
+      "mean_duration": 8.3
+    },
+    "91e07a62": {
+      "total_sessions": 217,
+      "value_1_count": 33,
+      "value_1_rate": 0.152074,
+      "value_1_ci_95": [
+        0.11038,
+        0.205871
+      ],
+      "login_count": 88,
+      "login_rate": 0.40553,
+      "mean_commands": 0.341,
+      "mean_duration": 8.81
+    },
+    "a811e01d": {
+      "total_sessions": 688,
+      "value_1_count": 20,
+      "value_1_rate": 0.02907,
+      "value_1_ci_95": [
+        0.018896,
+        0.044473
+      ],
+      "login_count": 32,
+      "login_rate": 0.046512,
+      "mean_commands": 0.3445,
+      "mean_duration": 10.92
+    },
+    "a0bcf7cb": {
+      "total_sessions": 520,
+      "value_1_count": 2,
+      "value_1_rate": 0.003846,
+      "value_1_ci_95": [
+        0.001055,
+        0.013914
+      ],
+      "login_count": 25,
+      "login_rate": 0.048077,
+      "mean_commands": 0.0,
+      "mean_duration": 10.27
+    },
+    "0350abb7": {
+      "total_sessions": 624,
+      "value_1_count": 4,
+      "value_1_rate": 0.00641,
+      "value_1_ci_95": [
+        0.002496,
+        0.016365
+      ],
+      "login_count": 15,
+      "login_rate": 0.024038,
+      "mean_commands": 0.0994,
+      "mean_duration": 22.1
+    },
+    "35de660c": {
+      "total_sessions": 280,
+      "value_1_count": 41,
+      "value_1_rate": 0.146429,
+      "value_1_ci_95": [
+        0.109808,
+        0.19262
+      ],
+      "login_count": 86,
+      "login_rate": 0.307143,
+      "mean_commands": 0.4107,
+      "mean_duration": 11.09
+    },
+    "a1267d3b": {
+      "total_sessions": 654,
+      "value_1_count": 7,
+      "value_1_rate": 0.010703,
+      "value_1_ci_95": [
+        0.005194,
+        0.021927
+      ],
+      "login_count": 12,
+      "login_rate": 0.018349,
+      "mean_commands": 0.0183,
+      "mean_duration": 11.11
+    },
+    "a81dacce": {
+      "total_sessions": 577,
+      "value_1_count": 22,
+      "value_1_rate": 0.038128,
+      "value_1_ci_95": [
+        0.025312,
+        0.057054
+      ],
+      "login_count": 28,
+      "login_rate": 0.048527,
+      "mean_commands": 0.3362,
+      "mean_duration": 5.78
+    },
+    "e4d1b58a": {
+      "total_sessions": 1093,
+      "value_1_count": 16,
+      "value_1_rate": 0.014639,
+      "value_1_ci_95": [
+        0.00903,
+        0.023647
+      ],
+      "login_count": 30,
+      "login_rate": 0.027447,
+      "mean_commands": 0.118,
+      "mean_duration": 7.43
+    },
+    "e244e9cc": {
+      "total_sessions": 818,
+      "value_1_count": 13,
+      "value_1_rate": 0.015892,
+      "value_1_ci_95": [
+        0.009311,
+        0.027
+      ],
+      "login_count": 19,
+      "login_rate": 0.023227,
+      "mean_commands": 0.198,
+      "mean_duration": 5.69
+    },
+    "7f6ede1b": {
+      "total_sessions": 947,
+      "value_1_count": 10,
+      "value_1_rate": 0.01056,
+      "value_1_ci_95": [
+        0.005746,
+        0.019328
+      ],
+      "login_count": 24,
+      "login_rate": 0.025343,
+      "mean_commands": 0.114,
+      "mean_duration": 3.79
+    },
+    "beb8b83d": {
+      "total_sessions": 336,
+      "value_1_count": 62,
+      "value_1_rate": 0.184524,
+      "value_1_ci_95": [
+        0.146694,
+        0.229486
+      ],
+      "login_count": 114,
+      "login_rate": 0.339286,
+      "mean_commands": 0.3869,
+      "mean_duration": 11.15
+    },
+    "16453afa": {
+      "total_sessions": 1079,
+      "value_1_count": 33,
+      "value_1_rate": 0.030584,
+      "value_1_ci_95": [
+        0.021859,
+        0.042639
+      ],
+      "login_count": 46,
+      "login_rate": 0.042632,
+      "mean_commands": 0.1993,
+      "mean_duration": 4.87
+    },
+    "42c75984": {
+      "total_sessions": 604,
+      "value_1_count": 10,
+      "value_1_rate": 0.016556,
+      "value_1_ci_95": [
+        0.009017,
+        0.030206
+      ],
+      "login_count": 24,
+      "login_rate": 0.039735,
+      "mean_commands": 0.1987,
+      "mean_duration": 7.09
+    },
+    "afa7bdc3": {
+      "total_sessions": 278,
+      "value_1_count": 66,
+      "value_1_rate": 0.23741,
+      "value_1_ci_95": [
+        0.191185,
+        0.290793
+      ],
+      "login_count": 101,
+      "login_rate": 0.363309,
+      "mean_commands": 0.6223,
+      "mean_duration": 12.98
+    },
+    "05ebe570": {
+      "total_sessions": 686,
+      "value_1_count": 15,
+      "value_1_rate": 0.021866,
+      "value_1_ci_95": [
+        0.013295,
+        0.035762
+      ],
+      "login_count": 26,
+      "login_rate": 0.037901,
+      "mean_commands": 0.0948,
+      "mean_duration": 2.76
+    },
+    "2e89e022": {
+      "total_sessions": 1115,
+      "value_1_count": 46,
+      "value_1_rate": 0.041256,
+      "value_1_ci_95": [
+        0.031071,
+        0.05459
+      ],
+      "login_count": 806,
+      "login_rate": 0.72287,
+      "mean_commands": 0.9166,
+      "mean_duration": 3.97
+    },
+    "0fe07e48": {
+      "total_sessions": 545,
+      "value_1_count": 11,
+      "value_1_rate": 0.020183,
+      "value_1_ci_95": [
+        0.011307,
+        0.035777
+      ],
+      "login_count": 25,
+      "login_rate": 0.045872,
+      "mean_commands": 0.2165,
+      "mean_duration": 11.89
+    },
+    "c2c5cce7": {
+      "total_sessions": 737,
+      "value_1_count": 12,
+      "value_1_rate": 0.016282,
+      "value_1_ci_95": [
+        0.009338,
+        0.028243
+      ],
+      "login_count": 16,
+      "login_rate": 0.02171,
+      "mean_commands": 0.1859,
+      "mean_duration": 4.2
+    },
+    "80c7dbf4": {
+      "total_sessions": 611,
+      "value_1_count": 13,
+      "value_1_rate": 0.021277,
+      "value_1_ci_95": [
+        0.012476,
+        0.03606
+      ],
+      "login_count": 15,
+      "login_rate": 0.02455,
+      "mean_commands": 0.0917,
+      "mean_duration": 8.27
+    },
+    "6deaa2cc": {
+      "total_sessions": 467,
+      "value_1_count": 15,
+      "value_1_rate": 0.03212,
+      "value_1_ci_95": [
+        0.01956,
+        0.052314
+      ],
+      "login_count": 32,
+      "login_rate": 0.068522,
+      "mean_commands": 0.1713,
+      "mean_duration": 7.58
+    },
+    "4ed29c1e": {
+      "total_sessions": 270,
+      "value_1_count": 17,
+      "value_1_rate": 0.062963,
+      "value_1_ci_95": [
+        0.039679,
+        0.098508
+      ],
+      "login_count": 105,
+      "login_rate": 0.388889,
+      "mean_commands": 0.2889,
+      "mean_duration": 3.66
+    },
+    "364427d2": {
+      "total_sessions": 710,
+      "value_1_count": 2,
+      "value_1_rate": 0.002817,
+      "value_1_ci_95": [
+        0.000773,
+        0.010212
+      ],
+      "login_count": 19,
+      "login_rate": 0.026761,
+      "mean_commands": 0.0,
+      "mean_duration": 7.61
+    },
+    "b51c7024": {
+      "total_sessions": 423,
+      "value_1_count": 41,
+      "value_1_rate": 0.096927,
+      "value_1_ci_95": [
+        0.072254,
+        0.128855
+      ],
+      "login_count": 245,
+      "login_rate": 0.579196,
+      "mean_commands": 0.6099,
+      "mean_duration": 9.22
+    },
+    "2387a571": {
+      "total_sessions": 401,
+      "value_1_count": 20,
+      "value_1_rate": 0.049875,
+      "value_1_ci_95": [
+        0.032516,
+        0.075777
+      ],
+      "login_count": 24,
+      "login_rate": 0.05985,
+      "mean_commands": 0.217,
+      "mean_duration": 12.54
+    },
+    "dae9b087": {
+      "total_sessions": 252,
+      "value_1_count": 37,
+      "value_1_rate": 0.146825,
+      "value_1_ci_95": [
+        0.108436,
+        0.195821
+      ],
+      "login_count": 83,
+      "login_rate": 0.329365,
+      "mean_commands": 0.3254,
+      "mean_duration": 3.89
+    },
+    "d41e7f2d": {
+      "total_sessions": 969,
+      "value_1_count": 21,
+      "value_1_rate": 0.021672,
+      "value_1_ci_95": [
+        0.014218,
+        0.032903
+      ],
+      "login_count": 25,
+      "login_rate": 0.0258,
+      "mean_commands": 0.1311,
+      "mean_duration": 4.46
+    },
+    "4b5a3deb": {
+      "total_sessions": 431,
+      "value_1_count": 24,
+      "value_1_rate": 0.055684,
+      "value_1_ci_95": [
+        0.037702,
+        0.081517
+      ],
+      "login_count": 90,
+      "login_rate": 0.208817,
+      "mean_commands": 0.2181,
+      "mean_duration": 7.49
+    },
+    "d56d3724": {
+      "total_sessions": 145,
+      "value_1_count": 0,
+      "value_1_rate": 0.0,
+      "value_1_ci_95": [
+        0.0,
+        0.025809
+      ],
+      "login_count": 110,
+      "login_rate": 0.758621,
+      "mean_commands": 0.7517,
+      "mean_duration": 4.63
+    },
+    "690337a6": {
+      "total_sessions": 964,
+      "value_1_count": 36,
+      "value_1_rate": 0.037344,
+      "value_1_ci_95": [
+        0.027095,
+        0.051266
+      ],
+      "login_count": 46,
+      "login_rate": 0.047718,
+      "mean_commands": 0.0571,
+      "mean_duration": 6.15
+    },
+    "8e611c40": {
+      "total_sessions": 516,
+      "value_1_count": 40,
+      "value_1_rate": 0.077519,
+      "value_1_ci_95": [
+        0.057443,
+        0.10384
+      ],
+      "login_count": 47,
+      "login_rate": 0.091085,
+      "mean_commands": 0.1163,
+      "mean_duration": 13.8
+    },
+    "d57ee835": {
+      "total_sessions": 623,
+      "value_1_count": 14,
+      "value_1_rate": 0.022472,
+      "value_1_ci_95": [
+        0.013432,
+        0.037364
+      ],
+      "login_count": 29,
+      "login_rate": 0.046549,
+      "mean_commands": 0.0979,
+      "mean_duration": 7.19
+    },
+    "f612e951": {
+      "total_sessions": 805,
+      "value_1_count": 18,
+      "value_1_rate": 0.02236,
+      "value_1_ci_95": [
+        0.01419,
+        0.035067
+      ],
+      "login_count": 23,
+      "login_rate": 0.028571,
+      "mean_commands": 0.1329,
+      "mean_duration": 6.41
+    },
+    "44201da6": {
+      "total_sessions": 702,
+      "value_1_count": 26,
+      "value_1_rate": 0.037037,
+      "value_1_ci_95": [
+        0.025399,
+        0.053715
+      ],
+      "login_count": 28,
+      "login_rate": 0.039886,
+      "mean_commands": 0.0028,
+      "mean_duration": 8.11
+    },
+    "d8cdeb3a": {
+      "total_sessions": 1024,
+      "value_1_count": 22,
+      "value_1_rate": 0.021484,
+      "value_1_ci_95": [
+        0.01423,
+        0.032315
+      ],
+      "login_count": 39,
+      "login_rate": 0.038086,
+      "mean_commands": 0.1055,
+      "mean_duration": 11.22
+    },
+    "43afabca": {
+      "total_sessions": 754,
+      "value_1_count": 20,
+      "value_1_rate": 0.026525,
+      "value_1_ci_95": [
+        0.017236,
+        0.040615
+      ],
+      "login_count": 37,
+      "login_rate": 0.049072,
+      "mean_commands": 0.2281,
+      "mean_duration": 10.68
+    },
+    "6a9f85fa": {
+      "total_sessions": 1153,
+      "value_1_count": 11,
+      "value_1_rate": 0.00954,
+      "value_1_ci_95": [
+        0.005335,
+        0.017003
+      ],
+      "login_count": 36,
+      "login_rate": 0.031223,
+      "mean_commands": 0.0911,
+      "mean_duration": 4.9
+    },
+    "dbe31fbf": {
+      "total_sessions": 844,
+      "value_1_count": 18,
+      "value_1_rate": 0.021327,
+      "value_1_ci_95": [
+        0.013532,
+        0.033459
+      ],
+      "login_count": 37,
+      "login_rate": 0.043839,
+      "mean_commands": 0.1765,
+      "mean_duration": 8.95
+    },
+    "503b89a2": {
+      "total_sessions": 345,
+      "value_1_count": 83,
+      "value_1_rate": 0.24058,
+      "value_1_ci_95": [
+        0.198491,
+        0.288382
+      ],
+      "login_count": 130,
+      "login_rate": 0.376812,
+      "mean_commands": 0.3333,
+      "mean_duration": 11.61
+    },
+    "ad038f63": {
+      "total_sessions": 650,
+      "value_1_count": 21,
+      "value_1_rate": 0.032308,
+      "value_1_ci_95": [
+        0.021227,
+        0.048884
+      ],
+      "login_count": 29,
+      "login_rate": 0.044615,
+      "mean_commands": 0.0708,
+      "mean_duration": 4.1
+    },
+    "f56ea82d": {
+      "total_sessions": 358,
+      "value_1_count": 28,
+      "value_1_rate": 0.078212,
+      "value_1_ci_95": [
+        0.054664,
+        0.110716
+      ],
+      "login_count": 89,
+      "login_rate": 0.248603,
+      "mean_commands": 0.6816,
+      "mean_duration": 8.39
+    },
+    "1001fcc0": {
+      "total_sessions": 625,
+      "value_1_count": 20,
+      "value_1_rate": 0.032,
+      "value_1_ci_95": [
+        0.020809,
+        0.048909
+      ],
+      "login_count": 30,
+      "login_rate": 0.048,
+      "mean_commands": 0.3184,
+      "mean_duration": 4.43
+    },
+    "c909c955": {
+      "total_sessions": 731,
+      "value_1_count": 13,
+      "value_1_rate": 0.017784,
+      "value_1_ci_95": [
+        0.010422,
+        0.030187
+      ],
+      "login_count": 30,
+      "login_rate": 0.04104,
+      "mean_commands": 0.052,
+      "mean_duration": 6.21
+    },
+    "1465136a": {
+      "total_sessions": 259,
+      "value_1_count": 10,
+      "value_1_rate": 0.03861,
+      "value_1_ci_95": [
+        0.021105,
+        0.069601
+      ],
+      "login_count": 12,
+      "login_rate": 0.046332,
+      "mean_commands": 0.2278,
+      "mean_duration": 14.24
+    },
+    "4a1be2d0": {
+      "total_sessions": 408,
+      "value_1_count": 45,
+      "value_1_rate": 0.110294,
+      "value_1_ci_95": [
+        0.083458,
+        0.144401
+      ],
+      "login_count": 145,
+      "login_rate": 0.355392,
+      "mean_commands": 0.2402,
+      "mean_duration": 3.45
+    },
+    "ca55b4aa": {
+      "total_sessions": 457,
+      "value_1_count": 12,
+      "value_1_rate": 0.026258,
+      "value_1_ci_95": [
+        0.015083,
+        0.045331
+      ],
+      "login_count": 17,
+      "login_rate": 0.037199,
+      "mean_commands": 0.2188,
+      "mean_duration": 4.81
+    },
+    "9c6424c7": {
+      "total_sessions": 1225,
+      "value_1_count": 8,
+      "value_1_rate": 0.006531,
+      "value_1_ci_95": [
+        0.003313,
+        0.012834
+      ],
+      "login_count": 35,
+      "login_rate": 0.028571,
+      "mean_commands": 0.1151,
+      "mean_duration": 5.42
+    },
+    "93aef2f6": {
+      "total_sessions": 396,
+      "value_1_count": 9,
+      "value_1_rate": 0.022727,
+      "value_1_ci_95": [
+        0.012002,
+        0.042623
+      ],
+      "login_count": 15,
+      "login_rate": 0.037879,
+      "mean_commands": 0.1591,
+      "mean_duration": 13.07
+    },
+    "1a96c068": {
+      "total_sessions": 1237,
+      "value_1_count": 17,
+      "value_1_rate": 0.013743,
+      "value_1_ci_95": [
+        0.008598,
+        0.021899
+      ],
+      "login_count": 22,
+      "login_rate": 0.017785,
+      "mean_commands": 0.076,
+      "mean_duration": 4.7
+    },
+    "f03dca2a": {
+      "total_sessions": 463,
+      "value_1_count": 10,
+      "value_1_rate": 0.021598,
+      "value_1_ci_95": [
+        0.011773,
+        0.039296
+      ],
+      "login_count": 15,
+      "login_rate": 0.032397,
+      "mean_commands": 0.1382,
+      "mean_duration": 7.4
+    },
+    "fadf7fad": {
+      "total_sessions": 488,
+      "value_1_count": 10,
+      "value_1_rate": 0.020492,
+      "value_1_ci_95": [
+        0.011168,
+        0.037306
+      ],
+      "login_count": 11,
+      "login_rate": 0.022541,
+      "mean_commands": 0.1803,
+      "mean_duration": 12.35
+    },
+    "e3d417d0": {
+      "total_sessions": 536,
+      "value_1_count": 9,
+      "value_1_rate": 0.016791,
+      "value_1_ci_95": [
+        0.008858,
+        0.031601
+      ],
+      "login_count": 13,
+      "login_rate": 0.024254,
+      "mean_commands": 0.097,
+      "mean_duration": 3.4
+    },
+    "a850165b": {
+      "total_sessions": 579,
+      "value_1_count": 23,
+      "value_1_rate": 0.039724,
+      "value_1_ci_95": [
+        0.026614,
+        0.058901
+      ],
+      "login_count": 34,
+      "login_rate": 0.058722,
+      "mean_commands": 0.057,
+      "mean_duration": 7.06
+    },
+    "3a86387b": {
+      "total_sessions": 980,
+      "value_1_count": 17,
+      "value_1_rate": 0.017347,
+      "value_1_ci_95": [
+        0.010858,
+        0.027605
+      ],
+      "login_count": 42,
+      "login_rate": 0.042857,
+      "mean_commands": 0.1735,
+      "mean_duration": 7.39
+    },
+    "5ae48e6b": {
+      "total_sessions": 837,
+      "value_1_count": 13,
+      "value_1_rate": 0.015532,
+      "value_1_ci_95": [
+        0.009099,
+        0.026391
+      ],
+      "login_count": 16,
+      "login_rate": 0.019116,
+      "mean_commands": 0.08,
+      "mean_duration": 8.22
+    },
+    "5cd1576f": {
+      "total_sessions": 532,
+      "value_1_count": 17,
+      "value_1_rate": 0.031955,
+      "value_1_ci_95": [
+        0.020045,
+        0.050575
+      ],
+      "login_count": 25,
+      "login_rate": 0.046992,
+      "mean_commands": 0.3252,
+      "mean_duration": 9.66
+    },
+    "20213cee": {
+      "total_sessions": 332,
+      "value_1_count": 6,
+      "value_1_rate": 0.018072,
+      "value_1_ci_95": [
+        0.008308,
+        0.038861
+      ],
+      "login_count": 8,
+      "login_rate": 0.024096,
+      "mean_commands": 0.1235,
+      "mean_duration": 14.41
+    },
+    "394ff3fa": {
+      "total_sessions": 300,
+      "value_1_count": 8,
+      "value_1_rate": 0.026667,
+      "value_1_ci_95": [
+        0.013573,
+        0.051729
+      ],
+      "login_count": 14,
+      "login_rate": 0.046667,
+      "mean_commands": 0.2067,
+      "mean_duration": 12.94
+    },
+    "b548f4ca": {
+      "total_sessions": 441,
+      "value_1_count": 39,
+      "value_1_rate": 0.088435,
+      "value_1_ci_95": [
+        0.065366,
+        0.118612
+      ],
+      "login_count": 52,
+      "login_rate": 0.117914,
+      "mean_commands": 0.1451,
+      "mean_duration": 25.49
+    },
+    "962f1b26": {
+      "total_sessions": 304,
+      "value_1_count": 11,
+      "value_1_rate": 0.036184,
+      "value_1_ci_95": [
+        0.020323,
+        0.063621
+      ],
+      "login_count": 19,
+      "login_rate": 0.0625,
+      "mean_commands": 0.3289,
+      "mean_duration": 11.31
+    },
+    "d73cb22e": {
+      "total_sessions": 986,
+      "value_1_count": 15,
+      "value_1_rate": 0.015213,
+      "value_1_ci_95": [
+        0.009241,
+        0.024948
+      ],
+      "login_count": 22,
+      "login_rate": 0.022312,
+      "mean_commands": 0.1988,
+      "mean_duration": 6.37
+    },
+    "29582699": {
+      "total_sessions": 502,
+      "value_1_count": 28,
+      "value_1_rate": 0.055777,
+      "value_1_ci_95": [
+        0.038869,
+        0.079432
+      ],
+      "login_count": 37,
+      "login_rate": 0.073705,
+      "mean_commands": 0.1195,
+      "mean_duration": 4.97
+    },
+    "1e4a9e06": {
+      "total_sessions": 333,
+      "value_1_count": 7,
+      "value_1_rate": 0.021021,
+      "value_1_ci_95": [
+        0.010219,
+        0.042748
+      ],
+      "login_count": 9,
+      "login_rate": 0.027027,
+      "mean_commands": 0.1201,
+      "mean_duration": 9.78
+    },
+    "bd959afb": {
+      "total_sessions": 570,
+      "value_1_count": 10,
+      "value_1_rate": 0.017544,
+      "value_1_ci_95": [
+        0.009557,
+        0.03199
+      ],
+      "login_count": 12,
+      "login_rate": 0.021053,
+      "mean_commands": 0.1456,
+      "mean_duration": 5.56
+    },
+    "dcbc9887": {
+      "total_sessions": 759,
+      "value_1_count": 18,
+      "value_1_rate": 0.023715,
+      "value_1_ci_95": [
+        0.015053,
+        0.037175
+      ],
+      "login_count": 37,
+      "login_rate": 0.048748,
+      "mean_commands": 0.0395,
+      "mean_duration": 7.87
+    },
+    "e3da90d3": {
+      "total_sessions": 14,
+      "value_1_count": 0,
+      "value_1_rate": 0.0,
+      "value_1_ci_95": [
+        0.0,
+        0.215311
+      ],
+      "login_count": 1,
+      "login_rate": 0.071429,
+      "mean_commands": 0.0714,
+      "mean_duration": 11.95
+    },
+    "58dc3488": {
+      "total_sessions": 335,
+      "value_1_count": 10,
+      "value_1_rate": 0.029851,
+      "value_1_ci_95": [
+        0.016294,
+        0.054068
+      ],
+      "login_count": 16,
+      "login_rate": 0.047761,
+      "mean_commands": 0.406,
+      "mean_duration": 29.82
+    },
+    "3c006e60": {
+      "total_sessions": 495,
+      "value_1_count": 14,
+      "value_1_rate": 0.028283,
+      "value_1_ci_95": [
+        0.016921,
+        0.04691
+      ],
+      "login_count": 23,
+      "login_rate": 0.046465,
+      "mean_commands": 0.1717,
+      "mean_duration": 6.33
+    },
+    "e86ae82b": {
+      "total_sessions": 621,
+      "value_1_count": 11,
+      "value_1_rate": 0.017713,
+      "value_1_ci_95": [
+        0.009919,
+        0.031438
+      ],
+      "login_count": 19,
+      "login_rate": 0.030596,
+      "mean_commands": 0.1659,
+      "mean_duration": 20.45
+    },
+    "988769a5": {
+      "total_sessions": 832,
+      "value_1_count": 16,
+      "value_1_rate": 0.019231,
+      "value_1_ci_95": [
+        0.011871,
+        0.031009
+      ],
+      "login_count": 33,
+      "login_rate": 0.039663,
+      "mean_commands": 0.0505,
+      "mean_duration": 9.82
+    },
+    "c4c0e9be": {
+      "total_sessions": 1184,
+      "value_1_count": 9,
+      "value_1_rate": 0.007601,
+      "value_1_ci_95": [
+        0.004004,
+        0.014383
+      ],
+      "login_count": 10,
+      "login_rate": 0.008446,
+      "mean_commands": 0.0684,
+      "mean_duration": 3.31
+    }
+  }
+}
