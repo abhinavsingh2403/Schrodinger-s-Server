@@ -1,0 +1,30 @@
+# stages.yaml: Early decision stages and feature availability
+# Specified in SPEC.md Section 7.3 and Section 10
+
+version: "1.0.0"
+
+stages:
+  S0:
+    name: "TCP Accept"
+    description: "Connection accepted; visitor memory history available"
+    features: ["n_prev_sessions", "highest_tier_served", "last_value_label"]
+  S1:
+    name: "Key Exchange"
+    description: "SSH transport handshake completed"
+    features: ["hassh", "kex_algs_count", "key_algs_count", "client_version"]
+  S2:
+    name: "Authentication"
+    description: "User authentication attempt completed"
+    features: ["n_login_failed", "time_to_first_success", "distinct_usernames_tried", "login_success"]
+  S3:
+    name: "Session Start"
+    description: "Shell channel requested or exec initiated"
+    features: ["is_exec", "has_pty", "term_width", "term_height", "env_vars_count"]
+  S4:
+    name: "First Command"
+    description: "First interactive or exec command received"
+    features: ["cmd_length", "token_count", "chaining_ops_count", "delay_since_login"]
+  S5:
+    name: "First Three Commands"
+    description: "Initial command burst completed (up to 3 commands)"
+    features: ["mean_inter_cmd_gap", "distinct_cmd_ratio", "failed_cmd_ratio"]

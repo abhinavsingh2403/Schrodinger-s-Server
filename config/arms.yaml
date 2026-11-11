@@ -1,0 +1,24 @@
+# arms.yaml: Randomized Controlled Trial (RCT) arms and assignment salt
+# Specified in SPEC.md Section 10 and EVAL.md Section 2
+
+version: "1.0.0"
+
+assignment_salt: "schrodinger-salt-rct-2026"
+
+arms:
+  A:
+    name: "T1 Baseline Static"
+    description: "Default static baseline; all sessions served T1 Lite"
+    fixed_tier: "T1"
+  B:
+    name: "T2 Hardened Static"
+    description: "All sessions served T2 Hardened"
+    fixed_tier: "T2"
+  C:
+    name: "T3 Real VM Static"
+    description: "All sessions served T3 Real VM"
+    fixed_tier: "T3"
+  D:
+    name: "Schrodinger Adaptive"
+    description: "Dynamic early-triage gatekeeper escalates high-value sessions upward"
+    adaptive: true

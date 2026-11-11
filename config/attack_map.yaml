@@ -1,0 +1,47 @@
+# attack_map.yaml: ATT&CK technique tags and regex triggers
+# Specified in SPEC.md Section 9.1
+# Note: Verified against attack.mitre.org (Enterprise ATT&CK Matrix)
+
+T1082:
+  name: "System Information Discovery"
+  regex: "(uname|/proc/cpuinfo|/etc/os-release|hostname|lscpu|sysctl|lsb_release)"
+
+T1033:
+  name: "System Owner/User Discovery"
+  regex: "(whoami|id\\b|\\blast\\b|\\bw\\b|/etc/passwd|/etc/shadow|logname)"
+
+T1057:
+  name: "Process Discovery"
+  regex: "(ps\\s+(-[a-zA-Z]+|aux|ef)?|top\\b|htop\\b|pstree\\b)"
+
+T1083:
+  name: "File and Directory Discovery"
+  regex: "(ls\\s+(-[a-zA-Z]+)?|find\\s+|pwd\\b|dir\\b|tree\\b)"
+
+T1046:
+  name: "Network Service Discovery"
+  regex: "(netstat\\b|ss\\s+(-[a-zA-Z]+)?|lsof\\s+-i|nmap\\b|arp\\s+-a|ip\\s+addr|ifconfig\\b)"
+
+T1105:
+  name: "Ingress Tool Transfer"
+  regex: "(wget\\b|curl\\b|tftp\\b|ftpget\\b|scp\\b|fetch\\b)"
+
+T1059.004:
+  name: "Unix Shell Chained Execution"
+  regex: "(sh\\s+-c|bash\\s+-c|/bin/sh|/bin/bash|python\\s+-c|perl\\s+-e)"
+
+T1053.003:
+  name: "Cron Persistence"
+  regex: "(crontab\\s+(-[elr]|/)|/etc/cron\\.|/var/spool/cron)"
+
+T1098.004:
+  name: "SSH Authorized Keys Manipulation"
+  regex: "(authorized_keys|id_rsa\\.pub|ssh-keygen|id_ed25519\\.pub)"
+
+T1070.004:
+  name: "File Deletion"
+  regex: "(rm\\s+(-[rf]+|--force)|unlink\\b|shred\\b)"
+
+T1496:
+  name: "Resource Hijacking (Cryptomining)"
+  regex: "(xmrig|minerd|cryptonight|stratum\\+tcp|minexmr|coinhive)"

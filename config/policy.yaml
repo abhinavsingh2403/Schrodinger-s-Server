@@ -1,0 +1,28 @@
+# policy.yaml: Decision engine thresholds and escalation budgets
+# Specified in SPEC.md Section 8 and Section 10
+
+version: "1.0.0"
+
+budget:
+  max_escalation_fraction: 0.10      # Maximum 10% of sessions escalated to T2/T3
+  max_concurrent_t3: 4               # Hard ceiling on concurrent T3 guest VMs
+
+thresholds:
+  tau_v2:
+    S0: 0.85
+    S1: 0.80
+    S2: 0.70
+    S3: 0.65
+    S4: 0.50
+    S5: 0.40
+  tau_v3:
+    S0: 0.98
+    S1: 0.95
+    S2: 0.90
+    S3: 0.85
+    S4: 0.75
+    S5: 0.65
+  tau_a:
+    S3: 0.80
+    S4: 0.70
+    S5: 0.60

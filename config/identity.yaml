@@ -1,0 +1,31 @@
+# identity.yaml: Master system identity profile
+# Specified in SPEC.md Section 5.1 and Section 10
+# All tiers (T1 Lite, T2 Hardened, T3 Real) must match this profile to prevent fingerprinting.
+
+os:
+  distro: "Ubuntu"
+  release: "22.04.3 LTS"
+  codename: "jammy"
+  kernel: "5.15.0-88-generic"
+  arch: "x86_64"
+
+ssh:
+  banner: "SSH-2.0-OpenSSH_8.9p1 Ubuntu-3ubuntu0.4"
+  server_version: "OpenSSH_8.9p1"
+
+host:
+  hostname: "srv-app-01"
+  domain: "internal.lan"
+  uptime_baseline_seconds: 345600
+
+users:
+  - username: "root"
+    uid: 0
+    gid: 0
+    shell: "/bin/bash"
+    home: "/root"
+  - username: "ubuntu"
+    uid: 1000
+    gid: 1000
+    shell: "/bin/bash"
+    home: "/home/ubuntu"
