@@ -1,8 +1,43 @@
 {
-  "file_path": "data/session_aggregation.jsonl.gz",
-  "file_md5": "1f3897650fb420c97c14ff452398c3f8",
-  "duckdb_version": "2.0.0",
-  "git_commit": "3c92d32ff5238da767220cca7b4318ad9644946e",
-  "timestamp_utc": "2026-11-11T13:37:43.293742+00:00",
-  "n_cmd_threshold": 5
+  "project": "Schrodinger's Server: Adaptive SSH Honeypot Early Triage",
+  "branch": "aftertranning",
+  "git_commit": "c2f417e376c3d70fc3a1e5933db275535f142874",
+  "python_version": "3.12.10",
+  "library_versions": {
+    "duckdb": "2.0.0",
+    "pytest": "9.2.0"
+  },
+  "random_seeds": {
+    "exp0_split_seed": 20261111,
+    "cost_sensitivity_seed": 20261111
+  },
+  "data_inputs": {
+    "session_aggregation.jsonl.gz": {
+      "path": "data/session_aggregation.jsonl.gz",
+      "md5": "1f3897650fb420c97c14ff452398c3f8",
+      "status": "VERIFIED_MATCH"
+    }
+  },
+  "result_artifacts": {
+    "results/base_rates.json": {
+      "md5": "bad0bf9c81811cc44bc6a07cd9f2ffe2",
+      "eval_ref": "EVAL.md Section 5.1 & SPIKES S3"
+    },
+    "results/arm_simulation.json": {
+      "md5": "d2ef835e4c78e34534d9bddc26fd0123",
+      "eval_ref": "EVAL.md Section 5.1 & SPEC.md Section 9"
+    },
+    "results/natural_experiment.json": {
+      "md5": "36a5ce297cfeb8897caf19f98094de19",
+      "eval_ref": "EVAL.md Section 5.3 & DATA.md Section D1"
+    },
+    "results/exp0/splits.json": {
+      "md5": "73babb336645549b135b6fe814f448a8",
+      "eval_ref": "EXPERIMENT0.md Section 3"
+    },
+    "results/exp0/grid.json": {
+      "md5": "3cc732d1c5c8a22214001b388024b6df",
+      "eval_ref": "EXPERIMENT0.md Section 6"
+    }
+  }
 }
