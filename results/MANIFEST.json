@@ -1,0 +1,8 @@
+{
+  "file_path": "data/session_aggregation.jsonl.gz",
+  "file_md5": "1f3897650fb420c97c14ff452398c3f8",
+  "duckdb_version": "2.0.0",
+  "git_commit": "3c92d32ff5238da767220cca7b4318ad9644946e",
+  "timestamp_utc": "2026-11-11T13:37:43.293742+00:00",
+  "n_cmd_threshold": 5
+}

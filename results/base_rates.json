@@ -1,0 +1,514 @@
+{
+  "metadata": {
+    "n_cmd_threshold": 5,
+    "approximation_note": "cnt_command_input counts input events, not distinct commands. Therefore, this aggregate calculation is an approximation of value=1."
+  },
+  "overall": {
+    "total_sessions": 38126048,
+    "sessions_with_login_success": 4374446,
+    "share_login_success": 0.114736,
+    "sessions_with_command_input": 3335870,
+    "share_command_input": 0.087496,
+    "command_input_distribution": {
+      "counts": {
+        "0": 34790178,
+        "1_to_4": 3115939,
+        "5_to_9": 58543,
+        "10_plus": 161388
+      },
+      "shares": {
+        "0": 0.912504,
+        "1_to_4": 0.081727,
+        "5_to_9": 0.001536,
+        "10_plus": 0.004233
+      },
+      "quantiles": {
+        "p50": 0.0,
+        "p90": 0.0,
+        "p99": 2.0
+      }
+    },
+    "file_transfer": {
+      "count": 755225,
+      "share": 0.019809
+    },
+    "direct_tcpip_request": {
+      "count": 467551,
+      "share": 0.012263
+    },
+    "value_1_approximation": {
+      "count": 1232570,
+      "base_rate": 0.032329
+    }
+  },
+  "by_day": {
+    "2025-06-27": {
+      "total_sessions": 294718,
+      "value_1_count": 24078,
+      "value_1_base_rate": 0.081698,
+      "sessions_with_login_success": 60592,
+      "share_login_success": 0.205593,
+      "sessions_with_command_input": 55240,
+      "share_command_input": 0.187433
+    },
+    "2025-06-28": {
+      "total_sessions": 533527,
+      "value_1_count": 25333,
+      "value_1_base_rate": 0.047482,
+      "sessions_with_login_success": 70770,
+      "share_login_success": 0.132646,
+      "sessions_with_command_input": 60653,
+      "share_command_input": 0.113683
+    },
+    "2025-06-29": {
+      "total_sessions": 546872,
+      "value_1_count": 18111,
+      "value_1_base_rate": 0.033117,
+      "sessions_with_login_success": 54602,
+      "share_login_success": 0.099844,
+      "sessions_with_command_input": 40161,
+      "share_command_input": 0.073438
+    },
+    "2025-06-30": {
+      "total_sessions": 498610,
+      "value_1_count": 15496,
+      "value_1_base_rate": 0.031078,
+      "sessions_with_login_success": 49222,
+      "share_login_success": 0.098718,
+      "sessions_with_command_input": 36275,
+      "share_command_input": 0.072752
+    },
+    "2025-07-01": {
+      "total_sessions": 450340,
+      "value_1_count": 17778,
+      "value_1_base_rate": 0.039477,
+      "sessions_with_login_success": 54157,
+      "share_login_success": 0.120258,
+      "sessions_with_command_input": 36855,
+      "share_command_input": 0.081838
+    },
+    "2025-07-02": {
+      "total_sessions": 611423,
+      "value_1_count": 13551,
+      "value_1_base_rate": 0.022163,
+      "sessions_with_login_success": 56737,
+      "share_login_success": 0.092795,
+      "sessions_with_command_input": 47328,
+      "share_command_input": 0.077406
+    },
+    "2025-07-03": {
+      "total_sessions": 555276,
+      "value_1_count": 21714,
+      "value_1_base_rate": 0.039105,
+      "sessions_with_login_success": 53037,
+      "share_login_success": 0.095515,
+      "sessions_with_command_input": 41437,
+      "share_command_input": 0.074624
+    },
+    "2025-07-04": {
+      "total_sessions": 491202,
+      "value_1_count": 15242,
+      "value_1_base_rate": 0.03103,
+      "sessions_with_login_success": 97789,
+      "share_login_success": 0.199081,
+      "sessions_with_command_input": 86116,
+      "share_command_input": 0.175317
+    },
+    "2025-07-05": {
+      "total_sessions": 606801,
+      "value_1_count": 13708,
+      "value_1_base_rate": 0.022591,
+      "sessions_with_login_success": 68456,
+      "share_login_success": 0.112815,
+      "sessions_with_command_input": 58899,
+      "share_command_input": 0.097065
+    },
+    "2025-07-06": {
+      "total_sessions": 632207,
+      "value_1_count": 22014,
+      "value_1_base_rate": 0.034821,
+      "sessions_with_login_success": 92487,
+      "share_login_success": 0.146292,
+      "sessions_with_command_input": 79884,
+      "share_command_input": 0.126357
+    },
+    "2025-07-07": {
+      "total_sessions": 584284,
+      "value_1_count": 23378,
+      "value_1_base_rate": 0.040011,
+      "sessions_with_login_success": 60242,
+      "share_login_success": 0.103104,
+      "sessions_with_command_input": 48647,
+      "share_command_input": 0.083259
+    },
+    "2025-07-08": {
+      "total_sessions": 505798,
+      "value_1_count": 60207,
+      "value_1_base_rate": 0.119034,
+      "sessions_with_login_success": 99637,
+      "share_login_success": 0.19699,
+      "sessions_with_command_input": 90990,
+      "share_command_input": 0.179894
+    },
+    "2025-07-09": {
+      "total_sessions": 756750,
+      "value_1_count": 25534,
+      "value_1_base_rate": 0.033742,
+      "sessions_with_login_success": 44603,
+      "share_login_success": 0.05894,
+      "sessions_with_command_input": 30261,
+      "share_command_input": 0.039988
+    },
+    "2025-07-10": {
+      "total_sessions": 910132,
+      "value_1_count": 28958,
+      "value_1_base_rate": 0.031817,
+      "sessions_with_login_success": 56495,
+      "share_login_success": 0.062073,
+      "sessions_with_command_input": 39892,
+      "share_command_input": 0.043831
+    },
+    "2025-07-11": {
+      "total_sessions": 804294,
+      "value_1_count": 26695,
+      "value_1_base_rate": 0.033191,
+      "sessions_with_login_success": 56937,
+      "share_login_success": 0.070791,
+      "sessions_with_command_input": 40612,
+      "share_command_input": 0.050494
+    },
+    "2025-07-12": {
+      "total_sessions": 831633,
+      "value_1_count": 25022,
+      "value_1_base_rate": 0.030088,
+      "sessions_with_login_success": 111074,
+      "share_login_success": 0.133561,
+      "sessions_with_command_input": 93808,
+      "share_command_input": 0.1128
+    },
+    "2025-07-13": {
+      "total_sessions": 832077,
+      "value_1_count": 25381,
+      "value_1_base_rate": 0.030503,
+      "sessions_with_login_success": 120808,
+      "share_login_success": 0.145188,
+      "sessions_with_command_input": 103901,
+      "share_command_input": 0.124869
+    },
+    "2025-07-14": {
+      "total_sessions": 798796,
+      "value_1_count": 21193,
+      "value_1_base_rate": 0.026531,
+      "sessions_with_login_success": 156172,
+      "share_login_success": 0.195509,
+      "sessions_with_command_input": 139952,
+      "share_command_input": 0.175204
+    },
+    "2025-07-15": {
+      "total_sessions": 701269,
+      "value_1_count": 19747,
+      "value_1_base_rate": 0.028159,
+      "sessions_with_login_success": 112187,
+      "share_login_success": 0.159977,
+      "sessions_with_command_input": 97625,
+      "share_command_input": 0.139212
+    },
+    "2025-07-16": {
+      "total_sessions": 664466,
+      "value_1_count": 18752,
+      "value_1_base_rate": 0.028221,
+      "sessions_with_login_success": 40085,
+      "share_login_success": 0.060327,
+      "sessions_with_command_input": 25387,
+      "share_command_input": 0.038207
+    },
+    "2025-07-17": {
+      "total_sessions": 618383,
+      "value_1_count": 16467,
+      "value_1_base_rate": 0.026629,
+      "sessions_with_login_success": 35628,
+      "share_login_success": 0.057615,
+      "sessions_with_command_input": 22450,
+      "share_command_input": 0.036304
+    },
+    "2025-07-18": {
+      "total_sessions": 732694,
+      "value_1_count": 14569,
+      "value_1_base_rate": 0.019884,
+      "sessions_with_login_success": 47441,
+      "share_login_success": 0.064749,
+      "sessions_with_command_input": 36280,
+      "share_command_input": 0.049516
+    },
+    "2025-07-19": {
+      "total_sessions": 886584,
+      "value_1_count": 21549,
+      "value_1_base_rate": 0.024306,
+      "sessions_with_login_success": 146912,
+      "share_login_success": 0.165706,
+      "sessions_with_command_input": 130312,
+      "share_command_input": 0.146982
+    },
+    "2025-07-20": {
+      "total_sessions": 853339,
+      "value_1_count": 21992,
+      "value_1_base_rate": 0.025772,
+      "sessions_with_login_success": 78693,
+      "share_login_success": 0.092218,
+      "sessions_with_command_input": 59265,
+      "share_command_input": 0.069451
+    },
+    "2025-07-21": {
+      "total_sessions": 970534,
+      "value_1_count": 19645,
+      "value_1_base_rate": 0.020241,
+      "sessions_with_login_success": 191501,
+      "share_login_success": 0.197315,
+      "sessions_with_command_input": 173569,
+      "share_command_input": 0.178839
+    },
+    "2025-07-22": {
+      "total_sessions": 761887,
+      "value_1_count": 21829,
+      "value_1_base_rate": 0.028651,
+      "sessions_with_login_success": 54724,
+      "share_login_success": 0.071827,
+      "sessions_with_command_input": 34850,
+      "share_command_input": 0.045742
+    },
+    "2025-07-23": {
+      "total_sessions": 852208,
+      "value_1_count": 17994,
+      "value_1_base_rate": 0.021115,
+      "sessions_with_login_success": 64686,
+      "share_login_success": 0.075904,
+      "sessions_with_command_input": 37746,
+      "share_command_input": 0.044292
+    },
+    "2025-07-24": {
+      "total_sessions": 905001,
+      "value_1_count": 16073,
+      "value_1_base_rate": 0.01776,
+      "sessions_with_login_success": 112595,
+      "share_login_success": 0.124414,
+      "sessions_with_command_input": 87325,
+      "share_command_input": 0.096492
+    },
+    "2025-07-25": {
+      "total_sessions": 739421,
+      "value_1_count": 17079,
+      "value_1_base_rate": 0.023098,
+      "sessions_with_login_success": 91075,
+      "share_login_success": 0.123171,
+      "sessions_with_command_input": 76469,
+      "share_command_input": 0.103417
+    },
+    "2025-07-26": {
+      "total_sessions": 858682,
+      "value_1_count": 19239,
+      "value_1_base_rate": 0.022405,
+      "sessions_with_login_success": 99795,
+      "share_login_success": 0.116219,
+      "sessions_with_command_input": 83788,
+      "share_command_input": 0.097577
+    },
+    "2025-07-27": {
+      "total_sessions": 794128,
+      "value_1_count": 16177,
+      "value_1_base_rate": 0.020371,
+      "sessions_with_login_success": 95662,
+      "share_login_success": 0.120462,
+      "sessions_with_command_input": 81455,
+      "share_command_input": 0.102572
+    },
+    "2025-07-28": {
+      "total_sessions": 761353,
+      "value_1_count": 20695,
+      "value_1_base_rate": 0.027182,
+      "sessions_with_login_success": 78312,
+      "share_login_success": 0.102859,
+      "sessions_with_command_input": 60436,
+      "share_command_input": 0.07938
+    },
+    "2025-07-29": {
+      "total_sessions": 672621,
+      "value_1_count": 26661,
+      "value_1_base_rate": 0.039637,
+      "sessions_with_login_success": 64731,
+      "share_login_success": 0.096237,
+      "sessions_with_command_input": 38725,
+      "share_command_input": 0.057573
+    },
+    "2025-07-30": {
+      "total_sessions": 809562,
+      "value_1_count": 36622,
+      "value_1_base_rate": 0.045237,
+      "sessions_with_login_success": 73334,
+      "share_login_success": 0.090585,
+      "sessions_with_command_input": 38485,
+      "share_command_input": 0.047538
+    },
+    "2025-07-31": {
+      "total_sessions": 835122,
+      "value_1_count": 37435,
+      "value_1_base_rate": 0.044826,
+      "sessions_with_login_success": 98704,
+      "share_login_success": 0.118191,
+      "sessions_with_command_input": 61098,
+      "share_command_input": 0.073161
+    },
+    "2025-08-01": {
+      "total_sessions": 964873,
+      "value_1_count": 32918,
+      "value_1_base_rate": 0.034116,
+      "sessions_with_login_success": 124537,
+      "share_login_success": 0.129071,
+      "sessions_with_command_input": 93578,
+      "share_command_input": 0.096985
+    },
+    "2025-08-02": {
+      "total_sessions": 854527,
+      "value_1_count": 29033,
+      "value_1_base_rate": 0.033976,
+      "sessions_with_login_success": 106848,
+      "share_login_success": 0.125038,
+      "sessions_with_command_input": 78256,
+      "share_command_input": 0.091578
+    },
+    "2025-08-03": {
+      "total_sessions": 841868,
+      "value_1_count": 30410,
+      "value_1_base_rate": 0.036122,
+      "sessions_with_login_success": 81112,
+      "share_login_success": 0.096348,
+      "sessions_with_command_input": 50647,
+      "share_command_input": 0.06016
+    },
+    "2025-08-04": {
+      "total_sessions": 818130,
+      "value_1_count": 30702,
+      "value_1_base_rate": 0.037527,
+      "sessions_with_login_success": 106976,
+      "share_login_success": 0.130757,
+      "sessions_with_command_input": 76387,
+      "share_command_input": 0.093368
+    },
+    "2025-08-05": {
+      "total_sessions": 828015,
+      "value_1_count": 27061,
+      "value_1_base_rate": 0.032682,
+      "sessions_with_login_success": 96120,
+      "share_login_success": 0.116085,
+      "sessions_with_command_input": 69088,
+      "share_command_input": 0.083438
+    },
+    "2025-08-06": {
+      "total_sessions": 863514,
+      "value_1_count": 24163,
+      "value_1_base_rate": 0.027982,
+      "sessions_with_login_success": 93681,
+      "share_login_success": 0.108488,
+      "sessions_with_command_input": 69741,
+      "share_command_input": 0.080764
+    },
+    "2025-08-07": {
+      "total_sessions": 798821,
+      "value_1_count": 25475,
+      "value_1_base_rate": 0.031891,
+      "sessions_with_login_success": 103295,
+      "share_login_success": 0.129309,
+      "sessions_with_command_input": 79071,
+      "share_command_input": 0.098985
+    },
+    "2025-08-08": {
+      "total_sessions": 850414,
+      "value_1_count": 25612,
+      "value_1_base_rate": 0.030117,
+      "sessions_with_login_success": 76062,
+      "share_login_success": 0.089441,
+      "sessions_with_command_input": 50246,
+      "share_command_input": 0.059084
+    },
+    "2025-08-09": {
+      "total_sessions": 825049,
+      "value_1_count": 26146,
+      "value_1_base_rate": 0.03169,
+      "sessions_with_login_success": 112331,
+      "share_login_success": 0.136151,
+      "sessions_with_command_input": 85278,
+      "share_command_input": 0.103361
+    },
+    "2025-08-10": {
+      "total_sessions": 767944,
+      "value_1_count": 29942,
+      "value_1_base_rate": 0.03899,
+      "sessions_with_login_success": 107650,
+      "share_login_success": 0.140179,
+      "sessions_with_command_input": 77009,
+      "share_command_input": 0.100279
+    },
+    "2025-08-11": {
+      "total_sessions": 660828,
+      "value_1_count": 24025,
+      "value_1_base_rate": 0.036356,
+      "sessions_with_login_success": 67562,
+      "share_login_success": 0.102238,
+      "sessions_with_command_input": 41404,
+      "share_command_input": 0.062655
+    },
+    "2025-08-12": {
+      "total_sessions": 834695,
+      "value_1_count": 22063,
+      "value_1_base_rate": 0.026432,
+      "sessions_with_login_success": 82663,
+      "share_login_success": 0.099034,
+      "sessions_with_command_input": 57134,
+      "share_command_input": 0.068449
+    },
+    "2025-08-13": {
+      "total_sessions": 763977,
+      "value_1_count": 26220,
+      "value_1_base_rate": 0.03432,
+      "sessions_with_login_success": 79252,
+      "share_login_success": 0.103736,
+      "sessions_with_command_input": 49785,
+      "share_command_input": 0.065166
+    },
+    "2025-08-14": {
+      "total_sessions": 782623,
+      "value_1_count": 24665,
+      "value_1_base_rate": 0.031516,
+      "sessions_with_login_success": 84982,
+      "share_login_success": 0.108586,
+      "sessions_with_command_input": 56445,
+      "share_command_input": 0.072123
+    },
+    "2025-08-15": {
+      "total_sessions": 796538,
+      "value_1_count": 26620,
+      "value_1_base_rate": 0.03342,
+      "sessions_with_login_success": 96582,
+      "share_login_success": 0.121252,
+      "sessions_with_command_input": 66737,
+      "share_command_input": 0.083784
+    },
+    "2025-08-16": {
+      "total_sessions": 745384,
+      "value_1_count": 24561,
+      "value_1_base_rate": 0.032951,
+      "sessions_with_login_success": 67265,
+      "share_login_success": 0.090242,
+      "sessions_with_command_input": 39738,
+      "share_command_input": 0.053312
+    },
+    "2025-08-17": {
+      "total_sessions": 466854,
+      "value_1_count": 17036,
+      "value_1_base_rate": 0.036491,
+      "sessions_with_login_success": 37646,
+      "share_login_success": 0.080638,
+      "sessions_with_command_input": 19150,
+      "share_command_input": 0.041019
+    }
+  }
+}

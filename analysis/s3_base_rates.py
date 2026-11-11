@@ -15,7 +15,10 @@ import sys
 
 import duckdb
 
-from analysis.verify_download import compute_md5
+try:
+    from analysis.verify_download import compute_md5
+except ModuleNotFoundError:
+    from verify_download import compute_md5
 
 SCHEMA_25_FIELDS: list[str] = [
     "session",
