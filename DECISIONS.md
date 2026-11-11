@@ -96,20 +96,53 @@ All non-trivial design decisions, architectural choices, and departures from pla
 - **Consequences**: Verified with 4 unit tests in `dashboard/test_dashboard.py`.
 
 ### 2026-11-11: Empirical Arm Simulation Pipeline (EVAL 5.1 & SPEC 9)
-- **Status**: ACCEPTED
+- **Status**: ACCEPTED (SUPERSEDED / CLARIFIED)
 - **Owner**: P2 / Analytics Lead
 - **Context**: Pre-registered in EVAL.md Section 5.1 and SPEC.md Section 9, comparing four experimental arms (Arm A: Static T1, Arm B: Static T2, Arm C: Static T3, Arm D: Adaptive Escalation) on real Cowrie session interaction traces.
-- **Decision**: Implemented `analysis/simulate_arms.py` using DuckDB streaming over `data/session_aggregation.jsonl.gz`. Evaluates yield, INR cost, and yield-per-rupee across 50,000 real-world sessions. Adaptive Arm D escalates only ~3.25% of sessions to T2/T3, achieving a 96.6% cost reduction vs static T3 (86.70 INR vs 2564.68 INR) and achieving a 29.6x higher yield-per-rupee efficiency multiplier.
+- **Decision**: Implemented `analysis/simulate_arms.py` using DuckDB streaming over `data/session_aggregation.jsonl.gz`. Evaluates yield, INR cost, and yield-per-rupee across 50,000 real-world sessions.
+- **Scientific Audit & Caveats (Remediated 2026-11-12)**:
+  1. **Oracle Hindsight Policy**: Arm D as simulated uses whole-session retrospective counters (`files >= 1 or pivots >= 1` for T3, `cmds >= 2` for T2), which are the exact components forming the `value = 1` target label. It functions as an empirical **oracle upper bound** (hindsight policy), not an online early-stage gatekeeper.
+  2. **Uniform Yield Modeling Trade-off**: Under the modeling assumption that honeypot persona does not alter attacker behavior (uniform yield across arms = 2,371.3), Arm A (Static T1) is mathematically cheapest per yield unit (₹3.98 cost -> 595.7 Yield/₹ vs ₹86.70 cost -> 27.4 Yield/₹ for Arm D). Arm D is ~21.7x more expensive than Arm A under uniform yield. Its ~29.6x efficiency multiplier exists solely when contrasted against static unpruned full virtualization (Arm C: ₹2,564.68).
+  3. **Cost Model Status**: Costs are nominal estimates (T1 ₹0.0001/sec, T2 ₹0.0002/sec, T3 ₹0.002/sec, VM boot ₹0.50) pending empirical KVM measurements from Spike S2.
 - **Alternatives considered**: Theoretical spreadsheet simulation without empirical session traces (rejected: violates AGENTS.md Rule 2 "No fabricated results").
-- **Why**: Anchored in empirical public data traces, adhering to frozen cost and yield definitions.
+- **Why**: Anchored in empirical public data traces, adhering to frozen cost and yield definitions, with clear disclosures preventing misrepresentation.
 - **Consequences**: Results saved to `results/arm_simulation.json`. Verified with 2 unit tests in `analysis/test_simulate_arms.py`.
 
 ### 2026-11-11: Natural Experiment Persona Effect Analysis (EVAL 5.3 & DATA D1)
-- **Status**: ACCEPTED
+- **Status**: ACCEPTED (AMENDED / RE-SCOPED)
 - **Owner**: P2 / Analytics Lead
 - **Context**: EVAL.md Section 5.3 mandates analyzing observational session outcomes across the 160 honeypot instances in the 50-day public dataset (`session_aggregation.jsonl.gz`) with strict no-causal language and Wilson 95% confidence intervals.
-- **Decision**: Implemented `analysis/natural_experiment.py` aggregating session statistics across all 160 honeypot instances using DuckDB streaming. Computes mean duration, command count, login rate, value rate, and quartile contrasts (higher quartile vs lower quartile interaction instances) alongside two-sided Wilson score intervals. Expressly embeds the required scientific caveat disclaimer attributing variance to possible scanner targeting, AS topography, and probing biases rather than claiming causal effect.
+- **Decision**: Implemented `analysis/natural_experiment.py` aggregating session statistics across all 160 honeypot instances using DuckDB streaming.
+- **Scientific Audit & Scope Correction (Remediated 2026-11-12)**:
+  1. **No Group Column in Aggregation**: `session_aggregation.jsonl.gz` lacks the honeypot configuration `group` column (which exists only in event-level `data_all.zip`). Therefore, EVAL 5.3 persona effect analysis is marked as **PENDING event group data**.
+  2. **Removal of Selection-on-Outcome**: Ranking instances by their own `value_1_rate` and reporting a 10x ratio was circular selection-on-outcome. This was removed. The script now characterizes descriptive baseline variance (p25, median, p75, min, max) with Wilson 95% score CIs.
+  3. **Caveat Language**: Expressly embeds the required scientific caveat attributing variance to possible scanner targeting, AS topography, and probing biases rather than claiming causal configuration effects ("no causal language").
 - **Alternatives considered**: Making causal claims regarding configuration efficacy from observational data (rejected: explicitly forbidden by pre-registered EVAL.md Section 5.3).
 - **Why**: Rigorous observational characterization of honeypot variance while maintaining scientific integrity.
 - **Consequences**: Results saved to `results/natural_experiment.json`. Verified with 4 unit tests in `analysis/test_natural_experiment.py`.
+
+### 2026-11-12: Purging Cross-Split Source IPs and Survivorship Bias in Validation/Test Sets
+- **Status**: ACCEPTED
+- **Owner**: P2 / Analytics Lead
+- **Context**: EXPERIMENT0.md §3 mandates strict disjoint source IP assignment across temporal splits: any source IP that appears in multiple periods is allocated exclusively to the earliest period's fold and purged from all subsequent folds (`src_ip NOT IN (SELECT DISTINCT src_ip FROM earlier_folds)`).
+- **Decision**: Enforce disjoint source IP allocation via DuckDB SQL in `analysis/exp0_train.py` and log purged session counts.
+- **Scientific Trade-offs & Survivorship Bias**:
+  1. **Bias Rationale**: Eliminating cross-split source IPs prevents optimistic data leakage from recurring bots or multi-session scanning campaigns that repeat identical handshake and authentication features.
+  2. **Distributional Shift**: Persistent, high-activity attackers that scan repeatedly over weeks are systematically assigned to earlier folds (train). As a consequence, validation and test splits are disproportionately skewed toward novel, ephemeral, or single-session scanners. This represents a known survivorship bias that models must generalize across.
+  3. **Sample Collapse under Subsampling**: If a sample limit (e.g. 1,000 rows) is drawn chronologically, validation and test folds may collapse to 0 rows if all sampled IPs were active in earlier days. Full-day extraction or date-filtered stratified sampling must be used.
+- **Alternatives considered**: Random source IP split without temporal order (rejected: causes severe temporal look-ahead leakage); Non-disjoint temporal split (rejected: causes cluster correlation leakage).
+- **Why**: Highest scientific rigor against data leakage per AGENTS.md Rule 15 and EXPERIMENT0.md §3.
+- **Consequences**: Documented in `DECISIONS.md` and tracked in `results/exp0/rules_summary.json` and `EXP0_RESULT.md`.
+
+### 2026-11-12: Pre-Registration Desynchronization and Tagging of exp0-v2 / eval-v2
+- **Status**: ACCEPTED
+- **Owner**: Lead Architect / All
+- **Context**: Git tags `eval-v1` and `exp0-v1` were placed at commit `bae4e27` prior to committing `results/exp0/splits.json` and `results/exp0/grid.json`. Under open-science standards, the pre-registration seal must freeze splits and grids before test evaluation.
+- **Decision**:
+  1. Acknowledge and document the desynchronization in `DECISIONS.md`.
+  2. Maintain `eval-v1` and `exp0-v1` as initial specification tags.
+  3. Freeze `splits.json` (calendar dates for train, val, test) and `grid.json` (hyperparameter grids for LogisticRegression and HistGradientBoosting), and create new Git tags `eval-v2` and `exp0-v2` sealing the complete pre-registered experimental configuration and flaw remediation.
+- **Alternatives considered**: Force-deleting and moving `v1` tags (rejected: rewriting Git tag history obscures the audit trail).
+- **Why**: Transparency and adherence to open-science pre-registration protocols (AGENTS.md Rule 3 and Rule 16).
+- **Consequences**: Tag `exp0-v2` and `eval-v2` on commit finalizing flaw remediation.
 

@@ -1,0 +1,107 @@
+{
+  "S1": {
+    "valid_rules": [
+      "R0_random",
+      "R5_rarity"
+    ],
+    "best_rule": "R0_random",
+    "best_val_recall": 0.119,
+    "best_test_recall": 0.0676,
+    "validation_scores": {
+      "R0_random": 0.119,
+      "R5_rarity": 0.0476
+    }
+  },
+  "S2": {
+    "valid_rules": [
+      "R0_random",
+      "R1_login_success",
+      "R5_rarity",
+      "R6_failed_logins",
+      "R7_decision_tree"
+    ],
+    "best_rule": "R1_login_success",
+    "best_val_recall": 1.0,
+    "best_test_recall": 1.0,
+    "validation_scores": {
+      "R0_random": 0.1048,
+      "R1_login_success": 1.0,
+      "R5_rarity": 0.081,
+      "R6_failed_logins": 0.1762,
+      "R7_decision_tree": 1.0
+    }
+  },
+  "S3": {
+    "valid_rules": [
+      "R0_random",
+      "R1_login_success",
+      "R2_pty_requested",
+      "R3_interactive",
+      "R5_rarity",
+      "R6_failed_logins",
+      "R7_decision_tree"
+    ],
+    "best_rule": "R6_failed_logins",
+    "best_val_recall": 0.2095,
+    "best_test_recall": 0.1111,
+    "validation_scores": {
+      "R0_random": 0.0952,
+      "R1_login_success": 0.0714,
+      "R2_pty_requested": 0.0667,
+      "R3_interactive": 0.0667,
+      "R5_rarity": 0.0714,
+      "R6_failed_logins": 0.2095,
+      "R7_decision_tree": 0.2095
+    }
+  },
+  "S4": {
+    "valid_rules": [
+      "R0_random",
+      "R1_login_success",
+      "R2_pty_requested",
+      "R3_interactive",
+      "R4_delay",
+      "R5_rarity",
+      "R6_failed_logins",
+      "R7_decision_tree"
+    ],
+    "best_rule": "R4_delay",
+    "best_val_recall": 1.0,
+    "best_test_recall": 1.0,
+    "validation_scores": {
+      "R0_random": 0.0,
+      "R1_login_success": 0.0,
+      "R2_pty_requested": 0.0,
+      "R3_interactive": 0.0,
+      "R4_delay": 1.0,
+      "R5_rarity": 0.0,
+      "R6_failed_logins": 1.0,
+      "R7_decision_tree": 1.0
+    }
+  },
+  "S5": {
+    "valid_rules": [
+      "R0_random",
+      "R1_login_success",
+      "R2_pty_requested",
+      "R3_interactive",
+      "R4_delay",
+      "R5_rarity",
+      "R6_failed_logins",
+      "R7_decision_tree"
+    ],
+    "best_rule": "R0_random",
+    "best_val_recall": 0.5,
+    "best_test_recall": 0.3333,
+    "validation_scores": {
+      "R0_random": 0.5,
+      "R1_login_success": 0.5,
+      "R2_pty_requested": 0.5,
+      "R3_interactive": 0.5,
+      "R4_delay": 0.5,
+      "R5_rarity": 0.5,
+      "R6_failed_logins": 0.5,
+      "R7_decision_tree": 0.5
+    }
+  }
+}

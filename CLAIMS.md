@@ -15,6 +15,7 @@ Status key:
 |---|---|---|---|
 | D1 | 160 Cowrie instances, 14 countries, 50 days; over 211 million events; 38 million sessions; over 214,000 unique source IPs; 1,770 transferred artifacts; four configurations (baseline, hardened, two persistence variants); CC BY 4.0; schemas and file sizes/hashes as in DATA.md | https://zenodo.org/records/21260400 | [V] |
 | D1b | The dataset's Data Descriptor is in press in Scientific Data (DOI 10.1038/s41597-026-08668-0); DOI may not resolve yet | same | [V] (record text) / [U] (resolution) |
+| D1c | The Zenodo record text for data_all.zip stated 51 files and 50 days, but remote Zip64 parsing of the archive central directory reveals exactly 52 daily files spanning 52 days (2025-06-27 to 2025-08-17) | https://zenodo.org/records/21260400 | [V] (Spike S3 Part 2) |
 | D2 | Honey for the Agent dataset: LLM agents on five SSH environments (one real Ubuntu, four Cowrie variants), about 16,200 sessions, six prompts, CC BY 4.0, 157.7 MB, JSON per-session format | https://zenodo.org/records/20818246 | [V] |
 | D3 | Beyond Bots dataset: files restricted; no ground-truth labels; heuristic indicators only | https://zenodo.org/records/19610238 | [V] |
 

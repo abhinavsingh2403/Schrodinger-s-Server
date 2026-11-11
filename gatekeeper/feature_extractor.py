@@ -15,7 +15,10 @@ from typing import Any
 
 
 class SessionFeatureExtractor:
-    """Extracts stage-by-stage cumulative features from a stream of Cowrie events."""
+    """Extracts stage-by-stage cumulative features from a stream of Cowrie events.
+
+    Supports both live Cowrie event streams and raw flat-record events from data_all.zip.
+    """
 
     def __init__(self) -> None:
         self.reset()
@@ -23,6 +26,7 @@ class SessionFeatureExtractor:
     def reset(self) -> None:
         """Reset internal accumulator for a new session."""
         self.client_version: str = ""
+        self.hassh: str = ""
         self.kex_algs: list[str] = []
         self.key_algs: list[str] = []
         self.ciphers: list[str] = []
@@ -36,25 +40,65 @@ class SessionFeatureExtractor:
         self.term_height: int = 0
         self.is_exec: bool = False
         self.commands: list[str] = []
+        self.ts_login: str | None = None
+        self.ts_cmd1: str | None = None
+
+    @staticmethod
+    def _to_list(val: Any) -> list[str]:
+        if isinstance(val, list):
+            return [str(x) for x in val]
+        if isinstance(val, str) and val.strip():
+            return [x.strip() for x in val.split(",") if x.strip()]
+        return []
 
     def ingest_event(self, event: dict[str, Any]) -> None:
-        """
-        Process a single Cowrie event dict and update cumulative state.
-        Handles event types: cowrie.client.version, cowrie.client.kex,
-        cowrie.login.success, cowrie.login.failed, cowrie.client.size,
-        cowrie.command.input, cowrie.command.failed.
-        """
-        event_id = event.get("eventid", "")
+        """Process a single Cowrie event dict and update cumulative state.
 
-        if event_id == "cowrie.client.version":
+        Handles live events and raw data_all.zip flat records.
+        """
+        event_id = str(event.get("eventid", "") or "")
+
+        # Top-level field ingestion (data_all flat schema compatibility)
+        if event.get("version"):
             self.client_version = str(event.get("version", ""))
+        if event.get("hassh"):
+            self.hassh = str(event.get("hassh", ""))
+
+        if event.get("width") or event.get("height"):
+            self.has_pty = True
+            try:
+                self.term_width = int(event.get("width", 0) or 0)
+                self.term_height = int(event.get("height", 0) or 0)
+            except (ValueError, TypeError):
+                pass
+
+        if event.get("kexAlgs"):
+            self.kex_algs = self._to_list(event.get("kexAlgs"))
+        if event.get("keyAlgs"):
+            self.key_algs = self._to_list(event.get("keyAlgs"))
+        if event.get("encCS"):
+            self.ciphers = self._to_list(event.get("encCS"))
+        if event.get("macCS"):
+            self.macs = self._to_list(event.get("macCS"))
+        if event.get("compCS"):
+            self.compressions = self._to_list(event.get("compCS"))
+
+        # Event-specific parsing
+        if event_id == "cowrie.client.version":
+            if event.get("version"):
+                self.client_version = str(event.get("version", ""))
 
         elif event_id == "cowrie.client.kex":
-            self.kex_algs = list(event.get("kexAlgs", []))
-            self.key_algs = list(event.get("keyAlgs", []))
-            self.ciphers = list(event.get("encCS", []))
-            self.macs = list(event.get("macCS", []))
-            self.compressions = list(event.get("compCS", []))
+            if event.get("kexAlgs"):
+                self.kex_algs = self._to_list(event.get("kexAlgs"))
+            if event.get("keyAlgs"):
+                self.key_algs = self._to_list(event.get("keyAlgs"))
+            if event.get("encCS"):
+                self.ciphers = self._to_list(event.get("encCS"))
+            if event.get("macCS"):
+                self.macs = self._to_list(event.get("macCS"))
+            if event.get("compCS"):
+                self.compressions = self._to_list(event.get("compCS"))
 
         elif event_id == "cowrie.login.failed":
             self.auth_attempts += 1
@@ -63,19 +107,26 @@ class SessionFeatureExtractor:
         elif event_id == "cowrie.login.success":
             self.auth_attempts += 1
             self.auth_success = True
+            if "ts" in event and self.ts_login is None:
+                self.ts_login = str(event["ts"])
 
         elif event_id == "cowrie.client.size":
             self.has_pty = True
-            self.term_width = int(event.get("width", 0))
-            self.term_height = int(event.get("height", 0))
+            try:
+                self.term_width = int(event.get("width", 0) or 0)
+                self.term_height = int(event.get("height", 0) or 0)
+            except (ValueError, TypeError):
+                pass
 
         elif event_id in ("cowrie.command.input", "cowrie.command.failed"):
-            cmd = str(event.get("input", ""))
+            cmd = str(event.get("input", "") or "")
+            if not self.commands and "ts" in event:
+                self.ts_cmd1 = str(event["ts"])
             self.commands.append(cmd)
 
     def extract_stage_features(self, stage: str) -> dict[str, float | int]:
-        """
-        Extract cumulative numeric features for a given stage ('S1', 'S2', 'S3', 'S4', 'S5').
+        """Extract cumulative numeric features for a given stage ('S1', 'S2', 'S3', 'S4', 'S5').
+
         Stage k features only access information accumulated up to stage k.
         """
         ver = self.client_version.lower()
@@ -83,6 +134,7 @@ class SessionFeatureExtractor:
         # S1 Handshake features
         feats: dict[str, float | int] = {
             "s1_ver_len": len(self.client_version),
+            "s1_has_hassh": 1 if self.hassh else 0,
             "s1_is_openssh": 1 if "openssh" in ver else 0,
             "s1_is_libssh": 1 if "libssh" in ver else 0,
             "s1_is_paramiko": 1 if "paramiko" in ver else 0,

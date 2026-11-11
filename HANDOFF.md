@@ -67,14 +67,43 @@
 ---
 
 ## TEST SUITE SUMMARY
-- **Total Test Cases**: **75 passed, 1 skipped** in 0.95s.
-- `analysis/`: 33 passed
+- **Total Test Cases**: **84 passed, 1 skipped** in 1.01s.
+- `analysis/`: 37 passed
 - `gatekeeper/`: 17 passed
 - `sensor/`: 4 passed (+1 skipped on Windows due to twisted.conch)
 - `router/`: 4 passed
 - `harness/`: 9 passed (5 detector runner + 4 replay engine)
 - `dashboard/`: 5 passed
 - `infra/`: 3 passed
+
+---
+
+## SCIENTIFIC FLAW REMEDIATION AUDIT (Branch `aftertranning`)
+
+1. **Pre-declared Baseline Rules (R0 to R7) Fully Integrated**:
+   - Implemented R3 (`score_r3_interactive`), R4 (`score_r4_timing_delay`), R5b (`score_r5b_hassh_rarity`), and deterministic depth-3 decision tree classifier (`PurePythonDepth3Tree` / `train_r7_decision_tree`).
+   - Rules are strictly evaluated only at stages where they are valid per `EXPERIMENT0.md §7`.
+   - Best simple rule at stage $k$ is selected on validation recall @ 10% budget and evaluated on held-out test data.
+
+2. **Prefix-Determined Exclusions & Stage Reach Rates (`filter_prefix_determined_exclusions`)**:
+   - Implemented exact reach criteria and prefix exclusions per `EXPERIMENT0.md §5` for stages S1 through S5.
+   - Sessions where early prefix events already triggered value=1 are dropped at S4 and S5 to prevent trivial label leakage.
+
+3. **Multiplicity-Adjusted Paired Cluster Bootstrap (`paired_cluster_bootstrap_delta`)**:
+   - Enforces Bonferroni multiplicity adjustments per `EXPERIMENT0.md §10`: $\alpha = 0.05 / 3 = 0.0167$ (98.33% CI) for pre-command family {S1, S2, S3}, and $\alpha = 0.05 / 2 = 0.025$ (97.5% CI) for post-command family {S4, S5}.
+   - Resamples clustered source IPs with replacement (1,000 resamples).
+
+4. **Multi-Stage Gate 0 Decision Rule (`evaluate_gate0_decision_rule`)**:
+   - Evaluates whether any pre-command stage ($S1-S3$) achieves $\Delta_k \ge 0.05$ with lower CI $> 0$ and $\ge 500$ positive sessions (`PASS-ML`).
+   - If not, evaluates post-command stages ($S4-S5$) (`PASS-LATE-ONLY`).
+   - Otherwise records `FAIL` (or `PENDING_ML_TRAINING` prior to ML candidate fitting).
+
+5. **Disjoint IP Purge & Survivorship Bias Formalized**:
+   - Documented in `DECISIONS.md`. Quantifies row drop rates in validation and test splits caused by cross-split IP overlap.
+
+6. **Provenance & Pre-Registration Reconciliation**:
+   - Added Claim D1c in `CLAIMS.md` documenting the 51 vs 52 files record page typo.
+   - Documented pre-registration tag desynchronization in `DECISIONS.md`. Pre-registered configurations frozen for `eval-v2` and `exp0-v2`.
 
 ---
 

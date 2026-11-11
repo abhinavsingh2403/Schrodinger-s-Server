@@ -23,11 +23,13 @@ Files and hashes shown on the record page [V]:
 
 | File | Size | MD5 |
 |---|---|---|
-| `data_all.zip` (51 files, one per day) | 19.4 GB | 5b6d6e77e5f7247ac400d2318cef7adb |
+| `data_all.zip` (52 files, one per day; record page stated 51 [V]) | 19.4 GB (19,372,965,772 bytes) | 5b6d6e77e5f7247ac400d2318cef7adb |
 | `session_aggregation.jsonl.gz` | 1.3 GB | 1f3897650fb420c97c14ff452398c3f8 |
 | `transferred_files.zip` | 8.0 GB | 1099a06827c9e426c6ac10e102e747d0 |
 | `transferred_files_metadata.csv` | 367.1 kB | 120ae0da9518d96fbe245ef8dcebb2fb |
 | `malformed.txt` | 14.6 kB | d60148e631fe4f042ff4d5f0eb59451e |
+
+> **Audit Note (2026-11-12, Spike S3 Part 2):** The Zenodo record page text listed "51 files", but the actual Zip64 central directory contains exactly **52 daily files** spanning 2025-06-27 to 2025-08-17 (4 days in June, 31 in July, 17 in August). Verified via remote Zip64 directory parsing without downloading the full 19.4 GB archive.
 
 **`session_aggregation.jsonl.gz` schema [V]** (25 fields): `session, src_ip, honeypot_ip, first_seen, last_seen, total_events, cnt_client_fingerprint, cnt_client_kex, cnt_client_size, cnt_client_var, cnt_client_version, cnt_command_failed, cnt_command_input, cnt_command_success, cnt_direct_tcpip_data, cnt_direct_tcpip_request, cnt_file_download, cnt_file_download_failed, cnt_file_upload, cnt_log_closed, cnt_login_failed, cnt_login_success, cnt_session_closed, cnt_session_connect, cnt_session_params`.
 Not in this file: hassh, client version string, command text, inter-event timing, honeypot configuration group. Those live in event-level `data_all`.

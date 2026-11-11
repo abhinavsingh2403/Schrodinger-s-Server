@@ -1,0 +1,6 @@
+stage,reach_rate,dropped_prefix,evaluated_sessions,base_rate,best_rule,best_rule_val_recall,best_rule_test_recall,ml_candidate,ml_test_recall,delta_k,ci_lower,ci_upper,bonferroni_alpha,min_size_met
+S1,1.0,0,10000,0.0207,R0_random,0.119,0.0676,TBD (Pending ML Training),,TBD,TBD,TBD,0.0167,False
+S2,0.9409,0,9409,0.022,R1_login_success,1.0,1.0,TBD (Pending ML Training),,TBD,TBD,TBD,0.0167,False
+S3,0.0756,0,756,0.2738,R6_failed_logins,0.2095,0.1111,TBD (Pending ML Training),,TBD,TBD,TBD,0.0167,False
+S4,0.0385,173,385,0.0078,R4_delay,1.0,1.0,TBD (Pending ML Training),,TBD,TBD,TBD,0.025,False
+S5,0.0003,56,3,1.0,R0_random,0.5,0.3333,TBD (Pending ML Training),,TBD,TBD,TBD,0.025,False

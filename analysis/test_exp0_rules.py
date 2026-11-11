@@ -70,3 +70,31 @@ def test_r6_failed_logins() -> None:
 
     assert scores_pos == [0.0, 2.0, 5.0]
     assert scores_neg == [0.0, -2.0, -5.0]
+
+
+def test_r3_interactive_and_r4_timing() -> None:
+    from analysis.exp0_rules import score_r3_interactive, score_r4_timing_delay
+    assert score_r3_interactive([True, False, True]) == [1.0, 0.0, 1.0]
+    assert score_r4_timing_delay([0.5, 2.0, -1.0], sign=1) == [0.5, 2.0, 0.0]
+    assert score_r4_timing_delay([0.5, 2.0], sign=-1) == [-0.5, -2.0]
+
+
+def test_r7_pure_python_decision_tree() -> None:
+    from analysis.exp0_rules import train_r7_decision_tree
+    # Simple XOR-like or split problem
+    # Feature 0: login_success, Feature 1: has_pty
+    X_train = [
+        [1.0, 1.0],
+        [1.0, 0.0],
+        [0.0, 1.0],
+        [0.0, 0.0],
+        [0.0, 0.0],
+        [1.0, 1.0],
+    ]
+    y_train = [1, 1, 0, 0, 0, 1]
+
+    tree = train_r7_decision_tree(X_train, y_train, max_depth=3)
+    preds = tree.predict_proba([[1.0, 1.0], [0.0, 0.0]])
+    assert len(preds) == 2
+    # Probability for [1, 1] should be higher than [0, 0]
+    assert preds[0] > preds[1]

@@ -88,8 +88,8 @@ What this changes in SPEC/EVAL:
   - **Configuration Group**: Confirmed present as an integer field `group \in {1, 2, 3, 4}` corresponding to the 4 configurations (Default Baseline, Enhanced hardened, and two persistence variants).
   - **Selective Sampling**: Proved that daily event logs can be accessed on demand via HTTP range requests for Experiment 0 event-level feature extraction.
 - **Decision**:
-  - S3 Spike is **100% complete** across both aggregation and event-level tiers.
-  - Event-level features (HASSH, client version, terminal dimensions, command text, and configuration group) are verified present.
+  - S3 Spike Part 2 confirms event-level schema viability and the presence of `group \in {1, 2, 3, 4}` via remote Zip64 directory and sample event parsing.
+  - While event schema fields (HASSH, client version, terminal dimensions, command text, and configuration group) are verified present on the sampled day, the full instance-to-group distribution mapping across all 160 instances remains pending full multi-day extraction.
 - **What this changes in SPEC/EVAL**:
-  - Unblocks EVAL.md §5.3 (Persona effect natural experiment using the `group` field).
-  - Confirms data feasibility for Experiment 0 early features (S1 to S5). Gate 0 data preconditions fully verified.
+  - Validates data architecture for EVAL.md §5.3 and event-level feature extraction in Experiment 0.
+  - Confirms data feasibility for early features (S1 to S5). Gate 0 data preconditions verified at the schema level.

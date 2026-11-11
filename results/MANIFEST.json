@@ -42,6 +42,22 @@
     "results/s3_event_schema.json": {
       "md5": "4da53787f25ec08ac76f58267c642316",
       "eval_ref": "SPIKES.md Section S3 Part 2"
+    },
+    "results/exp0/rules.json": {
+      "md5": "52483c072223082dfea2b5513fa73904",
+      "eval_ref": "EXPERIMENT0.md Section 7"
+    },
+    "results/exp0/table.csv": {
+      "md5": "de37d228451a13d32ea618777ef2d8fc",
+      "eval_ref": "EXPERIMENT0.md Section 14"
+    },
+    "results/exp0/rules_summary.json": {
+      "md5": "fe018bb3013bfcdb2e0366e34de2e851",
+      "eval_ref": "EXPERIMENT0.md Section 14"
+    },
+    "EXP0_RESULT.md": {
+      "md5": "3a4a0f61e8cfcbe06dec970e581f5752",
+      "eval_ref": "EXPERIMENT0.md Section 12 & 14"
     }
   }
 }

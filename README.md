@@ -24,14 +24,14 @@ In Internet-facing SSH honeypots, the overwhelming majority of sessions are one-
 
 | Dimension | Progress | Assessment Rationale |
 |---|:---:|---|
-| **Engineering (Code & Tests)** | **~55–60%** | 75 unit tests passing across all core modules (`gatekeeper/`, `sensor/`, `router/`, `harness/`, `infra/`, `analysis/`, `dashboard/`). |
-| **Science (Valid Empirical Results)** | **~15–20%** | S3 Part 1 (aggregate base rates) & S3 Part 2 (event schema & 52-day verification) completed; Experiment 0 model training and live trials remain gated. |
-| **Overall MVP** | **~35–38%** | Critical Gate 0 milestone (`EXPERIMENT0.md`) is at 0% pending model fitting and paired cluster-bootstrap validation. |
+| **Engineering (Code & Tests)** | **~60%** | 84 unit tests passing across all core modules (`gatekeeper/`, `sensor/`, `router/`, `harness/`, `infra/`, `analysis/`, `dashboard/`). |
+| **Science (Valid Empirical Results)** | **~20%** | S3 Part 1 (aggregate base rates) & S3 Part 2 (event schema & 52-day verification) completed; Experiment 0 baseline rules benchmarked per stage (`results/exp0/table.csv`). |
+| **Overall MVP** | **~38–40%** | Baseline simple rules frozen and benchmarked; awaiting friend's ML model training execution to finalize Gate 0 decision rule. |
 
 ```
-[███████████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░] ~35–38% Overall MVP Complete
-[████████████████████████████░░░░░░░░░░░░░░░░░░░░░░] ~55–60% Engineering Complete
-[█████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░] ~15–20% Science / Valid Results
+[████████████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░] ~38–40% Overall MVP Complete
+[██████████████████████████████░░░░░░░░░░░░░░░░░░░░] ~60% Engineering Complete
+[██████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░] ~20% Science / Valid Results
 ```
 
 | Phase / Component | Scope | Status | Details / Notes |
@@ -41,8 +41,8 @@ In Internet-facing SSH honeypots, the overwhelming majority of sessions are one-
 | **S3 Part 1: Aggregate Base Rates** | Core | **DONE** | 38.1M sessions analyzed; value=1 base rate = 3.23% (`results/base_rates.json`) |
 | **S3 Part 2: Event Archive Verification** | Core | **DONE** | Range request inspection of 19.4GB `data_all.zip`; confirmed 52 days and `group \in {1, 2, 3, 4}` |
 | **S1: Cowrie Persona Switching PoC** | Core | **DONE** | Plan A in-process Conch adapter subclass verified (`sensor/spike_s1_poc.py`) |
-| **Pre-Registration Tags (`eval-v1`, `exp0-v1`)** | Core | **LOCKED** | Pre-registered hypotheses, metrics, and decision rules frozen |
-| **O3: Experiment 0 (`EXPERIMENT0.md`)** | Core (Gate 0) | **0% (PENDING)** | Splits & rules ready; model fitting & paired cluster bootstrap pending execution |
+| **Pre-Registration Tags (`eval-v1`, `exp0-v1`)** | Core | **LOCKED** | Initial specifications frozen; desync recorded in `DECISIONS.md`; v2 tags prepared |
+| **O3: Experiment 0 (`EXPERIMENT0.md`)** | Core (Gate 0) | **BASELINE BENCHMARKED** | Splits, prefix exclusions, and rules R0-R7 evaluated (`table.csv`, `EXP0_RESULT.md`); awaiting ML model training |
 | **Phase 1: Gatekeeper Engine & Memory** | MVP | **BUILT (Code/Tests)** | SQLite WAL visitor memory, upward-only policy, parity extractor, decision API |
 | **Phase 1: Sensor & Router Subsystems** | MVP | **BUILT (Code/Tests)** | Adaptive Conch session server (`sensor/`), Plan B sticky asyncio router (`router/`) |
 | **Phase 2: Adversary Harness & Infra** | MVP | **BUILT (Code/Tests)** | Detector runner with safety allowlist, replay engine, isolated docker & egress firewall |
