@@ -1,0 +1,66 @@
+# ============================================================================
+# docker-compose.yml: Schrödinger's Server Microservice Stack
+# Pre-registered in SPEC.md Section 5 and SAFETY.md Section 2
+# ============================================================================
+
+version: "3.8"
+
+services:
+  # Cowrie Honeypot Sensor (Pinned Release v3.1.6)
+  sensor:
+    image: cowrie/cowrie:v3.1.6
+    container_name: schrodinger-sensor
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:2222:2222"
+    volumes:
+      - ./cowrie.cfg:/cowrie/cowrie-git/etc/cowrie.cfg:ro
+      - ../config/identity.yaml:/cowrie/identity.yaml:ro
+      - sensor-logs:/cowrie/cowrie-git/var/log/cowrie
+    networks:
+      - internal_honeypot_net
+    cap_drop:
+      - ALL
+    cap_add:
+      - NET_BIND_SERVICE
+    read_only: false
+
+  # Gatekeeper Decision Engine Service
+  gatekeeper:
+    image: python:3.12-slim
+    container_name: schrodinger-gatekeeper
+    restart: unless-stopped
+    working_dir: /app
+    volumes:
+      - ../gatekeeper:/app/gatekeeper:ro
+      - ../config:/app/config:ro
+      - gatekeeper-data:/app/data
+    command: ["python", "-m", "gatekeeper.decision_api"]
+    networks:
+      - internal_honeypot_net
+
+  # Read-Only Intelligence Dashboard
+  dashboard:
+    image: python:3.12-slim
+    container_name: schrodinger-dashboard
+    restart: unless-stopped
+    working_dir: /app
+    ports:
+      - "127.0.0.1:8080:8080"
+    volumes:
+      - ../dashboard:/app/dashboard:ro
+      - ../results:/app/results:ro
+      - gatekeeper-data:/app/gatekeeper:ro
+    command: ["python", "dashboard/app.py", "--host", "0.0.0.0", "--port", "8080", "--mode", "LAB"]
+    networks:
+      - internal_honeypot_net
+
+networks:
+  # Internal network with strict egress isolation per SAFETY.md
+  internal_honeypot_net:
+    driver: bridge
+    internal: true
+
+volumes:
+  sensor-logs:
+  gatekeeper-data:
