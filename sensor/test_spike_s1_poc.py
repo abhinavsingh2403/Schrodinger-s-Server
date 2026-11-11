@@ -15,6 +15,10 @@ sys.path.insert(0, str(COWRIE_ROOT / "src"))
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 import types
+import pytest
+
+pytest.importorskip("twisted.conch", reason="Twisted Conch required for Cowrie in-process tests")
+
 if "cowrie._version" not in sys.modules:
     m = types.ModuleType("cowrie._version")
     m.__version__ = "3.1.6"
