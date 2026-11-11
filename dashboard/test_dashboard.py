@@ -62,9 +62,23 @@ def test_dashboard_arms_comparison_endpoint():
 
         arms = server.get_arms_data()
         assert "Arm A (Static T1)" in arms
-        assert "Arm D (Schrodinger Adaptive)" in arms
-        assert arms["Arm D (Schrodinger Adaptive)"]["yield_per_rupee"] > 0
+        assert ("Arm D (Schrodinger Adaptive)" in arms) or ("Arm D (Adaptive)" in arms)
+        assert arms.get("Arm D (Schrodinger Adaptive)", arms.get("Arm D (Adaptive)"))["yield_per_rupee"] > 0
         assert arms["Arm A (Static T1)"]["yield_per_rupee"] > 0
+
+
+def test_dashboard_natural_experiment_endpoint():
+    """Verify /api/natural_experiment returns valid observational data or status."""
+    with tempfile.TemporaryDirectory() as tmp_dir:
+        db_path = os.path.join(tmp_dir, "dash.db")
+        server = DashboardServer(db_path=db_path, port=0)
+
+        nat_data = server.get_natural_experiment_data()
+        assert "status" in nat_data
+        if nat_data["status"] == "NATURAL_EXPERIMENT_COMPLETE":
+            assert "caveat_disclaimer" in nat_data
+            assert "n_instances_evaluated" in nat_data
+            assert "instances" in nat_data
 
 
 def test_dashboard_html_rendering():

