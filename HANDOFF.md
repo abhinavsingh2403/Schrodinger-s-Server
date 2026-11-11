@@ -1,65 +1,79 @@
 # HANDOFF.md: Model Handoff & Progress Ledger
 
 ## STATUS
-- Current Task: G1 (Complete)
-- Next Task: G2 (Download + MD5 verify script)
+- Current Task: G2 (Complete)
+- Awaiting: Human download of `data/session_aggregation.jsonl.gz` and MD5 verification.
+- Next Model Task: G3 (S3 base-rate script + tests on verified dataset).
 
 ---
 
 ## DONE
-1. Created skeleton directories with `.gitkeep`: `analysis/`, `data/`, `results/`, `infra/`, `sensor/`, `gatekeeper/`, `router/`, `harness/`, `dashboard/`.
-2. Updated `.gitignore` to ignore `data/*` (while preserving `data/README.md` and `data/.gitkeep`), `results/tmp/`, `__pycache__/`, `.venv/`, `*.gz`, `*.zip`, `*.parquet`, and `.env`.
-3. Created `data/README.md` with pre-filled table of Zenodo D1 datasets per `DATA.md`, with computed columns marked `TBD` and `transferred_files.zip` marked `DO NOT DOWNLOAD`.
-4. Created `DECISIONS.md` with decision template and Day 0 repo initialization record.
-5. Created `SPIKE_RESULTS.md` with spike template from `SPIKES.md`.
-6. Created `requirements.txt` with pinned versions (`duckdb==2.0.0`, `pytest==9.2.0`) verified via `python -m pip index versions`.
-7. Created `analysis/README.md` recording Python version `3.12.10`.
-8. Tracked `PROMPTS.md` model-split task pack.
+1. Created `analysis/verify_download.py` which streams files in chunks to compute MD5 digest, prints `MATCH` or `MISMATCH` with computed and expected hashes, and exits non-zero on mismatch or missing file.
+2. Created `analysis/test_verify_download.py` providing unit tests for match, mismatch, and missing file error handling.
+3. Created virtual environment `.venv` and installed pinned dependencies `duckdb==2.0.0` and `pytest==9.2.0`.
+4. Verified tests with pytest: all 3 unit tests passed cleanly.
+5. Resolved exact direct content download URL from Zenodo API (`https://zenodo.org/api/records/21260400/files/session_aggregation.jsonl.gz/content`).
+6. Updated `analysis/README.md` documenting exact PowerShell, curl, and browser download commands, target path `data/session_aggregation.jsonl.gz`, expected MD5 `1f3897650fb420c97c14ff452398c3f8`, and verification invocation.
+7. Added `.pytest_cache/` to `.gitignore`.
 
 ---
 
 ## FILES
 - `.gitignore` (modified)
-- `PROMPTS.md` (created)
-- `requirements.txt` (created)
-- `DECISIONS.md` (created)
-- `SPIKE_RESULTS.md` (created)
-- `HANDOFF.md` (created)
-- `analysis/.gitkeep` (created)
-- `analysis/README.md` (created)
-- `data/.gitkeep` (created)
-- `data/README.md` (created)
-- `results/.gitkeep` (created)
-- `infra/.gitkeep` (created)
-- `sensor/.gitkeep` (created)
-- `gatekeeper/.gitkeep` (created)
-- `router/.gitkeep` (created)
-- `harness/.gitkeep` (created)
-- `dashboard/.gitkeep` (created)
+- `analysis/README.md` (modified)
+- `analysis/verify_download.py` (created)
+- `analysis/test_verify_download.py` (created)
+- `HANDOFF.md` (modified)
 
 ---
 
 ## COMMANDS AND OUTCOMES
-1. `python --version; pip --version`:
-   - Output: `Python 3.12.10`, pip not in PATH directly.
-2. `python -m pip --version`:
-   - Output: `pip 25.0.1 from ... (python 3.12)` (Exit Code 0).
-3. `python -m pip index versions duckdb; python -m pip index versions pytest`:
-   - Output: `duckdb (2.0.0)`, `pytest (9.2.0)` (Exit Code 0).
-4. Directory and `.gitkeep` creation:
-   - Output: All 9 directories and `.gitkeep` files created (Exit Code 0).
+1. Zenodo API check:
+   ```powershell
+   > python -c "import urllib.request, json; r = urllib.request.urlopen('https://zenodo.org/api/records/21260400'); data = json.loads(r.read()); print('\n'.join(f['key'] + ' -> ' + f['links']['self'] for f in data.get('files', [])))"
+   session_aggregation.jsonl.gz -> https://zenodo.org/api/records/21260400/files/session_aggregation.jsonl.gz/content
+   ```
+2. Virtualenv setup & installation:
+   ```powershell
+   > python -m venv .venv
+   > .\.venv\Scripts\python.exe -m pip install -r requirements.txt
+   Successfully installed colorama-0.4.6 duckdb-2.0.0 iniconfig-2.3.1 packaging-26.3 pluggy-1.7.0 pygments-2.21.0 pytest-9.2.0
+   ```
+3. Pytest test run:
+   ```powershell
+   > .\.venv\Scripts\python.exe -m pytest analysis/test_verify_download.py -v
+   ============================= test session starts =============================
+   platform win32 -- Python 3.12.10, pytest-9.2.0, pluggy-1.7.0 -- C:\Users\abhip\OneDrive\Documents\mini project\.venv\Scripts\python.exe
+   cachedir: .pytest_cache
+   rootdir: C:\Users\abhip\OneDrive\Documents\mini project
+   collecting ... collected 3 items
+
+   analysis/test_verify_download.py::test_compute_md5_and_verify_match PASSED [ 33%]
+   analysis/test_verify_download.py::test_verify_mismatch PASSED            [ 66%]
+   analysis/test_verify_download.py::test_verify_missing_file PASSED        [100%]
+
+   ============================== 3 passed in 0.04s ==============================
+   ```
 
 ---
 
 ## TODO(verify)
-*(None for Task G1; versions were confirmed against PyPI index).*
+*(None for Task G2; direct URL confirmed against Zenodo API).*
 
 ---
 
 ## QUESTIONS FOR OPUS
-*(None for Task G1).*
+*(None for Task G2).*
 
 ---
 
 ## QUESTIONS FOR HUMAN
-*(None for Task G1).*
+Please execute the download of `session_aggregation.jsonl.gz` into `data/` and verify its MD5 before Task G3 is executed:
+```powershell
+# 1. Download (~1.3 GB)
+Invoke-WebRequest -Uri "https://zenodo.org/api/records/21260400/files/session_aggregation.jsonl.gz/content" -OutFile "data\session_aggregation.jsonl.gz"
+
+# 2. Verify
+.\.venv\Scripts\python.exe analysis/verify_download.py data/session_aggregation.jsonl.gz 1f3897650fb420c97c14ff452398c3f8
+```
+Let the agent know once the verification outputs `MATCH`.
