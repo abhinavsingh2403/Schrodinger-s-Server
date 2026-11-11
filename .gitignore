@@ -27,3 +27,9 @@ sensor/cowrie-src/
 # Operating System files
 .DS_Store
 Thumbs.db
+
+# Databases & local state
+*.db
+*.db-wal
+*.db-shm
+sensor/personas/
