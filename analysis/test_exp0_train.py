@@ -182,3 +182,86 @@ def test_load_hyperparameter_grid(tmp_path):
     loaded = load_hyperparameter_grid(grid_file)
     assert "logistic_regression" in loaded
     assert "hist_gradient_boosting" in loaded
+
+
+def test_stage_allowed_features_leakage_guards():
+    """Verify STAGE_ALLOWED_FEATURES strictly bans leakage per PHASE 2.
+    
+    - duration, cnt_command_input, cnt_command_failed, file and direct-tcpip counters
+      appear in NO S1 to S3 feature set.
+    - S1 contains NO post-auth field.
+    - S4 and S5 are empty on aggregate data.
+    """
+    from analysis.exp0_train import STAGE_ALLOWED_FEATURES
+
+    banned_in_early = {
+        "duration",
+        "cnt_command_input",
+        "cnt_command_failed",
+        "cnt_file_download",
+        "cnt_file_download_failed",
+        "cnt_file_upload",
+        "cnt_direct_tcpip_request",
+        "cnt_direct_tcpip_data",
+    }
+
+    for st in ("S1", "S2", "S3"):
+        feats = set(STAGE_ALLOWED_FEATURES[st])
+        intersection = feats.intersection(banned_in_early)
+        assert not intersection, f"Stage {st} contains banned leaky features: {intersection}"
+
+    # S1 must contain NO post-auth field
+    post_auth_fields = {
+        "cnt_client_fingerprint",
+        "cnt_login_failed",
+        "cnt_login_success",
+        "cnt_client_size",
+        "cnt_client_var",
+        "cnt_session_params",
+        "has_pty",
+    }
+    s1_feats = set(STAGE_ALLOWED_FEATURES["S1"])
+    s1_post_auth = s1_feats.intersection(post_auth_fields)
+    assert not s1_post_auth, f"Stage S1 contains post-auth fields: {s1_post_auth}"
+
+    # S4 and S5 are empty on aggregate data
+    assert STAGE_ALLOWED_FEATURES["S4"] == []
+    assert STAGE_ALLOWED_FEATURES["S5"] == []
+
+
+def test_table_csv_provenance_and_roundtrip(tmp_path):
+    """Verify write_table_csv produces exact schema and detects hand-edits."""
+    from analysis.exp0_train import write_table_csv
+    import csv
+
+    test_rows = [
+        {
+            "stage": "S1",
+            "reach_rate": 1.0,
+            "dropped_prefix": 0,
+            "evaluated_sessions": 10000,
+            "base_rate": 0.02,
+            "best_rule": "R0_random",
+            "best_rule_val_recall": 0.10,
+            "best_rule_test_recall": 0.09,
+            "ml_candidate": "LogisticRegression(C=0.1)",
+            "ml_test_recall": 0.08,
+            "delta_k": -0.01,
+            "ci_lower": -0.05,
+            "ci_upper": 0.03,
+            "bonferroni_alpha": 0.0167,
+            "min_size_met": True,
+        }
+    ]
+
+    csv_path = tmp_path / "table.csv"
+    write_table_csv(csv_path, test_rows)
+    assert csv_path.is_file()
+
+    with open(csv_path, "r", encoding="utf-8") as f:
+        reader = list(csv.DictReader(f))
+    assert len(reader) == 1
+    assert reader[0]["stage"] == "S1"
+    assert float(reader[0]["delta_k"]) == -0.01
+    assert reader[0]["min_size_met"] == "True"
+

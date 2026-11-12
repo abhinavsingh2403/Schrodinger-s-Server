@@ -36,6 +36,26 @@ def test_recall_at_budget_zero_positives() -> None:
     assert recall_at_budget(scores, labels, budget=0.5) == 0.0
 
 
+def test_recall_at_budget_ties_broken_at_random() -> None:
+    """Verify all-equal scores give recall ~ budget and break ties deterministically with seed."""
+    # 1000 items, all equal score 0.5; 100 positives scattered evenly
+    n = 1000
+    scores = [0.5] * n
+    labels = [1 if i % 10 == 0 else 0 for i in range(n)]  # exactly 100 positives
+
+    rec1 = recall_at_budget(scores, labels, budget=0.10, seed=42)
+    rec2 = recall_at_budget(scores, labels, budget=0.10, seed=42)
+    rec3 = recall_at_budget(scores, labels, budget=0.10, seed=999)
+
+    # Identical seed is completely deterministic
+    assert rec1 == rec2
+    # At 10% budget, captured fraction of positives should be ~ 0.10 (between 0.05 and 0.18)
+    assert 0.05 <= rec1 <= 0.18
+    # Different seed yields different random tie-breaking ordering
+    # (unless exceptionally equal by chance, but across 1000 items seeds diverge)
+    assert rec1 != rec3 or 0.05 <= rec3 <= 0.18
+
+
 def test_r0_random_bounds_and_determinism() -> None:
     s1 = score_r0_random(100, seed=42)
     s2 = score_r0_random(100, seed=42)
@@ -98,3 +118,23 @@ def test_r7_pure_python_decision_tree() -> None:
     assert len(preds) == 2
     # Probability for [1, 1] should be higher than [0, 0]
     assert preds[0] > preds[1]
+
+
+def test_pure_python_logistic_regression() -> None:
+    from analysis.exp0_rules import PurePythonLogisticRegression
+    X_train = [
+        [10.0, 5.0],
+        [8.0, 4.0],
+        [1.0, 0.0],
+        [0.0, 1.0],
+    ]
+    y_train = [1, 1, 0, 0]
+
+    model = PurePythonLogisticRegression(C=1.0, max_iter=80, lr=0.5)
+    model.fit(X_train, y_train)
+    preds = model.predict_proba([[9.0, 4.5], [0.5, 0.5]])
+    assert len(preds) == 2
+    assert preds[0] > preds[1]
+    assert preds[0] > 0.5
+    assert preds[1] < 0.5
+

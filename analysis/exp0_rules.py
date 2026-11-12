@@ -166,10 +166,72 @@ def train_r7_decision_tree(
     return tree
 
 
-def recall_at_budget(scores: list[float], labels: list[int], budget: float) -> float:
+class PurePythonLogisticRegression:
+    """Deterministic pure-Python L2-regularized Logistic Regression classifier.
+    
+    Provides reliable, zero-dependency candidate modeling when scikit-learn
+    is unavailable in the local environment.
+    """
+
+    def __init__(self, C: float = 1.0, max_iter: int = 60, lr: float = 0.5) -> None:
+        self.C = C
+        self.max_iter = max_iter
+        self.lr = lr
+        self.weights: list[float] = []
+        self.bias: float = 0.0
+        self.mins: list[float] = []
+        self.ranges: list[float] = []
+
+    def fit(self, X: list[list[float]], y: list[int]) -> PurePythonLogisticRegression:
+        n_samples = len(X)
+        if n_samples == 0:
+            return self
+        n_features = len(X[0])
+        self.weights = [0.0] * n_features
+        self.bias = 0.0
+        reg = 1.0 / max(1e-9, self.C * n_samples)
+
+        # Robust min-max normalization
+        self.mins = [min(row[j] for row in X) for j in range(n_features)]
+        self.ranges = [max(1e-6, max(row[j] for row in X) - self.mins[j]) for j in range(n_features)]
+        X_norm = [[(row[j] - self.mins[j]) / self.ranges[j] for j in range(n_features)] for row in X]
+
+        for _ in range(self.max_iter):
+            grad_w = [0.0] * n_features
+            grad_b = 0.0
+            for i in range(n_samples):
+                z = self.bias + sum(w * x for w, x in zip(self.weights, X_norm[i]))
+                z = max(-20.0, min(20.0, z))
+                p = 1.0 / (1.0 + math.exp(-z))
+                err = p - y[i]
+                for j in range(n_features):
+                    grad_w[j] += err * X_norm[i][j]
+                grad_b += err
+
+            for j in range(n_features):
+                self.weights[j] -= self.lr * (grad_w[j] / n_samples + reg * self.weights[j])
+            self.bias -= self.lr * (grad_b / n_samples)
+
+        return self
+
+    def predict_proba(self, X: list[list[float]]) -> list[float]:
+        if not self.weights or not X:
+            return [0.0 for _ in X]
+        probs = []
+        for row in X:
+            x_norm = [(row[j] - self.mins[j]) / self.ranges[j] for j in range(len(self.weights))]
+            z = self.bias + sum(w * x for w, x in zip(self.weights, x_norm))
+            z = max(-20.0, min(20.0, z))
+            p = 1.0 / (1.0 + math.exp(-z))
+            probs.append(p)
+        return probs
+
+
+def recall_at_budget(scores: list[float], labels: list[int], budget: float, seed: int = 42) -> float:
     """
     Computes recall of value=1 sessions within the top `budget` fraction of highest-scored sessions.
     
+    Ties broken at random with a fixed seed per EXPERIMENT0.md §7.
     budget is in (0, 1], e.g. 0.10 for 10% budget.
     """
     if not scores or not labels or len(scores) != len(labels):
@@ -179,11 +241,17 @@ def recall_at_budget(scores: list[float], labels: list[int], budget: float) -> f
     if total_positives == 0:
         return 0.0
 
-    k = max(1, int(math.ceil(budget * len(scores))))
-    
-    # Sort indices descending by score
-    indexed_scores = sorted(enumerate(scores), key=lambda x: x[1], reverse=True)
-    top_k_indices = [idx for idx, _ in indexed_scores[:k]]
+    n = len(scores)
+    k = max(1, int(math.ceil(budget * n)))
 
+    # Deterministic tie-breaking using fixed seed RNG per EXPERIMENT0.md §7
+    rng = random.Random(seed)
+    tie_breakers = [rng.random() for _ in range(n)]
+
+    # Sort descending by primary score, tie-broken by secondary random float
+    indices = list(range(n))
+    indices.sort(key=lambda i: (scores[i], tie_breakers[i]), reverse=True)
+
+    top_k_indices = indices[:k]
     positives_captured = sum(labels[i] for i in top_k_indices)
     return positives_captured / total_positives
