@@ -30,10 +30,10 @@ Following rigorous external peer audit, completion metrics are recalibrated to d
 | **Standalone Subsystems (Code & Parity Tests)** | **~85%** | 102 passing unit tests (1 skipped) across gatekeeper, sensor, router, harness, infra, analysis, and dashboard. Real Stage S3 ML model integrated with sub-millisecond inference and mathematical parity. |
 | **Offline Data & Science** | **~80%** | Base rates S3 Part 1 verified (38.1M sessions); event schema verified; Gate 0 evaluated on 598k test sessions with 10,000-draw paired cluster bootstrap across all 8,305 clusters (`PASS-ML at S3`). |
 | **Live Integration & End-to-End Deployment** | **~45%** | Gatekeeper REST service serves real ML model predictions (`models/model_s3.json`); Cowrie in-process Conch adapter wired for lifecycle hooks; container port bound to `0.0.0.0:2222`; live testing on Linux testbed with real attackers/Kali deferred. |
-| **True Overall Project Completion** | **~70%** | Strong, verified ML cyber research system (rated ~8.2/10). Production model serving and mathematical feature parity proven; live operational Kali Linux demonstration deferred for live honeypot phase. |
+| **True Overall Project Completion** | **~70%** | Strong research prototype with active model serving and microsecond inference (**provisional peer rating: 7.9/10**). |
 
 ```
-[███████████████████████████████████░░░░░░░░░░░░░░░] ~70% True Overall Maturity
+[███████████████████████████████████░░░░░░░░░░░░░░░] ~70% True Overall Maturity (7.9/10)
 [██████████████████████████████████████████░░░░░░░░] ~85% Standalone Subsystems
 [████████████████████████████████████████░░░░░░░░░░] ~80% Offline Science
 [██████████████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░] ~45% Live Integration
@@ -164,7 +164,15 @@ Based on rigorous peer audit, the remediation items are tracked as follows:
    * *Audit Finding*: Cowrie container was not forwarding transport or session events to custom adapter classes, and persona filesystem overlays were not dynamically updated upon tier escalation.
    * *Action Completed*: Subclassed Twisted Conch's `SSHSessionForCowrieUser` in `sensor/adaptive_server.py`, wiring `on_kex_completed`, `on_auth_completed`, `getPty` (terminal allocation), `openShell`/`execCommand`, and `closed` (session closing and visitor memory recording). Implemented `_on_tier_escalated` updating `self.server.hostname`, applying filesystem overlay, and updating `avatar.environ["HOSTNAME"]`. Bound Cowrie SSH listener to `0.0.0.0:2222`.
 
-4. **Live Linux Practical Testbed (Priority 4) — NEXT**:
+### Immediate Antigravity Focus for Next Session (Pre-Cowrie Standalone ML Refinement)
+Based on latest code audit (7.9/10 provisional rating), the following four focused technical fixes are queued for the next working session:
+1. **Gatekeeper Docker Mounts**: Update `infra/docker-compose.yml` to mount `../models` and `../analysis` into the `gatekeeper` service so the containerized service loads `models/model_s3.json`.
+2. **Exported Model Metric Reconciliation**: Export the exact model instance directly from `exp0_train.py` to resolve the minor test recall discrepancy between the main table (0.2919) and the exported artifact (0.2984).
+3. **Strict Feature Parity & Counter Initialization**: Initialize `cnt_session_connect` to 0 in `feature_extractor.py`, increment on session connect, and assert feature-by-feature dictionary equality in parity tests.
+4. **Session-Level Budget Accounting**: Track the live 10% escalation ceiling by unique session IDs rather than individual decision queries in `policy.py`.
+
+### Long-Term Operational Roadmap
+4. **Live Linux Practical Testbed (Priority 4) — DEFERRED FOR LIVE HONEYPOT PHASE**:
    * *Audit Finding*: Unit tests pass in isolated mock loops, but end-to-end operation against real attacker tools has not been executed on live Linux/Kali environments.
    * *Action*: Deploy honeypot on an Ubuntu lab host, execute automated scans and brute-force attacks from Kali Linux (Nmap, Hydra, SSH), and verify in real time that sessions are dynamically routed and logged in the dashboard.
 

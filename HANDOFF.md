@@ -6,7 +6,7 @@
   - **Standalone Subsystems (Code & Parity Tests)**: **~85%** (102 passed, 1 skipped unit tests across gatekeeper, sensor, router, harness, infra, analysis, and dashboard; real Stage S3 ML model integrated with sub-millisecond inference and mathematical parity).
   - **Offline Data & Science**: **~80%** (Base rates S3 Part 1 verified; event schema S3 Part 2 verified; Gate 0 10,000 paired cluster bootstrap evaluated on 598k test sessions; S3 model exported to `models/model_s3.json` with calibrated budget threshold $\tau = 0.045197$).
   - **Live Integration & End-to-End Deployment**: **~45%** (Gatekeeper REST service actively serves real ML predictions; Cowrie in-process Conch adapter wired for lifecycle hooks; live Kali Linux testbed deferred per task instructions).
-  - **True Overall Project Completion**: **~70%** (Strong, verified ML cyber research system rated ~8.2/10).
+  - **True Overall Project Completion**: **~70%** (Provisional peer audit rating: **7.9/10**).
   - **Experiment 0 Status**: **PASS-ML (Stages: S3)** (Pre-registered Gate 0 criteria satisfied at Stage S3 with $\Delta_3 = +17.68$ pp and 98.33% Multiplicity-Adjusted CI $[+0.0045, +0.6190]$; S1 and S2 show simple rules match or exceed ML).
 
 ---
@@ -121,3 +121,11 @@
 ### Unverified / TODO(verify)
 - `TODO(verify): sensor/test_spike_s1_poc.py`: Skipped on Windows host due to missing `twisted.conch` package; will be verified on Linux testbed during live honeypot phase.
 - `TODO(verify): EVAL H4 independent scan`: Must be executed with `kaniini/honeypot-auditor` in the isolated container network during live honeypot phase.
+
+---
+
+## NEXT ACTIONS FOR TOMORROW'S SESSION (AUDIT REMEDIATION)
+1. **Docker Compose Service Mounts**: In `infra/docker-compose.yml`, mount `../models` and `../analysis` into the `gatekeeper` service container so it has access to `model_s3.json` and `exp0_rules.py` in container runtime.
+2. **Metric Reconciliation in Exporter**: In `analysis/export_s3_model.py`, export the exact trained model from `analysis/exp0_train.py` so the artifact metadata exactly matches the 29.19% test recall from `results/exp0/table.csv`.
+3. **Feature Parity Counter Initialization**: In `gatekeeper/feature_extractor.py`, initialize `cnt_session_connect` to 0 (increment on event). In `gatekeeper/test_model_inference_parity.py`, add feature-by-feature dictionary equality assertions across all 9 features.
+4. **Session-Level Budget Accounting**: In `gatekeeper/policy.py`, track the 10% budget escalation rate by unique session IDs rather than raw query counts.
