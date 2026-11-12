@@ -300,6 +300,21 @@ def make_dashboard_handler(server_instance: DashboardServer):
                 self.end_headers()
                 self.wfile.write(json.dumps(data).encode("utf-8"))
 
+            elif path == "/api/model":
+                model_file = Path(__file__).resolve().parent.parent / "models" / "model_s3.json"
+                if model_file.exists():
+                    try:
+                        with open(model_file, "r", encoding="utf-8") as f:
+                            data = json.load(f)
+                    except Exception:
+                        data = {"status": "ERROR_READING_MODEL"}
+                else:
+                    data = {"status": "NO_MODEL_ARTIFACT"}
+                self.send_response(200)
+                self.send_header("Content-Type", "application/json")
+                self.end_headers()
+                self.wfile.write(json.dumps(data).encode("utf-8"))
+
             elif path == "/api/exp0":
                 exp0_summary = Path(__file__).resolve().parent.parent / "results" / "exp0" / "rules_summary.json"
                 if exp0_summary.exists():

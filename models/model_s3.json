@@ -1,0 +1,115 @@
+{
+  "model_type": "PurePythonLogisticRegression",
+  "C": 0.01,
+  "max_iter": 60,
+  "lr": 0.5,
+  "weights": [
+    0.0,
+    -1.42947087250653,
+    -0.6694194749195431,
+    -0.003457101375094261,
+    -0.07161687786761484,
+    0.41088841055907105,
+    0.00012273860779473373,
+    0.0,
+    0.01405945138258431
+  ],
+  "bias": -1.6972690167851592,
+  "mins": [
+    1.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+  ],
+  "ranges": [
+    1e-06,
+    1.0,
+    2.0,
+    2.0,
+    21.0,
+    1.0,
+    4.0,
+    1e-06,
+    146.0
+  ],
+  "model_name": "LogisticRegression(C=0.01)",
+  "stage": "S3",
+  "description": "Schrodinger's Server Stage S3 Post-Auth Channel Setup Classifier",
+  "features": [
+    "cnt_session_connect",
+    "cnt_client_version",
+    "cnt_client_kex",
+    "cnt_client_fingerprint",
+    "cnt_login_failed",
+    "cnt_login_success",
+    "cnt_client_size",
+    "cnt_client_var",
+    "cnt_session_params"
+  ],
+  "feature_aliases": {
+    "cnt_session_connect": [
+      "cnt_session_connect",
+      "s1_session_connect",
+      "session_connect"
+    ],
+    "cnt_client_version": [
+      "cnt_client_version",
+      "s1_ver_len",
+      "version"
+    ],
+    "cnt_client_kex": [
+      "cnt_client_kex",
+      "s1_kex_count",
+      "kex_algs"
+    ],
+    "cnt_client_fingerprint": [
+      "cnt_client_fingerprint",
+      "s1_has_hassh",
+      "hassh"
+    ],
+    "cnt_login_failed": [
+      "cnt_login_failed",
+      "s2_failed_logins",
+      "n_login_failed"
+    ],
+    "cnt_login_success": [
+      "cnt_login_success",
+      "s2_has_success",
+      "login_success"
+    ],
+    "cnt_client_size": [
+      "cnt_client_size",
+      "s3_term_width",
+      "width"
+    ],
+    "cnt_client_var": [
+      "cnt_client_var",
+      "s3_client_var",
+      "client_var"
+    ],
+    "cnt_session_params": [
+      "cnt_session_params",
+      "s3_session_params",
+      "session_params"
+    ]
+  },
+  "threshold_10pct_budget": 0.045197,
+  "metrics": {
+    "val_recall_at_10": 0.4765,
+    "test_recall_at_10": 0.2984,
+    "best_rule_test_recall": 0.1151,
+    "delta_k": 0.1768,
+    "ci_98_33": [
+      0.0045,
+      0.619
+    ],
+    "n_train_samples": 50000,
+    "n_val_samples": 825821,
+    "n_test_samples": 598647
+  }
+}

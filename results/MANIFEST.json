@@ -47,6 +47,14 @@
     "EXP0_RESULT.md": {
       "md5": "7812caced413d4794739f277872cb891",
       "eval_ref": "AGENTS.md Root Mirror"
+    },
+    "models/model_s3.json": {
+      "md5": "f03f5e828dc683bd28c3e13849c1c1d2",
+      "eval_ref": "EXPERIMENT0.md Section 6 S3 Trained Model Artifact"
+    },
+    "results/exp0/model_s3.json": {
+      "md5": "f03f5e828dc683bd28c3e13849c1c1d2",
+      "eval_ref": "EXPERIMENT0.md Section 6 S3 Trained Model Artifact Mirror"
     }
   }
 }

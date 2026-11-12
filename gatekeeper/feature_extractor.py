@@ -42,6 +42,14 @@ class SessionFeatureExtractor:
         self.commands: list[str] = []
         self.ts_login: str | None = None
         self.ts_cmd1: str | None = None
+        # Aggregate event counters for offline/live parity (STAGE_ALLOWED_FEATURES)
+        self.cnt_session_connect: int = 1
+        self.cnt_client_version: int = 0
+        self.cnt_client_kex: int = 0
+        self.cnt_client_fingerprint: int = 0
+        self.cnt_client_size: int = 0
+        self.cnt_client_var: int = 0
+        self.cnt_session_params: int = 0
 
     @staticmethod
     def _to_list(val: Any) -> list[str]:
@@ -84,11 +92,16 @@ class SessionFeatureExtractor:
             self.compressions = self._to_list(event.get("compCS"))
 
         # Event-specific parsing
-        if event_id == "cowrie.client.version":
+        if event_id == "cowrie.session.connect":
+            self.cnt_session_connect += 1
+
+        elif event_id == "cowrie.client.version":
+            self.cnt_client_version += 1
             if event.get("version"):
                 self.client_version = str(event.get("version", ""))
 
         elif event_id == "cowrie.client.kex":
+            self.cnt_client_kex += 1
             if event.get("kexAlgs"):
                 self.kex_algs = self._to_list(event.get("kexAlgs"))
             if event.get("keyAlgs"):
@@ -99,6 +112,11 @@ class SessionFeatureExtractor:
                 self.macs = self._to_list(event.get("macCS"))
             if event.get("compCS"):
                 self.compressions = self._to_list(event.get("compCS"))
+
+        elif event_id == "cowrie.client.fingerprint":
+            self.cnt_client_fingerprint += 1
+            if event.get("hassh"):
+                self.hassh = str(event.get("hassh", ""))
 
         elif event_id == "cowrie.login.failed":
             self.auth_attempts += 1
@@ -111,12 +129,19 @@ class SessionFeatureExtractor:
                 self.ts_login = str(event["ts"])
 
         elif event_id == "cowrie.client.size":
+            self.cnt_client_size += 1
             self.has_pty = True
             try:
                 self.term_width = int(event.get("width", 0) or 0)
                 self.term_height = int(event.get("height", 0) or 0)
             except (ValueError, TypeError):
                 pass
+
+        elif event_id == "cowrie.client.var":
+            self.cnt_client_var += 1
+
+        elif event_id == "cowrie.session.params":
+            self.cnt_session_params += 1
 
         elif event_id in ("cowrie.command.input", "cowrie.command.failed"):
             cmd = str(event.get("input", "") or "")
@@ -142,6 +167,11 @@ class SessionFeatureExtractor:
             "s1_cipher_count": len(self.ciphers),
             "s1_mac_count": len(self.macs),
             "s1_comp_count": len(self.compressions),
+            # Model & dataset aggregate feature parity (STAGE_ALLOWED_FEATURES)
+            "cnt_session_connect": max(1, self.cnt_session_connect),
+            "cnt_client_version": max(1 if self.client_version else 0, self.cnt_client_version),
+            "cnt_client_kex": max(1 if self.kex_algs else 0, self.cnt_client_kex),
+            "cnt_client_fingerprint": max(1 if self.hassh else 0, self.cnt_client_fingerprint),
         }
         if stage == "S1":
             return feats
@@ -151,6 +181,8 @@ class SessionFeatureExtractor:
             "s2_auth_attempts": self.auth_attempts,
             "s2_failed_logins": self.failed_logins,
             "s2_has_success": 1 if self.auth_success else 0,
+            "cnt_login_failed": self.failed_logins,
+            "cnt_login_success": 1 if self.auth_success else 0,
         })
         if stage == "S2":
             return feats
@@ -161,6 +193,10 @@ class SessionFeatureExtractor:
             "s3_term_width": self.term_width,
             "s3_term_height": self.term_height,
             "s3_is_exec": 1 if self.is_exec else 0,
+            "cnt_client_size": max(1 if self.has_pty else 0, self.cnt_client_size),
+            "cnt_client_var": self.cnt_client_var,
+            "cnt_session_params": self.cnt_session_params,
+            "has_pty": 1 if self.has_pty else 0,
         })
         if stage == "S3":
             return feats

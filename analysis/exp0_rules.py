@@ -14,7 +14,9 @@ Per EXPERIMENT0.md Section 7:
 
 from __future__ import annotations
 
+import json
 import math
+from pathlib import Path
 import random
 from typing import Any
 
@@ -225,6 +227,62 @@ class PurePythonLogisticRegression:
             p = 1.0 / (1.0 + math.exp(-z))
             probs.append(p)
         return probs
+
+    def predict_proba_single(self, row: list[float]) -> float:
+        """Predict P(Y=1) for a single feature vector."""
+        if not self.weights or not row:
+            return 0.0
+        n = min(len(self.weights), len(row))
+        x_norm = [(row[j] - self.mins[j]) / self.ranges[j] for j in range(n)]
+        z = self.bias + sum(w * x for w, x in zip(self.weights[:n], x_norm))
+        z = max(-20.0, min(20.0, z))
+        return 1.0 / (1.0 + math.exp(-z))
+
+    def to_dict(self) -> dict[str, Any]:
+        """Serialize model weights and normalization parameters to dict."""
+        return {
+            "model_type": "PurePythonLogisticRegression",
+            "C": self.C,
+            "max_iter": self.max_iter,
+            "lr": self.lr,
+            "weights": self.weights,
+            "bias": self.bias,
+            "mins": self.mins,
+            "ranges": self.ranges,
+        }
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> PurePythonLogisticRegression:
+        """Deserialize model from dictionary."""
+        model = cls(
+            C=float(data.get("C", 1.0)),
+            max_iter=int(data.get("max_iter", 60)),
+            lr=float(data.get("lr", 0.5)),
+        )
+        model.weights = [float(w) for w in data.get("weights", [])]
+        model.bias = float(data.get("bias", 0.0))
+        model.mins = [float(m) for m in data.get("mins", [])]
+        model.ranges = [float(r) for r in data.get("ranges", [])]
+        return model
+
+    def save_json(self, path: Path | str, metadata: dict[str, Any] | None = None) -> None:
+        """Save model state and optional metadata to JSON file."""
+        p = Path(path)
+        p.parent.mkdir(parents=True, exist_ok=True)
+        payload = self.to_dict()
+        if metadata:
+            payload.update(metadata)
+        with open(p, "w", encoding="utf-8") as f:
+            json.dump(payload, f, indent=2)
+
+    @classmethod
+    def load_json(cls, path: Path | str) -> tuple[PurePythonLogisticRegression, dict[str, Any]]:
+        """Load model state and metadata from JSON file."""
+        p = Path(path)
+        with open(p, "r", encoding="utf-8") as f:
+            data = json.load(f)
+        model = cls.from_dict(data)
+        return model, data
 
 
 def recall_at_budget(scores: list[float], labels: list[int], budget: float, seed: int = 42) -> float:

@@ -16,18 +16,27 @@ import argparse
 import http.server
 import json
 import os
+from pathlib import Path
 import sqlite3
+import sys
 import time
 import urllib.error
 import urllib.request
 from contextlib import contextmanager
 from datetime import datetime, timezone
-from pathlib import Path
 from typing import Any
 
 from gatekeeper.feature_extractor import SessionFeatureExtractor
 from gatekeeper.policy import EscalationPolicy
 from gatekeeper.visitor_memory import VisitorMemory, derive_visitor_id, get_masked_id
+
+try:
+    from analysis.exp0_rules import PurePythonLogisticRegression
+except ImportError:
+    proj_root = Path(__file__).resolve().parent.parent
+    if str(proj_root) not in sys.path:
+        sys.path.insert(0, str(proj_root))
+    from analysis.exp0_rules import PurePythonLogisticRegression
 
 
 class DecisionEngine:
@@ -39,6 +48,7 @@ class DecisionEngine:
         salt: bytes | str | None = None,
         policy: EscalationPolicy | None = None,
         model: Any | None = None,
+        model_path: str | Path | None = None,
         memory: VisitorMemory | None = None,
     ) -> None:
         self.db_path = str(db_path)
@@ -48,13 +58,58 @@ class DecisionEngine:
             self.salt = salt or os.environ.get("VISITOR_SALT", "schrodinger-dev-salt-2026").encode("utf-8")
         self.memory = memory or VisitorMemory(self.db_path, salt=self.salt)
         self.policy = policy or EscalationPolicy(threshold_t2=0.50, threshold_t3=0.85)
-        self.model = model  # Friend will plug in trained model here; fallback to rule if None
+        self.model = model
+        self.model_metadata: dict[str, Any] = {}
+        if self.model is None:
+            self._load_model(model_path)
         self._init_decision_log()
+
+    def _load_model(self, model_path: str | Path | None = None) -> None:
+        """Safely load trained model artifact with fail-cheap fallback."""
+        if model_path is not None:
+            cand = Path(model_path)
+            if cand.is_file():
+                try:
+                    loaded_model, metadata = PurePythonLogisticRegression.load_json(cand)
+                    self.model = loaded_model
+                    self.model_metadata = metadata
+                    calibrated_th = float(metadata.get("threshold_10pct_budget", 0.045197))
+                    self.policy.thresholds_v2["S3"] = calibrated_th
+                    return
+                except Exception:
+                    pass
+            self.model = None
+            self.model_metadata = {}
+            return
+
+        proj_root = Path(__file__).resolve().parent.parent
+        candidates = [
+            proj_root / "models" / "model_s3.json",
+            proj_root / "results" / "exp0" / "model_s3.json",
+            Path("models/model_s3.json"),
+            Path("results/exp0/model_s3.json"),
+        ]
+
+        for cand in candidates:
+            if cand.is_file():
+                try:
+                    loaded_model, metadata = PurePythonLogisticRegression.load_json(cand)
+                    self.model = loaded_model
+                    self.model_metadata = metadata
+                    # Calibrated 10% escalation budget threshold from validation set
+                    calibrated_th = float(metadata.get("threshold_10pct_budget", 0.045197))
+                    self.policy.thresholds_v2["S3"] = calibrated_th
+                    return
+                except Exception:
+                    pass
+        self.model = None
+        self.model_metadata = {}
 
     @contextmanager
     def _connection(self):
         conn = sqlite3.connect(self.db_path, timeout=5.0)
         conn.execute("PRAGMA journal_mode=WAL;")
+        conn.execute("PRAGMA synchronous=NORMAL;")
         conn.row_factory = sqlite3.Row
         try:
             yield conn
@@ -88,41 +143,94 @@ class DecisionEngine:
         except Exception:
             pass
 
-    def score_features(self, stage: str, features: dict[str, Any]) -> float:
-        """Score stage features using loaded model or pre-declared heuristic fallback."""
-        if self.model is not None:
+    def score_features(self, stage: str, features: dict[str, Any]) -> tuple[float, str, str]:
+        """Score stage features using loaded model or pre-declared heuristic fallback.
+        
+        Returns (score, score_source, model_name).
+        """
+        # 1. Learned ML model (S3 Post-Auth Channel Setup)
+        if self.model is not None and stage == "S3":
             try:
-                # If model has predict_proba
-                return float(self.model.predict_proba([list(features.values())])[0][1])
+                feature_names = self.model_metadata.get("features", [
+                    "cnt_session_connect",
+                    "cnt_client_version",
+                    "cnt_client_kex",
+                    "cnt_client_fingerprint",
+                    "cnt_login_failed",
+                    "cnt_login_success",
+                    "cnt_client_size",
+                    "cnt_client_var",
+                    "cnt_session_params",
+                ])
+                aliases = self.model_metadata.get("feature_aliases", {})
+                row = []
+                for fname in feature_names:
+                    val = None
+                    if fname in features:
+                        val = features[fname]
+                    elif fname in aliases:
+                        for alt in aliases[fname]:
+                            if alt in features:
+                                val = features[alt]
+                                break
+                    try:
+                        f_val = float(val) if val is not None else 0.0
+                    except (ValueError, TypeError):
+                        f_val = 0.0
+                    row.append(f_val)
+
+                if hasattr(self.model, "predict_proba_single"):
+                    score = self.model.predict_proba_single(row)
+                elif hasattr(self.model, "predict_proba"):
+                    score = float(self.model.predict_proba([row])[0][1])
+                else:
+                    score = 0.0
+
+                mname = self.model_metadata.get("model_name", "LogisticRegression(C=0.01)")
+                return float(score), "ml_model_s3", mname
             except Exception:
                 pass
 
-        # Reconcile feature names across both raw sensor dicts and stage feature extractor
-        has_success = features.get("s2_has_success", features.get("login_success", 0))
-        failed_logins = features.get("s2_failed_logins", features.get("n_login_failed", 0))
+        # 2. Custom model injected with predict_proba
+        if self.model is not None and hasattr(self.model, "predict_proba") and not isinstance(self.model, PurePythonLogisticRegression):
+            try:
+                score = float(self.model.predict_proba([list(features.values())])[0][1])
+                return score, "custom_model", "CustomModel"
+            except Exception:
+                pass
+
+        # 3. Pre-declared baseline rules & heuristic fallback
+        has_success = features.get("s2_has_success", features.get("cnt_login_success", features.get("login_success", 0)))
+        failed_logins = features.get("s2_failed_logins", features.get("cnt_login_failed", features.get("n_login_failed", 0)))
         has_pty = features.get("s3_has_pty", features.get("has_pty", 0))
 
-        # PLACEHOLDER HEURISTIC FALLBACK (Not learned parameters; rule-based defaults)
-        # These constants are engineering placeholders until empirical ML model weights are loaded.
-        if stage in ("S1", "S2"):
-            if has_success > 0:
-                return 0.70  # Placeholder heuristic: Authenticated session
-            if failed_logins > 3:
-                return 0.40  # Placeholder heuristic: Brute force probe
-            return 0.10
+        if stage in ("S0", "S1"):
+            return 0.05, "rule_r0_random", "R0_random"
 
-        elif stage in ("S3", "S4", "S5"):
+        elif stage == "S2":
+            if has_success > 0:
+                return 0.70, "rule_r1_login_success", "R1_login_success"
+            if failed_logins > 3:
+                return 0.40, "rule_r6_failed_logins", "R6_failed_logins"
+            return 0.10, "rule_r7_decision_tree", "R7_decision_tree"
+
+        elif stage == "S3":
             if has_pty > 0:
-                return 0.80  # Placeholder heuristic: Terminal allocated
+                return 0.80, "rule_r2_pty_requested", "R2_pty_requested"
+            if failed_logins > 0:
+                return 0.35, "rule_r6_failed_logins", "R6_failed_logins"
+            return 0.1151, "rule_r6_failed_logins", "R6_failed_logins"
+
+        elif stage in ("S4", "S5"):
             if (
                 features.get("s4_cmd1_has_pipe", 0) > 0
                 or features.get("s4_cmd1_has_chain", 0) > 0
                 or features.get("chaining_ops_count", 0) > 0
             ):
-                return 0.85  # Placeholder heuristic: Multi-stage or complex command
-            return 0.20
+                return 0.85, "heuristic_command_chain", "HeuristicCommand"
+            return 0.20, "heuristic_command_base", "HeuristicCommand"
 
-        return 0.05
+        return 0.05, "rule_r0_random", "R0_random"
 
     def decide(
         self,
@@ -149,7 +257,7 @@ class DecisionEngine:
             visitor = self.memory.get_visitor(ip)
 
             # 2. Score computation
-            score = self.score_features(stage, feats)
+            score, score_source, model_name = self.score_features(stage, feats)
 
             # 3. Policy evaluation (monotone upward-only)
             target_tier = self.policy.decide_tier(
@@ -180,6 +288,9 @@ class DecisionEngine:
                 "visitor_id": masked_id,
                 "stage": stage,
                 "score": round(score, 4),
+                "score_source": score_source,
+                "model_name": model_name,
+                "threshold_applied": round(self.policy.get_threshold_t2(stage), 4),
                 "tier": target_tier,
                 "target_tier": target_tier,
                 "latency_ms": round(latency_ms, 3),
@@ -194,7 +305,11 @@ class DecisionEngine:
                 "visitor_id": masked_id,
                 "stage": stage,
                 "score": 0.0,
+                "score_source": "fail_cheap_fallback",
+                "model_name": "None",
+                "threshold_applied": 0.50,
                 "tier": current_tier if current_tier in ("T1", "T2", "T3") else "T1",
+                "target_tier": current_tier if current_tier in ("T1", "T2", "T3") else "T1",
                 "latency_ms": round(latency_ms, 3),
                 "fail_cheap": True,
             }
