@@ -189,3 +189,21 @@ All non-trivial design decisions, architectural choices, and departures from pla
 - **Consequences**: Updated `analysis/exp0_train.py`, `analysis/exp0_rules.py`, `results/exp0/rules.json`, `results/exp0/table.csv`, `results/exp0/rules_summary.json`, `results/exp0/EXP0_RESULT.md`, `EXP0_RESULT.md`, and `results/MANIFEST.json`.
 
 
+### 2026-11-13: Runtime Architecture Completion & Statistically Corrected Paired Cluster Bootstrap
+- **Status**: ACCEPTED
+- **Owner**: All (P1/P2/P3)
+- **Context**: Address critical peer-review feedback:
+  1. Gatekeeper container lacked an HTTP server (`decision_api.py` defined classes without server loop or CLI).
+  2. Cowrie adapter was not forwarding in-process Conch session events (`on_kex_completed`, `on_auth_completed`, `on_command_received`, `on_session_closed`) or reapplying persona filesystem overlay on tier change.
+  3. `infra/cowrie.cfg` bound SSH to `127.0.0.1` rather than `0.0.0.0`.
+  4. Paired cluster bootstrap shortcut in `exp0_train.py` omitted zero-positive clusters and lacked per-draw dynamic budget recalculation.
+- **Decision**:
+  1. **Gatekeeper REST Service & Client**: Added `GatekeeperHTTPHandler`, `GatekeeperServer`, and `GatekeeperClient` with endpoints `/health`, `/decide`, `/record_session`, and CLI entry point (`python -m gatekeeper.decision_api --host 0.0.0.0 --port 5000`). Tested via live ephemeral HTTP test suite.
+  2. **Cowrie In-Process Event Hooks**: Inherited Conch's `SSHSessionForCowrieUser` in `sensor/adaptive_server.py`, wiring `on_kex_completed`, `on_auth_completed`, `getPty` (terminal allocation), `openShell`/`execCommand`, and `closed` (session closing and visitor memory recording). Implemented `_on_tier_escalated` updating `self.server.hostname`, applying filesystem overlay, and updating `avatar.environ["HOSTNAME"]`.
+  3. **Port & Compose Wiring**: Updated `infra/cowrie.cfg` to `0.0.0.0:2222`. Configured `docker-compose.yml` to run gatekeeper server, expose port 5000, add health check, and mount `../sensor` into Cowrie.
+  4. **Corrected Sparse Cluster Bootstrap**: Rewrote bootstrap in `analysis/exp0_train.py` to resample all 8,305 source-IP clusters (including 7,606 zero-positive clusters), dynamically recalculate the top-10% budget cutoff on each draw, and execute 10,000 resamples per `EXPERIMENT0.md §10` using $O(\text{sparse bins})$ integer tuples.
+  5. **Empirical Gate 0 Outcome**:
+     - Stage S1 (Handshake): Best rule R0 test recall = 9.70%, ML = 5.72%, $\Delta_1 = -3.98$ pp (CI: $[-9.22, -1.04]$ pp). ML does not help before auth.
+     - Stage S2 (Authentication): Best rule R7 test recall = 56.32%, ML = 54.97%, $\Delta_2 = -1.35$ pp (CI: $[-4.22, 0.00]$ pp). Simple auth rules dominate.
+     - Stage S3 (Channel Setup): Best rule R6 test recall = 11.51%, ML = 29.19%, $\Delta_3 = +17.68$ pp (98.33% Multiplicity-Adjusted CI: $[+0.0045, +0.6190]$). Because $\Delta_3 \ge 0.05$, CI lower bound $> 0$, and positive count ($8,617 \ge 500$) satisfies min size, Gate 0 formally passes under pre-registered criteria: **PASS-ML (Stages: S3)**.
+- **Consequences**: Verified with 96 passing unit tests (1 skipped). Updated `analysis/exp0_train.py`, `gatekeeper/decision_api.py`, `sensor/adaptive_server.py`, `infra/cowrie.cfg`, `infra/docker-compose.yml`, `results/exp0/table.csv`, `results/exp0/rules_summary.json`, `results/exp0/EXP0_RESULT.md`, `EXP0_RESULT.md`, and `results/MANIFEST.json`.

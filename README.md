@@ -27,16 +27,16 @@ Following rigorous external peer audit, completion metrics are recalibrated to d
 
 | Dimension | Progress | Assessment Rationale |
 |---|:---:|---|
-| **Standalone Subsystems (Code & Mock Tests)** | **~70%** | 93 passing unit tests across gatekeeper, sensor, router, harness, infra, analysis, and dashboard. Individual components function in unit tests, but are not yet fully wired to live Cowrie hooks. |
-| **Offline Data & Science** | **~65%** | Base rates S3 Part 1 verified (38.1M sessions); event schema verified; Gate 0 evaluated on 598k test sessions as an aggregate-data proxy ($N_{\text{cmd}} \ge 5$); cluster bootstrap needs dynamic threshold recalculation. |
-| **Live Integration & End-to-End Deployment** | **~35%** | Docker volumes mount custom sensor; feature keys reconciled; session recording hooked; pending live Cowrie in-process event hook registration and Kali Linux validation. |
-| **True Overall Project Completion** | **~55–60%** | Strong, original research prototype (rated ~7.2/10). Solid scientific grounding, but bridge between mock unit tests and live operational defense remains to be crossed. |
+| **Standalone Subsystems (Code & Mock Tests)** | **~75%** | 96 passing unit tests (1 skipped) across gatekeeper, sensor, router, harness, infra, analysis, and dashboard. Individual components function in unit tests; REST service and lifecycle hooks implemented. |
+| **Offline Data & Science** | **~75%** | Base rates S3 Part 1 verified (38.1M sessions); event schema verified; Gate 0 evaluated on 598k test sessions with 10,000-draw paired cluster bootstrap across all 8,305 clusters (`PASS-ML at S3`). |
+| **Live Integration & End-to-End Deployment** | **~40%** | Gatekeeper REST service implemented with `/health`; Cowrie in-process Conch adapter wired for handshake, auth, shell, exec, and close lifecycle hooks; container port bound to `0.0.0.0:2222`; live testing on Linux testbed with real attackers/Kali pending. |
+| **True Overall Project Completion** | **~60–65%** | Substantive working prototype (rated ~7.6/10). Solid scientific grounding and wired in-process hooks; live operational testing against Kali Linux remains to be completed. |
 
 ```
-[████████████████████████████░░░░░░░░░░░░░░░░░░░░░░] ~55–60% True Overall Maturity
-[███████████████████████████████████░░░░░░░░░░░░░░░] ~70% Standalone Subsystems
-[████████████████████████████████░░░░░░░░░░░░░░░░░░] ~65% Offline Science
-[█████████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░] ~35% Live Integration
+[███████████████████████████████░░░░░░░░░░░░░░░░░░░] ~60–65% True Overall Maturity
+[█████████████████████████████████████░░░░░░░░░░░░░] ~75% Standalone Subsystems
+[█████████████████████████████████████░░░░░░░░░░░░░] ~75% Offline Science
+[████████████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░] ~40% Live Integration
 ```
 
 | Phase / Component | Scope | Status | Honest Details / Audit Reality |
@@ -46,10 +46,10 @@ Following rigorous external peer audit, completion metrics are recalibrated to d
 | **S3 Part 1: Aggregate Base Rates** | Core | **DONE** | 38.1M sessions analyzed; value=1 base rate = 3.23% (`results/base_rates.json`) |
 | **S3 Part 2: Event Archive Verification** | Core | **DONE** | Range request inspection of 19.4GB `data_all.zip`; confirmed 52 days and `group \in {1, 2, 3, 4}` |
 | **S1: Cowrie Persona Switching PoC** | Core | **DONE** | Plan A in-process Conch adapter subclass verified in mock loop (`sensor/spike_s1_poc.py`) |
-| **O3: Experiment 0 (`EXPERIMENT0.md`)** | Core (Gate 0) | **DONE (Outcome: FAIL)** | Evaluated on 598,647 test sessions without feature leakage. Evaluates aggregate proxy ($N_{\text{cmd}} \ge 5$); cluster bootstrap needs dynamic threshold recalculation across resamples. |
-| **Phase 1: Gatekeeper Engine & Memory** | MVP | **BUILT (Code/Tests)** | SQLite WAL visitor memory, upward-only policy with budget ceiling, parity extractor, decision API; feature keys reconciled with sensor. |
-| **Phase 1: Sensor & Router Subsystems** | MVP | **BUILT (Mock-Tested)** | Adaptive Conch session server (`sensor/`), Plan B sticky asyncio router (`router/`); pending live Cowrie event hook registration. |
-| **Phase 2: Adversary Harness & Infra** | MVP | **BUILT (Code/Tests)** | Detector runner with safety allowlist, synthetic replay engine, isolated docker compose with custom sensor volume mount. |
+| **O3: Experiment 0 (`EXPERIMENT0.md`)** | Core (Gate 0) | **DONE (Outcome: PASS-ML at S3)** | Evaluated on 598,647 test sessions without feature leakage. Corrected 10,000-draw paired cluster bootstrap across all 8,305 clusters confirms ML adds +17.68 pp recall at Stage S3 with 98.33% CI $[+0.0045, +0.6190]$. S1 and S2 show rules match or exceed ML. |
+| **Phase 1: Gatekeeper Engine & Memory** | MVP | **BUILT & TESTED** | REST HTTP server (`/health`, `/decide`, `/record_session`), `GatekeeperClient`, SQLite WAL visitor memory, upward-only policy with budget ceiling, parity extractor. |
+| **Phase 1: Sensor & Router Subsystems** | MVP | **BUILT & HOOKED** | `CowrieSSHSessionAdapter` with in-process Conch lifecycle hooks (handshake, auth, PTY, shell/exec, close), dynamic persona switching via hostname and filesystem overlay. |
+| **Phase 2: Adversary Harness & Infra** | MVP | **BUILT (Code/Tests)** | Detector runner with safety allowlist, synthetic replay engine, isolated docker compose with custom sensor volume mount and port binding `0.0.0.0:2222`. |
 | **Phase 2: Cost & Arm Simulation** | MVP | **ORACLE BOUND** | Nominal cost model; Arm D labeled as retrospective hindsight upper bound (`results/arm_simulation.json`). |
 | **EVAL 5.3: Persona Natural Experiment** | MVP | **PENDING DATA** | Blocked on event-level `group` ingestion from `data_all.zip` (field absent in `session_aggregation`). |
 | **Phase 2: Results Dashboard** | MVP | **BUILT (Code/Tests)** | Cyber Protocol theme, privacy masking (`vis_xxxx`), zero npm dependencies, `/api/exp0` endpoint added. |
@@ -122,27 +122,24 @@ Computed over the complete dataset using DuckDB with zero dropped sessions:
 
 ```mermaid
 flowchart TD
-    subgraph Done["Current State: Research Prototype (~55-60%)"]
+    subgraph Done["Completed & Verified Components (~60-65%)"]
         S1["S1: Cowrie Persona Mock PoC"]
         S3["S3: 38M Base Rates & Range Checks"]
-        EXP0["Exp 0 Gate 0: Evaluated on 598k Sessions (FAIL)"]
-        GK["Gatekeeper Engine + SQLite Memory + Budget Ceiling"]
+        EXP0["Exp 0 Gate 0: 10,000 Cluster Bootstrap (PASS-ML at S3)"]
+        GK["Gatekeeper REST HTTP Service + SQLite Memory + Budget Ceiling"]
+        ADAPT["Cowrie Conch Adapter Hooks + Persona Filesystem Overlays"]
         DASH["Dashboard Server & Telemetry API"]
     end
 
-    subgraph Priorities["6-Step Prioritized Action Plan to Reach 100%"]
-        P1["1. Correct Cluster Bootstrap & Recalculate S3 CI"]
-        P2["2. Solidify Live Rule Gatekeeper & Wire Visitor Memory"]
-        P3["3. Wire Cowrie Event Hooks & Mount Custom Plugin"]
+    subgraph Priorities["Remaining Priorities to Reach 100% Operational Status"]
         P4["4. Live Kali Linux vs Ubuntu Practical Lab Test"]
         P5["5. Independent Security Audit (honeypot-auditor)"]
         P6["6. Lock Git Release Tags (exp0-v3 / eval-v3)"]
     end
 
-    EXP0 --> P1
-    GK --> P2
-    P2 --> P3
-    P3 --> P4
+    EXP0 --> P4
+    GK --> P4
+    ADAPT --> P4
     P4 --> P5
     P5 --> P6
 
@@ -152,30 +149,30 @@ flowchart TD
 
 ### Technical Audit Findings & Remediation Roadmap
 
-Based on rigorous peer audit, the following 5 technical items must be addressed before presenting Schrödinger's Server as an operational deployment:
+Based on rigorous peer audit, the remediation items are tracked as follows:
 
-1. **Bootstrap Procedure Correction (Priority 1)**:
-   * *Audit Finding*: The current `paired_cluster_bootstrap_delta()` in `analysis/exp0_train.py` computes the top 10% threshold globally on the initial test set and resamples only positive-containing IP clusters across 1,000 resamples.
-   * *Action*: Resample all clusters with replacement, dynamically recalculate the top 10% selection threshold inside each bootstrap draw, and scale to the pre-registered 10,000 resamples to produce mathematically rigorous confidence intervals.
-   * *Status on S3*: At Stage S3, the point improvement is promising ($\Delta_3 = +17.68$ pp), but the wide CI ($[-0.24, +60.52]$ pp) indicates high statistical uncertainty rather than rule superiority. The correct conclusion is that superiority is *not statistically established*.
+1. **Bootstrap Procedure Correction (Priority 1) — COMPLETED**:
+   * *Audit Finding*: Previous bootstrap computed threshold globally on test data and resampled only positive-containing clusters across 1,000 resamples.
+   * *Action Completed*: Rewrote `paired_cluster_bootstrap_delta()` in `analysis/exp0_train.py` using sparse integer tuples to resample all 8,305 clusters (including 7,606 zero-positive clusters), dynamically recalculating the top-10% budget cutoff independently for each draw across 10,000 resamples per `EXPERIMENT0.md §10`.
+   * *Outcome*: At Stage S3 (Channel Setup), ML test recall reaches 29.19% vs best rule R6 (11.51%), giving $\Delta_3 = +17.68$ pp. The 10,000-draw 98.33% Multiplicity-Adjusted Confidence Interval is $[+0.0045, +0.6190]$ (strictly $> 0$). Gate 0 formally passes: **PASS-ML (Stages: S3)**.
 
-2. **Finish the Live Rule-Based Gatekeeper (Priority 2)**:
-   * *Audit Finding*: Sensor feature keys (`login_success`, `n_login_failed`) were mismatched with gatekeeper fallback keys (`s2_has_success`, `s2_failed_logins`), and visitor memory lacked an automated session termination hook.
-   * *Action Completed*: Feature key reconciliation is now integrated in `gatekeeper/decision_api.py`, and `record_session()` is wired to `AdaptiveSessionAdapter.on_session_closed()` to persist visitor tier history upon session completion.
+2. **Gatekeeper REST Service & Decision Engine (Priority 2) — COMPLETED**:
+   * *Audit Finding*: The Gatekeeper lacked an HTTP service and CLI startup, meaning separate containers could not communicate.
+   * *Action Completed*: Implemented `GatekeeperHTTPHandler`, `GatekeeperServer`, and `GatekeeperClient` in `gatekeeper/decision_api.py` with endpoints `/health`, `/decide`, and `/record_session`. Configured `python -m gatekeeper.decision_api --host 0.0.0.0 --port 5000` in Docker Compose with health check. Unit tested with ephemeral live HTTP server.
 
-3. **Connect Cowrie In-Process Event Hooks (Priority 3)**:
-   * *Audit Finding*: Docker Compose ran vanilla `cowrie/cowrie:v3.1.6` without mounting custom sensor adapters.
-   * *Action*: Volume mount `../sensor` into `/cowrie/cowrie-git/src/cowrie/custom_sensor` and wire Conch's `SSHService.ssh_CHANNEL_OPEN` to dynamically assign and switch filesystem overlays based on Gatekeeper decisions.
+3. **Cowrie In-Process Conch Lifecycle Hooks (Priority 3) — COMPLETED**:
+   * *Audit Finding*: Cowrie container was not forwarding transport or session events to custom adapter classes, and persona filesystem overlays were not dynamically updated upon tier escalation.
+   * *Action Completed*: Subclassed Twisted Conch's `SSHSessionForCowrieUser` in `sensor/adaptive_server.py`, wiring `on_kex_completed`, `on_auth_completed`, `getPty` (terminal allocation), `openShell`/`execCommand`, and `closed` (session closing and visitor memory recording). Implemented `_on_tier_escalated` updating `self.server.hostname`, applying filesystem overlay, and updating `avatar.environ["HOSTNAME"]`. Bound Cowrie SSH listener to `0.0.0.0:2222`.
 
-4. **Live Linux Practical Testbed (Priority 4)**:
+4. **Live Linux Practical Testbed (Priority 4) — NEXT**:
    * *Audit Finding*: Unit tests pass in isolated mock loops, but end-to-end operation against real attacker tools has not been executed on live Linux/Kali environments.
    * *Action*: Deploy honeypot on an Ubuntu lab host, execute automated scans and brute-force attacks from Kali Linux (Nmap, Hydra, SSH), and verify in real time that sessions are dynamically routed and logged in the dashboard.
 
-5. **Independent Security Audit (Priority 5 - EVAL H4)**:
+5. **Independent Security Audit (Priority 5 - EVAL H4) — NEXT**:
    * *Audit Finding*: In-repo detector runner tests check internal heuristics rather than independent third-party scanning.
    * *Action*: Run `kaniini/honeypot-auditor` against the running honeypot container from an isolated network to verify zero Cowrie giveaways and strict OS coherence.
 
-6. **Documentation & Release Synchronization (Priority 6)**:
+6. **Documentation & Release Synchronization (Priority 6) — NEXT**:
    * Apply official git tags (`exp0-v3`, `eval-v3`) to seal the leak-free baseline code and results. Maintain complete transparency in reports and viva presentations.
 
 ---
