@@ -13,6 +13,7 @@ Orchestrates:
 from __future__ import annotations
 
 import argparse
+from collections import Counter, defaultdict
 import csv
 import hashlib
 import json
@@ -561,7 +562,7 @@ def paired_cluster_bootstrap_delta(
     cluster_ids: List[str],
     budget: float = 0.10,
     alpha: float = 0.05,
-    n_resamples: int = 1000,
+    n_resamples: int = 10000,
     seed: int = 20261111,
 ) -> Tuple[float, float, float]:
     """Computes paired cluster-bootstrap confidence interval with multiplicity adjustment.
@@ -570,7 +571,11 @@ def paired_cluster_bootstrap_delta(
     - Stages S1 to S3: 3 tests -> Bonferroni alpha = 0.05 / 3 = 0.0167 (98.33% CI).
     - Stages S4 to S5: 2 tests -> Bonferroni alpha = 0.05 / 2 = 0.025 (97.5% CI).
 
-    Vectorized pre-aggregation by source IP cluster for high-scale performance.
+    Statistically rigorous procedure:
+    - Resamples ALL source-IP clusters with replacement (including zero-positive clusters).
+    - Recalculates top-10% budget cutoff dynamically for every bootstrap resample.
+    - Preserves paired comparison on the exact same cluster sample.
+    - Default n_resamples = 10,000 per EXPERIMENT0.md §10.
     Returns (delta_point, ci_lower, ci_upper).
     """
     n = len(labels)
@@ -581,50 +586,126 @@ def paired_cluster_bootstrap_delta(
     if total_positives == 0:
         return (0.0, 0.0, 0.0)
 
-    k_budget = max(1, int(math.ceil(budget * n)))
+    # 1. Point estimate on full sample with deterministic tie-breaking
+    k_pt = max(1, int(math.ceil(budget * n)))
+    rng_pt = random.Random(seed)
+    tb_pt = [rng_pt.random() for _ in range(n)]
 
-    # Determine top-k membership with deterministic tie-break
-    rng_tb = random.Random(seed)
-    tb = [rng_tb.random() for _ in range(n)]
+    idx_ml_pt = sorted(range(n), key=lambda i: (scores_ml[i], tb_pt[i]), reverse=True)
+    rec_ml_pt = sum(labels[i] for i in idx_ml_pt[:k_pt]) / total_positives
 
-    idx_ml = sorted(range(n), key=lambda i: (scores_ml[i], tb[i]), reverse=True)
-    in_top_ml = set(idx_ml[:k_budget])
+    idx_rule_pt = sorted(range(n), key=lambda i: (scores_rule[i], tb_pt[i]), reverse=True)
+    rec_rule_pt = sum(labels[i] for i in idx_rule_pt[:k_pt]) / total_positives
+    point_delta = rec_ml_pt - rec_rule_pt
 
-    idx_rule = sorted(range(n), key=lambda i: (scores_rule[i], tb[i]), reverse=True)
-    in_top_rule = set(idx_rule[:k_budget])
+    # 2. Discretize scores into sorted descending bins for fast O(bins) dynamic budget calculation
+    u_ml = sorted(list(set(scores_ml)), reverse=True)
+    score_to_ml = {s: i for i, s in enumerate(u_ml)}
+    n_ml_bins = len(u_ml)
 
-    # Pre-aggregate stats per source IP cluster: [total_pos, ml_pos_captured, rule_pos_captured]
-    cluster_stats: Dict[str, List[int]] = {}
+    u_rule = sorted(list(set(scores_rule)), reverse=True)
+    score_to_rule = {s: i for i, s in enumerate(u_rule)}
+    n_rule_bins = len(u_rule)
+
+    unique_clusters = list(set(cluster_ids))
+    n_clusters = len(unique_clusters)
+
+    cluster_indices = defaultdict(list)
     for idx, cid in enumerate(cluster_ids):
-        if cid not in cluster_stats:
-            cluster_stats[cid] = [0, 0, 0]
-        if labels[idx] == 1:
-            cluster_stats[cid][0] += 1
-            if idx in in_top_ml:
-                cluster_stats[cid][1] += 1
-            if idx in in_top_rule:
-                cluster_stats[cid][2] += 1
+        cluster_indices[cid].append(idx)
 
-    pos_clust_list = [c for c in cluster_stats.values() if c[0] > 0]
-    n_pos_clust = len(pos_clust_list)
+    # Pre-build compact sparse integer tuples for each cluster across all sessions
+    cluster_profiles = []
+    for cid in unique_clusters:
+        idxs = cluster_indices[cid]
+        c_tot = len(idxs)
+        c_pos = 0
+        ml_t = [0] * n_ml_bins
+        ml_p = [0] * n_ml_bins
+        ru_t = [0] * n_rule_bins
+        ru_p = [0] * n_rule_bins
+        for i in idxs:
+            lbl = labels[i]
+            if lbl == 1:
+                c_pos += 1
+            mb = score_to_ml[scores_ml[i]]
+            ml_t[mb] += 1
+            if lbl == 1:
+                ml_p[mb] += 1
+            rb = score_to_rule[scores_rule[i]]
+            ru_t[rb] += 1
+            if lbl == 1:
+                ru_p[rb] += 1
 
-    point_ml = sum(c[1] for c in pos_clust_list) / total_positives
-    point_rule = sum(c[2] for c in pos_clust_list) / total_positives
-    point_delta = point_ml - point_rule
-
-    if n_pos_clust < 2:
-        return (round(point_delta, 4), round(point_delta, 4), round(point_delta, 4))
+        # Store only non-zero bins to minimize loop iterations
+        ml_sp = [(b, ml_t[b]) for b in range(n_ml_bins) if ml_t[b] > 0]
+        ml_pos_sp = [(b, ml_p[b]) for b in range(n_ml_bins) if ml_p[b] > 0]
+        ru_sp = [(b, ru_t[b]) for b in range(n_rule_bins) if ru_t[b] > 0]
+        ru_pos_sp = [(b, ru_p[b]) for b in range(n_rule_bins) if ru_p[b] > 0]
+        cluster_profiles.append((c_tot, c_pos, ml_sp, ml_pos_sp, ru_sp, ru_pos_sp))
 
     rng = random.Random(seed)
     deltas: List[float] = []
+
+    # Fast sampling using Counter of drawn cluster indices
     for _ in range(n_resamples):
-        sampled = rng.choices(pos_clust_list, k=n_pos_clust)
-        sum_pos = sum(c[0] for c in sampled)
-        if sum_pos == 0:
+        sample_counts = Counter(rng.choices(range(n_clusters), k=n_clusters))
+
+        tot_sess = 0
+        tot_pos = 0
+        ml_tot = [0] * n_ml_bins
+        ml_pos = [0] * n_ml_bins
+        ru_tot = [0] * n_rule_bins
+        ru_pos = [0] * n_rule_bins
+
+        for c_idx, count in sample_counts.items():
+            c_tot, c_pos, ml_sp, ml_pos_sp, ru_sp, ru_pos_sp = cluster_profiles[c_idx]
+            tot_sess += count * c_tot
+            tot_pos += count * c_pos
+            for b, cnt in ml_sp:
+                ml_tot[b] += count * cnt
+            for b, cnt in ml_pos_sp:
+                ml_pos[b] += count * cnt
+            for b, cnt in ru_sp:
+                ru_tot[b] += count * cnt
+            for b, cnt in ru_pos_sp:
+                ru_pos[b] += count * cnt
+
+        if tot_pos == 0 or tot_sess == 0:
             continue
-        sum_ml = sum(c[1] for c in sampled)
-        sum_rule = sum(c[2] for c in sampled)
-        deltas.append((sum_ml - sum_rule) / sum_pos)
+
+        # Dynamic budget recalculation per resample draw
+        k_budget = math.ceil(budget * tot_sess)
+
+        # ML Recall
+        accum = 0
+        ml_cap = 0
+        for b in range(n_ml_bins):
+            if accum + ml_tot[b] <= k_budget:
+                accum += ml_tot[b]
+                ml_cap += ml_pos[b]
+            else:
+                rem = k_budget - accum
+                if ml_tot[b] > 0:
+                    ml_cap += ml_pos[b] * (rem / ml_tot[b])
+                break
+        rec_ml = ml_cap / tot_pos
+
+        # Rule Recall
+        accum = 0
+        ru_cap = 0
+        for b in range(n_rule_bins):
+            if accum + ru_tot[b] <= k_budget:
+                accum += ru_tot[b]
+                ru_cap += ru_pos[b]
+            else:
+                rem = k_budget - accum
+                if ru_tot[b] > 0:
+                    ru_cap += ru_pos[b] * (rem / ru_tot[b])
+                break
+        rec_ru = ru_cap / tot_pos
+
+        deltas.append(rec_ml - rec_ru)
 
     if not deltas:
         return (round(point_delta, 4), round(point_delta, 4), round(point_delta, 4))
@@ -1224,7 +1305,7 @@ def main() -> None:
                 cluster_ids=cids_test,
                 budget=0.10,
                 alpha=alpha,
-                n_resamples=1000,
+                n_resamples=10000,
             )
             # Mathematically guarantee delta_k == (ml_test_recall - best_test_recall)
             expected_delta = round(ml_eval["test_recall"] - best_test_recall, 4)

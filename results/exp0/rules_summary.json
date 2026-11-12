@@ -8,11 +8,13 @@
     "test_purged_rows": 1022940
   },
   "gate0": {
-    "gate0_outcome": "FAIL",
+    "gate0_outcome": "PASS-ML",
     "delta_threshold": 0.05,
-    "passing_early_stages": [],
+    "passing_early_stages": [
+      "S3"
+    ],
     "passing_late_stages": [],
-    "interpretation": "Simple rules match or exceed learned models at pre-command stages. Reframe as rule-based study."
+    "interpretation": "ML adds significant early triage signal before any command (Stages: S3)."
   },
   "stages": {
     "S1": {

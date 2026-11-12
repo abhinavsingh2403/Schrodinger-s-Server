@@ -1,7 +1,7 @@
 {
   "project": "Schrodinger's Server: Adaptive SSH Honeypot Early Triage",
   "branch": "trainmodel",
-  "git_commit": "2084d589e4455e70d32df7023142f0f2a00309a6",
+  "git_commit": "4819ba59df7d1eb8d0b34381bbe34b6da53f7007",
   "python_version": "3.12.10",
   "library_versions": {
     "duckdb": "2.0.0",
@@ -33,19 +33,19 @@
       "eval_ref": "EXPERIMENT0.md Section 7"
     },
     "results/exp0/rules_summary.json": {
-      "md5": "30a84db71d28f92c6ef5b1f405d1ae0e",
+      "md5": "b2d343ab714709719e9964fb18bb9004",
       "eval_ref": "EXPERIMENT0.md Section 14"
     },
     "results/exp0/table.csv": {
-      "md5": "81443b3029331d3395f6a2cfae46938b",
+      "md5": "ae73054bd88a8654f5c66dfc88e163e0",
       "eval_ref": "EXPERIMENT0.md Section 14"
     },
     "results/exp0/EXP0_RESULT.md": {
-      "md5": "fd535ddf689d73798e5220621db02b54",
+      "md5": "7812caced413d4794739f277872cb891",
       "eval_ref": "EXPERIMENT0.md Section 14"
     },
     "EXP0_RESULT.md": {
-      "md5": "fd535ddf689d73798e5220621db02b54",
+      "md5": "7812caced413d4794739f277872cb891",
       "eval_ref": "AGENTS.md Root Mirror"
     }
   }
