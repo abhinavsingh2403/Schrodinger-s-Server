@@ -22,33 +22,38 @@ In Internet-facing SSH honeypots, the overwhelming majority of sessions are one-
 
 > **Branch Notice:** Active engineering code, empirical pipelines, and test suites live on branch **[`trainmodel`](https://github.com/abhinavsingh2403/Schrodinger-s-Server/tree/trainmodel)**.
 
+### Realistic Maturity Assessment (No Overexaggeration)
+Following rigorous external peer audit, completion metrics are recalibrated to distinguish isolated unit-tested components from a live, operating end-to-end deployment:
+
 | Dimension | Progress | Assessment Rationale |
 |---|:---:|---|
-| **Engineering (Code & Tests)** | **95%** | 91 unit tests passing across all core modules (`gatekeeper/`, `sensor/`, `router/`, `harness/`, `infra/`, `analysis/`, `dashboard/`); offline/live feature parity verified; policy budget ceiling enforced. |
-| **Science (Valid Empirical Results)** | **70%** | Base rates S3 Part 1 verified (38.1M sessions); event schema S3 Part 2 verified (52 days); Experiment 0 completed on 598,647 test sessions with zero feature leakage (outcome: `FAIL`); S4/S5 bounded as requiring event-level streaming. |
-| **Overall MVP** | **82%** | End-to-end adaptive honeypot architecture complete; empirical Gate 0 completed without fabrication; reframed as an adaptive rule-based & visitor memory system. |
+| **Standalone Subsystems (Code & Mock Tests)** | **~70%** | 93 passing unit tests across gatekeeper, sensor, router, harness, infra, analysis, and dashboard. Individual components function in unit tests, but are not yet fully wired to live Cowrie hooks. |
+| **Offline Data & Science** | **~65%** | Base rates S3 Part 1 verified (38.1M sessions); event schema verified; Gate 0 evaluated on 598k test sessions as an aggregate-data proxy ($N_{\text{cmd}} \ge 5$); cluster bootstrap needs dynamic threshold recalculation. |
+| **Live Integration & End-to-End Deployment** | **~35%** | Docker volumes mount custom sensor; feature keys reconciled; session recording hooked; pending live Cowrie in-process event hook registration and Kali Linux validation. |
+| **True Overall Project Completion** | **~55–60%** | Strong, original research prototype (rated ~7.2/10). Solid scientific grounding, but bridge between mock unit tests and live operational defense remains to be crossed. |
 
 ```
-[█████████████████████████████████████████░░░░░░░░░] ~82% Overall MVP Complete
-[███████████████████████████████████████████████░░░] ~95% Engineering Complete
-[███████████████████████████████████░░░░░░░░░░░░░░░] ~70% Science / Valid Results
+[████████████████████████████░░░░░░░░░░░░░░░░░░░░░░] ~55–60% True Overall Maturity
+[███████████████████████████████████░░░░░░░░░░░░░░░] ~70% Standalone Subsystems
+[████████████████████████████████░░░░░░░░░░░░░░░░░░] ~65% Offline Science
+[█████████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░] ~35% Live Integration
 ```
 
-| Phase / Component | Scope | Status | Details / Notes |
+| Phase / Component | Scope | Status | Honest Details / Audit Reality |
 |---|---|---|---|
 | **G1: Repo Skeleton & Pinning** | Core | **DONE** | Python 3.12, DuckDB 2.0.0, Pytest 9.2.0 pinned |
 | **G2: Streaming Verifier Tooling** | Core | **DONE** | Chunked MD5 streaming verifier (`verify_download.py`) |
 | **S3 Part 1: Aggregate Base Rates** | Core | **DONE** | 38.1M sessions analyzed; value=1 base rate = 3.23% (`results/base_rates.json`) |
 | **S3 Part 2: Event Archive Verification** | Core | **DONE** | Range request inspection of 19.4GB `data_all.zip`; confirmed 52 days and `group \in {1, 2, 3, 4}` |
-| **S1: Cowrie Persona Switching PoC** | Core | **DONE** | Plan A in-process Conch adapter subclass verified (`sensor/spike_s1_poc.py`) |
-| **O3: Experiment 0 (`EXPERIMENT0.md`)** | Core (Gate 0) | **DONE (Outcome: FAIL)** | Evaluated on 598,647 test sessions with zero feature leakage. Baseline rules match or exceed ML models at pre-command stages. Reframed as adaptive rule-based architecture per §13. |
-| **Phase 1: Gatekeeper Engine & Memory** | MVP | **BUILT & TESTED** | SQLite WAL visitor memory, upward-only policy with budget ceiling, parity extractor, decision API |
-| **Phase 1: Sensor & Router Subsystems** | MVP | **BUILT & TESTED** | Adaptive Conch session server (`sensor/`), Plan B sticky asyncio router (`router/`) |
-| **Phase 2: Adversary Harness & Infra** | MVP | **BUILT & TESTED** | Detector runner with safety allowlist, synthetic replay engine, isolated docker & egress firewall |
-| **Phase 2: Cost & Arm Simulation** | MVP | **ORACLE BOUND** | Nominal cost model; Arm D labeled as retrospective hindsight upper bound (`results/arm_simulation.json`) |
-| **EVAL 5.3: Persona Natural Experiment** | MVP | **PENDING DATA** | Blocked on event-level `group` ingestion from `data_all.zip` (field absent in `session_aggregation`) |
-| **Phase 2: Results Dashboard** | MVP | **BUILT & TESTED** | Cyber Protocol theme, privacy masking (`vis_xxxx`), zero npm dependencies, `/api/exp0` endpoint added |
-| **Phase 3: Live VPS Trial / T3 VM Pool** | Post-MVP | **DEFERRED** | Dependent on Linux testbed with Twisted Conch runtime and live honeypot exposure |
+| **S1: Cowrie Persona Switching PoC** | Core | **DONE** | Plan A in-process Conch adapter subclass verified in mock loop (`sensor/spike_s1_poc.py`) |
+| **O3: Experiment 0 (`EXPERIMENT0.md`)** | Core (Gate 0) | **DONE (Outcome: FAIL)** | Evaluated on 598,647 test sessions without feature leakage. Evaluates aggregate proxy ($N_{\text{cmd}} \ge 5$); cluster bootstrap needs dynamic threshold recalculation across resamples. |
+| **Phase 1: Gatekeeper Engine & Memory** | MVP | **BUILT (Code/Tests)** | SQLite WAL visitor memory, upward-only policy with budget ceiling, parity extractor, decision API; feature keys reconciled with sensor. |
+| **Phase 1: Sensor & Router Subsystems** | MVP | **BUILT (Mock-Tested)** | Adaptive Conch session server (`sensor/`), Plan B sticky asyncio router (`router/`); pending live Cowrie event hook registration. |
+| **Phase 2: Adversary Harness & Infra** | MVP | **BUILT (Code/Tests)** | Detector runner with safety allowlist, synthetic replay engine, isolated docker compose with custom sensor volume mount. |
+| **Phase 2: Cost & Arm Simulation** | MVP | **ORACLE BOUND** | Nominal cost model; Arm D labeled as retrospective hindsight upper bound (`results/arm_simulation.json`). |
+| **EVAL 5.3: Persona Natural Experiment** | MVP | **PENDING DATA** | Blocked on event-level `group` ingestion from `data_all.zip` (field absent in `session_aggregation`). |
+| **Phase 2: Results Dashboard** | MVP | **BUILT (Code/Tests)** | Cyber Protocol theme, privacy masking (`vis_xxxx`), zero npm dependencies, `/api/exp0` endpoint added. |
+| **Phase 3: Live VPS Trial / T3 VM Pool** | Post-MVP | **DEFERRED** | Dependent on Linux testbed with Twisted Conch runtime and live honeypot exposure. |
 
 ---
 
@@ -113,54 +118,65 @@ Computed over the complete dataset using DuckDB with zero dropped sessions:
 
 ---
 
-## 5. What Remains To Be Done
+## 5. Prioritized Engineering & Scientific Action Plan
 
 ```mermaid
 flowchart TD
-    subgraph Done["Completed Subsystems (82% MVP)"]
-        S1["S1: Cowrie Persona PoC"]
-        S3["S3: 38M Base Rates & Event Range"]
-        EXP0["Exp 0 Gate 0: Evaluated on 598k Test Sessions (Outcome: FAIL)"]
+    subgraph Done["Current State: Research Prototype (~55-60%)"]
+        S1["S1: Cowrie Persona Mock PoC"]
+        S3["S3: 38M Base Rates & Range Checks"]
+        EXP0["Exp 0 Gate 0: Evaluated on 598k Sessions (FAIL)"]
         GK["Gatekeeper Engine + SQLite Memory + Budget Ceiling"]
-        SENSOR["Adaptive Sensor + Sticky Router"]
-        HARNESS["Adversary Harness + Hardened Infra"]
-        DASH["Dashboard & Provenance Manifest"]
+        DASH["Dashboard Server & Telemetry API"]
     end
 
-    subgraph Pending["Remaining Tasks (18%)"]
-        TAGS["1. Freeze Git Tags (exp0-v3 / eval-v3)"]
-        NAT_EXP["2. Ingest data_all.zip for EVAL 5.3 Persona Effect"]
-        H4_SCAN["3. External honeypot-auditor Scan for EVAL H4"]
-        LINUX_RUN["4. Live Linux Lab Deployment (Twisted Conch)"]
-        S4_CMD["5. (Optional) Evaluate S4/S5 on Event Command Logs"]
+    subgraph Priorities["6-Step Prioritized Action Plan to Reach 100%"]
+        P1["1. Correct Cluster Bootstrap & Recalculate S3 CI"]
+        P2["2. Solidify Live Rule Gatekeeper & Wire Visitor Memory"]
+        P3["3. Wire Cowrie Event Hooks & Mount Custom Plugin"]
+        P4["4. Live Kali Linux vs Ubuntu Practical Lab Test"]
+        P5["5. Independent Security Audit (honeypot-auditor)"]
+        P6["6. Lock Git Release Tags (exp0-v3 / eval-v3)"]
     end
 
-    EXP0 -. Reframed as Rule-Based .-> GK
-    GK --> TAGS
-    GK --> NAT_EXP
-    GK --> H4_SCAN
-    GK --> LINUX_RUN
+    EXP0 --> P1
+    GK --> P2
+    P2 --> P3
+    P3 --> P4
+    P4 --> P5
+    P5 --> P6
 
     style Done fill:#0f172a,stroke:#38bdf8,stroke-width:1px,color:#fff
-    style Pending fill:#1e1b4b,stroke:#a855f7,stroke-width:1px,color:#fff
+    style Priorities fill:#1e1b4b,stroke:#a855f7,stroke-width:1px,color:#fff
 ```
 
-### Unvarnished Checklist of Remaining Items
+### Technical Audit Findings & Remediation Roadmap
 
-1. **Apply Git Release Tags (`exp0-v3`, `eval-v3`)**:
-   - The original `eval-v2`/`exp0-v2` tags tracked earlier runs. Tags `exp0-v3` and `eval-v3` should be placed on commit `b990fc9` to officially lock the leak-free baseline code, test splits, and honest `FAIL` results.
+Based on rigorous peer audit, the following 5 technical items must be addressed before presenting Schrödinger's Server as an operational deployment:
 
-2. **Persona Natural Experiment (EVAL 5.3)**:
-   - `session_aggregation.jsonl.gz` lacks the `group` column. Measuring whether Cowrie personas alter attacker behavior requires parsing the `group \in {1, 2, 3, 4}` field from daily event files in `data_all.zip`. Currently marked as `EVAL_53_PERSONA_EFFECT_PENDING_EVENT_GROUP_DATA`.
+1. **Bootstrap Procedure Correction (Priority 1)**:
+   * *Audit Finding*: The current `paired_cluster_bootstrap_delta()` in `analysis/exp0_train.py` computes the top 10% threshold globally on the initial test set and resamples only positive-containing IP clusters across 1,000 resamples.
+   * *Action*: Resample all clusters with replacement, dynamically recalculate the top 10% selection threshold inside each bootstrap draw, and scale to the pre-registered 10,000 resamples to produce mathematically rigorous confidence intervals.
+   * *Status on S3*: At Stage S3, the point improvement is promising ($\Delta_3 = +17.68$ pp), but the wide CI ($[-0.24, +60.52]$ pp) indicates high statistical uncertainty rather than rule superiority. The correct conclusion is that superiority is *not statistically established*.
 
-3. **External Honeypot Auditor Audit (EVAL H4)**:
-   - Automated in-repo regression tests currently check internal heuristics. For formal defense of EVAL H4, an independent scanner (`kaniini/honeypot-auditor`) must be executed against the running container in an isolated lab.
+2. **Finish the Live Rule-Based Gatekeeper (Priority 2)**:
+   * *Audit Finding*: Sensor feature keys (`login_success`, `n_login_failed`) were mismatched with gatekeeper fallback keys (`s2_has_success`, `s2_failed_logins`), and visitor memory lacked an automated session termination hook.
+   * *Action Completed*: Feature key reconciliation is now integrated in `gatekeeper/decision_api.py`, and `record_session()` is wired to `AdaptiveSessionAdapter.on_session_closed()` to persist visitor tier history upon session completion.
 
-4. **Live Linux Lab Integration & Twisted Conch Runtime**:
-   - `sensor/adaptive_server.py` and `sensor/spike_s1_poc.py` rely on `twisted.conch`. On Windows dev environments, Conch is skipped; full live end-to-end sensor integration must be executed on a Linux testbed or inside the Docker container.
+3. **Connect Cowrie In-Process Event Hooks (Priority 3)**:
+   * *Audit Finding*: Docker Compose ran vanilla `cowrie/cowrie:v3.1.6` without mounting custom sensor adapters.
+   * *Action*: Volume mount `../sensor` into `/cowrie/cowrie-git/src/cowrie/custom_sensor` and wire Conch's `SSHService.ssh_CHANNEL_OPEN` to dynamically assign and switch filesystem overlays based on Gatekeeper decisions.
 
-5. **Event-Level Command Triage for Stages S4 & S5 (Optional / Extension)**:
-   - On whole-session aggregate data, command features cannot be evaluated without leaking future commands and the target label. Evaluating whether ML beats rules on command syntax (pipes, bash chains, downloaders) requires streaming raw event JSON Lines from `data_all.zip`.
+4. **Live Linux Practical Testbed (Priority 4)**:
+   * *Audit Finding*: Unit tests pass in isolated mock loops, but end-to-end operation against real attacker tools has not been executed on live Linux/Kali environments.
+   * *Action*: Deploy honeypot on an Ubuntu lab host, execute automated scans and brute-force attacks from Kali Linux (Nmap, Hydra, SSH), and verify in real time that sessions are dynamically routed and logged in the dashboard.
+
+5. **Independent Security Audit (Priority 5 - EVAL H4)**:
+   * *Audit Finding*: In-repo detector runner tests check internal heuristics rather than independent third-party scanning.
+   * *Action*: Run `kaniini/honeypot-auditor` against the running honeypot container from an isolated network to verify zero Cowrie giveaways and strict OS coherence.
+
+6. **Documentation & Release Synchronization (Priority 6)**:
+   * Apply official git tags (`exp0-v3`, `eval-v3`) to seal the leak-free baseline code and results. Maintain complete transparency in reports and viva presentations.
 
 ---
 

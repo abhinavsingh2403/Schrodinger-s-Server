@@ -2,11 +2,12 @@
 
 ## STATUS & PROGRESS ACCOUNTING
 - **Branch**: `trainmodel` (tracking `origin/trainmodel`)
-- **Rigorous Project Progress Assessment**:
-  - **Engineering (Code & Tests)**: **95%** (91 passed, 1 skipped unit tests across gatekeeper, sensor, router, harness, infra, analysis, and dashboard; policy budget ceiling enforced; offline/live parity tests).
-  - **Science (Valid Empirical Results)**: **70%** (Gate 0 scientifically executed on real 598,647 test sessions with zero feature/label leakage; outcome conclusively FAIL; base rates S3 Part 1 verified; event-level schema S3 Part 2 verified; S4/S5 honestly bounded as requiring event logs).
-  - **Overall MVP**: **82%**.
-  - **Experiment 0 Status**: **100% Complete** (Gate 0 evaluated on full test split; outcome is `FAIL` per pre-registered decision rule; zero fabricated numbers).
+- **Rigorous Project Progress Assessment (Recalibrated for Peer Audit)**:
+  - **Standalone Subsystems (Code & Mock Tests)**: **~70%** (93 passed, 1 skipped unit tests across gatekeeper, sensor, router, harness, infra, analysis, and dashboard; standalone modules pass in unit tests).
+  - **Offline Data & Science**: **~65%** (Base rates S3 Part 1 verified; event schema S3 Part 2 verified; Gate 0 aggregate proxy evaluated on 598k test sessions; bootstrap needs dynamic threshold recalculation).
+  - **Live Integration & End-to-End Deployment**: **~35%** (Docker custom sensor mount added; feature keys reconciled; pending live Cowrie lifecycle hook wiring and Kali Linux testbed).
+  - **True Overall Project Completion**: **~55–60%** (Active research prototype rated ~7.2/10).
+  - **Experiment 0 Status**: **Aggregate Proxy Evaluated** (Gate 0 outcome is `FAIL` per pre-registered decision rule; S3 shows promising +17.68 pp point gain but statistical superiority is not yet established).
 
 ---
 

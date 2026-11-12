@@ -92,17 +92,22 @@ class DecisionEngine:
             except Exception:
                 pass
 
+        # Reconcile feature names across both raw sensor dicts and stage feature extractor
+        has_success = features.get("s2_has_success", features.get("login_success", 0))
+        failed_logins = features.get("s2_failed_logins", features.get("n_login_failed", 0))
+        has_pty = features.get("s3_has_pty", features.get("has_pty", 0))
+
         # PLACEHOLDER HEURISTIC FALLBACK (Not learned parameters; rule-based defaults)
         # These constants are engineering placeholders until empirical ML model weights are loaded.
         if stage in ("S1", "S2"):
-            if features.get("s2_has_success", 0) > 0:
+            if has_success > 0:
                 return 0.70  # Placeholder heuristic: Authenticated session
-            if features.get("s2_failed_logins", 0) > 3:
+            if failed_logins > 3:
                 return 0.40  # Placeholder heuristic: Brute force probe
             return 0.10
 
         elif stage in ("S3", "S4", "S5"):
-            if features.get("s3_has_pty", 0) > 0:
+            if has_pty > 0:
                 return 0.80  # Placeholder heuristic: Terminal allocated
             if (
                 features.get("s4_cmd1_has_pipe", 0) > 0
@@ -188,3 +193,24 @@ class DecisionEngine:
                 "latency_ms": round(latency_ms, 3),
                 "fail_cheap": True,
             }
+
+    def record_session(
+        self,
+        source_ip: str,
+        tier_served: str = "T1",
+        value_label: int | None = None,
+        agent_score: float | None = None,
+    ) -> dict[str, Any]:
+        """
+        Records completed session in visitor memory to persist tier history.
+        Completes the operational lifecycle hook when sessions terminate.
+        """
+        try:
+            return self.memory.record_session(
+                source_ip=source_ip,
+                tier_served=tier_served,
+                value_label=value_label,
+                agent_score=agent_score,
+            )
+        except Exception:
+            return {}

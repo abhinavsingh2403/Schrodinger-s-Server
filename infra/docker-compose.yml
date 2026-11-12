@@ -16,6 +16,7 @@ services:
     volumes:
       - ./cowrie.cfg:/cowrie/cowrie-git/etc/cowrie.cfg:ro
       - ../config/identity.yaml:/cowrie/identity.yaml:ro
+      - ../sensor:/cowrie/cowrie-git/src/cowrie/custom_sensor:ro
       - sensor-logs:/cowrie/cowrie-git/var/log/cowrie
     networks:
       - internal_honeypot_net

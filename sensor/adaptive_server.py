@@ -262,6 +262,21 @@ class AdaptiveSessionAdapter:
         }
         self._evaluate_stage(stage, features)
 
+    def on_session_closed(self, value_label: Optional[int] = None) -> None:
+        """Event handler: SSH session terminated; persists completed session to visitor memory."""
+        if not self.decision_engine:
+            return
+        try:
+            if hasattr(self.decision_engine, "record_session"):
+                label = value_label if value_label is not None else (1 if len(self.commands_history) >= 5 else 0)
+                self.decision_engine.record_session(
+                    source_ip=self.visitor_ip,
+                    tier_served=self.current_tier,
+                    value_label=label,
+                )
+        except Exception:
+            pass
+
     def _evaluate_stage(self, stage: str, features: Dict[str, Any]) -> None:
         """Queries the decision engine and applies escalation."""
         if not self.decision_engine:
