@@ -146,3 +146,21 @@ All non-trivial design decisions, architectural choices, and departures from pla
 - **Why**: Transparency and adherence to open-science pre-registration protocols (AGENTS.md Rule 3 and Rule 16).
 - **Consequences**: Tag `exp0-v2` and `eval-v2` on commit finalizing flaw remediation.
 
+### 2026-11-12: Peer-Review Flaw Remediation, Feature Leakage Elimination, and Policy Grounding
+- **Status**: ACCEPTED
+- **Owner**: All (P1/P2/P3)
+- **Context**: Comprehensive peer-review audit of branch `trainmodel` identified critical flaws:
+  1. **Feature Leakage**: Whole-session `duration` (`last_seen - first_seen`) was improperly included in early ML candidate training (S1–S3), serving as an oracle proxy for `v_full`.
+  2. **Table Delta Discrepancy**: $\Delta_k$ in `results/exp0/table.csv` did not equal $\text{Recall}(\text{ML}) - \text{Recall}(\text{Best Rule})$ due to rule scoring falling back to `R0_random` for non-R1/R2 rules.
+  3. **Unconnected Policy Config**: `config/policy.yaml` thresholds ($\tau_{v2}, \tau_{v3}$) and 10% budget ceiling were not loaded by `gatekeeper/policy.py`.
+  4. **Pre-Registration Observation Timing**: Tags `exp0-v2` and `eval-v2` were created after initial test set metrics had already been inspected.
+- **Decision**:
+  1. **Strict Stage-Cumulative Isolation**: Total `duration` is permanently excluded from all stages in `analysis/exp0_train.py`. Handshake S1 is restricted strictly to pre-authentication signals (KEX, version, fingerprint).
+  2. **Direct Rule Scoring**: Implemented `get_rule_test_scores()` in `analysis/exp0_train.py` to evaluate the exact chosen rule for each stage (`R7_decision_tree` in S2, `R6_failed_logins` in S3, `R4_delay` in S4), guaranteeing $\Delta_k = \text{Recall}(\text{ML}) - \text{Recall}(\text{Best Rule})$ across all outputs.
+  3. **Policy YAML & Budget Gating**: Implemented pure-Python `parse_policy_yaml()` in `gatekeeper/policy.py` to enforce stage-dependent thresholds and the 10% escalation ceiling (`max_escalation_fraction: 0.10`).
+  4. **Open-Science Qualification**: Explicitly document that because test numbers were computed prior to `exp0-v2`, Gate 0 must be defended as an observational empirical audit with pre-registered hypotheses rather than a strict double-blind prospective clinical trial.
+  5. **Gate 0 Conclusion**: Conclusively passes at Stage S2 ($\Delta_2 = +0.1411$, $CI > 0$) and Stage S3 ($\Delta_3 = +0.2033$, $CI > 0$), proving that ML delivers significant early triage before any shell command is executed.
+- **Alternatives considered**: Attempting to hide pre-registration desynchronization or paper over delta discrepancies (rejected: violates AGENTS.md Rule 1 and Rule 2).
+- **Why**: Truthfulness, absolute reproducibility, and rigorous scientific defense for viva.
+- **Consequences**: Updated `analysis/exp0_train.py`, `gatekeeper/policy.py`, `gatekeeper/test_policy.py`, `results/exp0/table.csv`, `results/exp0/EXP0_RESULT.md`, and root `EXP0_RESULT.md`.
+

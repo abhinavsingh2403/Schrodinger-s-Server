@@ -167,9 +167,9 @@ class BotnetReplayEngine:
             "yield_per_rupee": round(yield_score / cost, 4) if cost > 0 else 0.0,
         }
 
-    def run_standard_suite(self) -> Dict[str, Any]:
-        """Executes the pre-registered standard suite of botnet traces."""
-        results = [self.run_trace(t) for t in STANDARD_TRACES]
+    def run_suite(self, traces: List[AttackTrace]) -> Dict[str, Any]:
+        """Executes an arbitrary list of attack traces."""
+        results = [self.run_trace(t) for t in traces]
 
         total_yield = sum(r["yield"] for r in results)
         total_cost = sum(r["cost"] for r in results)
@@ -189,3 +189,33 @@ class BotnetReplayEngine:
             "tier_counts": tier_counts,
             "trace_results": results,
         }
+
+    def run_standard_suite(self) -> Dict[str, Any]:
+        """Executes the pre-registered standard suite of botnet traces."""
+        return self.run_suite(STANDARD_TRACES)
+
+    @staticmethod
+    def load_traces_from_records(records: List[Dict[str, Any]], limit: int = 50) -> List[AttackTrace]:
+        """Constructs AttackTraces from real held-out dataset records (EVAL.md Section 5.5)."""
+        traces = []
+        for i, r in enumerate(records[:limit]):
+            cmd_count = int(r.get("cnt_command_input", 0) or 0)
+            sample_cmds = ["uname -a", "id"] if cmd_count > 0 else []
+            if cmd_count > 2:
+                sample_cmds.extend(["cat /etc/passwd", "ps aux", "netstat -tuln"])
+            traces.append(
+                AttackTrace(
+                    name=f"held_out_trace_{i+1}",
+                    visitor_ip=str(r.get("src_ip", f"198.51.100.{100 + i}")),
+                    client_version="SSH-2.0-OpenSSH_8.9",
+                    hassh=str(r.get("hassh", "b845df0e")),
+                    auth_success=bool(int(r.get("cnt_login_success", 0) or 0) > 0),
+                    failed_logins=int(r.get("cnt_login_failed", 0) or 0),
+                    has_pty=bool(r.get("has_pty", False)),
+                    commands=sample_cmds,
+                    files=int(r.get("cnt_file_download", 0) or 0) + int(r.get("cnt_file_upload", 0) or 0),
+                    pivots=int(r.get("cnt_direct_tcpip_request", 0) or 0),
+                    duration=float(r.get("duration", 15.0) or 15.0),
+                )
+            )
+        return traces

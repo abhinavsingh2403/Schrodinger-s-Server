@@ -4,7 +4,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>CYBER PROTOCOL — Schrödinger's Server Intelligence Dashboard</title>
+  
+  <!-- Premium Modern Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
   <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+  
   <style>
     :root {
       color-scheme: dark;
@@ -12,159 +19,183 @@
       --cyber-card: #0B111E;
       --cyber-inner: #060A13;
       --cyber-green: #00FF41;
-      --cyber-green-glow: rgba(0, 255, 65, 0.25);
       --cyber-slate: #1A2639;
       --cyber-cyan: #38BDF8;
       --cyber-silver: #E2E8F0;
       --cyber-muted: #94A3B8;
     }
+    
     html, body {
       background-color: #040711 !important;
       color: #E2E8F0 !important;
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       margin: 0;
       padding: 0;
+      -webkit-font-smoothing: antialiased;
     }
+
+    .font-mono {
+      font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important;
+    }
+
     .cyber-grid-bg {
       background-color: #040711 !important;
       background-image: 
-        linear-gradient(rgba(0, 255, 65, 0.035) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0, 255, 65, 0.035) 1px, transparent 1px),
-        radial-gradient(circle at 50% 0%, rgba(0, 255, 65, 0.09) 0%, rgba(4, 7, 17, 0) 70%) !important;
+        linear-gradient(rgba(0, 255, 65, 0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 255, 65, 0.025) 1px, transparent 1px),
+        radial-gradient(circle at 50% 0%, rgba(0, 255, 65, 0.07) 0%, rgba(4, 7, 17, 0) 70%) !important;
       background-size: 28px 28px, 28px 28px, 100% 100% !important;
     }
-    .glow-green {
-      box-shadow: 0 0 16px rgba(0, 255, 65, 0.25);
+
+    .cyber-card {
+      background: #0B111E;
+      border: 1px solid #1A2639;
+      border-radius: 14px;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     }
-    .glow-green-sm {
-      box-shadow: 0 0 8px rgba(0, 255, 65, 0.35);
+    .cyber-card:hover {
+      border-color: rgba(0, 255, 65, 0.4);
     }
-    .border-cyber {
-      border: 1px solid rgba(0, 255, 65, 0.2);
+
+    .cyber-inner {
+      background: #060A13;
+      border: 1px solid #1A2639;
+      border-radius: 10px;
     }
-    .border-cyber:hover {
-      border-color: rgba(0, 255, 65, 0.55);
-      box-shadow: 0 0 12px rgba(0, 255, 65, 0.18);
-    }
+
     @keyframes pulse-slow {
-      0%, 100% { opacity: 1; filter: drop-shadow(0 0 6px #00FF41); }
-      50% { opacity: 0.45; filter: drop-shadow(0 0 1px #00FF41); }
+      0%, 100% { transform: scale(1); opacity: 1; filter: drop-shadow(0 0 4px #00FF41); }
+      50% { transform: scale(1.15); opacity: 0.45; filter: drop-shadow(0 0 1px #00FF41); }
     }
     .pulse-cyber {
       animation: pulse-slow 2s infinite ease-in-out;
     }
+
+    button, input, select {
+      transition: all 0.15s ease-out;
+    }
+    button:active {
+      transform: scale(0.97);
+    }
+
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: #040711; }
+    ::-webkit-scrollbar-thumb { background: #1A2639; border-radius: 9999px; }
+    ::-webkit-scrollbar-thumb:hover { background: #00FF41; }
   </style>
 </head>
-<body class="cyber-grid-bg antialiased p-3 sm:p-5 min-h-screen">
+<body class="cyber-grid-bg antialiased p-3 sm:p-5 min-h-screen text-[#E2E8F0]">
   <div class="max-w-7xl mx-auto space-y-5">
 
     <!-- Top Status Bar & Header -->
-    <header class="bg-[#0B111E] border border-cyber rounded-xl p-4 sm:p-5 shadow-2xl">
+    <header class="cyber-card p-4 sm:p-5 shadow-2xl">
       <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
         <div>
-          <div class="flex items-center gap-3">
-            <span class="text-xl sm:text-2xl font-black text-[#00FF41] tracking-wider">[#]</span>
-            <h1 class="text-xl sm:text-2xl font-extrabold text-[#E2E8F0] tracking-tight flex items-center gap-2">
-              SCHRÖDINGER'S SERVER
-              <span class="text-xs sm:text-sm font-semibold px-2 py-0.5 rounded bg-[#00FF41]/15 text-[#00FF41] border border-[#00FF41]/30">
-                CYBER PROTOCOL // V3.1.6
-              </span>
-            </h1>
-          </div>
+          <h1 class="text-xl sm:text-2xl font-black text-white tracking-tight flex items-center gap-2.5">
+            Schrödinger's Server
+            <span class="text-xs font-mono font-semibold px-2 py-0.5 rounded bg-[#00FF41]/15 text-[#00FF41] border border-[#00FF41]/30">
+              v3.1.6
+            </span>
+          </h1>
           <p class="text-xs sm:text-sm text-[#94A3B8] mt-1.5 flex flex-wrap items-center gap-2">
             <span>Adaptive SSH Honeypot Early Triage</span>
-            <span class="text-[#00FF41]">•</span>
-            <span>Yield per Rupee Optimization</span>
-            <span class="text-[#00FF41]">•</span>
-            <span class="text-[#00FF41] font-semibold">Zero Raw IPs Exposed</span>
+            <span class="text-zinc-600">&bull;</span>
+            <span class="text-[#00FF41] font-semibold">Yield per Rupee Optimization</span>
+            <span class="text-zinc-600">&bull;</span>
+            <span class="text-[#38BDF8]">Zero Raw IPs Exposed (Salted HMAC)</span>
           </p>
         </div>
 
-        <!-- Telemetry Badges & Status -->
-        <div class="flex flex-wrap items-center gap-2">
-          <div class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[#060A13] border border-[#1A2639]">
-            <span class="w-2.5 h-2.5 rounded-full bg-[#00FF41] pulse-cyber"></span>
-            <span class="text-xs font-bold text-[#00FF41] uppercase tracking-wider">GATEKEEPER LIVE</span>
+        <!-- Telemetry Badges & Scientific Provenance Markers -->
+        <div class="flex flex-wrap items-center gap-2 font-mono text-xs">
+          <div class="flex items-center gap-2 px-3 py-1.5 rounded-lg cyber-inner">
+            <span class="w-2 rounded-full h-2 bg-emerald-400 pulse-cyber"></span>
+            <span class="text-xs font-bold text-emerald-400 uppercase tracking-wider">GATEKEEPER LIVE</span>
           </div>
 
-          <span class="px-2.5 py-1.5 rounded-lg text-xs font-bold bg-[#060A13] text-[#38BDF8] border border-[#38BDF8]/30">
-            [RECORDED: 38.1M DATASET]
+          <span class="px-2.5 py-1 rounded-md text-xs font-medium cyber-inner text-sky-400 border border-sky-500/20">
+            RECORDED 38.1M
           </span>
-          <span class="px-2.5 py-1.5 rounded-lg text-xs font-bold bg-[#060A13] text-[#00FF41] border border-[#00FF41]/40">
-            [LAB: VERIFIED GATE 0]
+          <span class="px-2.5 py-1 rounded-md text-xs font-medium cyber-inner text-emerald-400 border border-emerald-500/20">
+            LAB GATE 0
           </span>
-          <span class="px-2.5 py-1.5 rounded-lg text-xs font-bold bg-[#060A13] text-purple-400 border border-purple-500/30">
-            [LIVE: SENSOR READY]
+          <span class="px-2.5 py-1 rounded-md text-xs font-medium cyber-inner text-purple-400 border border-purple-500/20">
+            LIVE SENSOR
           </span>
         </div>
       </div>
     </header>
 
-    <!-- Top Command KPI Ribbon (5 High-Density Cards) -->
+    <!-- Top Command KPI Ribbon (5 Clean Cards, No Number Boxes, No Redundant Card Tags) -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3.5">
       
       <!-- Card 1: Total Recorded -->
-      <div class="bg-[#0B111E] border border-cyber rounded-xl p-4 transition-all">
-        <div class="flex items-center justify-between text-xs text-[#94A3B8]">
-          <span class="uppercase tracking-wider">Recorded Attacks</span>
-          <span class="text-xs font-bold text-[#38BDF8] bg-[#38BDF8]/10 px-1.5 py-0.5 rounded border border-[#38BDF8]/20">RECORDED</span>
+      <div class="cyber-card p-4">
+        <div class="text-xs text-[#94A3B8] uppercase tracking-wider font-semibold text-[11px]">
+          Recorded Attacks
         </div>
-        <div class="text-2xl sm:text-3xl font-black text-[#E2E8F0] mt-2 tracking-tight" id="kpiTotal">38,126,048</div>
-        <div class="text-xs text-[#94A3B8] mt-1">52 days &bull; 160 instances</div>
+        <div class="text-2xl sm:text-3xl font-black text-white font-mono mt-2 tracking-tight" id="kpiTotal">
+          38,126,048
+        </div>
+        <div class="text-xs text-[#94A3B8] mt-1 font-mono">52 days &bull; 160 instances</div>
         <div class="w-full bg-[#060A13] h-1.5 rounded-full mt-3 overflow-hidden border border-[#1A2639]">
-          <div class="bg-[#38BDF8] h-full rounded-full" style="width: 100%;"></div>
+          <div class="bg-sky-400 h-full rounded-full" style="width: 100%;"></div>
         </div>
       </div>
 
       <!-- Card 2: Value Base Rate -->
-      <div class="bg-[#0B111E] border border-cyber rounded-xl p-4 transition-all">
-        <div class="flex items-center justify-between text-xs text-[#94A3B8]">
-          <span class="uppercase tracking-wider">Base Rate (Value=1)</span>
-          <span class="text-xs font-bold text-[#38BDF8] bg-[#38BDF8]/10 px-1.5 py-0.5 rounded border border-[#38BDF8]/20">RECORDED</span>
+      <div class="cyber-card p-4">
+        <div class="text-xs text-[#94A3B8] uppercase tracking-wider font-semibold text-[11px]">
+          Base Rate (Value=1)
         </div>
-        <div class="text-2xl sm:text-3xl font-black text-[#00FF41] mt-2 tracking-tight" id="kpiBaseRate">3.23%</div>
-        <div class="text-xs text-[#94A3B8] mt-1">1,232,570 active sessions</div>
+        <div class="text-2xl sm:text-3xl font-black text-emerald-400 font-mono mt-2 tracking-tight" id="kpiBaseRate">
+          3.23%
+        </div>
+        <div class="text-xs text-[#94A3B8] mt-1 font-mono">1,232,570 active sessions</div>
         <div class="w-full bg-[#060A13] h-1.5 rounded-full mt-3 overflow-hidden border border-[#1A2639]">
-          <div class="bg-[#00FF41] h-full rounded-full glow-green-sm" style="width: 32%;"></div>
+          <div class="bg-emerald-400 h-full rounded-full" style="width: 32%;"></div>
         </div>
       </div>
 
       <!-- Card 3: Adaptive ROI Yield -->
-      <div class="bg-[#0B111E] border border-cyber rounded-xl p-4 transition-all">
-        <div class="flex items-center justify-between text-xs text-[#94A3B8]">
-          <span class="uppercase tracking-wider">Yield per Rupee</span>
-          <span class="text-xs font-bold text-[#00FF41] bg-[#00FF41]/10 px-1.5 py-0.5 rounded border border-[#00FF41]/30">LAB</span>
+      <div class="cyber-card p-4">
+        <div class="text-xs text-[#94A3B8] uppercase tracking-wider font-semibold text-[11px]">
+          Yield per Rupee
         </div>
-        <div class="text-2xl sm:text-3xl font-black text-[#00FF41] mt-2 tracking-tight" id="kpiYield">48.4 Y/₹</div>
-        <div class="text-xs text-emerald-400 mt-1 font-semibold">+240% vs Arm A Static</div>
+        <div class="text-2xl sm:text-3xl font-black text-cyan-400 font-mono mt-2 tracking-tight" id="kpiYield">
+          48.4 Y/₹
+        </div>
+        <div class="text-xs text-cyan-400/80 mt-1 font-semibold font-mono">+240% vs Arm A Static</div>
         <div class="w-full bg-[#060A13] h-1.5 rounded-full mt-3 overflow-hidden border border-[#1A2639]">
-          <div class="bg-gradient-to-r from-emerald-500 to-[#00FF41] h-full rounded-full glow-green-sm" style="width: 95%;"></div>
+          <div class="bg-gradient-to-r from-teal-500 to-cyan-400 h-full rounded-full" style="width: 95%;"></div>
         </div>
       </div>
 
       <!-- Card 4: Escalation Ratio -->
-      <div class="bg-[#0B111E] border border-cyber rounded-xl p-4 transition-all">
-        <div class="flex items-center justify-between text-xs text-[#94A3B8]">
-          <span class="uppercase tracking-wider">Escalation Rate</span>
-          <span class="text-xs font-bold text-amber-400 bg-amber-500/10 px-1.5 py-0.5 rounded border border-amber-500/30">LAB</span>
+      <div class="cyber-card p-4">
+        <div class="text-xs text-[#94A3B8] uppercase tracking-wider font-semibold text-[11px]">
+          Escalation Rate
         </div>
-        <div class="text-2xl sm:text-3xl font-black text-amber-400 mt-2 tracking-tight" id="kpiEscalation">12.5%</div>
-        <div class="text-xs text-[#94A3B8] mt-1">87.5% noise dampened to T1</div>
+        <div class="text-2xl sm:text-3xl font-black text-amber-400 font-mono mt-2 tracking-tight" id="kpiEscalation">
+          12.5%
+        </div>
+        <div class="text-xs text-[#94A3B8] mt-1 font-mono">87.5% noise dampened to T1</div>
         <div class="w-full bg-[#060A13] h-1.5 rounded-full mt-3 overflow-hidden border border-[#1A2639]">
           <div class="bg-amber-400 h-full rounded-full" style="width: 12.5%;"></div>
         </div>
       </div>
 
       <!-- Card 5: P95 Decision Latency -->
-      <div class="bg-[#0B111E] border border-cyber rounded-xl p-4 transition-all">
-        <div class="flex items-center justify-between text-xs text-[#94A3B8]">
-          <span class="uppercase tracking-wider">Gatekeeper Latency</span>
-          <span class="text-xs font-bold text-[#00FF41] bg-[#00FF41]/10 px-1.5 py-0.5 rounded border border-[#00FF41]/30">LAB</span>
+      <div class="cyber-card p-4">
+        <div class="text-xs text-[#94A3B8] uppercase tracking-wider font-semibold text-[11px]">
+          Gatekeeper Latency
         </div>
-        <div class="text-2xl sm:text-3xl font-black text-[#00FF41] mt-2 tracking-tight" id="kpiLatency">0.38 ms</div>
-        <div class="text-xs text-[#94A3B8] mt-1">&lt; 50 ms SLA target (P95)</div>
+        <div class="text-2xl sm:text-3xl font-black text-emerald-400 font-mono mt-2 tracking-tight" id="kpiLatency">
+          0.38 ms
+        </div>
+        <div class="text-xs text-[#94A3B8] mt-1 font-mono">&lt; 50 ms SLA target (P95)</div>
         <div class="w-full bg-[#060A13] h-1.5 rounded-full mt-3 overflow-hidden border border-[#1A2639]">
-          <div class="bg-[#00FF41] h-full rounded-full glow-green-sm" style="width: 8%;"></div>
+          <div class="bg-emerald-400 h-full rounded-full" style="width: 8%;"></div>
         </div>
       </div>
 
@@ -174,153 +205,144 @@
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
 
       <!-- Panel 1: Intelligence Yield per Rupee & Resource Economics (7 cols) -->
-      <div class="lg:col-span-7 bg-[#0B111E] border border-cyber rounded-xl p-5 shadow-xl">
-        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between pb-3 border-b border-[#1A2639] gap-2">
-          <div>
-            <h2 class="text-base font-bold text-[#E2E8F0] flex items-center gap-2">
-              <span class="text-[#00FF41]">//</span> EXPERIMENTAL ARMS COMPARISON (SPEC §9)
+      <div class="lg:col-span-7 cyber-card p-5 shadow-xl flex flex-col justify-between">
+        <div>
+          <div class="pb-3 border-b border-[#1A2639]">
+            <h2 class="text-base font-bold text-white">
+              Experimental Arms Comparison (SPEC §9)
             </h2>
             <p class="text-xs text-[#94A3B8] mt-0.5">Yield per Rupee = ∑Y / ∑Cost (Theoretical Upper Bound vs Static Baselines)</p>
           </div>
-          <span class="text-xs font-semibold px-2 py-0.5 rounded bg-[#38BDF8]/10 text-[#38BDF8] border border-[#38BDF8]/20">
-            SIMULATED ORACLE MODEL
-          </span>
-        </div>
 
-        <div class="mt-5 space-y-4">
-          <!-- Arm A -->
-          <div class="p-3 rounded-lg bg-[#060A13] border border-[#1A2639]">
-            <div class="flex justify-between items-center text-xs mb-1.5">
-              <span class="font-bold text-[#E2E8F0]">Arm A — Static T1 Baseline (Low-Interaction Shell)</span>
-              <span class="font-mono text-zinc-400 font-semibold">14.2 Yield / ₹</span>
+          <div class="mt-4 space-y-3.5">
+            <!-- Arm A -->
+            <div class="p-3.5 rounded-lg cyber-inner">
+              <div class="flex justify-between items-center text-xs mb-1.5">
+                <span class="font-bold text-[#E2E8F0]">Arm A — Static T1 Baseline (Low-Interaction Shell)</span>
+                <span class="font-mono text-zinc-400 font-semibold">14.2 Yield / ₹</span>
+              </div>
+              <div class="w-full bg-[#1A2639] h-2 rounded-full overflow-hidden">
+                <div class="bg-zinc-500 h-full rounded-full" style="width: 29%;"></div>
+              </div>
+              <div class="flex justify-between text-xs text-[#94A3B8] mt-1 font-mono">
+                <span>RAM: 0.05 GB &bull; Cold Boots: 0</span>
+                <span>Yield Efficiency Index: 1.0x</span>
+              </div>
             </div>
-            <div class="w-full bg-[#1A2639] h-2.5 rounded-full overflow-hidden">
-              <div class="bg-zinc-500 h-full rounded-full" style="width: 29%;"></div>
-            </div>
-            <div class="flex justify-between text-xs text-[#94A3B8] mt-1">
-              <span>RAM: 0.05 GB &bull; Cold Boots: 0</span>
-              <span>Yield Efficiency Index: 1.0x</span>
-            </div>
-          </div>
 
-          <!-- Arm B -->
-          <div class="p-3 rounded-lg bg-[#060A13] border border-[#1A2639]">
-            <div class="flex justify-between items-center text-xs mb-1.5">
-              <span class="font-bold text-[#E2E8F0]">Arm B — Static T2 Hardened (Enhanced Decoy Filesystem)</span>
-              <span class="font-mono text-[#38BDF8] font-semibold">22.8 Yield / ₹</span>
+            <!-- Arm B -->
+            <div class="p-3.5 rounded-lg cyber-inner">
+              <div class="flex justify-between items-center text-xs mb-1.5">
+                <span class="font-bold text-[#E2E8F0]">Arm B — Static T2 Hardened (Enhanced Decoy Filesystem)</span>
+                <span class="font-mono text-[#38BDF8] font-semibold">22.8 Yield / ₹</span>
+              </div>
+              <div class="w-full bg-[#1A2639] h-2 rounded-full overflow-hidden">
+                <div class="bg-[#38BDF8] h-full rounded-full" style="width: 47%;"></div>
+              </div>
+              <div class="flex justify-between text-xs text-[#94A3B8] mt-1 font-mono">
+                <span>RAM: 0.10 GB &bull; Custom OS Overlays</span>
+                <span>Yield Efficiency Index: 1.6x</span>
+              </div>
             </div>
-            <div class="w-full bg-[#1A2639] h-2.5 rounded-full overflow-hidden">
-              <div class="bg-[#38BDF8] h-full rounded-full" style="width: 47%;"></div>
-            </div>
-            <div class="flex justify-between text-xs text-[#94A3B8] mt-1">
-              <span>RAM: 0.10 GB &bull; Custom OS Overlays</span>
-              <span>Yield Efficiency Index: 1.6x</span>
-            </div>
-          </div>
 
-          <!-- Arm C -->
-          <div class="p-3 rounded-lg bg-[#060A13] border border-[#1A2639]">
-            <div class="flex justify-between items-center text-xs mb-1.5">
-              <span class="font-bold text-[#E2E8F0]">Arm C — Static T3 Real VM (Full QEMU Virtualization)</span>
-              <span class="font-mono text-rose-400 font-semibold">6.1 Yield / ₹ (High Cost Overhead)</span>
+            <!-- Arm C -->
+            <div class="p-3.5 rounded-lg cyber-inner">
+              <div class="flex justify-between items-center text-xs mb-1.5">
+                <span class="font-bold text-[#E2E8F0]">Arm C — Static T3 Real VM (Full QEMU Virtualization)</span>
+                <span class="font-mono text-rose-400 font-semibold">6.1 Yield / ₹ (High Cost Overhead)</span>
+              </div>
+              <div class="w-full bg-[#1A2639] h-2 rounded-full overflow-hidden">
+                <div class="bg-rose-500 h-full rounded-full" style="width: 13%;"></div>
+              </div>
+              <div class="flex justify-between text-xs text-[#94A3B8] mt-1 font-mono">
+                <span>RAM: 1.00 GB/guest &bull; High Standby Cost</span>
+                <span class="text-rose-400/90">Severe cost penalty on automated scanner noise</span>
+              </div>
             </div>
-            <div class="w-full bg-[#1A2639] h-2.5 rounded-full overflow-hidden">
-              <div class="bg-rose-500 h-full rounded-full" style="width: 13%;"></div>
-            </div>
-            <div class="flex justify-between text-xs text-[#94A3B8] mt-1">
-              <span>RAM: 1.00 GB/guest &bull; High Standby Cost</span>
-              <span>Severe cost penalty on automated scanner noise</span>
-            </div>
-          </div>
 
-          <!-- Arm D (Winner) -->
-          <div class="p-3.5 rounded-lg bg-[#060A13] border border-[#00FF41]/40 glow-green-sm">
-            <div class="flex justify-between items-center text-xs mb-1.5">
-              <span class="font-extrabold text-[#00FF41] flex items-center gap-1.5">
-                <span>★ Arm D — Schrödinger Adaptive (Dynamic Triage Gatekeeper)</span>
-                <span class="px-1.5 py-0.5 rounded text-[11px] bg-[#00FF41]/20 text-[#00FF41] border border-[#00FF41]/40 uppercase">Optimal</span>
-              </span>
-              <span class="font-mono text-sm text-[#00FF41] font-bold">48.4 Yield / ₹</span>
+            <!-- Arm D (Winner) -->
+            <div class="p-4 rounded-lg bg-[#060A13] border border-[#00FF41]/40">
+              <div class="flex justify-between items-center text-xs mb-1.5">
+                <span class="font-extrabold text-[#00FF41]">Arm D — Schrödinger Adaptive (Dynamic Triage Gatekeeper)</span>
+                <span class="font-mono text-sm text-[#00FF41] font-bold">48.4 Yield / ₹</span>
+              </div>
+              <div class="w-full bg-[#040711] h-2.5 rounded-full overflow-hidden p-0.5 border border-[#00FF41]/30">
+                <div class="bg-gradient-to-r from-emerald-500 to-[#00FF41] h-full rounded-full" style="width: 96%;"></div>
+              </div>
+              <div class="flex justify-between text-xs text-[#00FF41]/90 mt-1.5 font-mono font-medium">
+                <span>Monotone Upward Escalation &bull; Fail-Cheap Safe</span>
+                <span>Theoretical Upper Bound vs Unpruned QEMU</span>
+              </div>
             </div>
-            <div class="w-full bg-[#040711] h-3.5 rounded-full overflow-hidden p-0.5 border border-[#00FF41]/30">
-              <div class="bg-gradient-to-r from-emerald-500 via-[#00FF41] to-teal-300 h-full rounded-full glow-green-sm" style="width: 96%;"></div>
-            </div>
-            <div class="flex justify-between text-xs text-[#00FF41]/90 mt-1.5 font-medium">
-              <span>Monotone Upward Escalation &bull; Fail-Cheap Safe</span>
-              <span>Theoretical Upper Bound vs Unpruned QEMU</span>
-            </div>
-          </div>
 
-          <div class="p-2.5 rounded bg-[#060A13] border border-[#1A2639] text-[11px] text-[#94A3B8]">
-            <span class="text-amber-400 font-semibold">// METHODOLOGICAL CAVEAT:</span>
-            Arm D represents an <em>Oracle Retrospective Upper Bound</em>. In this simulation, yield is held invariant across tiers; under uniform yield, Arm A is mathematically cheapest per yield unit (Rs 3.98 cost) but fails to capture high-interaction payloads in live deployments.
+            <div class="p-3 rounded-lg cyber-inner text-xs text-[#94A3B8] leading-relaxed border border-amber-500/20">
+              <span class="text-amber-400 font-semibold font-mono">METHODOLOGICAL CAVEAT:</span>
+              Arm D represents an <em>Oracle Retrospective Upper Bound</em>. In this simulation, yield is held invariant across tiers; under uniform yield, Arm A is mathematically cheapest per yield unit (₹3.98 cost) but fails to capture high-interaction payloads in live deployments.
+            </div>
           </div>
         </div>
       </div>
 
       <!-- Panel 2: MITRE ATT&CK TTP Spectrum Analysis (5 cols) -->
-      <div class="lg:col-span-5 bg-[#0B111E] border border-cyber rounded-xl p-5 shadow-xl flex flex-col justify-between">
+      <div class="lg:col-span-5 cyber-card p-5 shadow-xl flex flex-col justify-between">
         <div>
-          <div class="flex items-center justify-between pb-3 border-b border-[#1A2639]">
-            <h2 class="text-base font-bold text-[#E2E8F0] flex items-center gap-2">
-              <span class="text-[#00FF41]">//</span> MITRE ATT&amp;CK TTPs (SPEC §9.1)
+          <div class="pb-3 border-b border-[#1A2639]">
+            <h2 class="text-base font-bold text-white">
+              MITRE ATT&amp;CK TTPs (SPEC §9.1)
             </h2>
-            <span class="text-xs font-semibold px-2 py-0.5 rounded bg-[#38BDF8]/10 text-[#38BDF8] border border-[#38BDF8]/20">
-              ENTERPRISE MAP
-            </span>
+            <p class="text-xs text-[#94A3B8] mt-0.5">Command stream extraction via pre-registered regex engine</p>
           </div>
-          <p class="text-xs text-[#94A3B8] mt-2 mb-4">Command stream extraction via pre-registered regex engine:</p>
 
-          <div class="space-y-2.5">
-            <div class="p-2.5 rounded-lg bg-[#060A13] border border-[#1A2639] hover:border-[#00FF41]/40 transition">
-              <div class="flex items-center justify-between text-xs mb-1">
-                <span class="font-mono font-bold text-[#00FF41]">T1082</span>
-                <span class="text-[#E2E8F0] font-medium truncate px-2">System Info Discovery</span>
-                <span class="text-zinc-400 font-mono">42.1%</span>
+          <div class="mt-4 space-y-2.5">
+            <div class="p-2.5 rounded-lg cyber-inner hover:border-[#00FF41]/40 transition">
+              <div class="flex items-center justify-between text-xs mb-1 font-mono">
+                <span class="font-bold text-[#00FF41]">T1082</span>
+                <span class="text-[#E2E8F0] font-sans truncate px-2 text-xs">System Info Discovery</span>
+                <span class="text-zinc-400">42.1%</span>
               </div>
               <div class="w-full bg-[#1A2639] h-1.5 rounded-full overflow-hidden">
-                <div class="bg-[#00FF41] h-full rounded-full glow-green-sm" style="width: 42.1%;"></div>
+                <div class="bg-[#00FF41] h-full rounded-full" style="width: 42.1%;"></div>
               </div>
             </div>
 
-            <div class="p-2.5 rounded-lg bg-[#060A13] border border-[#1A2639] hover:border-[#00FF41]/40 transition">
-              <div class="flex items-center justify-between text-xs mb-1">
-                <span class="font-mono font-bold text-[#00FF41]">T1105</span>
-                <span class="text-[#E2E8F0] font-medium truncate px-2">Ingress Tool Transfer (wget/curl)</span>
-                <span class="text-zinc-400 font-mono">28.4%</span>
+            <div class="p-2.5 rounded-lg cyber-inner hover:border-[#38BDF8]/40 transition">
+              <div class="flex items-center justify-between text-xs mb-1 font-mono">
+                <span class="font-bold text-[#38BDF8]">T1105</span>
+                <span class="text-[#E2E8F0] font-sans truncate px-2 text-xs">Ingress Tool Transfer (wget/curl)</span>
+                <span class="text-zinc-400">28.4%</span>
               </div>
               <div class="w-full bg-[#1A2639] h-1.5 rounded-full overflow-hidden">
                 <div class="bg-[#38BDF8] h-full rounded-full" style="width: 28.4%;"></div>
               </div>
             </div>
 
-            <div class="p-2.5 rounded-lg bg-[#060A13] border border-[#1A2639] hover:border-[#00FF41]/40 transition">
-              <div class="flex items-center justify-between text-xs mb-1">
-                <span class="font-mono font-bold text-[#00FF41]">T1033</span>
-                <span class="text-[#E2E8F0] font-medium truncate px-2">User Discovery (whoami/id)</span>
-                <span class="text-zinc-400 font-mono">19.7%</span>
+            <div class="p-2.5 rounded-lg cyber-inner hover:border-purple-400/40 transition">
+              <div class="flex items-center justify-between text-xs mb-1 font-mono">
+                <span class="font-bold text-purple-400">T1033</span>
+                <span class="text-[#E2E8F0] font-sans truncate px-2 text-xs">User Discovery (whoami/id)</span>
+                <span class="text-zinc-400">19.7%</span>
               </div>
               <div class="w-full bg-[#1A2639] h-1.5 rounded-full overflow-hidden">
                 <div class="bg-purple-400 h-full rounded-full" style="width: 19.7%;"></div>
               </div>
             </div>
 
-            <div class="p-2.5 rounded-lg bg-[#060A13] border border-[#1A2639] hover:border-[#00FF41]/40 transition">
-              <div class="flex items-center justify-between text-xs mb-1">
-                <span class="font-mono font-bold text-amber-400">T1496</span>
-                <span class="text-[#E2E8F0] font-medium truncate px-2">Cryptomining (XMRig/stratum)</span>
-                <span class="text-amber-400 font-mono">12.3%</span>
+            <div class="p-2.5 rounded-lg cyber-inner hover:border-amber-400/40 transition">
+              <div class="flex items-center justify-between text-xs mb-1 font-mono">
+                <span class="font-bold text-amber-400">T1496</span>
+                <span class="text-[#E2E8F0] font-sans truncate px-2 text-xs">Cryptomining (XMRig/stratum)</span>
+                <span class="text-zinc-400">12.3%</span>
               </div>
               <div class="w-full bg-[#1A2639] h-1.5 rounded-full overflow-hidden">
                 <div class="bg-amber-400 h-full rounded-full" style="width: 12.3%;"></div>
               </div>
             </div>
 
-            <div class="p-2.5 rounded-lg bg-[#060A13] border border-[#1A2639] hover:border-[#00FF41]/40 transition">
-              <div class="flex items-center justify-between text-xs mb-1">
-                <span class="font-mono font-bold text-rose-400">T1059.004</span>
-                <span class="text-[#E2E8F0] font-medium truncate px-2">Unix Shell Chaining (sh -c)</span>
-                <span class="text-rose-400 font-mono">9.8%</span>
+            <div class="p-2.5 rounded-lg cyber-inner hover:border-rose-400/40 transition">
+              <div class="flex items-center justify-between text-xs mb-1 font-mono">
+                <span class="font-bold text-rose-400">T1059.004</span>
+                <span class="text-[#E2E8F0] font-sans truncate px-2 text-xs">Unix Shell Chaining (sh -c)</span>
+                <span class="text-zinc-400">9.8%</span>
               </div>
               <div class="w-full bg-[#1A2639] h-1.5 rounded-full overflow-hidden">
                 <div class="bg-rose-400 h-full rounded-full" style="width: 9.8%;"></div>
@@ -329,8 +351,8 @@
           </div>
         </div>
 
-        <div class="mt-4 pt-3 border-t border-[#1A2639] text-xs text-[#94A3B8] text-center flex items-center justify-center gap-1.5">
-          <span class="w-1.5 h-1.5 rounded-full bg-[#00FF41]"></span>
+        <div class="mt-4 pt-3 border-t border-[#1A2639] text-xs text-[#94A3B8] text-center flex items-center justify-center gap-2 font-mono">
+          <span class="w-2 h-2 rounded-full bg-[#00FF41]"></span>
           <span>11 Active Signature Rules &bull; attack_map.yaml</span>
         </div>
       </div>
@@ -338,12 +360,11 @@
     </div>
 
     <!-- Tier 3: SOC Live Decision Triage Stream Table -->
-    <div class="bg-[#0B111E] border border-cyber rounded-xl p-5 shadow-2xl">
+    <div class="cyber-card p-5 shadow-2xl">
       <div class="flex flex-col md:flex-row md:items-center md:justify-between pb-4 border-b border-[#1A2639] gap-3">
         <div>
-          <h2 class="text-base font-bold text-[#E2E8F0] flex items-center gap-2">
-            <span class="text-[#00FF41]">//</span> GATEKEEPER DECISION STREAM
-            <span class="text-xs font-semibold px-2 py-0.5 rounded bg-amber-500/10 text-amber-400 border border-amber-500/20">LAB ACTIVE</span>
+          <h2 class="text-base font-bold text-white">
+            Gatekeeper Decision Stream
           </h2>
           <p class="text-xs text-[#94A3B8] mt-0.5">Real-time session classification, HMAC-SHA256 privacy visitor masking, and tier routing</p>
         </div>
@@ -354,12 +375,12 @@
             id="searchInput"
             type="text"
             placeholder="Search visitor ID (vis_...), session, stage..."
-            class="bg-[#060A13] border border-[#1A2639] focus:border-[#00FF41] text-xs text-[#E2E8F0] px-3 py-1.5 rounded-lg outline-none w-56 sm:w-64 transition"
+            class="bg-[#060A13] border border-[#1A2639] focus:border-[#00FF41] text-xs text-white px-3 py-1.5 rounded-lg outline-none w-56 sm:w-64 transition font-mono"
             onkeyup="filterTable()"
           />
           <select
             id="tierFilter"
-            class="bg-[#060A13] border border-[#1A2639] focus:border-[#00FF41] text-xs text-[#E2E8F0] px-2.5 py-1.5 rounded-lg outline-none transition"
+            class="bg-[#060A13] border border-[#1A2639] focus:border-[#00FF41] text-xs text-white px-2.5 py-1.5 rounded-lg outline-none transition font-mono cursor-pointer"
             onchange="filterTable()"
           >
             <option value="ALL">All Tiers</option>
@@ -380,25 +401,22 @@
       <div class="overflow-x-auto mt-4">
         <table class="w-full text-left border-collapse text-xs">
           <thead>
-            <tr class="border-b border-[#1A2639] text-[#94A3B8] uppercase text-xs">
-              <th class="py-3 px-3 font-bold">Session ID</th>
-              <th class="py-3 px-3 font-bold">Masked Visitor ID</th>
-              <th class="py-3 px-3 font-bold">Stage</th>
-              <th class="py-3 px-3 font-bold">Value Score</th>
-              <th class="py-3 px-3 font-bold">Assigned Tier</th>
-              <th class="py-3 px-3 font-bold">Decision Latency</th>
-              <th class="py-3 px-3 font-bold">TTP Indicators</th>
-              <th class="py-3 px-3 font-bold text-center">Audit</th>
+            <tr class="border-b border-[#1A2639] text-[#94A3B8] uppercase text-[11px] font-mono">
+              <th class="py-3 px-3 font-semibold">Session ID</th>
+              <th class="py-3 px-3 font-semibold">Masked Visitor ID</th>
+              <th class="py-3 px-3 font-semibold">Stage</th>
+              <th class="py-3 px-3 font-semibold">Value Score</th>
+              <th class="py-3 px-3 font-semibold">Assigned Tier</th>
+              <th class="py-3 px-3 font-semibold">Decision Latency</th>
+              <th class="py-3 px-3 font-semibold">TTP Indicators</th>
+              <th class="py-3 px-3 font-semibold text-center">Audit</th>
             </tr>
           </thead>
           <tbody id="decisionsTableBody" class="divide-y divide-[#1A2639]">
             <tr class="hover:bg-[#1A2639]/40 transition group cursor-pointer" onclick="inspectSession('sess_live_901', 'vis_ddf81975', 'S4 (First Command)', 0.850, 'T2 Hardened', '1.32 ms', 'T1105 Ingress Tool, T1059.004 Shell Chaining')">
               <td class="py-3 px-3 font-mono text-zinc-300 font-medium">sess_live_901</td>
-              <td class="py-3 px-3 font-mono font-bold text-[#00FF41] flex items-center gap-1">
-                <span>vis_ddf81975</span>
-                <span class="text-[10px] text-zinc-500 opacity-0 group-hover:opacity-100">📋</span>
-              </td>
-              <td class="py-3 px-3"><span class="px-2 py-0.5 rounded bg-purple-500/15 text-purple-300 border border-purple-500/30 font-semibold">S4</span></td>
+              <td class="py-3 px-3 font-mono font-bold text-[#00FF41]">vis_ddf81975</td>
+              <td class="py-3 px-3 font-mono"><span class="px-2 py-0.5 rounded bg-purple-500/15 text-purple-300 border border-purple-500/30 font-semibold">S4</span></td>
               <td class="py-3 px-3">
                 <div class="flex items-center gap-2">
                   <span class="font-mono font-bold text-amber-400">0.850</span>
@@ -407,11 +425,11 @@
                   </div>
                 </div>
               </td>
-              <td class="py-3 px-3"><span class="px-2.5 py-0.5 rounded-full bg-[#38BDF8]/20 text-[#38BDF8] font-bold border border-[#38BDF8]/40">T2 HARDENED</span></td>
+              <td class="py-3 px-3 font-mono"><span class="px-2.5 py-0.5 rounded-full bg-[#38BDF8]/20 text-[#38BDF8] font-bold border border-[#38BDF8]/40">T2 HARDENED</span></td>
               <td class="py-3 px-3 font-mono text-[#00FF41]">1.32 ms</td>
               <td class="py-3 px-3 font-mono text-zinc-400">wget miner.sh; sh miner.sh</td>
               <td class="py-3 px-3 text-center">
-                <button class="px-2 py-0.5 rounded bg-[#060A13] hover:bg-[#00FF41]/20 text-[#00FF41] border border-[#1A2639] hover:border-[#00FF41]/40 text-xs font-semibold transition">
+                <button class="px-2 py-0.5 rounded bg-[#060A13] hover:bg-[#00FF41]/20 text-[#00FF41] border border-[#1A2639] hover:border-[#00FF41]/40 text-xs font-semibold font-mono transition">
                   INSPECT
                 </button>
               </td>
@@ -419,11 +437,8 @@
 
             <tr class="hover:bg-[#1A2639]/40 transition group cursor-pointer" onclick="inspectSession('sess_live_902', 'vis_a419c802', 'S1 (Key Exchange)', 0.100, 'T1 Lite', '0.24 ms', 'Automated Mass Scanner (libssh probe)')">
               <td class="py-3 px-3 font-mono text-zinc-300 font-medium">sess_live_902</td>
-              <td class="py-3 px-3 font-mono font-bold text-[#00FF41] flex items-center gap-1">
-                <span>vis_a419c802</span>
-                <span class="text-[10px] text-zinc-500 opacity-0 group-hover:opacity-100">📋</span>
-              </td>
-              <td class="py-3 px-3"><span class="px-2 py-0.5 rounded bg-[#060A13] text-zinc-400 border border-[#1A2639] font-semibold">S1</span></td>
+              <td class="py-3 px-3 font-mono font-bold text-[#00FF41]">vis_a419c802</td>
+              <td class="py-3 px-3 font-mono"><span class="px-2 py-0.5 rounded bg-[#060A13] text-zinc-400 border border-[#1A2639] font-semibold">S1</span></td>
               <td class="py-3 px-3">
                 <div class="flex items-center gap-2">
                   <span class="font-mono font-bold text-zinc-400">0.100</span>
@@ -432,11 +447,11 @@
                   </div>
                 </div>
               </td>
-              <td class="py-3 px-3"><span class="px-2.5 py-0.5 rounded-full bg-[#060A13] text-zinc-400 font-bold border border-[#1A2639]">T1 LITE</span></td>
+              <td class="py-3 px-3 font-mono"><span class="px-2.5 py-0.5 rounded-full bg-[#060A13] text-zinc-400 font-bold border border-[#1A2639]">T1 LITE</span></td>
               <td class="py-3 px-3 font-mono text-[#00FF41]">0.24 ms</td>
               <td class="py-3 px-3 font-mono text-zinc-500">None (TCP disconnect)</td>
               <td class="py-3 px-3 text-center">
-                <button class="px-2 py-0.5 rounded bg-[#060A13] hover:bg-[#00FF41]/20 text-[#00FF41] border border-[#1A2639] hover:border-[#00FF41]/40 text-xs font-semibold transition">
+                <button class="px-2 py-0.5 rounded bg-[#060A13] hover:bg-[#00FF41]/20 text-[#00FF41] border border-[#1A2639] hover:border-[#00FF41]/40 text-xs font-semibold font-mono transition">
                   INSPECT
                 </button>
               </td>
@@ -444,11 +459,8 @@
 
             <tr class="hover:bg-[#1A2639]/40 transition group cursor-pointer" onclick="inspectSession('sess_live_903', 'vis_891e4f3a', 'S5 (Command Burst)', 0.940, 'T3 Real VM', '0.45 ms', 'T1496 Cryptomining, T1070 File Deletion, T1082 System Info')">
               <td class="py-3 px-3 font-mono text-zinc-300 font-medium">sess_live_903</td>
-              <td class="py-3 px-3 font-mono font-bold text-[#00FF41] flex items-center gap-1">
-                <span>vis_891e4f3a</span>
-                <span class="text-[10px] text-zinc-500 opacity-0 group-hover:opacity-100">📋</span>
-              </td>
-              <td class="py-3 px-3"><span class="px-2 py-0.5 rounded bg-indigo-500/15 text-indigo-300 border border-indigo-500/30 font-semibold">S5</span></td>
+              <td class="py-3 px-3 font-mono font-bold text-[#00FF41]">vis_891e4f3a</td>
+              <td class="py-3 px-3 font-mono"><span class="px-2 py-0.5 rounded bg-indigo-500/15 text-indigo-300 border border-indigo-500/30 font-semibold">S5</span></td>
               <td class="py-3 px-3">
                 <div class="flex items-center gap-2">
                   <span class="font-mono font-bold text-rose-400">0.940</span>
@@ -457,11 +469,11 @@
                   </div>
                 </div>
               </td>
-              <td class="py-3 px-3"><span class="px-2.5 py-0.5 rounded-full bg-purple-500/20 text-purple-300 font-bold border border-purple-500/40 glow-green-sm">T3 REAL VM</span></td>
+              <td class="py-3 px-3 font-mono"><span class="px-2.5 py-0.5 rounded-full bg-purple-500/20 text-purple-300 font-bold border border-purple-500/40">T3 REAL VM</span></td>
               <td class="py-3 px-3 font-mono text-[#00FF41]">0.45 ms</td>
               <td class="py-3 px-3 font-mono text-zinc-400">./xmrig --donate-level 1 &amp; rm -rf /tmp/x</td>
               <td class="py-3 px-3 text-center">
-                <button class="px-2 py-0.5 rounded bg-[#060A13] hover:bg-[#00FF41]/20 text-[#00FF41] border border-[#1A2639] hover:border-[#00FF41]/40 text-xs font-semibold transition">
+                <button class="px-2 py-0.5 rounded bg-[#060A13] hover:bg-[#00FF41]/20 text-[#00FF41] border border-[#1A2639] hover:border-[#00FF41]/40 text-xs font-semibold font-mono transition">
                   INSPECT
                 </button>
               </td>
@@ -469,11 +481,8 @@
 
             <tr class="hover:bg-[#1A2639]/40 transition group cursor-pointer" onclick="inspectSession('sess_live_904', 'vis_3c710d9b', 'S2 (Authentication)', 0.150, 'T1 Lite', '0.19 ms', 'Failed credential spray (root/password)')">
               <td class="py-3 px-3 font-mono text-zinc-300 font-medium">sess_live_904</td>
-              <td class="py-3 px-3 font-mono font-bold text-[#00FF41] flex items-center gap-1">
-                <span>vis_3c710d9b</span>
-                <span class="text-[10px] text-zinc-500 opacity-0 group-hover:opacity-100">📋</span>
-              </td>
-              <td class="py-3 px-3"><span class="px-2 py-0.5 rounded bg-blue-500/15 text-blue-300 border border-blue-500/30 font-semibold">S2</span></td>
+              <td class="py-3 px-3 font-mono font-bold text-[#00FF41]">vis_3c710d9b</td>
+              <td class="py-3 px-3 font-mono"><span class="px-2 py-0.5 rounded bg-blue-500/15 text-blue-300 border border-blue-500/30 font-semibold">S2</span></td>
               <td class="py-3 px-3">
                 <div class="flex items-center gap-2">
                   <span class="font-mono font-bold text-zinc-400">0.150</span>
@@ -482,11 +491,11 @@
                   </div>
                 </div>
               </td>
-              <td class="py-3 px-3"><span class="px-2.5 py-0.5 rounded-full bg-[#060A13] text-zinc-400 font-bold border border-[#1A2639]">T1 LITE</span></td>
+              <td class="py-3 px-3 font-mono"><span class="px-2.5 py-0.5 rounded-full bg-[#060A13] text-zinc-400 font-bold border border-[#1A2639]">T1 LITE</span></td>
               <td class="py-3 px-3 font-mono text-[#00FF41]">0.19 ms</td>
               <td class="py-3 px-3 font-mono text-zinc-500">Failed auth spray</td>
               <td class="py-3 px-3 text-center">
-                <button class="px-2 py-0.5 rounded bg-[#060A13] hover:bg-[#00FF41]/20 text-[#00FF41] border border-[#1A2639] hover:border-[#00FF41]/40 text-xs font-semibold transition">
+                <button class="px-2 py-0.5 rounded bg-[#060A13] hover:bg-[#00FF41]/20 text-[#00FF41] border border-[#1A2639] hover:border-[#00FF41]/40 text-xs font-semibold font-mono transition">
                   INSPECT
                 </button>
               </td>
@@ -498,44 +507,41 @@
 
     <!-- Interactive Session Detail Modal / Drawer -->
     <div id="inspectorModal" class="hidden fixed inset-0 z-50 bg-[#040711]/85 backdrop-blur-sm flex items-center justify-center p-4">
-      <div class="bg-[#0B111E] border border-[#00FF41]/40 rounded-xl max-w-2xl w-full p-6 shadow-2xl glow-green relative space-y-4">
-        <div class="flex items-center justify-between pb-3 border-b border-[#1A2639]">
-          <div class="flex items-center gap-2">
-            <span class="text-[#00FF41] font-bold">[#]</span>
-            <h3 class="text-base font-bold text-[#E2E8F0]" id="modalSessionId">SESSION INSPECTOR</h3>
-          </div>
-          <button onclick="closeModal()" class="text-[#94A3B8] hover:text-[#00FF41] text-lg font-bold px-2 py-0.5">&times;</button>
+      <div class="cyber-card max-w-2xl w-full p-6 shadow-2xl relative space-y-4 border border-[#00FF41]/40">
+        <div class="flex items-center justify-between pb-3.5 border-b border-[#1A2639]">
+          <h3 class="text-base font-bold text-white tracking-tight" id="modalSessionId">Session Inspector</h3>
+          <button onclick="closeModal()" class="text-[#94A3B8] hover:text-white text-xl font-bold px-2 py-0.5 rounded hover:bg-white/[0.05] transition">&times;</button>
         </div>
 
         <div class="grid grid-cols-2 gap-3 text-xs">
-          <div class="p-3 rounded-lg bg-[#060A13] border border-[#1A2639]">
-            <div class="text-[#94A3B8]">Masked Visitor ID</div>
-            <div class="text-[#00FF41] font-bold text-sm mt-0.5" id="modalVisitorId">vis_xxxx</div>
+          <div class="p-3.5 rounded-lg cyber-inner">
+            <div class="text-[#94A3B8] text-[11px] font-mono">Masked Visitor ID</div>
+            <div class="text-[#00FF41] font-bold text-sm mt-0.5 font-mono" id="modalVisitorId">vis_xxxx</div>
           </div>
-          <div class="p-3 rounded-lg bg-[#060A13] border border-[#1A2639]">
-            <div class="text-[#94A3B8]">Decision Tier &amp; Stage</div>
-            <div class="text-[#E2E8F0] font-bold text-sm mt-0.5" id="modalTierStage">T1 @ S0</div>
+          <div class="p-3.5 rounded-lg cyber-inner">
+            <div class="text-[#94A3B8] text-[11px] font-mono">Decision Tier &amp; Stage</div>
+            <div class="text-white font-bold text-sm mt-0.5 font-mono" id="modalTierStage">T1 @ S0</div>
           </div>
-          <div class="p-3 rounded-lg bg-[#060A13] border border-[#1A2639]">
-            <div class="text-[#94A3B8]">Value Probability Score</div>
-            <div class="text-amber-400 font-bold text-sm mt-0.5" id="modalScore">0.00</div>
+          <div class="p-3.5 rounded-lg cyber-inner">
+            <div class="text-[#94A3B8] text-[11px] font-mono">Value Probability Score</div>
+            <div class="text-amber-400 font-bold text-sm mt-0.5 font-mono" id="modalScore">0.00</div>
           </div>
-          <div class="p-3 rounded-lg bg-[#060A13] border border-[#1A2639]">
-            <div class="text-[#94A3B8]">Decision Engine Latency</div>
-            <div class="text-[#00FF41] font-bold text-sm mt-0.5" id="modalLatency">0.00 ms</div>
+          <div class="p-3.5 rounded-lg cyber-inner">
+            <div class="text-[#94A3B8] text-[11px] font-mono">Decision Engine Latency</div>
+            <div class="text-[#00FF41] font-bold text-sm mt-0.5 font-mono" id="modalLatency">0.00 ms</div>
           </div>
         </div>
 
         <div>
-          <div class="text-xs text-[#94A3B8] mb-1 font-semibold uppercase">Attacker TTP Indicators Triggered:</div>
-          <div class="p-3 rounded-lg bg-[#060A13] border border-[#1A2639] text-xs font-mono text-[#00FF41]" id="modalTTPs">
+          <div class="text-xs text-[#94A3B8] mb-1.5 font-semibold uppercase text-[11px] tracking-wider font-mono">Attacker TTP Indicators Triggered:</div>
+          <div class="p-3 rounded-lg cyber-inner text-xs font-mono text-[#00FF41]" id="modalTTPs">
             None
           </div>
         </div>
 
         <div>
-          <div class="text-xs text-[#94A3B8] mb-1 font-semibold uppercase">Simulated Shell Session Telemetry Replay:</div>
-          <div class="p-3 rounded-lg bg-[#060A13] border border-[#1A2639] text-xs font-mono text-zinc-300 space-y-1 max-h-36 overflow-y-auto">
+          <div class="text-xs text-[#94A3B8] mb-1.5 font-semibold uppercase text-[11px] tracking-wider font-mono">Simulated Shell Session Telemetry Replay:</div>
+          <div class="p-3 rounded-lg cyber-inner text-xs font-mono text-zinc-300 space-y-1.5 max-h-36 overflow-y-auto">
             <div class="text-zinc-500"># SSH-2.0-OpenSSH_8.9p1 Ubuntu-3ubuntu0.4 Handshake Accepted</div>
             <div class="text-zinc-500"># Salted HMAC Derived: IP masked, zero raw storage</div>
             <div class="text-[#00FF41]">$ uname -a</div>
@@ -546,21 +552,21 @@
           </div>
         </div>
 
-        <div class="pt-3 border-t border-[#1A2639] flex justify-end">
-          <button onclick="closeModal()" class="px-4 py-1.5 rounded-lg bg-[#060A13] hover:bg-[#00FF41]/20 text-[#00FF41] border border-[#00FF41]/30 text-xs font-bold transition">
-            CLOSE INSPECTOR
+        <div class="pt-3.5 border-t border-[#1A2639] flex justify-end">
+          <button onclick="closeModal()" class="px-4 py-1.5 rounded-lg bg-[#060A13] hover:bg-[#00FF41]/20 text-[#00FF41] border border-[#00FF41]/30 text-xs font-bold font-mono transition active:scale-[0.97]">
+            Close Inspector
           </button>
         </div>
       </div>
     </div>
 
     <!-- Footer -->
-    <footer class="pt-4 pb-8 border-t border-[#1A2639] flex flex-col sm:flex-row items-center justify-between text-xs text-[#94A3B8] gap-2">
+    <footer class="pt-4 pb-8 border-t border-[#1A2639] flex flex-col sm:flex-row items-center justify-between text-xs text-[#94A3B8] gap-2 font-mono">
       <div>
         SCHRÖDINGER'S SERVER &bull; RESEARCH DEFENSE ARTIFACT &bull; COWRIE PINNED V3.1.6
       </div>
       <div class="flex items-center gap-3">
-        <span class="text-[#00FF41] font-mono">#040711 &bull; #00FF41 &bull; #1A2639 &bull; #38BDF8</span>
+        <span class="text-[#00FF41]">#040711 &bull; #00FF41 &bull; #1A2639 &bull; #38BDF8</span>
       </div>
     </footer>
 
@@ -583,7 +589,7 @@
 
     // Modal Inspector
     function inspectSession(sessId, visId, stage, score, tier, lat, ttps) {
-      document.getElementById('modalSessionId').innerText = `SESSION INSPECTOR // ${sessId}`;
+      document.getElementById('modalSessionId').innerText = `Session Inspector // ${sessId}`;
       document.getElementById('modalVisitorId').innerText = visId;
       document.getElementById('modalTierStage').innerText = `${tier} @ ${stage}`;
       document.getElementById('modalScore').innerText = score.toFixed(3);
@@ -605,7 +611,7 @@
       const score = isHighValue ? (0.75 + Math.random() * 0.22) : (0.05 + Math.random() * 0.25);
       const tier = score > 0.85 ? 'T3 Real VM' : score > 0.50 ? 'T2 Hardened' : 'T1 Lite';
       const tierBadge = score > 0.85 
-        ? '<span class="px-2.5 py-0.5 rounded-full bg-purple-500/20 text-purple-300 font-bold border border-purple-500/40 glow-green-sm">T3 REAL VM</span>'
+        ? '<span class="px-2.5 py-0.5 rounded-full bg-purple-500/20 text-purple-300 font-bold border border-purple-500/40">T3 REAL VM</span>'
         : score > 0.50
         ? '<span class="px-2.5 py-0.5 rounded-full bg-[#38BDF8]/20 text-[#38BDF8] font-bold border border-[#38BDF8]/40">T2 HARDENED</span>'
         : '<span class="px-2.5 py-0.5 rounded-full bg-[#060A13] text-zinc-400 font-bold border border-[#1A2639]">T1 LITE</span>';
@@ -621,11 +627,8 @@
       tr.onclick = () => inspectSession(sessId, visId, 'S4', score, tier, `${lat} ms`, ttps);
       tr.innerHTML = `
         <td class="py-3 px-3 font-mono text-zinc-300 font-medium">${sessId}</td>
-        <td class="py-3 px-3 font-mono font-bold text-[#00FF41] flex items-center gap-1">
-          <span>${visId}</span>
-          <span class="text-[10px] text-zinc-500 opacity-0 group-hover:opacity-100">📋</span>
-        </td>
-        <td class="py-3 px-3"><span class="px-2 py-0.5 rounded bg-purple-500/15 text-purple-300 border border-purple-500/30 font-semibold">S4</span></td>
+        <td class="py-3 px-3 font-mono font-bold text-[#00FF41]">${visId}</td>
+        <td class="py-3 px-3 font-mono"><span class="px-2 py-0.5 rounded bg-purple-500/15 text-purple-300 border border-purple-500/30 font-semibold">S4</span></td>
         <td class="py-3 px-3">
           <div class="flex items-center gap-2">
             <span class="font-mono font-bold ${score > 0.8 ? 'text-rose-400' : score > 0.5 ? 'text-amber-400' : 'text-zinc-400'}">${score.toFixed(3)}</span>
@@ -634,11 +637,11 @@
             </div>
           </div>
         </td>
-        <td class="py-3 px-3">${tierBadge}</td>
+        <td class="py-3 px-3 font-mono">${tierBadge}</td>
         <td class="py-3 px-3 font-mono text-[#00FF41]">${lat} ms</td>
         <td class="py-3 px-3 font-mono text-zinc-400 truncate max-w-xs">${command}</td>
         <td class="py-3 px-3 text-center">
-          <button class="px-2 py-0.5 rounded bg-[#060A13] hover:bg-[#00FF41]/20 text-[#00FF41] border border-[#1A2639] hover:border-[#00FF41]/40 text-xs font-semibold transition">
+          <button class="px-2 py-0.5 rounded bg-[#060A13] hover:bg-[#00FF41]/20 text-[#00FF41] border border-[#1A2639] hover:border-[#00FF41]/40 text-xs font-semibold font-mono transition">
             INSPECT
           </button>
         </td>
@@ -671,7 +674,7 @@
             for (const d of decData.decisions) {
               const tr = document.createElement('tr');
               const tierBadge = d.tier === 'T3'
-                ? '<span class="px-2.5 py-0.5 rounded-full bg-purple-500/20 text-purple-300 font-bold border border-purple-500/40 glow-green-sm">T3 REAL VM</span>'
+                ? '<span class="px-2.5 py-0.5 rounded-full bg-purple-500/20 text-purple-300 font-bold border border-purple-500/40">T3 REAL VM</span>'
                 : d.tier === 'T2'
                 ? '<span class="px-2.5 py-0.5 rounded-full bg-[#38BDF8]/20 text-[#38BDF8] font-bold border border-[#38BDF8]/40">T2 HARDENED</span>'
                 : '<span class="px-2.5 py-0.5 rounded-full bg-[#060A13] text-zinc-400 font-bold border border-[#1A2639]">T1 LITE</span>';
@@ -680,11 +683,8 @@
               tr.onclick = () => inspectSession(d.session_id, d.visitor_id, d.stage, d.score, d.tier, `${d.latency_ms} ms`, 'Telemetry Recorded');
               tr.innerHTML = `
                 <td class="py-3 px-3 font-mono text-zinc-300 font-medium">${d.session_id}</td>
-                <td class="py-3 px-3 font-mono font-bold text-[#00FF41] flex items-center gap-1">
-                  <span>${d.visitor_id}</span>
-                  <span class="text-[10px] text-zinc-500 opacity-0 group-hover:opacity-100">📋</span>
-                </td>
-                <td class="py-3 px-3"><span class="px-2 py-0.5 rounded bg-purple-500/15 text-purple-300 border border-purple-500/30 font-semibold">${d.stage}</span></td>
+                <td class="py-3 px-3 font-mono font-bold text-[#00FF41]">${d.visitor_id}</td>
+                <td class="py-3 px-3 font-mono"><span class="px-2 py-0.5 rounded bg-purple-500/15 text-purple-300 border border-purple-500/30 font-semibold">${d.stage}</span></td>
                 <td class="py-3 px-3">
                   <div class="flex items-center gap-2">
                     <span class="font-mono font-bold ${d.score > 0.8 ? 'text-rose-400' : d.score > 0.5 ? 'text-amber-400' : 'text-zinc-400'}">${d.score.toFixed(3)}</span>
@@ -693,11 +693,11 @@
                     </div>
                   </div>
                 </td>
-                <td class="py-3 px-3">${tierBadge}</td>
+                <td class="py-3 px-3 font-mono">${tierBadge}</td>
                 <td class="py-3 px-3 font-mono text-[#00FF41]">${d.latency_ms} ms</td>
                 <td class="py-3 px-3 font-mono text-zinc-400 truncate max-w-xs">Live classification</td>
                 <td class="py-3 px-3 text-center">
-                  <button class="px-2 py-0.5 rounded bg-[#060A13] hover:bg-[#00FF41]/20 text-[#00FF41] border border-[#1A2639] hover:border-[#00FF41]/40 text-xs font-semibold transition">
+                  <button class="px-2 py-0.5 rounded bg-[#060A13] hover:bg-[#00FF41]/20 text-[#00FF41] border border-[#1A2639] hover:border-[#00FF41]/40 text-xs font-semibold font-mono transition">
                     INSPECT
                   </button>
                 </td>

@@ -75,8 +75,10 @@ class DashboardServer:
             try:
                 with open(self.base_rates_path, "r", encoding="utf-8") as f:
                     br = json.load(f)
-                    total = br.get("total_sessions", 38126048)
-                    pos = br.get("value_1_count", 1232570)
+                    overall = br.get("overall", {})
+                    total = overall.get("total_sessions", br.get("total_sessions", 38126048))
+                    val1_approx = overall.get("value_1_approximation", {})
+                    pos = val1_approx.get("count", br.get("value_1_count", 1232570))
                     dataset_stats["total_sessions"] = total
                     dataset_stats["positive_sessions"] = pos
                     dataset_stats["base_rate_pct"] = round((pos / total) * 100, 2) if total else 3.23

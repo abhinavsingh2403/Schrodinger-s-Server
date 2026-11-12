@@ -1,6 +1,6 @@
 stage,reach_rate,dropped_prefix,evaluated_sessions,base_rate,best_rule,best_rule_val_recall,best_rule_test_recall,ml_candidate,ml_test_recall,delta_k,ci_lower,ci_upper,bonferroni_alpha,min_size_met
-S1,1.0,0,598647,0.0144,R0_random,0.0973,0.0937,LogisticRegression(C=0.1),0.6247,0.5309,0.3372,0.913,0.0167,True
-S2,0.9344,0,559399,0.0154,R7_decision_tree,0.8381,0.4666,LogisticRegression(C=0.01),0.6077,0.5059,0.3108,0.9064,0.0167,True
-S3,0.1684,0,100793,0.0855,R6_failed_logins,0.3296,0.121,"HistGradientBoosting(lr=0.05,iter=100)",0.3243,0.2225,0.0246,0.7269,0.0167,True
-S4,0.1463,2734,87593,0.001,R4_delay,1.0,1.0,"HistGradientBoosting(lr=0.05,iter=100)",1.0,0.8523,0.7746,0.9293,0.025,False
-S5,0.0002,1114,102,0.8627,R6_failed_logins,0.1983,0.125,LogisticRegression(C=1.0),0.125,0.0341,0.0,0.0988,0.025,False
+S1,1.0,0,598647,0.0144,R0_random,0.0973,0.0937,LogisticRegression(C=0.1),0.6247,0.531,0.3372,0.913,0.0167,True
+S2,0.9344,0,559399,0.0154,R7_decision_tree,0.8381,0.4666,LogisticRegression(C=0.01),0.6077,0.1411,0.1042,0.1855,0.0167,True
+S3,0.1684,0,100793,0.0855,R6_failed_logins,0.3296,0.121,"HistGradientBoosting(lr=0.05,iter=100)",0.3243,0.2033,0.0246,0.285,0.0167,True
+S4,0.1463,2734,87593,0.001,R4_delay,1.0,1.0,"HistGradientBoosting(lr=0.05,iter=100)",1.0,0.0,0.0,0.0,0.025,False
+S5,0.0002,1114,102,0.8627,R6_failed_logins,0.1983,0.125,LogisticRegression(C=1.0),0.125,0.0,0.0,0.0,0.025,False

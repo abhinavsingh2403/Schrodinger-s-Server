@@ -93,3 +93,33 @@ def test_replay_suite_batch_execution():
         assert "overall_yield" in report
         assert "escalation_rate" in report
         assert report["overall_yield"] > 0
+
+
+def test_load_traces_from_records():
+    """Verify loading AttackTraces from real dataset records (EVAL.md Section 5.5)."""
+    fake_records = [
+        {
+            "src_ip": "198.51.100.201",
+            "cnt_login_success": 1,
+            "cnt_login_failed": 2,
+            "has_pty": True,
+            "cnt_command_input": 4,
+            "cnt_file_download": 1,
+            "duration": 45.0,
+        },
+        {
+            "src_ip": "198.51.100.202",
+            "cnt_login_success": 0,
+            "cnt_login_failed": 1,
+            "has_pty": False,
+            "cnt_command_input": 0,
+            "duration": 2.0,
+        },
+    ]
+    traces = BotnetReplayEngine.load_traces_from_records(fake_records)
+    assert len(traces) == 2
+    assert traces[0].visitor_ip == "198.51.100.201"
+    assert traces[0].auth_success is True
+    assert len(traces[0].commands) > 0
+    assert traces[1].auth_success is False
+    assert len(traces[1].commands) == 0

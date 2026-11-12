@@ -145,6 +145,7 @@ class DecisionEngine:
                 current_tier=current_tier,
                 model_score=score,
                 visitor_profile=visitor,
+                stage=stage,
             )
 
             latency_ms = (time.perf_counter() - start_time) * 1000.0

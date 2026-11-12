@@ -15,6 +15,7 @@ from __future__ import annotations
 import logging
 import os
 import shutil
+import sys
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Dict, List, Optional
@@ -22,6 +23,28 @@ from typing import Any, Dict, List, Optional
 logger = logging.getLogger("sensor.adaptive")
 
 TIER_ORDER: Dict[str, int] = {"T1": 1, "T2": 2, "T3": 3}
+
+# Optional Cowrie integration: dynamically detect Cowrie Twisted environment
+COWRIE_ROOT = Path(__file__).resolve().parent / "cowrie-src"
+if COWRIE_ROOT.exists():
+    _src = str(COWRIE_ROOT / "src")
+    if _src not in sys.path:
+        sys.path.insert(0, _src)
+
+COWRIE_AVAILABLE = False
+try:
+    import types
+    if "cowrie._version" not in sys.modules:
+        m = types.ModuleType("cowrie._version")
+        m.__version__ = "3.1.6"
+        m.version = "3.1.6"
+        sys.modules["cowrie._version"] = m
+    from cowrie.shell import session as shellsession
+    from cowrie.shell import fs
+    COWRIE_AVAILABLE = True
+except (ImportError, ModuleNotFoundError, Exception):
+    shellsession = None  # type: ignore
+    fs = None  # type: ignore
 
 
 @dataclass
@@ -251,3 +274,48 @@ class AdaptiveSessionAdapter:
         except Exception as exc:
             # Fail-cheap: remain in current tier or T1, never crash connection
             logger.warning("Decision engine query failed (%s); maintaining %s", exc, self.current_tier)
+
+
+if COWRIE_AVAILABLE and shellsession is not None:
+    class CowrieSSHSessionAdapter(shellsession.SSHSessionForCowrieUser):
+        """
+        Twisted Conch session adapter for production Cowrie honeypot.
+        Bridges Cowrie SSH session events directly to AdaptiveSessionAdapter
+        and applies persona filesystem overlays upon tier escalation.
+        """
+
+        def __init__(self, avatar, decision_engine: Any, reactor=None):
+            super().__init__(avatar, reactor)
+            peer = avatar.conn.transport.transport.getPeer()
+            visitor_ip = str(getattr(peer, "host", "127.0.0.1"))
+            session_id = str(getattr(avatar.conn.transport, "transportId", "sess_unknown"))
+
+            self.persona_manager = PersonaManager()
+            self.adapter = AdaptiveSessionAdapter(
+                visitor_ip=visitor_ip,
+                session_id=session_id,
+                decision_engine=decision_engine,
+                persona_manager=self.persona_manager,
+            )
+
+            # Apply initial T1 persona
+            initial_p = self.adapter.get_active_persona()
+            self.server.hostname = initial_p.hostname
+            self._apply_fs_overlay(initial_p)
+
+        def _apply_fs_overlay(self, persona: Persona) -> None:
+            """Overlays persona identity files onto the Cowrie virtual filesystem."""
+            if fs is not None and hasattr(self.server, "fs"):
+                try:
+                    motd_content = f"Welcome to {persona.distro} ({persona.kernel_release})\n".encode("utf-8")
+                    self.server.fs.mkfile("/etc/motd", 0, 0, len(motd_content), 0o100644)
+                    node = self.server.fs.getfile("/etc/motd")
+                    if node is not None:
+                        node[fs.A_CONTENTS] = motd_content
+                except Exception as e:
+                    logger.debug("Failed applying Cowrie fs overlay: %s", e)
+else:
+    class CowrieSSHSessionAdapter:  # type: ignore
+        """Placeholder when running in environments without Twisted Conch."""
+        def __init__(self, *args, **kwargs):
+            raise RuntimeError("Twisted Conch and Cowrie must be installed to instantiate CowrieSSHSessionAdapter.")

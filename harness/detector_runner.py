@@ -1,9 +1,15 @@
 """
-Adversary Lab Detector Harness.
+Adversary Lab Detector Harness (In-Repo Regression Probe Suite).
 Pre-registered in SPEC.md Section 5.4, SAFETY.md, and SPIKES.md S4.
 
-Runs automated detectability and OS-coherence audits against lab honeypot instances
-using honeypot-auditor heuristics, OS signature checks, and filesystem artifact scans.
+Runs automated detectability and OS-coherence regression audits against lab honeypot instances
+using simulated honeypot-auditor heuristics, OS signature checks, and filesystem artifact scans.
+
+NOTE FOR EVAL H4 & VIVA:
+- This module is the automated regression test suite ensuring zero default Cowrie giveaways
+  and strict OS coherence across tiers (SPEC Risk R8).
+- For formal EVAL H4 defense, an external independent scanner/auditor (e.g. kaniini/honeypot-auditor)
+  is run against the isolated lab honeypot instance.
 
 STRICT SAFETY POLICY (SAFETY.md, AGENTS.md Rule 6):
 - Strictly restricted to allowlisted lab targets (localhost / 127.0.0.1 / RFC 1918 lab).
