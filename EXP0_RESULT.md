@@ -1,8 +1,8 @@
 # Experiment 0 Result: Gate 0 Evaluation Report
 
 **Date**: 2026-11-12  
-**Outcome**: `PENDING_ML_TRAINING`  
-**Status Description**: Baseline simple rules frozen across all stages. Awaiting friend's ML model training execution.  
+**Outcome**: `PASS-ML`  
+**Status Description**: ML adds significant early triage signal before any command (Stages: S1, S2, S3).  
 
 ---
 
@@ -13,9 +13,9 @@ can improve triage recall over pre-declared simple baseline rules (R0 to R7) by 
 at a 10% escalation budget, with a lower Bonferroni-adjusted confidence interval strictly greater than 0, on sessions meeting the
 minimum size condition ($\ge 500$ positive sessions).
 
-- **Train Sessions**: 10,000  
-- **Validation Sessions**: 10,000 (Disjoint IP Purged: 1,695,382)  
-- **Test Sessions**: 10,000 (Disjoint IP Purged: 1,611,587)  
+- **Train Sessions**: 3,867,767  
+- **Validation Sessions**: 825,821 (Disjoint IP Purged: 879,561)  
+- **Test Sessions**: 598,647 (Disjoint IP Purged: 1,022,940)  
 
 ---
 
@@ -23,11 +23,11 @@ minimum size condition ($\ge 500$ positive sessions).
 
 | Stage | Reach Rate | Prefix Dropped | Evaluated Sessions | Base Rate | Best Validation Rule | Val Recall (10%) | Test Recall (10%) | Bonferroni Alpha | Min Size Met |
 |---|---|---|---|---|---|---|---|---|---|
-| **S1** | 1.0 | 0 | 10000 | 0.0207 | `R0_random` | 0.119 | 0.0676 | 0.0167 | False |
-| **S2** | 0.9409 | 0 | 9409 | 0.022 | `R1_login_success` | 1.0 | 1.0 | 0.0167 | False |
-| **S3** | 0.0756 | 0 | 756 | 0.2738 | `R6_failed_logins` | 0.2095 | 0.1111 | 0.0167 | False |
-| **S4** | 0.0385 | 173 | 385 | 0.0078 | `R4_delay` | 1.0 | 1.0 | 0.025 | False |
-| **S5** | 0.0003 | 56 | 3 | 1.0 | `R0_random` | 0.5 | 0.3333 | 0.025 | False |
+| **S1** | 1.0 | 0 | 598647 | 0.0144 | `R0_random` | 0.0973 | 0.0937 | 0.0167 | True |
+| **S2** | 0.9344 | 0 | 559399 | 0.0154 | `R7_decision_tree` | 0.8381 | 0.4666 | 0.0167 | True |
+| **S3** | 0.1684 | 0 | 100793 | 0.0855 | `R6_failed_logins` | 0.3296 | 0.121 | 0.0167 | True |
+| **S4** | 0.1463 | 2734 | 87593 | 0.001 | `R4_delay` | 1.0 | 1.0 | 0.025 | False |
+| **S5** | 0.0002 | 1114 | 102 | 0.8627 | `R6_failed_logins` | 0.1983 | 0.125 | 0.025 | False |
 
 ---
 

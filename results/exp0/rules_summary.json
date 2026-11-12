@@ -1,20 +1,24 @@
 {
   "status": "EXPERIMENT0_BASELINE_RULES_FROZEN",
   "counts": {
-    "train_rows": 10000,
-    "val_rows": 10000,
-    "test_rows": 10000,
+    "train_rows": 3867767,
+    "val_rows": 825821,
+    "test_rows": 598647,
     "val_raw_rows": 1705382,
-    "val_purged_rows": 1695382,
+    "val_purged_rows": 879561,
     "test_raw_rows": 1621587,
-    "test_purged_rows": 1611587
+    "test_purged_rows": 1022940
   },
   "gate0": {
-    "gate0_outcome": "PENDING_ML_TRAINING",
+    "gate0_outcome": "PASS-ML",
     "delta_threshold": 0.05,
-    "passing_early_stages": [],
+    "passing_early_stages": [
+      "S1",
+      "S2",
+      "S3"
+    ],
     "passing_late_stages": [],
-    "interpretation": "Baseline simple rules frozen across all stages. Awaiting friend's ML model training execution."
+    "interpretation": "ML adds significant early triage signal before any command (Stages: S1, S2, S3)."
   },
   "stages": {
     "S1": {
@@ -23,11 +27,11 @@
         "R5_rarity"
       ],
       "best_rule": "R0_random",
-      "best_val_recall": 0.119,
-      "best_test_recall": 0.0676,
+      "best_val_recall": 0.0973,
+      "best_test_recall": 0.0937,
       "validation_scores": {
-        "R0_random": 0.119,
-        "R5_rarity": 0.0476
+        "R0_random": 0.0973,
+        "R5_rarity": 0.0872
       }
     },
     "S2": {
@@ -38,15 +42,15 @@
         "R6_failed_logins",
         "R7_decision_tree"
       ],
-      "best_rule": "R1_login_success",
-      "best_val_recall": 1.0,
-      "best_test_recall": 1.0,
+      "best_rule": "R7_decision_tree",
+      "best_val_recall": 0.8381,
+      "best_test_recall": 0.4666,
       "validation_scores": {
-        "R0_random": 0.1048,
-        "R1_login_success": 1.0,
-        "R5_rarity": 0.081,
-        "R6_failed_logins": 0.1762,
-        "R7_decision_tree": 1.0
+        "R0_random": 0.1026,
+        "R1_login_success": 0.7845,
+        "R5_rarity": 0.1127,
+        "R6_failed_logins": 0.2963,
+        "R7_decision_tree": 0.8381
       }
     },
     "S3": {
@@ -60,16 +64,16 @@
         "R7_decision_tree"
       ],
       "best_rule": "R6_failed_logins",
-      "best_val_recall": 0.2095,
-      "best_test_recall": 0.1111,
+      "best_val_recall": 0.3296,
+      "best_test_recall": 0.121,
       "validation_scores": {
-        "R0_random": 0.0952,
-        "R1_login_success": 0.0714,
-        "R2_pty_requested": 0.0667,
-        "R3_interactive": 0.0667,
-        "R5_rarity": 0.0714,
-        "R6_failed_logins": 0.2095,
-        "R7_decision_tree": 0.2095
+        "R0_random": 0.101,
+        "R1_login_success": 0.1121,
+        "R2_pty_requested": 0.1104,
+        "R3_interactive": 0.1104,
+        "R5_rarity": 0.1121,
+        "R6_failed_logins": 0.3296,
+        "R7_decision_tree": 0.3272
       }
     },
     "S4": {
@@ -87,14 +91,14 @@
       "best_val_recall": 1.0,
       "best_test_recall": 1.0,
       "validation_scores": {
-        "R0_random": 0.0,
-        "R1_login_success": 0.0,
-        "R2_pty_requested": 0.0,
-        "R3_interactive": 0.0,
+        "R0_random": 0.1074,
+        "R1_login_success": 0.095,
+        "R2_pty_requested": 0.1074,
+        "R3_interactive": 0.1074,
         "R4_delay": 1.0,
-        "R5_rarity": 0.0,
-        "R6_failed_logins": 1.0,
-        "R7_decision_tree": 1.0
+        "R5_rarity": 0.095,
+        "R6_failed_logins": 0.938,
+        "R7_decision_tree": 0.9256
       }
     },
     "S5": {
@@ -108,18 +112,18 @@
         "R6_failed_logins",
         "R7_decision_tree"
       ],
-      "best_rule": "R0_random",
-      "best_val_recall": 0.5,
-      "best_test_recall": 0.3333,
+      "best_rule": "R6_failed_logins",
+      "best_val_recall": 0.1983,
+      "best_test_recall": 0.125,
       "validation_scores": {
-        "R0_random": 0.5,
-        "R1_login_success": 0.5,
-        "R2_pty_requested": 0.5,
-        "R3_interactive": 0.5,
-        "R4_delay": 0.5,
-        "R5_rarity": 0.5,
-        "R6_failed_logins": 0.5,
-        "R7_decision_tree": 0.5
+        "R0_random": 0.0909,
+        "R1_login_success": 0.095,
+        "R2_pty_requested": 0.0,
+        "R3_interactive": 0.0,
+        "R4_delay": 0.1942,
+        "R5_rarity": 0.095,
+        "R6_failed_logins": 0.1983,
+        "R7_decision_tree": 0.1983
       }
     }
   }
