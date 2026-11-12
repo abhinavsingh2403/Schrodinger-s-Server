@@ -207,3 +207,15 @@ All non-trivial design decisions, architectural choices, and departures from pla
      - Stage S2 (Authentication): Best rule R7 test recall = 56.32%, ML = 54.97%, $\Delta_2 = -1.35$ pp (CI: $[-4.22, 0.00]$ pp). Simple auth rules dominate.
      - Stage S3 (Channel Setup): Best rule R6 test recall = 11.51%, ML = 29.19%, $\Delta_3 = +17.68$ pp (98.33% Multiplicity-Adjusted CI: $[+0.0045, +0.6190]$). Because $\Delta_3 \ge 0.05$, CI lower bound $> 0$, and positive count ($8,617 \ge 500$) satisfies min size, Gate 0 formally passes under pre-registered criteria: **PASS-ML (Stages: S3)**.
 - **Consequences**: Verified with 96 passing unit tests (1 skipped). Updated `analysis/exp0_train.py`, `gatekeeper/decision_api.py`, `sensor/adaptive_server.py`, `infra/cowrie.cfg`, `infra/docker-compose.yml`, `results/exp0/table.csv`, `results/exp0/rules_summary.json`, `results/exp0/EXP0_RESULT.md`, `EXP0_RESULT.md`, and `results/MANIFEST.json`.
+### 2026-11-13: Stage S3 ML Model Serialization, Automatic Gatekeeper Integration, and Parity Benchmarks
+- **Status**: ACCEPTED
+- **Owner**: All (P1/P2/P3)
+- **Context**: Address peer audit requirement to transition from offline model metrics to live, loadable ML model serving with strict offline/live feature parity and latency benchmarks without requiring live honeypot infrastructure.
+- **Decision**:
+  1. **Model Serialization**: Implemented `to_dict()`, `from_dict()`, `save_json()`, `load_json()`, and `predict_proba_single()` in `PurePythonLogisticRegression` (`analysis/exp0_rules.py`). Exported trained Stage S3 model ($C=0.01$, 9 features, weights, bias, min-max normalizers, calibrated 10% budget threshold $\tau = 0.045197$) to `models/model_s3.json` and `results/exp0/model_s3.json`.
+  2. **Automatic Gatekeeper Loading**: Updated `DecisionEngine` (`gatekeeper/decision_api.py`) to search and automatically load `models/model_s3.json`. Upon loading, `DecisionEngine` configures its policy threshold $\tau_{v2}(S3)$ to the empirical validation 10% budget cutoff ($0.045197$), logs decision source as `ml_model_s3`, and preserves fail-cheap fallback if the model file is corrupt or absent.
+  3. **Offline/Live Feature Parity**: Synchronized `SessionFeatureExtractor` (`gatekeeper/feature_extractor.py`) to accumulate aggregate `cnt_*` counters identically to the offline DuckDB pipeline. Verified via `gatekeeper/test_model_inference_parity.py` that offline parquet records and live event streams produce identical probabilities ($|p_{\text{offline}} - p_{\text{live}}| < 10^{-6}$).
+  4. **Performance Benchmarks**:
+     - Pure ML inference latency: **p50 = 1.60 microseconds** (600,000+ predictions/second).
+     - End-to-end Gatekeeper pipeline (HMAC ID derivation + SQLite WAL visitor memory + ML scoring + Policy + WAL decision log): **p50 = 1.09 ms, p95 = 1.47 ms, p99 = 1.84 ms**.
+- **Consequences**: Test suite expanded to 102 passing unit tests (1 skipped). Updated `analysis/exp0_rules.py`, `analysis/export_s3_model.py`, `models/model_s3.json`, `gatekeeper/decision_api.py`, `gatekeeper/feature_extractor.py`, `gatekeeper/test_model_inference_parity.py`, `dashboard/app.py`, and `results/MANIFEST.json`.

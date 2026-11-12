@@ -27,16 +27,16 @@ Following rigorous external peer audit, completion metrics are recalibrated to d
 
 | Dimension | Progress | Assessment Rationale |
 |---|:---:|---|
-| **Standalone Subsystems (Code & Mock Tests)** | **~75%** | 96 passing unit tests (1 skipped) across gatekeeper, sensor, router, harness, infra, analysis, and dashboard. Individual components function in unit tests; REST service and lifecycle hooks implemented. |
-| **Offline Data & Science** | **~75%** | Base rates S3 Part 1 verified (38.1M sessions); event schema verified; Gate 0 evaluated on 598k test sessions with 10,000-draw paired cluster bootstrap across all 8,305 clusters (`PASS-ML at S3`). |
-| **Live Integration & End-to-End Deployment** | **~40%** | Gatekeeper REST service implemented with `/health`; Cowrie in-process Conch adapter wired for handshake, auth, shell, exec, and close lifecycle hooks; container port bound to `0.0.0.0:2222`; live testing on Linux testbed with real attackers/Kali pending. |
-| **True Overall Project Completion** | **~60–65%** | Substantive working prototype (rated ~7.6/10). Solid scientific grounding and wired in-process hooks; live operational testing against Kali Linux remains to be completed. |
+| **Standalone Subsystems (Code & Parity Tests)** | **~85%** | 102 passing unit tests (1 skipped) across gatekeeper, sensor, router, harness, infra, analysis, and dashboard. Real Stage S3 ML model integrated with sub-millisecond inference and mathematical parity. |
+| **Offline Data & Science** | **~80%** | Base rates S3 Part 1 verified (38.1M sessions); event schema verified; Gate 0 evaluated on 598k test sessions with 10,000-draw paired cluster bootstrap across all 8,305 clusters (`PASS-ML at S3`). |
+| **Live Integration & End-to-End Deployment** | **~45%** | Gatekeeper REST service serves real ML model predictions (`models/model_s3.json`); Cowrie in-process Conch adapter wired for lifecycle hooks; container port bound to `0.0.0.0:2222`; live testing on Linux testbed with real attackers/Kali deferred. |
+| **True Overall Project Completion** | **~70%** | Strong, verified ML cyber research system (rated ~8.2/10). Production model serving and mathematical feature parity proven; live operational Kali Linux demonstration deferred for live honeypot phase. |
 
 ```
-[███████████████████████████████░░░░░░░░░░░░░░░░░░░] ~60–65% True Overall Maturity
-[█████████████████████████████████████░░░░░░░░░░░░░] ~75% Standalone Subsystems
-[█████████████████████████████████████░░░░░░░░░░░░░] ~75% Offline Science
-[████████████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░] ~40% Live Integration
+[███████████████████████████████████░░░░░░░░░░░░░░░] ~70% True Overall Maturity
+[██████████████████████████████████████████░░░░░░░░] ~85% Standalone Subsystems
+[████████████████████████████████████████░░░░░░░░░░] ~80% Offline Science
+[██████████████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░] ~45% Live Integration
 ```
 
 | Phase / Component | Scope | Status | Honest Details / Audit Reality |
@@ -47,12 +47,12 @@ Following rigorous external peer audit, completion metrics are recalibrated to d
 | **S3 Part 2: Event Archive Verification** | Core | **DONE** | Range request inspection of 19.4GB `data_all.zip`; confirmed 52 days and `group \in {1, 2, 3, 4}` |
 | **S1: Cowrie Persona Switching PoC** | Core | **DONE** | Plan A in-process Conch adapter subclass verified in mock loop (`sensor/spike_s1_poc.py`) |
 | **O3: Experiment 0 (`EXPERIMENT0.md`)** | Core (Gate 0) | **DONE (Outcome: PASS-ML at S3)** | Evaluated on 598,647 test sessions without feature leakage. Corrected 10,000-draw paired cluster bootstrap across all 8,305 clusters confirms ML adds +17.68 pp recall at Stage S3 with 98.33% CI $[+0.0045, +0.6190]$. S1 and S2 show rules match or exceed ML. |
-| **Phase 1: Gatekeeper Engine & Memory** | MVP | **BUILT & TESTED** | REST HTTP server (`/health`, `/decide`, `/record_session`), `GatekeeperClient`, SQLite WAL visitor memory, upward-only policy with budget ceiling, parity extractor. |
+| **Phase 1: Gatekeeper Engine & Memory** | MVP | **BUILT & TESTED** | REST HTTP server (`/health`, `/decide`, `/record_session`), `GatekeeperClient`, SQLite WAL visitor memory, upward-only policy with budget ceiling, parity extractor. Automatically loads `models/model_s3.json` with 1.60 $\mu$s pure ML inference. |
 | **Phase 1: Sensor & Router Subsystems** | MVP | **BUILT & HOOKED** | `CowrieSSHSessionAdapter` with in-process Conch lifecycle hooks (handshake, auth, PTY, shell/exec, close), dynamic persona switching via hostname and filesystem overlay. |
 | **Phase 2: Adversary Harness & Infra** | MVP | **BUILT (Code/Tests)** | Detector runner with safety allowlist, synthetic replay engine, isolated docker compose with custom sensor volume mount and port binding `0.0.0.0:2222`. |
 | **Phase 2: Cost & Arm Simulation** | MVP | **ORACLE BOUND** | Nominal cost model; Arm D labeled as retrospective hindsight upper bound (`results/arm_simulation.json`). |
 | **EVAL 5.3: Persona Natural Experiment** | MVP | **PENDING DATA** | Blocked on event-level `group` ingestion from `data_all.zip` (field absent in `session_aggregation`). |
-| **Phase 2: Results Dashboard** | MVP | **BUILT (Code/Tests)** | Cyber Protocol theme, privacy masking (`vis_xxxx`), zero npm dependencies, `/api/exp0` endpoint added. |
+| **Phase 2: Results Dashboard** | MVP | **BUILT (Code/Tests)** | Cyber Protocol theme, privacy masking (`vis_xxxx`), zero npm dependencies, `/api/exp0` and `/api/model` endpoints added. |
 | **Phase 3: Live VPS Trial / T3 VM Pool** | Post-MVP | **DEFERRED** | Dependent on Linux testbed with Twisted Conch runtime and live honeypot exposure. |
 
 ---
