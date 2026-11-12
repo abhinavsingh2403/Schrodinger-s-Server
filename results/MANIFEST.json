@@ -1,7 +1,7 @@
 {
   "project": "Schrodinger's Server: Adaptive SSH Honeypot Early Triage",
-  "branch": "aftertranning",
-  "git_commit": "c2f417e376c3d70fc3a1e5933db275535f142874",
+  "branch": "trainmodel",
+  "git_commit": "2084d589e4455e70d32df7023142f0f2a00309a6",
   "python_version": "3.12.10",
   "library_versions": {
     "duckdb": "2.0.0",
@@ -9,7 +9,8 @@
   },
   "random_seeds": {
     "exp0_split_seed": 20261111,
-    "cost_sensitivity_seed": 20261111
+    "tie_break_seed": 42,
+    "bootstrap_seed": 42
   },
   "data_inputs": {
     "session_aggregation.jsonl.gz": {
@@ -19,18 +20,6 @@
     }
   },
   "result_artifacts": {
-    "results/base_rates.json": {
-      "md5": "bad0bf9c81811cc44bc6a07cd9f2ffe2",
-      "eval_ref": "EVAL.md Section 5.1 & SPIKES S3"
-    },
-    "results/arm_simulation.json": {
-      "md5": "f3e610ab5e8235d54d10424d4e02b366",
-      "eval_ref": "EVAL.md Section 5.1 & SPEC.md Section 9"
-    },
-    "results/natural_experiment.json": {
-      "md5": "0c551d04140725e36e0413e15c722433",
-      "eval_ref": "EVAL.md Section 5.3 & DATA.md Section D1"
-    },
     "results/exp0/splits.json": {
       "md5": "73babb336645549b135b6fe814f448a8",
       "eval_ref": "EXPERIMENT0.md Section 3"
@@ -39,25 +28,25 @@
       "md5": "3cc732d1c5c8a22214001b388024b6df",
       "eval_ref": "EXPERIMENT0.md Section 6"
     },
-    "results/s3_event_schema.json": {
-      "md5": "4da53787f25ec08ac76f58267c642316",
-      "eval_ref": "SPIKES.md Section S3 Part 2"
-    },
     "results/exp0/rules.json": {
-      "md5": "52483c072223082dfea2b5513fa73904",
+      "md5": "8daf5e2c97a2be216d503a2e3ba3f262",
       "eval_ref": "EXPERIMENT0.md Section 7"
     },
-    "results/exp0/table.csv": {
-      "md5": "de37d228451a13d32ea618777ef2d8fc",
+    "results/exp0/rules_summary.json": {
+      "md5": "30a84db71d28f92c6ef5b1f405d1ae0e",
       "eval_ref": "EXPERIMENT0.md Section 14"
     },
-    "results/exp0/rules_summary.json": {
-      "md5": "fe018bb3013bfcdb2e0366e34de2e851",
+    "results/exp0/table.csv": {
+      "md5": "81443b3029331d3395f6a2cfae46938b",
+      "eval_ref": "EXPERIMENT0.md Section 14"
+    },
+    "results/exp0/EXP0_RESULT.md": {
+      "md5": "fd535ddf689d73798e5220621db02b54",
       "eval_ref": "EXPERIMENT0.md Section 14"
     },
     "EXP0_RESULT.md": {
-      "md5": "3a4a0f61e8cfcbe06dec970e581f5752",
-      "eval_ref": "EXPERIMENT0.md Section 12 & 14"
+      "md5": "fd535ddf689d73798e5220621db02b54",
+      "eval_ref": "AGENTS.md Root Mirror"
     }
   }
 }

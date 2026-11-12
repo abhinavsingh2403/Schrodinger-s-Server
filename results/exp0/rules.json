@@ -5,11 +5,11 @@
       "R5_rarity"
     ],
     "best_rule": "R0_random",
-    "best_val_recall": 0.0973,
-    "best_test_recall": 0.0937,
+    "best_val_recall": 0.0975,
+    "best_test_recall": 0.097,
     "validation_scores": {
-      "R0_random": 0.0973,
-      "R5_rarity": 0.0872
+      "R0_random": 0.0975,
+      "R5_rarity": 0.0721
     }
   },
   "S2": {
@@ -21,14 +21,14 @@
       "R7_decision_tree"
     ],
     "best_rule": "R7_decision_tree",
-    "best_val_recall": 0.8381,
-    "best_test_recall": 0.4666,
+    "best_val_recall": 0.8382,
+    "best_test_recall": 0.5632,
     "validation_scores": {
-      "R0_random": 0.1026,
-      "R1_login_success": 0.7845,
-      "R5_rarity": 0.1127,
-      "R6_failed_logins": 0.2963,
-      "R7_decision_tree": 0.8381
+      "R0_random": 0.0997,
+      "R1_login_success": 0.7824,
+      "R5_rarity": 0.0997,
+      "R6_failed_logins": 0.2966,
+      "R7_decision_tree": 0.8382
     }
   },
   "S3": {
@@ -36,72 +36,36 @@
       "R0_random",
       "R1_login_success",
       "R2_pty_requested",
-      "R3_interactive",
       "R5_rarity",
       "R6_failed_logins",
       "R7_decision_tree"
     ],
     "best_rule": "R6_failed_logins",
-    "best_val_recall": 0.3296,
-    "best_test_recall": 0.121,
+    "best_val_recall": 0.3338,
+    "best_test_recall": 0.1151,
     "validation_scores": {
-      "R0_random": 0.101,
-      "R1_login_success": 0.1121,
-      "R2_pty_requested": 0.1104,
-      "R3_interactive": 0.1104,
-      "R5_rarity": 0.1121,
-      "R6_failed_logins": 0.3296,
-      "R7_decision_tree": 0.3272
+      "R0_random": 0.0976,
+      "R1_login_success": 0.0976,
+      "R2_pty_requested": 0.0951,
+      "R5_rarity": 0.0976,
+      "R6_failed_logins": 0.3338,
+      "R7_decision_tree": 0.332
     }
   },
   "S4": {
-    "valid_rules": [
-      "R0_random",
-      "R1_login_success",
-      "R2_pty_requested",
-      "R3_interactive",
-      "R4_delay",
-      "R5_rarity",
-      "R6_failed_logins",
-      "R7_decision_tree"
-    ],
-    "best_rule": "R4_delay",
-    "best_val_recall": 1.0,
-    "best_test_recall": 1.0,
-    "validation_scores": {
-      "R0_random": 0.1074,
-      "R1_login_success": 0.095,
-      "R2_pty_requested": 0.1074,
-      "R3_interactive": 0.1074,
-      "R4_delay": 1.0,
-      "R5_rarity": 0.095,
-      "R6_failed_logins": 0.938,
-      "R7_decision_tree": 0.9256
-    }
+    "valid_rules": [],
+    "best_rule": "NOT_EVALUABLE (Requires event-level data_all)",
+    "best_val_recall": "N/A",
+    "best_test_recall": "N/A",
+    "status": "NOT_EVALUABLE_ON_AGGREGATE",
+    "note": "Prefix-determined exclusions and command timings require event-level data_all archive."
   },
   "S5": {
-    "valid_rules": [
-      "R0_random",
-      "R1_login_success",
-      "R2_pty_requested",
-      "R3_interactive",
-      "R4_delay",
-      "R5_rarity",
-      "R6_failed_logins",
-      "R7_decision_tree"
-    ],
-    "best_rule": "R6_failed_logins",
-    "best_val_recall": 0.1983,
-    "best_test_recall": 0.125,
-    "validation_scores": {
-      "R0_random": 0.0909,
-      "R1_login_success": 0.095,
-      "R2_pty_requested": 0.0,
-      "R3_interactive": 0.0,
-      "R4_delay": 0.1942,
-      "R5_rarity": 0.095,
-      "R6_failed_logins": 0.1983,
-      "R7_decision_tree": 0.1983
-    }
+    "valid_rules": [],
+    "best_rule": "NOT_EVALUABLE (Requires event-level data_all)",
+    "best_val_recall": "N/A",
+    "best_test_recall": "N/A",
+    "status": "NOT_EVALUABLE_ON_AGGREGATE",
+    "note": "Prefix-determined exclusions and command timings require event-level data_all archive."
   }
 }

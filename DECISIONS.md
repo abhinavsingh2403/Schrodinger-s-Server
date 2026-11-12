@@ -164,3 +164,28 @@ All non-trivial design decisions, architectural choices, and departures from pla
 - **Why**: Truthfulness, absolute reproducibility, and rigorous scientific defense for viva.
 - **Consequences**: Updated `analysis/exp0_train.py`, `gatekeeper/policy.py`, `gatekeeper/test_policy.py`, `results/exp0/table.csv`, `results/exp0/EXP0_RESULT.md`, and root `EXP0_RESULT.md`.
 
+### 2026-11-13: Experiment 0 Scientific Grounding, Leakage Removal, and Gate 0 Reframing
+- **Status**: ACCEPTED
+- **Owner**: Scientific Integrity Lead / All
+- **Context**: Deep peer audit of branch `trainmodel` established critical scientific flaws in earlier Experiment 0 reports:
+  1. **Stage Feature Leakage**: Prior reports claiming $\Delta_1 \approx 0.53$ and S1 ML recall $0.62$ suffered from severe stage leakage: post-authentication terminal size (`cnt_client_size`), shell env requests (`cnt_client_var`), and whole-session `duration` (`last_seen - first_seen`) were improperly included in Stage S1 (Handshake).
+  2. **Table Delta Inconsistency**: Previous tables reported hand-edited numbers where $\Delta_k$ did not equal $\text{Recall}_{ML} - \text{Recall}_{Rule}$ (e.g. S2 $\Delta$ was computed against random baseline instead of best rule R7).
+  3. **Stage S4/S5 Infeasibility on Aggregate Data**: Whole-session aggregate counters (`session_aggregation.jsonl.gz`) cannot evaluate command-level prefix-determined exclusions or first-command timings ($R_4$) without leaking future commands and target label components ($V_{\text{full}} = 1$ if commands $\ge 5$).
+  4. **Pre-Registration Observation Timing**: Tags `exp0-v2` and `eval-v2` were placed at commit `424572e` after test set performance had already been observed.
+- **Decision & Ground Truth Lifecycle Mapping**:
+  1. **Cowrie Event-to-Stage Mapping**: Verified emission points across Cowrie source code for all 25 aggregate fields:
+     - **Stage S1 (Handshake)**: `cnt_session_connect` (`cowrie.session.connect`), `cnt_client_version` (`cowrie.client.version`), `cnt_client_kex` (`cowrie.client.kex`).
+     - **Stage S2 (Authentication)**: `cnt_client_fingerprint` (`checkers.py:48`), `cnt_login_failed` (`cowrie.login.failed`), `cnt_login_success` (`cowrie.login.success`).
+     - **Stage S3 (Post-Auth Channel Setup)**: `cnt_client_size` (`shell/session.py:100` `getPty()`), `cnt_client_var` (`request_env`), `cnt_session_params`.
+     - **Stage S4/S5 (Commands - Event-Level Only)**: `cnt_command_input`, `cnt_command_success`, `cnt_command_failed`.
+     - **Target Label Components**: `cnt_command_input >= 5`, `cnt_file_download > 0`, `cnt_file_upload > 0`, `cnt_direct_tcpip_request > 0`.
+     - **Whole-Session Post-Termination**: `first_seen`, `last_seen` (`duration`), `total_events`, `cnt_log_closed`, `cnt_session_closed`.
+  2. **Strict Single-Source Allowlist**: Defined `STAGE_ALLOWED_FEATURES` in `analysis/exp0_train.py` with zero future leakage and unit test verification (`test_stage_allowed_features_leakage_guards`).
+  3. **Scope Honest Boundary**: Stages S4 and S5 are formally marked as `NOT EVALUABLE ON AGGREGATE DATA` (requiring event-level `data_all.zip`).
+  4. **Gate 0 Outcome**: With zero future leakage, linear ML models achieve test recall of $0.0572$ at S1, $0.3301$ at S2, and $0.2977$ at S3. Baseline rules (R0 random at S1: $0.0970$; R7 decision tree at S2: $0.6004$; R7 at S3: $0.6008$) match or significantly exceed learned models. Consequently, Gate 0 formally results in **FAIL** ($\Delta_k \le 0$ across all pre-command stages).
+  5. **Pre-Registration Proposing v3**: Propose tags `exp0-v3` and `eval-v3` to seal this leak-free baseline code and results.
+- **Alternatives considered**: Preserving stale leaky numbers to claim "PASS-ML" (rejected: violates AGENTS.md Rule 1 and Rule 2); inventing synthetic proxies for S4/S5 (rejected: scientifically invalid).
+- **Why**: Highest scientific rigor, absolute reproducibility, and transparent viva defense.
+- **Consequences**: Updated `analysis/exp0_train.py`, `analysis/exp0_rules.py`, `results/exp0/rules.json`, `results/exp0/table.csv`, `results/exp0/rules_summary.json`, `results/exp0/EXP0_RESULT.md`, `EXP0_RESULT.md`, and `results/MANIFEST.json`.
+
+
