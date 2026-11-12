@@ -300,6 +300,21 @@ def make_dashboard_handler(server_instance: DashboardServer):
                 self.end_headers()
                 self.wfile.write(json.dumps(data).encode("utf-8"))
 
+            elif path == "/api/exp0":
+                exp0_summary = Path(__file__).resolve().parent.parent / "results" / "exp0" / "rules_summary.json"
+                if exp0_summary.exists():
+                    try:
+                        with open(exp0_summary, "r", encoding="utf-8") as f:
+                            data = json.load(f)
+                    except Exception:
+                        data = {"status": "ERROR_READING_EXP0"}
+                else:
+                    data = {"status": "NO_EXP0_RESULTS"}
+                self.send_response(200)
+                self.send_header("Content-Type", "application/json")
+                self.end_headers()
+                self.wfile.write(json.dumps(data).encode("utf-8"))
+
             elif path == "/api/natural_experiment":
                 data = server_instance.get_natural_experiment_data()
                 self.send_response(200)

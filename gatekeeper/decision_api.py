@@ -92,23 +92,24 @@ class DecisionEngine:
             except Exception:
                 pass
 
-        # Rule-based fallback (EXPERIMENT0.md Section 7)
+        # PLACEHOLDER HEURISTIC FALLBACK (Not learned parameters; rule-based defaults)
+        # These constants are engineering placeholders until empirical ML model weights are loaded.
         if stage in ("S1", "S2"):
             if features.get("s2_has_success", 0) > 0:
-                return 0.70  # Authenticated session: high probability of value
+                return 0.70  # Placeholder heuristic: Authenticated session
             if features.get("s2_failed_logins", 0) > 3:
-                return 0.40  # Brute force probe
+                return 0.40  # Placeholder heuristic: Brute force probe
             return 0.10
 
         elif stage in ("S3", "S4", "S5"):
             if features.get("s3_has_pty", 0) > 0:
-                return 0.80  # Terminal allocated: interactive candidate
+                return 0.80  # Placeholder heuristic: Terminal allocated
             if (
                 features.get("s4_cmd1_has_pipe", 0) > 0
                 or features.get("s4_cmd1_has_chain", 0) > 0
                 or features.get("chaining_ops_count", 0) > 0
             ):
-                return 0.85  # Multi-stage or complex command
+                return 0.85  # Placeholder heuristic: Multi-stage or complex command
             return 0.20
 
         return 0.05

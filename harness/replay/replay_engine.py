@@ -195,8 +195,15 @@ class BotnetReplayEngine:
         return self.run_suite(STANDARD_TRACES)
 
     @staticmethod
-    def load_traces_from_records(records: List[Dict[str, Any]], limit: int = 50) -> List[AttackTrace]:
-        """Constructs AttackTraces from real held-out dataset records (EVAL.md Section 5.5)."""
+    def load_synthetic_traces_from_counters(records: List[Dict[str, Any]], limit: int = 50) -> List[AttackTrace]:
+        """
+        Constructs SYNTHETIC AttackTraces derived from aggregate counters (EVAL.md Section 5.5).
+        
+        CRITICAL SCIENTIFIC CAVEAT:
+        'session_aggregation.jsonl.gz' contains only integer counters (no command strings).
+        The command sequences here are synthetic archetype templates scaled to cnt_command_input,
+        NOT real captured attacker command text. Real captured text requires event-level data_all.
+        """
         traces = []
         for i, r in enumerate(records[:limit]):
             cmd_count = int(r.get("cnt_command_input", 0) or 0)
@@ -205,7 +212,7 @@ class BotnetReplayEngine:
                 sample_cmds.extend(["cat /etc/passwd", "ps aux", "netstat -tuln"])
             traces.append(
                 AttackTrace(
-                    name=f"held_out_trace_{i+1}",
+                    name=f"synthetic_trace_from_counter_{i+1}",
                     visitor_ip=str(r.get("src_ip", f"198.51.100.{100 + i}")),
                     client_version="SSH-2.0-OpenSSH_8.9",
                     hassh=str(r.get("hassh", "b845df0e")),
@@ -219,3 +226,6 @@ class BotnetReplayEngine:
                 )
             )
         return traces
+
+    # Backwards-compatibility alias with clear caveat
+    load_traces_from_records = load_synthetic_traces_from_counters

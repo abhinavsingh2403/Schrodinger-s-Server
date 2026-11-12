@@ -8,8 +8,8 @@ using simulated honeypot-auditor heuristics, OS signature checks, and filesystem
 NOTE FOR EVAL H4 & VIVA:
 - This module is the automated regression test suite ensuring zero default Cowrie giveaways
   and strict OS coherence across tiers (SPEC Risk R8).
-- For formal EVAL H4 defense, an external independent scanner/auditor (e.g. kaniini/honeypot-auditor)
-  is run against the isolated lab honeypot instance.
+- EVAL H4 STATUS: NOT YET EVALUATED with an external independent honeypot auditor
+  (e.g. kaniini/honeypot-auditor). In-repo tests verify internal heuristics only.
 
 STRICT SAFETY POLICY (SAFETY.md, AGENTS.md Rule 6):
 - Strictly restricted to allowlisted lab targets (localhost / 127.0.0.1 / RFC 1918 lab).

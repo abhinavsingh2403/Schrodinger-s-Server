@@ -8,6 +8,12 @@ Provides:
 - AdaptiveSessionAdapter: connects Cowrie session events (handshake, auth, commands)
   to the Gatekeeper DecisionEngine, executing dynamic upward-only tier escalation
   with fail-cheap defaults to T1.
+
+INTEGRATION STATUS & CAVEAT:
+- End-to-end integration with live Cowrie in-process execution is proven exclusively
+  by `sensor/spike_s1_poc.py` on systems with Twisted Conch and Cowrie runtime present.
+- In environments without Twisted Conch installed (e.g. standard Windows dev venv),
+  `CowrieSSHSessionAdapter` raises RuntimeError and is NOT an integration test pass.
 """
 
 from __future__ import annotations
