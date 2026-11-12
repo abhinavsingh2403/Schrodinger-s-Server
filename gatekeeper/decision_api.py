@@ -12,9 +12,14 @@ Per SPEC.md Section 5.2:
 
 from __future__ import annotations
 
+import argparse
+import http.server
+import json
 import os
 import sqlite3
 import time
+import urllib.error
+import urllib.request
 from contextlib import contextmanager
 from datetime import datetime, timezone
 from pathlib import Path
@@ -214,3 +219,160 @@ class DecisionEngine:
             )
         except Exception:
             return {}
+
+
+class GatekeeperClient:
+    """HTTP client communicating with remote Gatekeeper REST service (e.g. from Cowrie)."""
+
+    def __init__(self, base_url: str = "http://gatekeeper:5000", timeout: float = 2.0) -> None:
+        self.base_url = base_url.rstrip("/")
+        self.timeout = timeout
+
+    def decide(
+        self,
+        session_id: str,
+        source_ip: str | None = None,
+        stage: str = "S0",
+        features: dict[str, Any] | None = None,
+        current_tier: str = "T1",
+        visitor_ip: str | None = None,
+    ) -> dict[str, Any]:
+        url = f"{self.base_url}/decide"
+        payload = {
+            "session_id": session_id,
+            "source_ip": source_ip or visitor_ip or "127.0.0.1",
+            "stage": stage,
+            "features": features or {},
+            "current_tier": current_tier,
+        }
+        try:
+            data = json.dumps(payload).encode("utf-8")
+            req = urllib.request.Request(url, data=data, headers={"Content-Type": "application/json"})
+            with urllib.request.urlopen(req, timeout=self.timeout) as resp:
+                if resp.status == 200:
+                    return json.loads(resp.read().decode("utf-8"))
+        except Exception:
+            pass
+
+        # Fail-cheap default if service unreachable
+        return {
+            "session_id": session_id,
+            "visitor_id": "vis_network_fallback",
+            "stage": stage,
+            "score": 0.0,
+            "tier": current_tier if current_tier in ("T1", "T2", "T3") else "T1",
+            "target_tier": current_tier if current_tier in ("T1", "T2", "T3") else "T1",
+            "latency_ms": 0.0,
+            "fail_cheap": True,
+        }
+
+    def record_session(
+        self,
+        source_ip: str,
+        tier_served: str = "T1",
+        value_label: int | None = None,
+        agent_score: float | None = None,
+    ) -> dict[str, Any]:
+        url = f"{self.base_url}/record_session"
+        payload = {
+            "source_ip": source_ip,
+            "tier_served": tier_served,
+            "value_label": value_label,
+            "agent_score": agent_score,
+        }
+        try:
+            data = json.dumps(payload).encode("utf-8")
+            req = urllib.request.Request(url, data=data, headers={"Content-Type": "application/json"})
+            with urllib.request.urlopen(req, timeout=self.timeout) as resp:
+                if resp.status == 200:
+                    return json.loads(resp.read().decode("utf-8"))
+        except Exception:
+            pass
+        return {}
+
+
+class GatekeeperHTTPHandler(http.server.BaseHTTPRequestHandler):
+    """Minimal HTTP request handler for Gatekeeper REST service."""
+
+    def do_GET(self) -> None:
+        if self.path in ("/health", "/"):
+            self.send_response(200)
+            self.send_header("Content-Type", "application/json")
+            self.end_headers()
+            self.wfile.write(json.dumps({"status": "ok", "service": "gatekeeper", "version": "1.0.0"}).encode("utf-8"))
+        else:
+            self.send_response(404)
+            self.end_headers()
+
+    def do_POST(self) -> None:
+        content_length = int(self.headers.get("Content-Length", 0))
+        body = self.rfile.read(content_length) if content_length > 0 else b"{}"
+        try:
+            payload = json.loads(body.decode("utf-8"))
+        except Exception:
+            payload = {}
+
+        engine: DecisionEngine = getattr(self.server, "decision_engine", None)
+        if not engine:
+            self.send_response(500)
+            self.end_headers()
+            return
+
+        if self.path == "/decide":
+            resp = engine.decide(
+                session_id=payload.get("session_id", "sess_unknown"),
+                source_ip=payload.get("source_ip") or payload.get("visitor_ip"),
+                stage=payload.get("stage", "S0"),
+                features=payload.get("features", {}),
+                current_tier=payload.get("current_tier", "T1"),
+            )
+            self.send_response(200)
+            self.send_header("Content-Type", "application/json")
+            self.end_headers()
+            self.wfile.write(json.dumps(resp).encode("utf-8"))
+
+        elif self.path == "/record_session":
+            resp = engine.record_session(
+                source_ip=payload.get("source_ip", "127.0.0.1"),
+                tier_served=payload.get("tier_served", "T1"),
+                value_label=payload.get("value_label"),
+                agent_score=payload.get("agent_score"),
+            )
+            self.send_response(200)
+            self.send_header("Content-Type", "application/json")
+            self.end_headers()
+            self.wfile.write(json.dumps(resp).encode("utf-8"))
+        else:
+            self.send_response(404)
+            self.end_headers()
+
+    def log_message(self, format: str, *args: Any) -> None:
+        # Suppress noisy standard HTTP access logs
+        pass
+
+
+def run_server(
+    host: str = "0.0.0.0",
+    port: int = 5000,
+    db_path: str | Path = "gatekeeper/gatekeeper.db",
+) -> None:
+    """Starts the Gatekeeper HTTP service."""
+    engine = DecisionEngine(db_path=db_path)
+    server = http.server.HTTPServer((host, port), GatekeeperHTTPHandler)
+    server.decision_engine = engine  # type: ignore[attr-defined]
+    print(f"Gatekeeper Decision Service listening on http://{host}:{port}")
+    try:
+        server.serve_forever()
+    except KeyboardInterrupt:
+        pass
+    finally:
+        server.server_close()
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Gatekeeper Decision Service")
+    parser.add_argument("--host", default="0.0.0.0", help="HTTP host to bind (default: 0.0.0.0)")
+    parser.add_argument("--port", type=int, default=5000, help="HTTP port to bind (default: 5000)")
+    parser.add_argument("--db", default="gatekeeper/gatekeeper.db", help="Path to SQLite DB")
+    args = parser.parse_args()
+    run_server(host=args.host, port=args.port, db_path=args.db)

@@ -125,3 +125,54 @@ def test_decision_engine_record_session_lifecycle(tmp_path: Path) -> None:
     assert profile["n_sessions"] == 1
     assert profile["highest_tier_served"] == "T2"
 
+
+def test_gatekeeper_http_service_and_client_lifecycle(tmp_path: Path) -> None:
+    """Verify Gatekeeper HTTP service endpoints (/health, /decide, /record_session) and client."""
+    import http.server
+    import threading
+    import urllib.request
+    from gatekeeper.decision_api import GatekeeperHTTPHandler, GatekeeperClient
+
+    db_file = tmp_path / "test_http_gatekeeper.db"
+    engine = DecisionEngine(db_path=db_file, salt=b"http-salt")
+
+    # Start server on ephemeral port (0)
+    server = http.server.HTTPServer(("127.0.0.1", 0), GatekeeperHTTPHandler)
+    server.decision_engine = engine  # type: ignore[attr-defined]
+    host, port = server.server_address
+
+    th = threading.Thread(target=server.serve_forever, daemon=True)
+    th.start()
+
+    try:
+        # 1. Health check
+        with urllib.request.urlopen(f"http://127.0.0.1:{port}/health", timeout=2.0) as resp:
+            assert resp.status == 200
+            data = resp.read().decode("utf-8")
+            assert "gatekeeper" in data
+
+        # 2. Client decide over HTTP
+        client = GatekeeperClient(base_url=f"http://127.0.0.1:{port}", timeout=2.0)
+        res = client.decide(
+            session_id="sess_http_01",
+            source_ip="192.168.1.99",
+            stage="S2",
+            features={"login_success": 1},
+        )
+        assert res["tier"] == "T2"
+        assert res["fail_cheap"] is False
+
+        # 3. Client record_session over HTTP
+        rec = client.record_session(source_ip="192.168.1.99", tier_served="T2", value_label=1)
+        assert rec.get("highest_tier_served") == "T2"
+
+        # 4. Fail-cheap behavior on unreachable host
+        bad_client = GatekeeperClient(base_url="http://127.0.0.1:59999", timeout=0.1)
+        fallback = bad_client.decide(session_id="sess_dead", source_ip="1.2.3.4", current_tier="T1")
+        assert fallback["fail_cheap"] is True
+        assert fallback["tier"] == "T1"
+
+    finally:
+        server.shutdown()
+        server.server_close()
+

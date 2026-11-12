@@ -13,6 +13,8 @@ services:
     restart: unless-stopped
     ports:
       - "127.0.0.1:2222:2222"
+    environment:
+      - GATEKEEPER_URL=http://gatekeeper:5000
     volumes:
       - ./cowrie.cfg:/cowrie/cowrie-git/etc/cowrie.cfg:ro
       - ../config/identity.yaml:/cowrie/identity.yaml:ro
@@ -26,7 +28,7 @@ services:
       - NET_BIND_SERVICE
     read_only: false
 
-  # Gatekeeper Decision Engine Service
+  # Gatekeeper Decision Engine Service (REST HTTP API on port 5000)
   gatekeeper:
     image: python:3.12-slim
     container_name: schrodinger-gatekeeper
@@ -36,7 +38,14 @@ services:
       - ../gatekeeper:/app/gatekeeper:ro
       - ../config:/app/config:ro
       - gatekeeper-data:/app/data
-    command: ["python", "-m", "gatekeeper.decision_api"]
+    command: ["python", "-m", "gatekeeper.decision_api", "--host", "0.0.0.0", "--port", "5000", "--db", "/app/data/gatekeeper.db"]
+    ports:
+      - "127.0.0.1:5000:5000"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:5000/health')"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
     networks:
       - internal_honeypot_net
 

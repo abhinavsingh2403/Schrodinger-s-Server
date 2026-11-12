@@ -173,13 +173,23 @@ class AdaptiveSessionAdapter:
         self,
         visitor_ip: str,
         session_id: str,
-        decision_engine: Any,
+        decision_engine: Any = None,
         persona_manager: Optional[PersonaManager] = None,
+        on_tier_changed: Optional[Any] = None,
     ) -> None:
         self.visitor_ip = visitor_ip
         self.session_id = session_id
-        self.decision_engine = decision_engine
+        if isinstance(decision_engine, str):
+            from gatekeeper.decision_api import GatekeeperClient
+            self.decision_engine = GatekeeperClient(base_url=decision_engine)
+        elif decision_engine is None and os.environ.get("GATEKEEPER_URL"):
+            from gatekeeper.decision_api import GatekeeperClient
+            self.decision_engine = GatekeeperClient(base_url=os.environ["GATEKEEPER_URL"])
+        else:
+            self.decision_engine = decision_engine
+
         self.persona_manager = persona_manager or PersonaManager()
+        self.on_tier_changed = on_tier_changed
 
         self.current_tier = "T1"
         self.commands_history: List[str] = []
@@ -210,6 +220,11 @@ class AdaptiveSessionAdapter:
                 target,
             )
             self.current_tier = target
+            if self.on_tier_changed and callable(self.on_tier_changed):
+                try:
+                    self.on_tier_changed(self.current_tier, self.get_active_persona())
+                except Exception as e:
+                    logger.debug("on_tier_changed callback error: %s", e)
             return True
         return False
 
@@ -301,12 +316,13 @@ if COWRIE_AVAILABLE and shellsession is not None:
     class CowrieSSHSessionAdapter(shellsession.SSHSessionForCowrieUser):
         """
         Twisted Conch session adapter for production Cowrie honeypot.
-        Bridges Cowrie SSH session events directly to AdaptiveSessionAdapter
-        and applies persona filesystem overlays upon tier escalation.
+        Bridges real Cowrie SSH lifecycle events (kex, auth, pty, exec, close)
+        directly to AdaptiveSessionAdapter and reapplies persona overlays upon escalation.
         """
 
-        def __init__(self, avatar, decision_engine: Any, reactor=None):
+        def __init__(self, avatar, decision_engine: Any = None, reactor=None):
             super().__init__(avatar, reactor)
+            self.avatar = avatar
             peer = avatar.conn.transport.transport.getPeer()
             visitor_ip = str(getattr(peer, "host", "127.0.0.1"))
             session_id = str(getattr(avatar.conn.transport, "transportId", "sess_unknown"))
@@ -317,12 +333,31 @@ if COWRIE_AVAILABLE and shellsession is not None:
                 session_id=session_id,
                 decision_engine=decision_engine,
                 persona_manager=self.persona_manager,
+                on_tier_changed=self._on_tier_escalated,
             )
 
-            # Apply initial T1 persona
-            initial_p = self.adapter.get_active_persona()
-            self.server.hostname = initial_p.hostname
-            self._apply_fs_overlay(initial_p)
+            # Forward initial handshake info from transport
+            transport = getattr(avatar.conn, "transport", None)
+            if transport:
+                version = str(getattr(transport, "otherVersionString", "SSH-2.0-OpenSSH_8.9"))
+                kex_alg = str(getattr(transport, "kexAlg", "curve25519-sha256"))
+                key_alg = str(getattr(transport, "keyAlg", "ssh-ed25519"))
+                self.adapter.on_kex_completed(version, hassh="hassh_live", kex_algs=[kex_alg], key_algs=[key_alg])
+
+            # Forward authenticated login event
+            username = str(getattr(avatar, "username", "root"))
+            self.adapter.on_auth_completed(success=True, failed_count=0, username=username)
+
+            # Apply initial persona overlay
+            self._apply_fs_overlay(self.adapter.get_active_persona())
+
+        def _on_tier_escalated(self, new_tier: str, new_persona: Persona) -> None:
+            """Callback triggered whenever AdaptiveSessionAdapter escalates tier."""
+            logger.info("Applying live Cowrie persona overlay for %s (%s)", new_tier, new_persona.hostname)
+            self.server.hostname = new_persona.hostname
+            self._apply_fs_overlay(new_persona)
+            if hasattr(self.avatar, "environ") and isinstance(self.avatar.environ, dict):
+                self.avatar.environ["HOSTNAME"] = new_persona.hostname
 
         def _apply_fs_overlay(self, persona: Persona) -> None:
             """Overlays persona identity files onto the Cowrie virtual filesystem."""
@@ -335,8 +370,51 @@ if COWRIE_AVAILABLE and shellsession is not None:
                         node[fs.A_CONTENTS] = motd_content
                 except Exception as e:
                     logger.debug("Failed applying Cowrie fs overlay: %s", e)
+
+        def getPty(self, terminal, windowSize, attrs):
+            """Cowrie lifecycle: client allocates PTY terminal (Stage S3)."""
+            self.adapter._evaluate_stage("S3", {"has_pty": 1, "terminal": str(terminal)})
+            return super().getPty(terminal, windowSize, attrs)
+
+        def execCommand(self, processprotocol, cmd):
+            """Cowrie lifecycle: client executes single command or non-interactive command."""
+            cmd_str = cmd.decode("utf-8", errors="replace") if isinstance(cmd, bytes) else str(cmd)
+            self.adapter.on_command_received(cmd_str)
+            return super().execCommand(processprotocol, cmd)
+
+        def openShell(self, processprotocol):
+            """Cowrie lifecycle: client requests interactive shell."""
+            self.adapter._evaluate_stage("S3", {"has_pty": 1, "interactive_shell": 1})
+            return super().openShell(processprotocol)
+
+        def closed(self) -> None:
+            """Cowrie lifecycle: session channel closed; persist visitor memory."""
+            self.adapter.on_session_closed()
+            return super().closed()
+
+
+    def register_cowrie_session_adapter(decision_engine: Any = None) -> bool:
+        """Registers CowrieSSHSessionAdapter with Twisted Conch's component registry."""
+        try:
+            from twisted.python import components
+            from cowrie.shell.avatar import CowrieUser
+            from twisted.conch.interfaces import ISession
+
+            def adapter_factory(avatar):
+                return CowrieSSHSessionAdapter(avatar, decision_engine=decision_engine)
+
+            components.registerAdapter(adapter_factory, CowrieUser, ISession)
+            logger.info("Successfully registered CowrieSSHSessionAdapter with ISession")
+            return True
+        except Exception as exc:
+            logger.warning("Could not register Cowrie session adapter: %s", exc)
+            return False
+
 else:
     class CowrieSSHSessionAdapter:  # type: ignore
         """Placeholder when running in environments without Twisted Conch."""
         def __init__(self, *args, **kwargs):
             raise RuntimeError("Twisted Conch and Cowrie must be installed to instantiate CowrieSSHSessionAdapter.")
+
+    def register_cowrie_session_adapter(decision_engine: Any = None) -> bool:
+        return False

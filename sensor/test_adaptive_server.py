@@ -109,3 +109,75 @@ def test_adaptive_session_fail_cheap_guarantee():
         adapter.on_command_received("ls -la")
         # Remains in safe default tier T1 without raising exception
         assert adapter.current_tier == "T1"
+
+
+def test_adaptive_session_full_lifecycle_visitor_memory_persistence():
+    """Verify that ending an SSH session through the adapter records history in visitor memory."""
+    with tempfile.TemporaryDirectory() as tmp_dir:
+        db_path = os.path.join(tmp_dir, "test_lifecycle.db")
+        engine = DecisionEngine(db_path=db_path, salt="test_lifecycle_salt")
+        pm = PersonaManager(base_dir=tmp_dir)
+        ip = "198.51.100.77"
+
+        # Session 1: Client connects, authenticates, runs commands, and disconnects
+        adapter1 = AdaptiveSessionAdapter(
+            visitor_ip=ip,
+            session_id="sess_lifecycle_01",
+            decision_engine=engine,
+            persona_manager=pm,
+        )
+        adapter1.on_kex_completed(client_version="SSH-2.0-OpenSSH_8.9", hassh="12345")
+        adapter1.on_auth_completed(success=True, failed_count=5, username="root")
+        assert adapter1.current_tier == "T2"
+
+        adapter1.on_command_received("uname -a")
+        adapter1.on_command_received("id")
+        adapter1.on_command_received("cat /etc/passwd")
+
+        # Disconnect triggers session persistence
+        adapter1.on_session_closed()
+
+        # Verify visitor memory in SQLite
+        profile = engine.memory.get_visitor(ip)
+        assert profile is not None
+        assert profile["n_sessions"] == 1
+        assert profile["highest_tier_served"] == "T2"
+
+        # Session 2 from same IP: Adapter recognizes returning visitor
+        adapter2 = AdaptiveSessionAdapter(
+            visitor_ip=ip,
+            session_id="sess_lifecycle_02",
+            decision_engine=engine,
+            persona_manager=pm,
+        )
+        assert adapter2.visitor_ip == ip
+        # Memory lookup in decide recognizes returning visitor
+        d2 = engine.decide(session_id="sess_lifecycle_02", source_ip=ip, stage="S1")
+        assert d2["fail_cheap"] is False
+
+
+def test_adaptive_session_tier_changed_callback():
+    """Verify that tier escalation fires on_tier_changed callback with updated persona."""
+    with tempfile.TemporaryDirectory() as tmp_dir:
+        pm = PersonaManager(base_dir=tmp_dir)
+        escalations = []
+
+        def callback(new_tier, new_persona):
+            escalations.append((new_tier, new_persona.hostname))
+
+        adapter = AdaptiveSessionAdapter(
+            visitor_ip="198.51.100.88",
+            session_id="sess_callback_01",
+            decision_engine=None,
+            persona_manager=pm,
+            on_tier_changed=callback,
+        )
+
+        assert adapter.current_tier == "T1"
+        assert len(escalations) == 0
+
+        # Escalate to T2
+        success = adapter.escalate_to("T2")
+        assert success is True
+        assert len(escalations) == 1
+        assert escalations[0][0] == "T2"
