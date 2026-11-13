@@ -28,7 +28,7 @@ from typing import Any
 
 from gatekeeper.feature_extractor import SessionFeatureExtractor
 from gatekeeper.features import stage_vector, STAGE_ALLOWED_FEATURES
-from gatekeeper.policy import EscalationPolicy
+from gatekeeper.policy import EscalationPolicy, SessionBudget
 from gatekeeper.visitor_memory import VisitorMemory, derive_visitor_id, get_masked_id
 
 try:
@@ -45,14 +45,14 @@ class DecisionEngine:
 
     def __init__(
         self,
-        db_path: str | Path = "gatekeeper/gatekeeper.db",
+        db_path: str | Path | None = None,
         salt: bytes | str | None = None,
         policy: EscalationPolicy | None = None,
         model: Any | None = None,
         model_path: str | Path | None = None,
         memory: VisitorMemory | None = None,
     ) -> None:
-        self.db_path = str(db_path)
+        self.db_path = str(db_path or getattr(memory, 'db_path', 'gatekeeper/gatekeeper.db'))
         if isinstance(salt, str):
             self.salt = salt.encode("utf-8")
         else:
@@ -64,6 +64,7 @@ class DecisionEngine:
         if self.model is None:
             self._load_model(model_path)
         self._init_decision_log()
+        self.budget = SessionBudget(self.db_path)
 
     def _load_model(self, model_path: str | Path | None = None) -> None:
         """Safely load trained model artifact with fail-cheap fallback."""
@@ -271,22 +272,17 @@ class DecisionEngine:
                 visitor_profile=visitor,
                 stage=stage,
             )
-
-            latency_ms = (time.perf_counter() - start_time) * 1000.0
-
-            # 4. Asynchronous / safe decision log write
-            try:
-                with self._connection() as conn:
-                    conn.execute(
-                        """
-                        INSERT INTO decision_log (
-                            session_id, visitor_id, stage, score, tier_decided, latency_ms, timestamp
-                        ) VALUES (?, ?, ?, ?, ?, ?, ?)
-                        """,
-                        (session_id, visitor_id, stage, score, target_tier, latency_ms, now),
-                    )
-            except Exception:
-                pass
+            # One transaction admits the session and logs its decision atomically.
+            with self._connection() as conn:
+                target_tier, budget = self.budget.apply(session_id, target_tier, current_tier,
+                    (visitor or {}).get('highest_tier_served', 'T1'),
+                    self.policy.max_escalation_fraction, connection=conn)
+                latency_ms = (time.perf_counter() - start_time) * 1000.0
+                conn.execute(
+                    """INSERT INTO decision_log (
+                        session_id, visitor_id, stage, score, tier_decided, latency_ms, timestamp
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?)""",
+                    (session_id, visitor_id, stage, score, target_tier, latency_ms, now))
 
             return {
                 "session_id": session_id,
@@ -300,6 +296,7 @@ class DecisionEngine:
                 "target_tier": target_tier,
                 "latency_ms": round(latency_ms, 3),
                 "fail_cheap": False,
+                "budget": budget,
             }
 
         except Exception:

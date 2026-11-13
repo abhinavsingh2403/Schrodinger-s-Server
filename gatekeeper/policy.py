@@ -13,11 +13,60 @@ Per SPEC.md Section 3, Section 5.3 & Section 10:
 from __future__ import annotations
 
 import os
+import math
+import sqlite3
+from contextlib import closing
 from pathlib import Path
 from typing import Any
 
 TIER_RANK: dict[str, int] = {"T1": 1, "T2": 2, "T3": 3}
 RANK_TO_TIER: dict[int, str] = {1: "T1", 2: "T2", 3: "T3"}
+
+
+class SessionBudget:
+    """Durable budget since ledger inception, including historical decision sessions.
+
+    Mandatory current/memory tiers are retained and counted even above the cap;
+    further discretionary escalation is then blocked. Transactions serialize admission.
+    """
+    def __init__(self, db_path):
+        self.db_path = str(db_path)
+        with closing(sqlite3.connect(self.db_path)) as conn, conn:
+            conn.execute('BEGIN IMMEDIATE')
+            conn.execute('CREATE TABLE IF NOT EXISTS session_budget(session_id TEXT PRIMARY KEY, tier INTEGER NOT NULL, mandatory INTEGER NOT NULL DEFAULT 0)')
+            conn.execute('CREATE TABLE IF NOT EXISTS budget_metadata(key TEXT PRIMARY KEY, value TEXT NOT NULL)')
+            if not conn.execute("SELECT 1 FROM budget_metadata WHERE key='migration_v1'").fetchone():
+                if conn.execute("SELECT 1 FROM sqlite_master WHERE name='decision_log'").fetchone():
+                    conn.execute('''INSERT OR IGNORE INTO session_budget(session_id,tier)
+                        SELECT session_id,max(CASE tier_decided WHEN 'T3' THEN 3 WHEN 'T2' THEN 2 ELSE 1 END)
+                        FROM decision_log GROUP BY session_id''')
+                conn.execute("INSERT INTO budget_metadata VALUES ('migration_v1','complete')")
+
+    def apply(self, session_id, proposed, current, memory, fraction, connection=None):
+        """Return admitted tier and accounting; repeated stages consume no new slot."""
+        if not session_id or not 0 <= fraction <= 1:
+            raise ValueError('A session ID and valid budget fraction are required')
+        if connection is None:
+            with closing(sqlite3.connect(self.db_path, timeout=.1)) as conn, conn:
+                conn.execute('PRAGMA synchronous=NORMAL')
+                return self.apply(session_id, proposed, current, memory, fraction, connection=conn)
+        conn = connection
+        conn.execute('BEGIN IMMEDIATE')
+        conn.execute('INSERT OR IGNORE INTO session_budget(session_id,tier) VALUES (?,1)', (session_id,))
+        previous = conn.execute('SELECT tier FROM session_budget WHERE session_id=?', (session_id,)).fetchone()[0]
+        total, escalated = conn.execute('SELECT count(*),sum(tier>=2) FROM session_budget').fetchone()
+        limit = math.floor(fraction * total)
+        mandatory = max(previous, TIER_RANK.get(current, 1), TIER_RANK.get(memory, 1))
+        target = max(mandatory, TIER_RANK.get(proposed, 1))
+        blocked = mandatory < 2 and target >= 2 and escalated >= limit
+        if blocked:
+            target = 1
+        conn.execute('UPDATE session_budget SET tier=?,mandatory=max(mandatory,?) WHERE session_id=?',
+                     (target, int(mandatory >= 2 and previous < 2), session_id))
+        escalated += int(previous < 2 and target >= 2)
+        return RANK_TO_TIER[target], {'window': 'since ledger inception', 'sessions': total,
+            'escalated_sessions': escalated, 'limit': limit, 'blocked': blocked,
+            'mandatory_over_cap': max(0, escalated - limit)}
 
 
 def parse_policy_yaml(file_path: Path | str) -> dict[str, Any]:
@@ -97,9 +146,7 @@ class EscalationPolicy:
         self.thresholds_v2: dict[str, float] = self.cfg.get("thresholds", {}).get("tau_v2", {})
         self.thresholds_v3: dict[str, float] = self.cfg.get("thresholds", {}).get("tau_v3", {})
 
-        # Budget accounting
-        self.total_decisions: int = 0
-        self.escalated_decisions: int = 0
+        # Admission budget is persisted by DecisionEngine's SessionBudget.
         self.active_t3_count: int = 0
 
     @staticmethod
@@ -125,7 +172,7 @@ class EscalationPolicy:
         stage: str | None = None,
     ) -> str:
         """
-        Decides target tier enforcing upward-only escalation, stage thresholds, and budget constraints.
+        Recommends a monotone tier; DecisionEngine applies durable session admission.
         
         @param current_tier: Current tier in the session (T1, T2, T3)
         @param model_score: Predicted value probability in [0, 1]
@@ -134,7 +181,6 @@ class EscalationPolicy:
         @return: Escalated or maintained tier string
         """
         try:
-            self.total_decisions += 1
             current_rank = TIER_RANK.get(current_tier, 1)
 
             # Check visitor memory history
@@ -155,12 +201,7 @@ class EscalationPolicy:
                 else:
                     score_rank = 2  # Spillover to T2 when T3 ceiling reached
             elif model_score >= th_t2:
-                # Check 10% budget ceiling (if above budget and not saved by memory or current, damp to T1)
-                curr_escalation_rate = (self.escalated_decisions / self.total_decisions) if self.total_decisions > 100 else 0.0
-                if curr_escalation_rate <= self.max_escalation_fraction or memory_rank >= 2 or current_rank >= 2:
-                    score_rank = 2
-                else:
-                    score_rank = 1
+                score_rank = 2
 
             # Upward-only rule: take the maximum of current, memory, and score
             target_rank = max(current_rank, memory_rank, score_rank)
@@ -168,9 +209,6 @@ class EscalationPolicy:
             # Cap at T2 if T3 is disabled
             if not self.t3_enabled and target_rank > 2:
                 target_rank = 2
-
-            if target_rank >= 2:
-                self.escalated_decisions += 1
 
             return RANK_TO_TIER.get(target_rank, "T1")
 

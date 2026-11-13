@@ -37,6 +37,8 @@ def test_adaptive_session_escalation_flow():
         db_path = os.path.join(tmp_dir, "test_decisions.db")
         memory = VisitorMemory(db_path=db_path)
         engine = DecisionEngine(memory=memory, salt="test_salt")
+        # This test isolates tier callbacks; durable default admission has its own tests.
+        engine.policy.max_escalation_fraction = 1.0
         pm = PersonaManager(base_dir=tmp_dir)
 
         adapter = AdaptiveSessionAdapter(
@@ -116,6 +118,7 @@ def test_adaptive_session_full_lifecycle_visitor_memory_persistence():
     with tempfile.TemporaryDirectory() as tmp_dir:
         db_path = os.path.join(tmp_dir, "test_lifecycle.db")
         engine = DecisionEngine(db_path=db_path, salt="test_lifecycle_salt")
+        engine.policy.max_escalation_fraction = 1.0  # Isolate lifecycle persistence.
         pm = PersonaManager(base_dir=tmp_dir)
         ip = "198.51.100.77"
 

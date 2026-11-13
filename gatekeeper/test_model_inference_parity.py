@@ -97,6 +97,9 @@ def test_offline_live_feature_parity(temp_engine: DecisionEngine):
 
 def test_s3_learned_escalation_decision(temp_engine: DecisionEngine):
     """Verify that a high-value session at S3 is escalated to T2 using learned model inference."""
+    # Populate real unique low-score sessions to create one admission slot.
+    for i in range(9):
+        temp_engine.decide(f'capacity-{i}', '127.0.0.1', stage='S1')
     # High-signal attacker session: login succeeded + terminal allocated + multiple parameters
     attacker_features = {
         "cnt_session_connect": 1,

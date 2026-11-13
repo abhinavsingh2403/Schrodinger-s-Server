@@ -66,12 +66,10 @@ def test_policy_loads_yaml_and_stage_thresholds() -> None:
     assert policy.get_threshold_t2("S4") == 0.50
 
 
-def test_policy_budget_ceiling_enforcement() -> None:
-    policy = EscalationPolicy(threshold_t2=0.50)
-    policy.max_escalation_fraction = 0.10
-    policy.total_decisions = 200
-    policy.escalated_decisions = 25  # 12.5% > 10%
-    # With budget exhausted, a fresh session at T1 without memory should damp to T1
-    tier = policy.decide_tier(current_tier="T1", model_score=0.60)
-    assert tier == "T1"
+def test_policy_budget_ceiling_enforcement(tmp_path) -> None:
+    from gatekeeper.policy import SessionBudget
+    budget = SessionBudget(tmp_path / 'budget.db')
+    tier, accounting = budget.apply('first', 'T2', 'T1', 'T1', .1)
+    assert tier == 'T1'
+    assert accounting['blocked']
 

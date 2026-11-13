@@ -50,6 +50,9 @@ def test_replay_multistage_miner_dropper_escalates():
         db_path = os.path.join(tmp_dir, "test_replay2.db")
         memory = VisitorMemory(db_path=db_path)
         engine = DecisionEngine(db_path=db_path, memory=memory)
+        # Seed legitimate admission capacity; this fixture tests escalation, not warm-up bypass.
+        for i in range(9):
+            engine.decide(f'capacity-{i}', '127.0.0.1', stage='S1')
 
         replay = BotnetReplayEngine(decision_engine=engine)
         trace = AttackTrace(

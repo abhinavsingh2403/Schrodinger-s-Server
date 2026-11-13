@@ -40,8 +40,9 @@ def test_decision_engine_basic_flow(tmp_path: Path) -> None:
         current_tier="T1",
     )
 
-    # Score of 0.70 exceeds default threshold_t2 (0.50) -> Escalates to T2
-    assert d2["tier"] == "T2"
+    # The first unique session has no admission slot despite exceeding threshold.
+    assert d2["tier"] == "T1"
+    assert d2['budget']['blocked']
     assert d2["score"] >= 0.50
 
 
@@ -101,8 +102,8 @@ def test_decision_engine_sensor_feature_key_reconciliation(tmp_path: Path) -> No
         current_tier="T1",
     )
 
-    # Score of 0.70 exceeds threshold_t2 (0.50) -> Escalates to T2
-    assert decision["tier"] == "T2"
+    assert decision["tier"] == "T1"
+    assert decision['budget']['blocked']
     assert decision["score"] == 0.70
 
 
@@ -159,7 +160,8 @@ def test_gatekeeper_http_service_and_client_lifecycle(tmp_path: Path) -> None:
             stage="S2",
             features={"login_success": 1},
         )
-        assert res["tier"] == "T2"
+        assert res["tier"] == "T1"
+        assert res['budget']['blocked']
         assert res["fail_cheap"] is False
 
         # 3. Client record_session over HTTP
