@@ -1067,12 +1067,16 @@ def write_exp0_result_md(
 ) -> None:
     """Writes human-readable EXP0_RESULT.md per EXPERIMENT0.md §14."""
     outcome = gate0_res.get("gate0_outcome", "UNKNOWN")
+    if outcome == "PASS-ML":
+        status_desc = "Mechanical outcome of the pre-declared rule. Exploratory: aggregate-only features, transfer-labelled sessions dominate the gain, a shuffled-label diagnostic and event-order checks are unresolved; see ROBUSTNESS.md and AUDIT.md. Not validated as a pre-command signal."
+    else:
+        status_desc = gate0_res.get("interpretation", "")
     lines = [
         "# Experiment 0 Result: Gate 0 Evaluation Report",
         "",
         f"**Date**: {(run_timestamp or datetime.now(timezone.utc)).astimezone(timezone.utc).date().isoformat()}  ",
         f"**Outcome**: `{outcome}`  ",
-        f"**Status Description**: {gate0_res.get('interpretation', '')}  ",
+        f"**Status Description**: {status_desc}  ",
         "",
         "---",
         "",

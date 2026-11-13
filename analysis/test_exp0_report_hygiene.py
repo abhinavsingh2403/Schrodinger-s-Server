@@ -20,3 +20,27 @@ def test_report_date_uses_utc_timestamp_and_mirrors(tmp_path, monkeypatch):
     exp0_train.write_exp0_result_md(path, {'gate0_outcome': 'PASS-ML'}, [], {}, timestamp)
     assert '**Date**: 2030-01-01' in path.read_text()
     assert path.read_bytes() == (tmp_path / 'EXP0_RESULT.md').read_bytes()
+
+
+def test_pass_ml_status_description_uses_exploratory_wording(tmp_path, monkeypatch):
+    """G5 Acceptance: verify that PASS-ML writes the exact exploratory text and eliminates old claim."""
+    monkeypatch.setattr(exp0_train, 'PROJECT_ROOT', tmp_path)
+    path = tmp_path / 'generated.md'
+    exp0_train.write_exp0_result_md(
+        path,
+        {
+            'gate0_outcome': 'PASS-ML',
+            'interpretation': 'ML adds significant early triage signal before any command (Stages: S3).'
+        },
+        [],
+        {}
+    )
+    content = path.read_text(encoding="utf-8")
+    expected_text = (
+        "**Status Description**: Mechanical outcome of the pre-declared rule. "
+        "Exploratory: aggregate-only features, transfer-labelled sessions dominate the gain, "
+        "a shuffled-label diagnostic and event-order checks are unresolved; see ROBUSTNESS.md and AUDIT.md. "
+        "Not validated as a pre-command signal."
+    )
+    assert expected_text in content
+    assert "ML adds significant early triage signal before any command" not in content
