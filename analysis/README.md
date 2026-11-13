@@ -43,7 +43,7 @@ curl -L -o data/session_aggregation.jsonl.gz "https://zenodo.org/api/records/212
 #### Option C: Web Browser
 1. Navigate to https://zenodo.org/records/21260400
 2. Locate `session_aggregation.jsonl.gz` (1.3 GB) in the Files list and click Download.
-3. Save the downloaded file directly into `c:\Users\abhip\OneDrive\Documents\mini project\data\session_aggregation.jsonl.gz`.
+3. Save the downloaded file directly into `data/session_aggregation.jsonl.gz`.
 
 ---
 
