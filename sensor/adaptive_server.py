@@ -39,16 +39,10 @@ if COWRIE_ROOT.exists():
 
 COWRIE_AVAILABLE = False
 try:
-    import types
-    if "cowrie._version" not in sys.modules:
-        m = types.ModuleType("cowrie._version")
-        m.__version__ = "3.1.6"
-        m.version = "3.1.6"
-        sys.modules["cowrie._version"] = m
     from cowrie.shell import session as shellsession
     from cowrie.shell import fs
     COWRIE_AVAILABLE = True
-except (ImportError, ModuleNotFoundError, Exception):
+except (Exception, SystemExit):
     shellsession = None  # type: ignore
     fs = None  # type: ignore
 
