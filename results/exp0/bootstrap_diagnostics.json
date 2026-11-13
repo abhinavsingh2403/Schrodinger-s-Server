@@ -1,0 +1,141 @@
+{
+  "seed": 20261111,
+  "stages": {
+    "S2": {
+      "clusters": 1643,
+      "concentration": {
+        "top_1": {
+          "clusters": 1,
+          "sessions": 31314,
+          "positives": 0,
+          "session_share": 0.05597793346073197,
+          "positive_share": 0.0
+        },
+        "top_10": {
+          "clusters": 10,
+          "sessions": 205049,
+          "positives": 0,
+          "session_share": 0.3665523177553052,
+          "positive_share": 0.0
+        },
+        "top_one_percent": {
+          "clusters": 17,
+          "sessions": 258482,
+          "positives": 4572,
+          "session_share": 0.4620709010920649,
+          "positive_share": 0.5304559693699965
+        }
+      },
+      "full": {
+        "point_delta": -0.0133,
+        "ci": [
+          -0.0418,
+          0.0
+        ],
+        "median": -0.012562953402765031,
+        "draws": 10000,
+        "below_zero": 8808,
+        "above_point_three": 0,
+        "above_point_five": 0,
+        "exact_zero": 1192
+      },
+      "exclude_top_one_percent": {
+        "point_delta": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ],
+        "median": 0.0,
+        "draws": 10000,
+        "below_zero": 0,
+        "above_point_three": 0,
+        "above_point_five": 0,
+        "exact_zero": 10000
+      },
+      "weight_cap": 6149,
+      "capped": {
+        "point_delta": -0.0133,
+        "ci": [
+          -0.0384,
+          0.0
+        ],
+        "median": -0.006661497827850027,
+        "draws": 10000,
+        "below_zero": 6074,
+        "above_point_three": 0,
+        "above_point_five": 0,
+        "exact_zero": 3924,
+        "point_delta_note": "Point delta is the original unweighted point; CI and median use capped cluster weights."
+      }
+    },
+    "S3": {
+      "clusters": 1213,
+      "concentration": {
+        "top_1": {
+          "clusters": 1,
+          "sessions": 31313,
+          "positives": 0,
+          "session_share": 0.31066641532646116,
+          "positive_share": 0.0
+        },
+        "top_10": {
+          "clusters": 10,
+          "sessions": 83480,
+          "positives": 4572,
+          "session_share": 0.8282321192939985,
+          "positive_share": 0.5304559693699965
+        },
+        "top_one_percent": {
+          "clusters": 13,
+          "sessions": 84654,
+          "positives": 4572,
+          "session_share": 0.8398797535543143,
+          "positive_share": 0.5304559693699965
+        }
+      },
+      "full": {
+        "point_delta": 0.1768,
+        "ci": [
+          0.0052,
+          0.6125
+        ],
+        "median": 0.18820693168474606,
+        "draws": 10000,
+        "below_zero": 50,
+        "above_point_three": 3716,
+        "above_point_five": 1761,
+        "exact_zero": 0
+      },
+      "exclude_top_one_percent": {
+        "point_delta": 0.2802,
+        "ci": [
+          0.1961,
+          0.3966
+        ],
+        "median": 0.2798524396699166,
+        "draws": 10000,
+        "below_zero": 0,
+        "above_point_three": 3161,
+        "above_point_five": 0,
+        "exact_zero": 0
+      },
+      "weight_cap": 362,
+      "capped": {
+        "point_delta": 0.1768,
+        "ci": [
+          0.2371,
+          0.5105
+        ],
+        "median": 0.35437619002470727,
+        "draws": 10000,
+        "below_zero": 0,
+        "above_point_three": 8449,
+        "above_point_five": 109,
+        "exact_zero": 0,
+        "point_delta_note": "Point delta is the original unweighted point; CI and median use capped cluster weights."
+      }
+    }
+  },
+  "bug": "Fixed process-dependent cluster ordering by sorting cluster IDs. Regression test failed before fix.",
+  "method_caveat": "Official bootstrap averages capture within tied score bins, while reported point recall uses fixed random tie-breaking. This audit retains that statistic; it is not an exact bootstrap of the fixed-tie point estimator."
+}

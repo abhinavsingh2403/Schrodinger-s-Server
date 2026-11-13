@@ -607,7 +607,7 @@ def paired_cluster_bootstrap_delta(
     score_to_rule = {s: i for i, s in enumerate(u_rule)}
     n_rule_bins = len(u_rule)
 
-    unique_clusters = list(set(cluster_ids))
+    unique_clusters = sorted(set(cluster_ids))
     n_clusters = len(unique_clusters)
 
     cluster_indices = defaultdict(list)

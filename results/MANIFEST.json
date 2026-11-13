@@ -1,7 +1,7 @@
 {
   "project": "Schrodinger's Server: Adaptive SSH Honeypot Early Triage",
   "branch": "trainmodel",
-  "git_commit": "4819ba59df7d1eb8d0b34381bbe34b6da53f7007",
+  "git_commit": "fe5e718c2e4c29a9692913ff967c43640deef092",
   "python_version": "3.12.10",
   "library_versions": {
     "duckdb": "2.0.0",
@@ -37,24 +37,16 @@
       "eval_ref": "EXPERIMENT0.md Section 14"
     },
     "results/exp0/table.csv": {
-      "md5": "ae73054bd88a8654f5c66dfc88e163e0",
+      "md5": "d6e630e214e1556d455c3a4ee18e8156",
       "eval_ref": "EXPERIMENT0.md Section 14"
     },
     "results/exp0/EXP0_RESULT.md": {
-      "md5": "7812caced413d4794739f277872cb891",
+      "md5": "b89ae8f5a475455ddab3657aef318704",
       "eval_ref": "EXPERIMENT0.md Section 14"
     },
     "EXP0_RESULT.md": {
-      "md5": "7812caced413d4794739f277872cb891",
+      "md5": "b89ae8f5a475455ddab3657aef318704",
       "eval_ref": "AGENTS.md Root Mirror"
-    },
-    "models/model_s3.json": {
-      "md5": "f03f5e828dc683bd28c3e13849c1c1d2",
-      "eval_ref": "EXPERIMENT0.md Section 6 S3 Trained Model Artifact"
-    },
-    "results/exp0/model_s3.json": {
-      "md5": "f03f5e828dc683bd28c3e13849c1c1d2",
-      "eval_ref": "EXPERIMENT0.md Section 6 S3 Trained Model Artifact Mirror"
     }
   }
 }
