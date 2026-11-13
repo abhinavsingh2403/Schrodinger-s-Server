@@ -26,9 +26,9 @@ minimum size condition ($\ge 500$ positive sessions).
 
 | Stage | Reach Rate | Prefix Dropped | Evaluated Sessions | Base Rate | Best Rule | Rule Recall (10%) | ML Candidate | ML Recall (10%) | Δ_k | Multiplicity-Adj CI | Min Size Met |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| **S1** | 1.0 | 0 | 598647 | 0.0144 | `R0_random` | 0.097 | `LogisticRegression(C=0.01)` | 0.0572 | -0.0398 | -0.0937 | True |
-| **S2** | 0.9344 | 0 | 559399 | 0.0154 | `R7_decision_tree` | 0.5632 | `LogisticRegression(C=0.01)` | 0.5497 | -0.0135 | -0.0418 | True |
-| **S3** | 0.1684 | 0 | 100793 | 0.0855 | `R6_failed_logins` | 0.1151 | `LogisticRegression(C=0.01)` | 0.2919 | 0.1768 | 0.0052 | True |
+| **S1** | 1.0 | 0 | 598647 | 0.0144 | `R0_random` | 0.097 | `LogisticRegression(C=0.01)` | 0.0596 | -0.0374 | [-0.0937, -0.0109] | True |
+| **S2** | 0.9344 | 0 | 559399 | 0.0154 | `R7_decision_tree` | 0.5609 | `LogisticRegression(C=0.01)` | 0.5477 | -0.0132 | [-0.0418, 0.0] | True |
+| **S3** | 0.1684 | 0 | 100793 | 0.0855 | `R6_failed_logins` | 0.1118 | `LogisticRegression(C=0.01)` | 0.292 | 0.1802 | [0.0052, 0.6125] | True |
 | **S4** | N/A | N/A | N/A | N/A | `NOT_EVALUABLE (Requires event-level data_all)` | N/A | `NOT_EVALUABLE (Requires event-level data_all)` | N/A | NOT_EVALUABLE | N/A | False |
 | **S5** | N/A | N/A | N/A | N/A | `NOT_EVALUABLE (Requires event-level data_all)` | N/A | `NOT_EVALUABLE (Requires event-level data_all)` | N/A | NOT_EVALUABLE | N/A | False |
 
@@ -46,4 +46,4 @@ From `EXPERIMENT0.md §12`:
 ## 4. Scientific Interpretation, Leakage Audit & Gate 0 Verdict
 
 1. **Gate 0 Decision**: `PASS-ML` (Stages: S3).
-   - Early stage ML demonstrates statistically significant recall improvement over simple rules.
+   - The numeric rule passes; scientific interpretation remains exploratory/inconclusive. Aggregate timing, permutation controls, cluster concentration and incomplete model families prevent a validated pre-command claim.

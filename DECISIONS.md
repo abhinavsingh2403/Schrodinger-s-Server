@@ -389,3 +389,16 @@ Proposed tags for human review only: exp0-v3 and eval-v3. No tags created, moved
 - Decision: replace unsupported handoff completion and latency narratives with the required evidence checklist and current audit report. README scientific claims are narrowed to the generated result and its limitations. Alternatives considered: leave the contradictory claims alongside a warning; rejected as misleading.
 - Scope extension needed for T9: inspect and add a small disclosure to dashboard/templates/index.html because dashboard/app.py loads it and it contains synthetic rows. The notice states the prototype and unevaluated external-detector status; the broader dashboard provenance defects and budget redesign are reported, not silently fixed.
 - Validation and numerical evidence: see the script-generated results/exp0/AUDIT.md, ROBUSTNESS.md and audit_tests.json. Protected experiment documents, split dates, grid, labels, and success criteria are unchanged.
+
+### 2026-11-13: P0 estimator choice recorded before rerun
+
+- The old seeded-random metric passes equal-score, random-score and exact-budget tests. Direct selection audit reproduces its recall with exactly the requested ceiling budget. There is no observed budget overflow.
+- A constant-training-prevalence gradient control reproduces the shuffled model's ranking result. Starting the custom finite-iteration optimizer at zero weights/bias causes features to absorb the negative intercept gradient on imbalanced labels; shuffling does not remove that systematic optimization behaviour. This diagnostic control is not a candidate model. Evidence: results/exp0/metric_audit_before.json.
+- Choose expected recall under uniform random selection inside the boundary score bin, using a single shared ordered-bin function for point metrics and each bootstrap draw. This removes incidental tie-seed noise and aligns the previously different estimators. Alternative: fixed-random ties everywhere, rejected because repeated cluster copies need an additional tie convention and would retain arbitrary seed noise. Choice made before rerunning stage outcomes.
+- Keep the model, iterations, grid, labels, splits and decision rule unchanged. A shuffled-training-label model need not rank real test features randomly; no transformation will be chosen to force its recall to the budget. Report its empirical exceedance fraction with an explicit exchangeability caveat, not as a calibrated clustered p-value.
+- Previous PASS-ML was computed with the old random-tie point metric and averaged-tie bootstrap. Preserve old rows and compare them with the regenerated rows through scripts.
+
+### 2026-11-13: P4 day selection frozen before outcome inspection
+
+- Select the first listed day from each unchanged train, validation and test day list. This deterministic rule uses no random seed and no event outcomes. Read only these three daily archive members via bounded ranges; this is the explicit exception to the no-download rule requested in P4.
+- Reporting-only timestamp and prefix study; no new Gate 0 performance claim. Report complete-session restriction, boundary censoring and tied timestamps. No labels, splits or preregistered documents are altered.

@@ -3,29 +3,29 @@
   "candidates": [
     {
       "C": 0.01,
-      "validation_recall": 0.4480055832930692,
-      "test_recall": 0.29191321499013806
+      "validation_recall": 0.4479884748673666,
+      "test_recall": 0.2919661602320823
     },
     {
       "C": 0.1,
-      "validation_recall": 0.4480055832930692,
-      "test_recall": 0.29191321499013806
+      "validation_recall": 0.4479884748673666,
+      "test_recall": 0.2919661602320823
     },
     {
       "C": 1.0,
-      "validation_recall": 0.4480055832930692,
-      "test_recall": 0.29191321499013806
+      "validation_recall": 0.4479884748673666,
+      "test_recall": 0.2919661602320823
     },
     {
       "C": 10.0,
-      "validation_recall": 0.4480055832930692,
-      "test_recall": 0.29191321499013806
+      "validation_recall": 0.4479884748673666,
+      "test_recall": 0.2919661602320823
     }
   ],
   "best_lr": {
     "C": 0.01,
-    "validation_recall": 0.4480055832930692,
-    "test_recall": 0.29191321499013806
+    "validation_recall": 0.4479884748673666,
+    "test_recall": 0.2919661602320823
   },
   "boundary": true,
   "hist_gradient_boosting": "NOT RUN: absent in manifest-matching environment; no historical family winner recoverable for the current result",

@@ -6,14 +6,14 @@ Saved export reproduces the official S3 point recall after stage filtering. Offi
 
 | Rule | Validation recall | Test recall | ML minus rule | Adjusted CI |
 |---|---:|---:|---:|---|
-| R0_random | 0.09760026 | 0.10291217 | 0.18900104 | [0.0064, 0.6416] |
-| R1_login_success | 0.09760026 | 0.10291217 | 0.18900104 | [0.0091, 0.6434] |
-| R2_pty_requested | 0.09507704 | 0.10395638 | 0.18795684 | [0.0088, 0.6401] |
-| R5_rarity — PROXY (aggregate counter, not version string) | 0.09760026 | 0.10291217 | 0.18900104 | [0.0091, 0.6434] |
-| R6_failed_logins | 0.33381650 | 0.11509456 | 0.17681866 | [0.0052, 0.6125] |
-| R7_decision_tree | 0.33199120 | 0.11613876 | 0.17577445 | [0.0049, 0.61] |
+| R0_random | 0.09760026 | 0.10291217 | 0.18905399 | [0.0064, 0.6416] |
+| R1_login_success | 0.10000106 | 0.10000694 | 0.19195922 | [0.0091, 0.6434] |
+| R2_pty_requested | 0.09791199 | 0.10093518 | 0.19103098 | [0.0088, 0.6401] |
+| R5_rarity — PROXY (aggregate counter, not version string) | 0.10000106 | 0.10000694 | 0.19195922 | [0.0091, 0.6434] |
+| R6_failed_logins | 0.33398014 | 0.11180411 | 0.18016205 | [0.0052, 0.6125] |
+| R7_decision_tree | 0.33242765 | 0.11277272 | 0.17919344 | [0.0049, 0.61] |
 
-ML measurements: `{"val": 0.4480055832930692, "test": 0.29191321499013806, "difference_from_official": 1.3214990138066263e-05, "generalisation_gap": -0.15609236830293116}`
+ML measurements: `{"val": 0.4479884748673666, "test": 0.2919661602320823, "difference_from_official": -3.3839767917709374e-05, "generalisation_gap": -0.15602231463528432}`
 
 Baseline chosen on test for sensitivity only: R7_decision_tree
 
@@ -25,22 +25,22 @@ Component capture:
 {
   "direct-tcpip": {
     "positives": 5759,
-    "captured": 0,
+    "captured": 0.0,
     "recall": 0.0
   },
   "commands": {
     "positives": 88,
-    "captured": 5,
+    "captured": 5.0,
     "recall": 0.056818181818181816
   },
   "transfer": {
     "positives": 1745,
-    "captured": 1520,
-    "recall": 0.8710601719197708
+    "captured": 1520.4563350403175,
+    "recall": 0.8713216819715287
   },
   "commands+transfer": {
     "positives": 1027,
-    "captured": 991,
+    "captured": 991.0,
     "recall": 0.9649464459591042
   }
 }
@@ -60,12 +60,12 @@ S2 has exact equal-recall draws, so its upper endpoint can be zero without ident
 | S3 | [0.0052, 0.6125] | [0.1961, 0.3966] | 362 | [0.2371, 0.5105] | 0.18820693 | 50 | 3716 | 1761 | 0 |
 
 Weight caps use the nearest-rank percentile of cluster size; each cluster contribution is scaled proportionally. These sensitivities change the population weighting and are not alternate official outcomes.
-Official bootstrap averages capture within tied score bins, while reported point recall uses fixed random tie-breaking. This audit retains that statistic; it is not an exact bootstrap of the fixed-tie point estimator.
+Point estimates and bootstrap draws share expected uniform boundary-tie capture. Cluster concentration still limits interpretation.
 
 ## Artifact interpretation
 
-The shuffled-label model has recall 0.65053951, which fails the requested near-budget sanity check. This is a leakage/bug signal requiring investigation; it is not sufficient by itself to identify its cause.
-Removing session parameters reduces recall to 0.10256410. The sampled log contains parameter events after commands; whole-session counters therefore cannot be assumed to represent only a pre-command prefix.
+The shuffled-label model has recall 0.64904231. The constant-prevalence gradient control in the metric audit reproduces this systematic ranking; shuffling training labels does not force a finite-iteration fitted score vector to rank test sessions uniformly at random.
+Removing session parameters reduces recall to 0.09964323. The sampled log contains parameter events after commands; whole-session counters therefore cannot be assumed to represent only a pre-command prefix.
 The positive gain comes from transfer-only sessions and command/transfer overlaps. Performance is worse than the baseline on command-only and direct-tcpip-only positives.
 
 ## Leakage and ablations
@@ -77,29 +77,29 @@ The positive gain comes from transfer-only sessions and command/transfer overlap
   "checks": {
     "refit": {
       "dropped": [],
-      "test_recall": 0.29191321499013806
+      "test_recall": 0.2919661602320823
     },
     "shuffle": {
       "dropped": [],
-      "test_recall": 0.6505395057431257
+      "test_recall": 0.649042308621446
     },
     "cnt_client_size": {
       "dropped": [
         "cnt_client_size"
       ],
-      "test_recall": 0.29191321499013806
+      "test_recall": 0.2918604092935062
     },
     "cnt_client_var": {
       "dropped": [
         "cnt_client_var"
       ],
-      "test_recall": 0.29191321499013806
+      "test_recall": 0.2919661602320823
     },
     "cnt_session_params": {
       "dropped": [
         "cnt_session_params"
       ],
-      "test_recall": 0.10256410256410256
+      "test_recall": 0.09964322857385412
     },
     "all_three": {
       "dropped": [
@@ -107,7 +107,7 @@ The positive gain comes from transfer-only sessions and command/transfer overlap
         "cnt_client_var",
         "cnt_session_params"
       ],
-      "test_recall": 0.10175194338090265
+      "test_recall": 0.09869604750139237
     }
   },
   "event_order": "See event_order.json for the separately executed bounded single-day range check; aggregate prefix validity remains unverified.",
@@ -117,34 +117,34 @@ The positive gain comes from transfer-only sessions and command/transfer overlap
     "commands": {
       "positives": 88,
       "share_of_positives": 0.010210001160227404,
-      "ml_captured": 5,
-      "rule_captured": 84,
+      "ml_captured": 5.0,
+      "rule_captured": 83.49207374645927,
       "ml_recall": 0.056818181818181816,
-      "delta_contribution_to_overall_recall": -0.009165796496113238
+      "delta_contribution_to_overall_recall": -0.00910686550022732
     },
     "commands+transfer": {
       "positives": 1027,
       "share_of_positives": 0.1191553544494721,
-      "ml_captured": 991,
-      "rule_captured": 141,
+      "ml_captured": 991.0,
+      "rule_captured": 133.5290165482284,
       "ml_recall": 0.9649464459591042,
-      "delta_contribution_to_overall_recall": 0.09861932938856016
+      "delta_contribution_to_overall_recall": 0.09948613336254457
     },
     "direct-tcpip": {
       "positives": 5759,
       "share_of_positives": 0.6681749622926093,
-      "ml_captured": 0,
-      "rule_captured": 600,
+      "ml_captured": 0.0,
+      "rule_captured": 573.0816379267504,
       "ml_recall": 0.0,
-      "delta_contribution_to_overall_recall": -0.06961364427427776
+      "delta_contribution_to_overall_recall": -0.06649050213792208
     },
     "transfer": {
       "positives": 1745,
       "share_of_positives": 0.20245968209769113,
-      "ml_captured": 1520,
-      "rule_captured": 167,
-      "ml_recall": 0.8710601719197708,
-      "delta_contribution_to_overall_recall": 0.15697876783849635
+      "ml_captured": 1520.4563350403175,
+      "rule_captured": 173.53690801570343,
+      "ml_recall": 0.8713216819715287,
+      "delta_contribution_to_overall_recall": 0.1562732830983425
     }
   }
 }
@@ -209,12 +209,12 @@ The positive gain comes from transfer-only sessions and command/transfer overlap
         }
       },
       "full": {
-        "point_delta": -0.0133,
+        "point_delta": -0.0132,
         "ci": [
           -0.0418,
           0.0
         ],
-        "median": -0.012562953402765031,
+        "median": -0.012562953402765142,
         "draws": 10000,
         "below_zero": 8808,
         "above_point_three": 0,
@@ -236,12 +236,12 @@ The positive gain comes from transfer-only sessions and command/transfer overlap
       },
       "weight_cap": 6149,
       "capped": {
-        "point_delta": -0.0133,
+        "point_delta": -0.0132,
         "ci": [
           -0.0384,
           0.0
         ],
-        "median": -0.006661497827850027,
+        "median": -0.0066614978278500825,
         "draws": 10000,
         "below_zero": 6074,
         "above_point_three": 0,
@@ -276,7 +276,7 @@ The positive gain comes from transfer-only sessions and command/transfer overlap
         }
       },
       "full": {
-        "point_delta": 0.1768,
+        "point_delta": 0.1802,
         "ci": [
           0.0052,
           0.6125
@@ -289,7 +289,7 @@ The positive gain comes from transfer-only sessions and command/transfer overlap
         "exact_zero": 0
       },
       "exclude_top_one_percent": {
-        "point_delta": 0.2802,
+        "point_delta": 0.2792,
         "ci": [
           0.1961,
           0.3966
@@ -303,12 +303,12 @@ The positive gain comes from transfer-only sessions and command/transfer overlap
       },
       "weight_cap": 362,
       "capped": {
-        "point_delta": 0.1768,
+        "point_delta": 0.1802,
         "ci": [
           0.2371,
           0.5105
         ],
-        "median": 0.35437619002470727,
+        "median": 0.3543761900247072,
         "draws": 10000,
         "below_zero": 0,
         "above_point_three": 8449,
@@ -319,7 +319,7 @@ The positive gain comes from transfer-only sessions and command/transfer overlap
     }
   },
   "bug": "Fixed process-dependent cluster ordering by sorting cluster IDs. Regression test failed before fix.",
-  "method_caveat": "Official bootstrap averages capture within tied score bins, while reported point recall uses fixed random tie-breaking. This audit retains that statistic; it is not an exact bootstrap of the fixed-tie point estimator."
+  "method_caveat": "Point estimates and bootstrap draws share expected uniform boundary-tie capture. Cluster concentration still limits interpretation."
 }
 ```
 
@@ -331,29 +331,29 @@ The positive gain comes from transfer-only sessions and command/transfer overlap
   "candidates": [
     {
       "C": 0.01,
-      "validation_recall": 0.4480055832930692,
-      "test_recall": 0.29191321499013806
+      "validation_recall": 0.4479884748673666,
+      "test_recall": 0.2919661602320823
     },
     {
       "C": 0.1,
-      "validation_recall": 0.4480055832930692,
-      "test_recall": 0.29191321499013806
+      "validation_recall": 0.4479884748673666,
+      "test_recall": 0.2919661602320823
     },
     {
       "C": 1.0,
-      "validation_recall": 0.4480055832930692,
-      "test_recall": 0.29191321499013806
+      "validation_recall": 0.4479884748673666,
+      "test_recall": 0.2919661602320823
     },
     {
       "C": 10.0,
-      "validation_recall": 0.4480055832930692,
-      "test_recall": 0.29191321499013806
+      "validation_recall": 0.4479884748673666,
+      "test_recall": 0.2919661602320823
     }
   ],
   "best_lr": {
     "C": 0.01,
-    "validation_recall": 0.4480055832930692,
-    "test_recall": 0.29191321499013806
+    "validation_recall": 0.4479884748673666,
+    "test_recall": 0.2919661602320823
   },
   "boundary": true,
   "hist_gradient_boosting": "NOT RUN: absent in manifest-matching environment; no historical family winner recoverable for the current result",

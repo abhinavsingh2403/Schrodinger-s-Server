@@ -7,11 +7,11 @@
     "evaluated_sessions": "100793",
     "base_rate": "0.0855",
     "best_rule": "R6_failed_logins",
-    "best_rule_val_recall": "0.3338",
-    "best_rule_test_recall": "0.1151",
+    "best_rule_val_recall": "0.334",
+    "best_rule_test_recall": "0.1118",
     "ml_candidate": "LogisticRegression(C=0.01)",
-    "ml_test_recall": "0.2919",
-    "delta_k": "0.1768",
+    "ml_test_recall": "0.292",
+    "delta_k": "0.1802",
     "ci_lower": "0.0052",
     "ci_upper": "0.6125",
     "bonferroni_alpha": "0.0167",
@@ -22,75 +22,75 @@
     "R0_random": {
       "val": 0.09760025769044935,
       "test": 0.10291217078547395,
-      "delta_exported_ml": 0.18900104420466413,
+      "delta_exported_ml": 0.18905398944660834,
       "generalisation_gap": 0.005311913095024601,
       "bootstrap": [
-        0.189,
+        0.1891,
         0.0064,
         0.6416
       ]
     },
     "R1_login_success": {
-      "val": 0.09760025769044935,
-      "test": 0.10291217078547395,
-      "delta_exported_ml": 0.18900104420466413,
-      "generalisation_gap": 0.005311913095024601,
+      "val": 0.10000105631199231,
+      "test": 0.10000694492673103,
+      "delta_exported_ml": 0.19195921530535126,
+      "generalisation_gap": 5.8886147387138266e-06,
       "bootstrap": [
-        0.1885,
+        0.192,
         0.0091,
         0.6434
       ]
     },
     "R2_pty_requested": {
-      "val": 0.09507703870725291,
-      "test": 0.10395637544958812,
-      "delta_exported_ml": 0.18795683954054992,
-      "generalisation_gap": 0.008879336742335209,
+      "val": 0.09791199199742974,
+      "test": 0.10093518266075488,
+      "delta_exported_ml": 0.1910309775713274,
+      "generalisation_gap": 0.00302319066332514,
       "bootstrap": [
-        0.188,
+        0.191,
         0.0088,
         0.6401
       ]
     },
     "R5_rarity": {
-      "val": 0.09760025769044935,
-      "test": 0.10291217078547395,
-      "delta_exported_ml": 0.18900104420466413,
-      "generalisation_gap": 0.005311913095024601,
+      "val": 0.10000105631199231,
+      "test": 0.10000694492673103,
+      "delta_exported_ml": 0.19195921530535126,
+      "generalisation_gap": 5.8886147387138266e-06,
       "bootstrap": [
-        0.1885,
+        0.192,
         0.0091,
         0.6434
       ]
     },
     "R6_failed_logins": {
-      "val": 0.3338165029258603,
-      "test": 0.11509455853347256,
-      "delta_exported_ml": 0.1768186564566655,
-      "generalisation_gap": -0.21872194439238773,
+      "val": 0.333980143532733,
+      "test": 0.11180411140934465,
+      "delta_exported_ml": 0.18016204882273762,
+      "generalisation_gap": -0.22217603212338832,
       "bootstrap": [
-        0.1768,
+        0.1802,
         0.0052,
         0.6125
       ]
     },
     "R7_decision_tree": {
-      "val": 0.33199119557631396,
-      "test": 0.11613876319758673,
-      "delta_exported_ml": 0.17577445179255133,
-      "generalisation_gap": -0.21585243237872723,
+      "val": 0.33242765479153524,
+      "test": 0.1127727163505002,
+      "delta_exported_ml": 0.1791934438815821,
+      "generalisation_gap": -0.21965493844103506,
       "bootstrap": [
-        0.1759,
+        0.1792,
         0.0049,
         0.61
       ]
     }
   },
   "ml": {
-    "val": 0.4480055832930692,
-    "test": 0.29191321499013806,
-    "difference_from_official": 1.3214990138066263e-05,
-    "generalisation_gap": -0.15609236830293116
+    "val": 0.4479884748673666,
+    "test": 0.2919661602320823,
+    "difference_from_official": -3.3839767917709374e-05,
+    "generalisation_gap": -0.15602231463528432
   },
   "seed": 42,
   "label_components": {
@@ -99,35 +99,35 @@
     "transfer": 1745,
     "commands+transfer": 1027
   },
+  "recall_reproduced": true,
   "verdict": "robust",
   "limitations": [
     "Saved export reproduces official S3 recall within acceptance tolerance; independently refitted weights are not proven identical.",
     "Export calibration uses all validation sessions, unlike the stage-filtered official evaluation.",
     "HistGradientBoosting was unavailable in the project environment; a best candidate cannot be reported for an untrained family.",
-    "Bootstrap uses the official function, including its tie-bin averaging; point recalls use seed 42 while the bootstrap uses seed 20261111."
+    "Point and bootstrap use expected uniform boundary-tie capture; bootstrap seed 20261111."
   ],
   "component_recall": {
     "direct-tcpip": {
       "positives": 5759,
-      "captured": 0,
+      "captured": 0.0,
       "recall": 0.0
     },
     "commands": {
       "positives": 88,
-      "captured": 5,
+      "captured": 5.0,
       "recall": 0.056818181818181816
     },
     "transfer": {
       "positives": 1745,
-      "captured": 1520,
-      "recall": 0.8710601719197708
+      "captured": 1520.4563350403175,
+      "recall": 0.8713216819715287
     },
     "commands+transfer": {
       "positives": 1027,
-      "captured": 991,
+      "captured": 991.0,
       "recall": 0.9649464459591042
     }
   },
-  "test_selected_baseline": "R7_decision_tree",
-  "recall_reproduced": true
+  "test_selected_baseline": "R7_decision_tree"
 }

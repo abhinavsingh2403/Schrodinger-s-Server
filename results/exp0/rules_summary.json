@@ -14,7 +14,7 @@
       "S3"
     ],
     "passing_late_stages": [],
-    "interpretation": "ML adds significant early triage signal before any command (Stages: S3)."
+    "interpretation": "Mechanical PASS-ML (Stages: S3); exploratory/inconclusive, not validated pre-command signal."
   },
   "stages": {
     "S1": {
@@ -27,9 +27,9 @@
       "best_test_recall": 0.097,
       "validation_scores": {
         "R0_random": 0.0975,
-        "R5_rarity": 0.0721
+        "R5_rarity": 0.073
       },
-      "proxy_notice": "R5_rarity: PROXY (aggregate counter, not version string); R3 not stage-valid; hassh rarity not evaluated"
+      "proxy_notice": "R5_rarity: PROXY (aggregate counter, not version string); R3 is not stage-valid; hassh rarity not evaluated"
     },
     "S2": {
       "valid_rules": [
@@ -40,16 +40,16 @@
         "R7_decision_tree"
       ],
       "best_rule": "R7_decision_tree",
-      "best_val_recall": 0.8382,
-      "best_test_recall": 0.5632,
+      "best_val_recall": 0.8383,
+      "best_test_recall": 0.5609,
       "validation_scores": {
         "R0_random": 0.0997,
-        "R1_login_success": 0.7824,
-        "R5_rarity": 0.0997,
-        "R6_failed_logins": 0.2966,
-        "R7_decision_tree": 0.8382
+        "R1_login_success": 0.7815,
+        "R5_rarity": 0.1,
+        "R6_failed_logins": 0.2963,
+        "R7_decision_tree": 0.8383
       },
-      "proxy_notice": "R5_rarity: PROXY (aggregate counter, not version string); R3 not stage-valid; hassh rarity not evaluated"
+      "proxy_notice": "R5_rarity: PROXY (aggregate counter, not version string); R3 is not stage-valid; hassh rarity not evaluated"
     },
     "S3": {
       "valid_rules": [
@@ -61,17 +61,17 @@
         "R7_decision_tree"
       ],
       "best_rule": "R6_failed_logins",
-      "best_val_recall": 0.3338,
-      "best_test_recall": 0.1151,
+      "best_val_recall": 0.334,
+      "best_test_recall": 0.1118,
       "validation_scores": {
         "R0_random": 0.0976,
-        "R1_login_success": 0.0976,
-        "R2_pty_requested": 0.0951,
-        "R5_rarity": 0.0976,
-        "R6_failed_logins": 0.3338,
-        "R7_decision_tree": 0.332
+        "R1_login_success": 0.1,
+        "R2_pty_requested": 0.0979,
+        "R5_rarity": 0.1,
+        "R6_failed_logins": 0.334,
+        "R7_decision_tree": 0.3324
       },
-      "proxy_notice": "R5_rarity: PROXY (aggregate counter, not version string); R3 not stage-valid; hassh rarity not evaluated"
+      "proxy_notice": "R5_rarity: PROXY (aggregate counter, not version string); R3 is not stage-valid; hassh rarity not evaluated"
     },
     "S4": {
       "valid_rules": [],

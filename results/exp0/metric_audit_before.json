@@ -1,0 +1,74 @@
+{
+  "estimators": {
+    "official": {
+      "sessions": 100793,
+      "positives": 8619,
+      "unique_scores": 46,
+      "largest_bin": 87679,
+      "selected": 10080,
+      "recall": 0.29191321499013806,
+      "direct_selection_recall": 0.29191321499013806
+    },
+    "shuffled": {
+      "sessions": 100793,
+      "positives": 8619,
+      "unique_scores": 46,
+      "largest_bin": 87679,
+      "selected": 10080,
+      "recall": 0.6505395057431257,
+      "direct_selection_recall": 0.6505395057431257
+    },
+    "constant_prevalence_gradient_control": {
+      "sessions": 100793,
+      "positives": 8619,
+      "unique_scores": 46,
+      "largest_bin": 87679,
+      "selected": 10080,
+      "recall": 0.6505395057431257,
+      "direct_selection_recall": 0.6505395057431257
+    },
+    "R6_failed_logins": {
+      "sessions": 100793,
+      "positives": 8619,
+      "unique_scores": 15,
+      "largest_bin": 100615,
+      "selected": 10080,
+      "recall": 0.11509455853347256,
+      "direct_selection_recall": 0.11509455853347256
+    },
+    "R7_decision_tree": {
+      "sessions": 100793,
+      "positives": 8619,
+      "unique_scores": 4,
+      "largest_bin": 100604,
+      "selected": 10080,
+      "recall": 0.11613876319758673,
+      "direct_selection_recall": 0.11613876319758673
+    }
+  },
+  "training_prevalence": 0.0257,
+  "shuffled_training_mean_prediction": 0.035152841239331496,
+  "shuffled_weights": [
+    0.0,
+    -1.4182289968659478,
+    -0.6749789545801937,
+    -0.0031897352089822074,
+    -0.05962538015322988,
+    -0.18726753898661166,
+    -0.00039055866459686045,
+    0.0,
+    -0.0017095935465809707
+  ],
+  "control_weights": [
+    0.0,
+    -1.4175297221758154,
+    -0.6756178644695676,
+    -0.003268089780195317,
+    -0.060144371530286254,
+    -0.1801949163353649,
+    -0.0002453099306309723,
+    0.0,
+    -0.0016854207156306036
+  ],
+  "control_is_candidate": false
+}

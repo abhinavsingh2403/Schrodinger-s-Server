@@ -48,7 +48,7 @@ def main():
     raw_test = train_module.load_parquet_as_dict_records(root / 'test.parquet')
     model, meta = PurePythonLogisticRegression.load_json(root / 'model_s3.json')
     out = {'seed': 20261111, 'stages': {}, 'bug': 'Fixed process-dependent cluster ordering by sorting cluster IDs. Regression test failed before fix.',
-           'method_caveat': 'Official bootstrap averages capture within tied score bins, while reported point recall uses fixed random tie-breaking. This audit retains that statistic; it is not an exact bootstrap of the fixed-tie point estimator.'}
+           'method_caveat': 'Point estimates and bootstrap draws share expected uniform boundary-tie capture. Cluster concentration still limits interpretation.'}
     for stage, rule_name in [('S2', 'R7_decision_tree'), ('S3', 'R6_failed_logins')]:
         records = train_module.filter_prefix_determined_exclusions(raw_test, stage)[0]
         features = train_module.STAGE_ALLOWED_FEATURES[stage]

@@ -18,6 +18,7 @@ import json
 import math
 from pathlib import Path
 import random
+from collections import defaultdict
 from typing import Any
 
 
@@ -285,31 +286,40 @@ class PurePythonLogisticRegression:
         return model, data
 
 
+def recall_from_score_bins(totals, positives, budget):
+    """Expected recall from descending score bins with an exact ceiling budget.
+
+Only the boundary bin is fractionally selected, representing uniform random ties.
+Fractional cluster weights are supported for reporting-only sensitivities.
+"""
+    if not 0 < budget <= 1:
+        raise ValueError('Budget must be in (0, 1]')
+    remaining = min(sum(totals), math.ceil(budget * sum(totals)))
+    captured = 0.0
+    for count, positive in zip(totals, positives):
+        if count:
+            take = min(remaining, count)
+            captured += positive * take / count
+            remaining -= take
+        if remaining <= 0:
+            break
+    return captured / sum(positives) if sum(positives) else 0.0
+
+
 def recall_at_budget(scores: list[float], labels: list[int], budget: float, seed: int = 42) -> float:
     """
     Computes recall of value=1 sessions within the top `budget` fraction of highest-scored sessions.
     
-    Ties broken at random with a fixed seed per EXPERIMENT0.md §7.
+    Expected recall under uniform random boundary ties. Seed is retained for API
+    compatibility but does not affect this expectation (P0 decision ledger).
     budget is in (0, 1], e.g. 0.10 for 10% budget.
     """
     if not scores or not labels or len(scores) != len(labels):
         raise ValueError("Scores and labels must be non-empty and of equal length.")
 
-    total_positives = sum(labels)
-    if total_positives == 0:
-        return 0.0
-
-    n = len(scores)
-    k = max(1, int(math.ceil(budget * n)))
-
-    # Deterministic tie-breaking using fixed seed RNG per EXPERIMENT0.md §7
-    rng = random.Random(seed)
-    tie_breakers = [rng.random() for _ in range(n)]
-
-    # Sort descending by primary score, tie-broken by secondary random float
-    indices = list(range(n))
-    indices.sort(key=lambda i: (scores[i], tie_breakers[i]), reverse=True)
-
-    top_k_indices = indices[:k]
-    positives_captured = sum(labels[i] for i in top_k_indices)
-    return positives_captured / total_positives
+    bins = defaultdict(lambda: [0, 0])
+    for score, label in zip(scores, labels):
+        bins[score][0] += 1
+        bins[score][1] += label
+    ordered = [bins[score] for score in sorted(bins, reverse=True)]
+    return recall_from_score_bins([b[0] for b in ordered], [b[1] for b in ordered], budget)

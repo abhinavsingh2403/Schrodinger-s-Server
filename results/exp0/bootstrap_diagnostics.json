@@ -27,12 +27,12 @@
         }
       },
       "full": {
-        "point_delta": -0.0133,
+        "point_delta": -0.0132,
         "ci": [
           -0.0418,
           0.0
         ],
-        "median": -0.012562953402765031,
+        "median": -0.012562953402765142,
         "draws": 10000,
         "below_zero": 8808,
         "above_point_three": 0,
@@ -54,12 +54,12 @@
       },
       "weight_cap": 6149,
       "capped": {
-        "point_delta": -0.0133,
+        "point_delta": -0.0132,
         "ci": [
           -0.0384,
           0.0
         ],
-        "median": -0.006661497827850027,
+        "median": -0.0066614978278500825,
         "draws": 10000,
         "below_zero": 6074,
         "above_point_three": 0,
@@ -94,7 +94,7 @@
         }
       },
       "full": {
-        "point_delta": 0.1768,
+        "point_delta": 0.1802,
         "ci": [
           0.0052,
           0.6125
@@ -107,7 +107,7 @@
         "exact_zero": 0
       },
       "exclude_top_one_percent": {
-        "point_delta": 0.2802,
+        "point_delta": 0.2792,
         "ci": [
           0.1961,
           0.3966
@@ -121,12 +121,12 @@
       },
       "weight_cap": 362,
       "capped": {
-        "point_delta": 0.1768,
+        "point_delta": 0.1802,
         "ci": [
           0.2371,
           0.5105
         ],
-        "median": 0.35437619002470727,
+        "median": 0.3543761900247072,
         "draws": 10000,
         "below_zero": 0,
         "above_point_three": 8449,
@@ -137,5 +137,5 @@
     }
   },
   "bug": "Fixed process-dependent cluster ordering by sorting cluster IDs. Regression test failed before fix.",
-  "method_caveat": "Official bootstrap averages capture within tied score bins, while reported point recall uses fixed random tie-breaking. This audit retains that statistic; it is not an exact bootstrap of the fixed-tie point estimator."
+  "method_caveat": "Point estimates and bootstrap draws share expected uniform boundary-tie capture. Cluster concentration still limits interpretation."
 }

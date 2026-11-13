@@ -36,6 +36,7 @@ if str(PROJECT_ROOT) not in sys.path:
 
 from analysis.exp0_rules import (
     recall_at_budget,
+    recall_from_score_bins,
     score_r0_random,
     score_r1_login_success,
     score_r2_pty_requested,
@@ -588,17 +589,7 @@ def paired_cluster_bootstrap_delta(
     if total_positives == 0:
         return (0.0, 0.0, 0.0)
 
-    # 1. Point estimate on full sample with deterministic tie-breaking
-    k_pt = max(1, int(math.ceil(budget * n)))
-    rng_pt = random.Random(seed)
-    tb_pt = [rng_pt.random() for _ in range(n)]
-
-    idx_ml_pt = sorted(range(n), key=lambda i: (scores_ml[i], tb_pt[i]), reverse=True)
-    rec_ml_pt = sum(labels[i] for i in idx_ml_pt[:k_pt]) / total_positives
-
-    idx_rule_pt = sorted(range(n), key=lambda i: (scores_rule[i], tb_pt[i]), reverse=True)
-    rec_rule_pt = sum(labels[i] for i in idx_rule_pt[:k_pt]) / total_positives
-    point_delta = rec_ml_pt - rec_rule_pt
+    point_delta = recall_at_budget(scores_ml, labels, budget) - recall_at_budget(scores_rule, labels, budget)
 
     # 2. Discretize scores into sorted descending bins for fast O(bins) dynamic budget calculation
     u_ml = sorted(list(set(scores_ml)), reverse=True)
@@ -676,36 +667,8 @@ def paired_cluster_bootstrap_delta(
         if tot_pos == 0 or tot_sess == 0:
             continue
 
-        # Dynamic budget recalculation per resample draw
-        k_budget = math.ceil(budget * tot_sess)
-
-        # ML Recall
-        accum = 0
-        ml_cap = 0
-        for b in range(n_ml_bins):
-            if accum + ml_tot[b] <= k_budget:
-                accum += ml_tot[b]
-                ml_cap += ml_pos[b]
-            else:
-                rem = k_budget - accum
-                if ml_tot[b] > 0:
-                    ml_cap += ml_pos[b] * (rem / ml_tot[b])
-                break
-        rec_ml = ml_cap / tot_pos
-
-        # Rule Recall
-        accum = 0
-        ru_cap = 0
-        for b in range(n_rule_bins):
-            if accum + ru_tot[b] <= k_budget:
-                accum += ru_tot[b]
-                ru_cap += ru_pos[b]
-            else:
-                rem = k_budget - accum
-                if ru_tot[b] > 0:
-                    ru_cap += ru_pos[b] * (rem / ru_tot[b])
-                break
-        rec_ru = ru_cap / tot_pos
+        rec_ml = recall_from_score_bins(ml_tot, ml_pos, budget)
+        rec_ru = recall_from_score_bins(ru_tot, ru_pos, budget)
 
         deltas.append(rec_ml - rec_ru)
 
@@ -774,7 +737,7 @@ def evaluate_gate0_decision_rule(
 
         if passing_early:
             outcome = "PASS-ML"
-            meaning = f"ML adds significant early triage signal before any command (Stages: {', '.join(passing_early)})."
+            meaning = f"Mechanical PASS-ML (Stages: {', '.join(passing_early)}); exploratory/inconclusive, not validated pre-command signal."
         elif passing_late:
             outcome = "PASS-LATE-ONLY"
             meaning = f"ML adds signal only after commands are observed (Stages: {', '.join(passing_late)})."
@@ -798,7 +761,7 @@ def evaluate_gate0_decision_rule(
 
     if d_early >= threshold_delta and ci_early > 0.0:
         outcome = "PASS-ML"
-        meaning = "ML adds significant early triage signal before any command (Stages S1–S3)."
+        meaning = "Mechanical PASS-ML (Stages S1–S3); exploratory/inconclusive, not validated pre-command signal."
     elif d_late >= threshold_delta and ci_late > 0.0:
         outcome = "PASS-LATE-ONLY"
         meaning = "ML adds signal only after commands are observed (Stages S4–S5)."
@@ -1151,7 +1114,7 @@ def write_exp0_result_md(
             "## 4. Scientific Interpretation, Leakage Audit & Gate 0 Verdict",
             "",
             f"1. **Gate 0 Decision**: `PASS-ML` (Stages: {', '.join(gate0_res.get('passing_early_stages', []))}).",
-            "   - Early stage ML demonstrates statistically significant recall improvement over simple rules.",
+            "   - The numeric rule passes; scientific interpretation remains exploratory/inconclusive. Aggregate timing, permutation controls, cluster concentration and incomplete model families prevent a validated pre-command claim.",
         ])
     else:
         lines.extend([

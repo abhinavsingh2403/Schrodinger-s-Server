@@ -1,7 +1,7 @@
 {
   "project": "Schrodinger's Server: Adaptive SSH Honeypot Early Triage",
   "branch": "trainmodel",
-  "git_commit": "455561e18f80d035061808ae400875b72adb31f7",
+  "git_commit": "3dd333501e2c7139444e84608b89393815c6ad69",
   "python_version": "3.12.10",
   "library_versions": {
     "colorama": "0.4.6",
@@ -18,7 +18,209 @@
     "tie_break_seed": 42,
     "bootstrap_seed": 20261111,
     "audit_shuffle_seed": 20261111,
-    "training_reservoir_seed": 42
+    "training_reservoir_seed": 42,
+    "permutation_seeds": [
+      20261111,
+      20261112,
+      20261113,
+      20261114,
+      20261115,
+      20261116,
+      20261117,
+      20261118,
+      20261119,
+      20261120,
+      20261121,
+      20261122,
+      20261123,
+      20261124,
+      20261125,
+      20261126,
+      20261127,
+      20261128,
+      20261129,
+      20261130,
+      20261131,
+      20261132,
+      20261133,
+      20261134,
+      20261135,
+      20261136,
+      20261137,
+      20261138,
+      20261139,
+      20261140,
+      20261141,
+      20261142,
+      20261143,
+      20261144,
+      20261145,
+      20261146,
+      20261147,
+      20261148,
+      20261149,
+      20261150,
+      20261151,
+      20261152,
+      20261153,
+      20261154,
+      20261155,
+      20261156,
+      20261157,
+      20261158,
+      20261159,
+      20261160,
+      20261161,
+      20261162,
+      20261163,
+      20261164,
+      20261165,
+      20261166,
+      20261167,
+      20261168,
+      20261169,
+      20261170,
+      20261171,
+      20261172,
+      20261173,
+      20261174,
+      20261175,
+      20261176,
+      20261177,
+      20261178,
+      20261179,
+      20261180,
+      20261181,
+      20261182,
+      20261183,
+      20261184,
+      20261185,
+      20261186,
+      20261187,
+      20261188,
+      20261189,
+      20261190,
+      20261191,
+      20261192,
+      20261193,
+      20261194,
+      20261195,
+      20261196,
+      20261197,
+      20261198,
+      20261199,
+      20261200,
+      20261201,
+      20261202,
+      20261203,
+      20261204,
+      20261205,
+      20261206,
+      20261207,
+      20261208,
+      20261209,
+      20261210,
+      20261211,
+      20261212,
+      20261213,
+      20261214,
+      20261215,
+      20261216,
+      20261217,
+      20261218,
+      20261219,
+      20261220,
+      20261221,
+      20261222,
+      20261223,
+      20261224,
+      20261225,
+      20261226,
+      20261227,
+      20261228,
+      20261229,
+      20261230,
+      20261231,
+      20261232,
+      20261233,
+      20261234,
+      20261235,
+      20261236,
+      20261237,
+      20261238,
+      20261239,
+      20261240,
+      20261241,
+      20261242,
+      20261243,
+      20261244,
+      20261245,
+      20261246,
+      20261247,
+      20261248,
+      20261249,
+      20261250,
+      20261251,
+      20261252,
+      20261253,
+      20261254,
+      20261255,
+      20261256,
+      20261257,
+      20261258,
+      20261259,
+      20261260,
+      20261261,
+      20261262,
+      20261263,
+      20261264,
+      20261265,
+      20261266,
+      20261267,
+      20261268,
+      20261269,
+      20261270,
+      20261271,
+      20261272,
+      20261273,
+      20261274,
+      20261275,
+      20261276,
+      20261277,
+      20261278,
+      20261279,
+      20261280,
+      20261281,
+      20261282,
+      20261283,
+      20261284,
+      20261285,
+      20261286,
+      20261287,
+      20261288,
+      20261289,
+      20261290,
+      20261291,
+      20261292,
+      20261293,
+      20261294,
+      20261295,
+      20261296,
+      20261297,
+      20261298,
+      20261299,
+      20261300,
+      20261301,
+      20261302,
+      20261303,
+      20261304,
+      20261305,
+      20261306,
+      20261307,
+      20261308,
+      20261309,
+      20261310
+    ]
   },
   "data_inputs": {
     "session_aggregation.jsonl.gz": {
@@ -30,87 +232,132 @@
   "result_artifacts": {
     "results/exp0/splits.json": {
       "md5": "73babb336645549b135b6fe814f448a8",
-      "eval_ref": "Audit output or unchanged input; see audit report"
+      "eval_ref": "P0 rerun or retained reporting-only artifact; see P0_REPORT.md"
     },
     "results/exp0/grid.json": {
       "md5": "3cc732d1c5c8a22214001b388024b6df",
-      "eval_ref": "Audit output or unchanged input; see audit report"
+      "eval_ref": "P0 rerun or retained reporting-only artifact; see P0_REPORT.md"
     },
     "results/exp0/rules.json": {
-      "md5": "8af3af27c7de6b16f08044c33207e2a9",
-      "eval_ref": "Audit output or unchanged input; see audit report"
+      "md5": "4eac8a2341c7d04beb48e0e413e16628",
+      "eval_ref": "P0 rerun or retained reporting-only artifact; see P0_REPORT.md"
     },
     "results/exp0/rules_summary.json": {
-      "md5": "47967765357569f26b0cf2834d00203f",
-      "eval_ref": "Audit output or unchanged input; see audit report"
+      "md5": "34eb9e8e26bd21322429eee715e13656",
+      "eval_ref": "P0 rerun or retained reporting-only artifact; see P0_REPORT.md"
     },
     "results/exp0/table.csv": {
-      "md5": "fb19fd155d563e63cdd2fa08abc7c898",
-      "eval_ref": "EXPERIMENT0.md Section 14"
+      "md5": "494f967f8c81440845c27594782e46c4",
+      "eval_ref": "P0 rerun or retained reporting-only artifact; see P0_REPORT.md"
     },
     "results/exp0/EXP0_RESULT.md": {
-      "md5": "f6a1234215745e55ec4d22620876b9b3",
-      "eval_ref": "EXPERIMENT0.md Section 14"
+      "md5": "216aaf094a11eb88bc8380b179e5c2dc",
+      "eval_ref": "P0 rerun or retained reporting-only artifact; see P0_REPORT.md"
     },
     "EXP0_RESULT.md": {
-      "md5": "f6a1234215745e55ec4d22620876b9b3",
-      "eval_ref": "AGENTS.md Root Mirror"
+      "md5": "216aaf094a11eb88bc8380b179e5c2dc",
+      "eval_ref": "P0 rerun or retained reporting-only artifact; see P0_REPORT.md"
     },
     "results/exp0/artifact_checks.json": {
-      "md5": "3634e95bad753d3561ce0da1fcaf6314",
-      "eval_ref": "Audit output or unchanged input; see audit report"
+      "md5": "a4813547303ba58177c5a2ded2f844da",
+      "eval_ref": "P0 rerun or retained reporting-only artifact; see P0_REPORT.md"
     },
     "results/exp0/audit_tests.json": {
       "md5": "1ffb7cd64ed089dee8187e18a7240f50",
-      "eval_ref": "Audit output or unchanged input; see audit report"
+      "eval_ref": "P0 rerun or retained reporting-only artifact; see P0_REPORT.md"
     },
     "results/exp0/bootstrap_diagnostics.json": {
-      "md5": "1f20828a8e78da94a638298d877a83a9",
-      "eval_ref": "Audit output or unchanged input; see audit report"
+      "md5": "4b66a9dce3ea83c981648378e6254e02",
+      "eval_ref": "P0 rerun or retained reporting-only artifact; see P0_REPORT.md"
     },
     "results/exp0/event_order.json": {
       "md5": "bbc65116d665083b3c8c6034c2010b12",
-      "eval_ref": "Audit output or unchanged input; see audit report"
+      "eval_ref": "P0 rerun or retained reporting-only artifact; see P0_REPORT.md"
     },
     "results/exp0/family_comparison.json": {
-      "md5": "3c8caa9a519be0c8f01821e5067a959f",
-      "eval_ref": "Audit output or unchanged input; see audit report"
+      "md5": "a2c76407b8029a9a44d6bcde79e791a8",
+      "eval_ref": "P0 rerun or retained reporting-only artifact; see P0_REPORT.md"
+    },
+    "results/exp0/metric_audit_after.json": {
+      "md5": "54cff7fdd9a64ba8cb3af909d4b0c9e4",
+      "eval_ref": "P0 rerun or retained reporting-only artifact; see P0_REPORT.md"
+    },
+    "results/exp0/metric_audit_before.json": {
+      "md5": "1d0196664113fea60b9928a80c1bb8d4",
+      "eval_ref": "P0 rerun or retained reporting-only artifact; see P0_REPORT.md"
     },
     "results/exp0/model_s3.json": {
       "md5": "f03f5e828dc683bd28c3e13849c1c1d2",
-      "eval_ref": "Audit output or unchanged input; see audit report"
+      "eval_ref": "P0 rerun or retained reporting-only artifact; see P0_REPORT.md"
+    },
+    "results/exp0/p0_tests.json": {
+      "md5": "7c6c5d85f0fd21fa61930257259ac477",
+      "eval_ref": "P0 rerun or retained reporting-only artifact; see P0_REPORT.md"
+    },
+    "results/exp0/permutation_null.json": {
+      "md5": "a23426b3417924d3f67916c0673f9e63",
+      "eval_ref": "P0 rerun or retained reporting-only artifact; see P0_REPORT.md"
+    },
+    "results/exp0/permutation_null_before_p0.json": {
+      "md5": "14fcca9950230ebfc07c2c1d35371176",
+      "eval_ref": "P0 rerun or retained reporting-only artifact; see P0_REPORT.md"
     },
     "results/exp0/pins_audit.json": {
       "md5": "b08c4fec7a033bd8ab385737a8328e05",
-      "eval_ref": "Audit output or unchanged input; see audit report"
+      "eval_ref": "P0 rerun or retained reporting-only artifact; see P0_REPORT.md"
     },
     "results/exp0/progress.json": {
       "md5": "77f467005e091d947abc380f3dd0ff35",
-      "eval_ref": "Audit output or unchanged input; see audit report"
+      "eval_ref": "P0 rerun or retained reporting-only artifact; see P0_REPORT.md"
     },
     "results/exp0/robustness.json": {
-      "md5": "3f9401f74008f13b42d12d47f9ee99e4",
-      "eval_ref": "Audit output or unchanged input; see audit report"
+      "md5": "797c2219fd83772c340e491275fc4e9b",
+      "eval_ref": "P0 rerun or retained reporting-only artifact; see P0_REPORT.md"
+    },
+    "results/exp0/AUDIT.md": {
+      "md5": "9f6e51e943b51762aa488a2bc3f5fb5e",
+      "eval_ref": "P0 rerun or retained reporting-only artifact; see P0_REPORT.md"
+    },
+    "results/exp0/P0_REPORT.md": {
+      "md5": "2e95509465bcf560c190c2e135260c72",
+      "eval_ref": "P0 rerun or retained reporting-only artifact; see P0_REPORT.md"
+    },
+    "results/exp0/PERMUTATION_NULL.md": {
+      "md5": "7fb351ca84863145658d18a2258dfa2b",
+      "eval_ref": "P0 rerun or retained reporting-only artifact; see P0_REPORT.md"
     },
     "results/exp0/ROBUSTNESS.md": {
-      "md5": "4b98c8cee50e63a31b04d379d55c18db",
-      "eval_ref": "Audit output or unchanged input; see audit report"
-    },
-    "models/model_s3.json": {
-      "md5": "f03f5e828dc683bd28c3e13849c1c1d2",
-      "eval_ref": "Audit output or unchanged input; see audit report"
+      "md5": "73d55c1cf2ede0f2c79f28d296a4cfb2",
+      "eval_ref": "P0 rerun or retained reporting-only artifact; see P0_REPORT.md"
     }
   },
+  "metric_estimator": "Expected uniform boundary ties; compatibility seed ignored",
   "audit_source_sha256": {
-    "analysis\\exp0_artifact_checks.py": "109088d2dd75eaa5a91e59c3d2a1e254c522e11fc9fe18d25c21285266727867",
-    "analysis\\exp0_audit_ledger.py": "8a33c545906448436589baf638d88a049635e072ed890da06eddcf6b1572f9f5",
-    "analysis\\exp0_audit_report.py": "8b2afdbf8fd1b9d13d57f10d1b295dc916556f4a12a6bbbd14909b246f2ebfd0",
-    "analysis\\exp0_bootstrap_diag.py": "bf489965b90e72d48408013227702ac32bb3203a8d757daedd8e64f109ae73f7",
-    "analysis\\exp0_event_order.py": "357b322b7b2fbfd9533bb59b236a54f721640622a7a9ddbdc9ff4d4e2a2d0dbd",
-    "analysis\\exp0_family_comparison.py": "51ecf0e540c9654130370060179e89f4d9520e28744fff5a3818e06f6d5fe286",
-    "analysis\\exp0_robustness.py": "5e841f3fa90a3a620db181524bc4734fa9c25df089b00b02fa88ad6d445c7160",
-    "analysis\\exp0_rules.py": "60dcee8600e3ee9abc9bb728890eb592c5962f06c28144554e961859607e58f2",
-    "analysis\\exp0_splits.py": "36addcbf3aaa977b4b8a00a13621996456d87a6260f82413a813ae63238e2b59",
-    "analysis\\exp0_train.py": "621fe6c5778ea129b042d593201c47d8e6391d3c8dbaf168a4f24c6868afaf17"
+    "analysis/check_docs.py": "55721bb0a7e56e47fbc763008846c72266cf9ec2d43c01ce6847938948d8a876",
+    "analysis/cost_model.py": "82dd14e4aa4228e932ba65b1c5c2027df71b0f0856e31dcf323f54fef307834c",
+    "analysis/event_prefix_study.py": "ca9597993dec047c31d44133b2f0d4fb96e29e5775ee8078faf834fa1f091897",
+    "analysis/exp0_artifact_checks.py": "8040a10e6ab547d9ab9cdada9efd1b11d80e644d32b30a338dacfdf696a987a9",
+    "analysis/exp0_audit_ledger.py": "8a33c545906448436589baf638d88a049635e072ed890da06eddcf6b1572f9f5",
+    "analysis/exp0_audit_report.py": "8b2afdbf8fd1b9d13d57f10d1b295dc916556f4a12a6bbbd14909b246f2ebfd0",
+    "analysis/exp0_bootstrap_diag.py": "1d2b25e4242c124efba9f6458614135d94db2f411d15ad8fb2ca6bb6064e7793",
+    "analysis/exp0_event_order.py": "357b322b7b2fbfd9533bb59b236a54f721640622a7a9ddbdc9ff4d4e2a2d0dbd",
+    "analysis/exp0_family_comparison.py": "51ecf0e540c9654130370060179e89f4d9520e28744fff5a3818e06f6d5fe286",
+    "analysis/exp0_permutation_null.py": "023bf37af0166132c48caeb72ab17a96b7b857c5d22ba8abafa05ad06bde46d8",
+    "analysis/exp0_robustness.py": "25dad0494a1770ced9b7f62b1ee63aead8337b4cacccf49ca74b8a6f4c0660c9",
+    "analysis/exp0_rules.py": "61814bdc435c4e125f8fc008468ed37ead2ae06a02682b330d71fefba11fab88",
+    "analysis/exp0_splits.py": "36addcbf3aaa977b4b8a00a13621996456d87a6260f82413a813ae63238e2b59",
+    "analysis/exp0_train.py": "9c415d27ddab62284ac537fac85f254414f16a30828531b3c1008fc292a3f79b",
+    "analysis/export_s3_model.py": "fe11219a01ff30364b999c3846f24592d06896d842099d6ae8dce3f90c49872b",
+    "analysis/measure_cost.py": "92c21b94a7f7219a0adb3aa0ceb98cb69e6a7306a2ac3971a400adf9e0ab6290",
+    "analysis/metric_audit.py": "fd42d9fca3acaab087e8d9f655c04fda9ef8104cc6714d22aae4978b9c296a52",
+    "analysis/natural_experiment.py": "0e62777431de9902b1ae3d88691ebfccb245b71bd516da54a3b54caf4d614233",
+    "analysis/p0_report.py": "ebac126d94022466f3e65fdfd57bc7026a506696f0504f0891dd5e0a1b57388f",
+    "analysis/progress_accounting.py": "8b2b659c35af272890245ef5208f6fbee9a1c8642f9fdc8546fd319d5576eef3",
+    "analysis/render_status.py": "f7d7fa6a90d6dc58c14d499b692c1e808fc095033eb2b4d4a6cf491363b6e3a5",
+    "analysis/s3_base_rates.py": "cae74c616278f57cd3fddec034bc1e841dbf1b52f3fe5a3212f649e980b99345",
+    "analysis/s3_event_sample.py": "fd54d8b7e18395c2c793552b55f98feb409f6916658c163af045388a20f693bc",
+    "analysis/simulate_arms.py": "aff9d577f1cce6b4a098be063dae9a149bbd18f539bf90971899c4608de18d32",
+    "analysis/task_checks.py": "a0b64dfc73297890bab00f2527b142497138def9c60526214ffd190be1d9bcf7",
+    "analysis/verify_download.py": "5fc0a14b3865c70a48ed44951cf065f4ebe8c40bf88ac34cf95188f296b5e32f"
   }
 }
