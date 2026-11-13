@@ -10,7 +10,8 @@
     "validation_scores": {
       "R0_random": 0.0975,
       "R5_rarity": 0.0721
-    }
+    },
+    "proxy_notice": "R5_rarity: PROXY (aggregate counter, not version string); R3 not stage-valid; hassh rarity not evaluated"
   },
   "S2": {
     "valid_rules": [
@@ -29,7 +30,8 @@
       "R5_rarity": 0.0997,
       "R6_failed_logins": 0.2966,
       "R7_decision_tree": 0.8382
-    }
+    },
+    "proxy_notice": "R5_rarity: PROXY (aggregate counter, not version string); R3 not stage-valid; hassh rarity not evaluated"
   },
   "S3": {
     "valid_rules": [
@@ -50,7 +52,8 @@
       "R5_rarity": 0.0976,
       "R6_failed_logins": 0.3338,
       "R7_decision_tree": 0.332
-    }
+    },
+    "proxy_notice": "R5_rarity: PROXY (aggregate counter, not version string); R3 not stage-valid; hassh rarity not evaluated"
   },
   "S4": {
     "valid_rules": [],

@@ -1,10 +1,13 @@
 # Experiment 0 Result: Gate 0 Evaluation Report
 
-**Date**: 2026-11-12  
+**Date**: 2026-11-13  
 **Outcome**: `PASS-ML`  
 **Status Description**: ML adds significant early triage signal before any command (Stages: S3).  
 
 ---
+
+R5_rarity (and R3_interactive where present): PROXY (aggregate counter, not version string). Version-string and hassh rarity were not evaluated.
+This aggregate-only result follows analysis changes made with test results visible; present it as exploratory-confirmatory. See ROBUSTNESS.md for reporting-only diagnostics.
 
 ## 1. Executive Summary
 

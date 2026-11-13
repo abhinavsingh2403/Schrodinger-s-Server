@@ -15,6 +15,7 @@ from __future__ import annotations
 import argparse
 from collections import Counter, defaultdict
 import csv
+from datetime import datetime, timezone
 import hashlib
 import importlib.metadata
 import json
@@ -1047,12 +1048,13 @@ def write_table_csv(output_path: Path, rows: List[Dict[str, Any]]) -> None:
         "ci_upper",
         "bonferroni_alpha",
         "min_size_met",
+        "proxy_notice",
     ]
     with open(output_path, "w", newline="", encoding="utf-8") as f:
         writer = csv.DictWriter(f, fieldnames=fieldnames)
         writer.writeheader()
         for r in rows:
-            writer.writerow(r)
+            writer.writerow({**r, "proxy_notice": "R5_rarity / R3_interactive: PROXY (aggregate counter, not version string); hassh rarity not evaluated"})
     logger.info("Saved Experiment 0 results table to %s", output_path)
 
 
@@ -1061,17 +1063,21 @@ def write_exp0_result_md(
     gate0_res: Dict[str, Any],
     stage_rows: List[Dict[str, Any]],
     counts: Dict[str, Any],
+    run_timestamp: Optional[datetime] = None,
 ) -> None:
     """Writes human-readable EXP0_RESULT.md per EXPERIMENT0.md §14."""
     outcome = gate0_res.get("gate0_outcome", "UNKNOWN")
     lines = [
         "# Experiment 0 Result: Gate 0 Evaluation Report",
         "",
-        f"**Date**: 2026-11-12  ",
+        f"**Date**: {(run_timestamp or datetime.now(timezone.utc)).astimezone(timezone.utc).date().isoformat()}  ",
         f"**Outcome**: `{outcome}`  ",
         f"**Status Description**: {gate0_res.get('interpretation', '')}  ",
         "",
         "---",
+        "",
+        "R5_rarity (and R3_interactive where present): PROXY (aggregate counter, not version string). Version-string and hassh rarity were not evaluated.",
+        "This aggregate-only result follows analysis changes made with test results visible; present it as exploratory-confirmatory. See ROBUSTNESS.md for reporting-only diagnostics.",
         "",
         "## 1. Executive Summary",
         "",
@@ -1275,6 +1281,7 @@ def main() -> None:
             "best_val_recall": best_val_recall,
             "best_test_recall": best_test_recall,
             "validation_scores": val_scores,
+            "proxy_notice": "R5_rarity: PROXY (aggregate counter, not version string); R3 is not stage-valid; hassh rarity not evaluated",
         }
 
         # Candidate ML model evaluation (if --train-models is active)
