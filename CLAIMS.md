@@ -80,3 +80,19 @@ None of these may be quoted from this ledger alone:
 
 - Before citing any [S] or [U] item in a report or slide, open the source, confirm, and change its status to [V] with the date.
 - New fact? Add a row first, then use it.
+
+## Audit package-index verification
+
+Verified by the executed pip index queries recorded in results/exp0/pins_audit.json; no installation was performed.
+
+| Package version | Source | Status |
+|---|---|---|
+| duckdb 2.0.0 exists | https://pypi.org/simple/duckdb/ | [V] observed in package-index output |
+| pytest 9.2.0 exists | https://pypi.org/simple/pytest/ | [V] observed in package-index output |
+| colorama 0.4.6 exists | https://pypi.org/simple/colorama/ | [V] observed in package-index output |
+| iniconfig 2.3.1 exists | https://pypi.org/simple/iniconfig/ | [V] observed in package-index output |
+| packaging 26.3 exists | https://pypi.org/simple/packaging/ | [V] observed in package-index output |
+| pluggy 1.7.0 exists | https://pypi.org/simple/pluggy/ | [V] observed in package-index output |
+| Pygments 2.21.0 exists | https://pypi.org/simple/pygments/ | [V] observed in package-index output |
+
+Event-log ordering observations are recorded by analysis/exp0_event_order.py against the D1 archive URL above. They describe a partial sample, not verified complete event-prefix availability.

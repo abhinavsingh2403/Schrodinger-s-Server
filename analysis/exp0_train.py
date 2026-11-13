@@ -16,6 +16,7 @@ import argparse
 from collections import Counter, defaultdict
 import csv
 import hashlib
+import importlib.metadata
 import json
 import logging
 import math
@@ -975,13 +976,15 @@ def write_manifest_json(output_path: Path, counts: Dict[str, Any]) -> None:
         "git_commit": get_git_commit(),
         "python_version": sys.version.split()[0],
         "library_versions": {
-            "duckdb": getattr(duckdb, "__version__", "2.0.0"),
-            "pytest": "9.2.0",
+            "duckdb": importlib.metadata.version("duckdb"),
+            "pytest": importlib.metadata.version("pytest"),
         },
         "random_seeds": {
             "exp0_split_seed": 20261111,
             "tie_break_seed": 42,
-            "bootstrap_seed": 42,
+            "bootstrap_seed": 20261111,
+            "audit_shuffle_seed": 20261111,
+            "training_reservoir_seed": 42,
         },
         "data_inputs": {
             "session_aggregation.jsonl.gz": {

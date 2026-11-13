@@ -1,4 +1,9 @@
 duckdb==2.0.0
 pytest==9.2.0
-numpy==1.26.4
-scikit-learn==1.4.2
+# The manifest-matching Experiment 0 environment uses the pure-Python fallback.
+# Installing scikit-learn changes the candidate implementation and is not a replay.
+colorama==0.4.6
+iniconfig==2.3.1
+packaging==26.3
+pluggy==1.7.0
+Pygments==2.21.0

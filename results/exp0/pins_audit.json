@@ -1,0 +1,54 @@
+{
+  "python": "3.12.10 (tags/v3.12.10:0cc8128, Apr  8 2025, 12:21:36) [MSC v.1943 64 bit (AMD64)]",
+  "packages": {
+    "duckdb": {
+      "pin": "2.0.0",
+      "installed": "2.0.0",
+      "index_exit_code": 0,
+      "pin_listed": true,
+      "source": "https://pypi.org/simple/duckdb/"
+    },
+    "pytest": {
+      "pin": "9.2.0",
+      "installed": "9.2.0",
+      "index_exit_code": 0,
+      "pin_listed": true,
+      "source": "https://pypi.org/simple/pytest/"
+    },
+    "colorama": {
+      "pin": "0.4.6",
+      "installed": "0.4.6",
+      "index_exit_code": 0,
+      "pin_listed": true,
+      "source": "https://pypi.org/simple/colorama/"
+    },
+    "iniconfig": {
+      "pin": "2.3.1",
+      "installed": "2.3.1",
+      "index_exit_code": 0,
+      "pin_listed": true,
+      "source": "https://pypi.org/simple/iniconfig/"
+    },
+    "packaging": {
+      "pin": "26.3",
+      "installed": "26.3",
+      "index_exit_code": 0,
+      "pin_listed": true,
+      "source": "https://pypi.org/simple/packaging/"
+    },
+    "pluggy": {
+      "pin": "1.7.0",
+      "installed": "1.7.0",
+      "index_exit_code": 0,
+      "pin_listed": true,
+      "source": "https://pypi.org/simple/pluggy/"
+    },
+    "Pygments": {
+      "pin": "2.21.0",
+      "installed": "2.21.0",
+      "index_exit_code": 0,
+      "pin_listed": true,
+      "source": "https://pypi.org/simple/pygments/"
+    }
+  }
+}
