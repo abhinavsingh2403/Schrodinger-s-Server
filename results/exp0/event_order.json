@@ -1,0 +1,22 @@
+{
+  "sampled_day": "../logs_by_day/2025-06-27.json.gz",
+  "sample_events": 679,
+  "order": {
+    "cowrie.client.size": {
+      "before_first_command": 0,
+      "after_first_command": 0,
+      "sessions_with_command_and_feature": 0
+    },
+    "cowrie.client.var": {
+      "before_first_command": 0,
+      "after_first_command": 0,
+      "sessions_with_command_and_feature": 0
+    },
+    "cowrie.session.params": {
+      "before_first_command": 37,
+      "after_first_command": 2,
+      "sessions_with_command_and_feature": 37
+    }
+  },
+  "limitation": "Partial one-day stream; observed order is not a guarantee that whole-session counters are prefix-only. TODO(verify): complete per-session prefix comparison."
+}

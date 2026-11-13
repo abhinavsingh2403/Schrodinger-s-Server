@@ -1,0 +1,77 @@
+{
+  "seed": 20261111,
+  "model": "PurePythonLogisticRegression",
+  "checks": {
+    "refit": {
+      "dropped": [],
+      "test_recall": 0.29191321499013806
+    },
+    "shuffle": {
+      "dropped": [],
+      "test_recall": 0.6505395057431257
+    },
+    "cnt_client_size": {
+      "dropped": [
+        "cnt_client_size"
+      ],
+      "test_recall": 0.29191321499013806
+    },
+    "cnt_client_var": {
+      "dropped": [
+        "cnt_client_var"
+      ],
+      "test_recall": 0.29191321499013806
+    },
+    "cnt_session_params": {
+      "dropped": [
+        "cnt_session_params"
+      ],
+      "test_recall": 0.10256410256410256
+    },
+    "all_three": {
+      "dropped": [
+        "cnt_client_size",
+        "cnt_client_var",
+        "cnt_session_params"
+      ],
+      "test_recall": 0.10175194338090265
+    }
+  },
+  "event_order": "See event_order.json for the separately executed bounded single-day range check; aggregate prefix validity remains unverified.",
+  "scope": "Same saved-model hyperparameters and official training-sample loader. Reporting only; no model selection on test.",
+  "shuffle_interpretation": "A shuffled-label recall far from the budget is a diagnostic signal, not proof of leakage; inspect finite-sample ties and distribution shift.",
+  "component_gain": {
+    "commands": {
+      "positives": 88,
+      "share_of_positives": 0.010210001160227404,
+      "ml_captured": 5,
+      "rule_captured": 84,
+      "ml_recall": 0.056818181818181816,
+      "delta_contribution_to_overall_recall": -0.009165796496113238
+    },
+    "commands+transfer": {
+      "positives": 1027,
+      "share_of_positives": 0.1191553544494721,
+      "ml_captured": 991,
+      "rule_captured": 141,
+      "ml_recall": 0.9649464459591042,
+      "delta_contribution_to_overall_recall": 0.09861932938856016
+    },
+    "direct-tcpip": {
+      "positives": 5759,
+      "share_of_positives": 0.6681749622926093,
+      "ml_captured": 0,
+      "rule_captured": 600,
+      "ml_recall": 0.0,
+      "delta_contribution_to_overall_recall": -0.06961364427427776
+    },
+    "transfer": {
+      "positives": 1745,
+      "share_of_positives": 0.20245968209769113,
+      "ml_captured": 1520,
+      "rule_captured": 167,
+      "ml_recall": 0.8710601719197708,
+      "delta_contribution_to_overall_recall": 0.15697876783849635
+    }
+  }
+}
