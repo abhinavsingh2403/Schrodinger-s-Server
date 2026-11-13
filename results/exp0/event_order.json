@@ -18,5 +18,5 @@
       "sessions_with_command_and_feature": 37
     }
   },
-  "limitation": "Partial one-day stream; observed order is not a guarantee that whole-session counters are prefix-only. TODO(verify): complete per-session prefix comparison."
+  "limitation": "Partial one-day stream; ordering is stored log order, not independently timestamp-validated chronology. It is not a guarantee that whole-session counters are prefix-only. TODO(verify): complete per-session prefix comparison."
 }

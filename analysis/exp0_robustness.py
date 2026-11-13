@@ -1,7 +1,7 @@
-"""Audit saved S3 model identity before attributing robustness to the official run.
+"""Reproduce saved S3 model recall before interpreting reporting-only robustness.
 
 Uses saved splits and model without changing the official experiment artifacts.
-Stops inference about the official model when its identity cannot be reproduced.
+Matching recall is not a claim of identical original model weights.
 """
 from pathlib import Path
 import csv
@@ -53,7 +53,7 @@ def main():
         row['delta_exported_ml'] = out['ml']['test'] - row['test']
         row['generalisation_gap'] = row['test'] - row['val']
     out['ml']['difference_from_official'] = out['ml']['test'] - float(official['ml_test_recall'])
-    out['identity_verified'] = abs(out['ml']['difference_from_official']) <= 1e-4
+    out['recall_reproduced'] = abs(out['ml']['difference_from_official']) <= 1e-4
     out['verdict'] = 'TBD: bootstrap comparisons pending'
     out['limitations'] = [
         'Saved export reproduces official S3 recall within acceptance tolerance; this does not prove identical fitted weights.',
@@ -117,6 +117,11 @@ def render():
     """Regenerate the report from measurements, without copying numeric claims by hand."""
     root = Path('results/exp0')
     out = json.loads((root / 'robustness.json').read_text())
+    out['official_row'] = next(r for r in csv.DictReader((root / 'table.csv').open()) if r['stage'] == 'S3')
+    out['ml']['generalisation_gap'] = out['ml']['test'] - out['ml']['val']
+    out.pop('identity_verified', None)
+    out['recall_reproduced'] = abs(out['ml']['difference_from_official']) <= 1e-4
+    (root / 'robustness.json').write_text(json.dumps(out, indent=2) + '\n')
     lines = ['# S3 robustness audit (reporting only)', '',
              'Test-selected baseline sensitivity: **' + out['verdict'] + '**.', '',
              'Saved export reproduces the official S3 point recall after stage filtering. Official outcome is unchanged.', '',
@@ -131,7 +136,29 @@ def render():
               'The stored winning C is the lowest declared grid value; no grid expansion was performed.', '',
               'Component capture:', '```json', json.dumps(out.get('component_recall', {}), indent=2), '```', '',
               'Captured positives are overwhelmingly transfer-labelled; this does not establish interactive-attacker prediction.']
-    for filename, title in [('artifact_checks.json', 'Leakage and ablations'), ('bootstrap_diagnostics.json', 'Bootstrap diagnostics')]:
+    diag_path = root / 'bootstrap_diagnostics.json'
+    if diag_path.exists():
+        diag = json.loads(diag_path.read_text())
+        largest = diag['stages']['S3']['concentration']['top_one_percent']
+        lines += ['', '## Bootstrap interpretation', '',
+                  'There was a reproducibility bug: unordered cluster iteration made fixed-seed draws change between processes. Sorting cluster IDs fixes it; the wide S3 interval remains.',
+                  f"At S3, the largest {largest['clusters']} clusters contain {largest['session_share']:.2%} of sessions and {largest['positive_share']:.2%} of positives. Drawing these clusters repeatedly or omitting them substantially changes both the available budget and the positive denominator. This concentration explains why the distribution is broad and asymmetric.",
+                  'S2 has exact equal-recall draws, so its upper endpoint can be zero without identical score vectors.', '',
+                  '| Stage | Full CI | Excluding largest clusters CI | Weight cap | Capped CI | Median delta | Draws below zero | Above 0.3 | Above 0.5 | Exact zero |',
+                  '|---|---|---|---:|---|---:|---:|---:|---:|---:|']
+        for stage, row in diag['stages'].items():
+            full = row['full']
+            lines.append(f"| {stage} | {full['ci']} | {row['exclude_top_one_percent']['ci']} | {row['weight_cap']} | {row['capped']['ci']} | {full['median']:.8f} | {full['below_zero']} | {full['above_point_three']} | {full['above_point_five']} | {full['exact_zero']} |")
+        lines += ['', 'Weight caps use the nearest-rank percentile of cluster size; each cluster contribution is scaled proportionally. These sensitivities change the population weighting and are not alternate official outcomes.',
+                  diag['method_caveat']]
+    check_path = root / 'artifact_checks.json'
+    if check_path.exists():
+        checks = json.loads(check_path.read_text())
+        lines += ['', '## Artifact interpretation', '',
+                  f"The shuffled-label model has recall {checks['checks']['shuffle']['test_recall']:.8f}, which fails the requested near-budget sanity check. This is a leakage/bug signal requiring investigation; it is not sufficient by itself to identify its cause.",
+                  f"Removing session parameters reduces recall to {checks['checks']['cnt_session_params']['test_recall']:.8f}. The sampled log contains parameter events after commands; whole-session counters therefore cannot be assumed to represent only a pre-command prefix.",
+                  'The positive gain comes from transfer-only sessions and command/transfer overlaps. Performance is worse than the baseline on command-only and direct-tcpip-only positives.']
+    for filename, title in [('artifact_checks.json', 'Leakage and ablations'), ('event_order.json', 'Observed event order'), ('bootstrap_diagnostics.json', 'Bootstrap diagnostics'), ('family_comparison.json', 'Candidate family comparison')]:
         if (root / filename).exists():
             lines += ['', '## ' + title, '', '```json', (root / filename).read_text().strip(), '```']
     (root / 'ROBUSTNESS.md').write_text('\n'.join(lines) + '\n', encoding='utf-8')
