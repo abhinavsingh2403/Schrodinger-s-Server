@@ -122,3 +122,13 @@ def test_policy_budget_ceiling_enforcement() -> None:
     tier = policy.decide_tier(current_tier="T1", model_score=0.60)
     assert tier == "T1"
 ```
+
+---
+
+### QUESTIONS
+
+- **Docker Compose Networking Suspicion (G8 - Verified via Docker Documentation & Networking Spec)**:
+  - In `infra/docker-compose.yml`, `internal_honeypot_net` is declared with `internal: true` while `sensor` publishes port `127.0.0.1:2222:2222`.
+  - *Doubt*: Per Docker documentation on `--internal` bridge networks, Docker does not configure a default gateway on internal bridges, preventing any container from communicating outside the bridge. While host DNAT routes incoming packets into the container, return TCP packets to the host interface may be dropped by the kernel when routing tables lack a gateway.
+  - *Recommendation for Human Review*: Verify on the target Linux machine whether bidirectional SSH traffic succeeds over `127.0.0.1:2222` with `internal: true`. If TCP resets occur, consider dual-homing the `sensor` (one ingress bridge for the published SSH port, and an internal bridge for unrouted Gatekeeper communication).
+

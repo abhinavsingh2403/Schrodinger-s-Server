@@ -60,3 +60,34 @@ def test_docker_compose_structure():
 
     # Must specify internal network bridge with isolation
     assert "networks:" in content
+    assert "internal_honeypot_net" in content
+
+
+def test_smoke_test_scripts_exist_and_validate():
+    """Verify G8: smoke_test.ps1, smoke_test.sh, and parse_compose.py exist and pass static check."""
+    from infra.parse_compose import inspect_compose
+    from io import StringIO
+    import sys
+
+    ps1_path = INFRA_DIR / "smoke_test.ps1"
+    sh_path = INFRA_DIR / "smoke_test.sh"
+    parser_path = INFRA_DIR / "parse_compose.py"
+
+    assert ps1_path.exists()
+    assert sh_path.exists()
+    assert parser_path.exists()
+
+    # Capture parser output on current docker-compose.yml
+    stdout_buf = StringIO()
+    old_stdout = sys.stdout
+    try:
+        sys.stdout = stdout_buf
+        inspect_compose(INFRA_DIR / "docker-compose.yml")
+    finally:
+        sys.stdout = old_stdout
+
+    out = stdout_buf.getvalue()
+    assert "INTERNAL_NETWORK:True" in out
+    assert "0.0.0.0" not in out
+    assert "PORT:sensor:127.0.0.1:2222:2222" in out
+
