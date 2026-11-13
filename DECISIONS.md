@@ -219,3 +219,160 @@ All non-trivial design decisions, architectural choices, and departures from pla
      - Pure ML inference latency: **p50 = 1.60 microseconds** (600,000+ predictions/second).
      - End-to-end Gatekeeper pipeline (HMAC ID derivation + SQLite WAL visitor memory + ML scoring + Policy + WAL decision log): **p50 = 1.09 ms, p95 = 1.47 ms, p99 = 1.84 ms**.
 - **Consequences**: Test suite expanded to 102 passing unit tests (1 skipped). Updated `analysis/exp0_rules.py`, `analysis/export_s3_model.py`, `models/model_s3.json`, `gatekeeper/decision_api.py`, `gatekeeper/feature_extractor.py`, `gatekeeper/test_model_inference_parity.py`, `dashboard/app.py`, and `results/MANIFEST.json`.
+
+### 2026-11-13: Reproducible pre-registration audit ledger
+
+Decision: present S3 as exploratory-confirmatory, not a clean pre-registered confirmation.
+Reason: test results were visible before later feature, rule and bootstrap changes.
+Alternative rejected: treating later tags as proof of prospective registration.
+
+Annotated tag creation timestamps and target commits (from Git objects):
+
+- exp0-v1 | 2026-11-11T19:39:14+05:30 | bae4e273d948c3f15eca4149b54e3470cf9d6eef
+- eval-v1 | 2026-11-11T19:39:14+05:30 | bae4e273d948c3f15eca4149b54e3470cf9d6eef
+- exp0-v2 | 2026-11-12T00:57:21+05:30 | 424572e73c99b44ad854cdaca245af80bb4b31ac
+- eval-v2 | 2026-11-12T00:57:21+05:30 | 424572e73c99b44ad854cdaca245af80bb4b31ac
+
+**8127854 2026-11-11T18:35:40+05:30 Initial commit: project documentation, specifications, and safety guidelines**
+
+No committed table yet.
+
+**ae7b342 2026-11-11T18:44:07+05:30 G1: create repo skeleton, data registry, decisions log, and requirements**
+
+No committed table yet.
+
+**2685e45 2026-11-11T18:48:06+05:30 G2: add chunked streaming MD5 verification script and tests**
+
+No committed table yet.
+
+**3c92d32 2026-11-11T18:53:28+05:30 G3: implement s3_base_rates.py pipeline, schema checks, and unit tests**
+
+No committed table yet.
+
+**90eaacc 2026-11-11T19:08:49+05:30 G3: generate base rates on 38M sessions, update spike results, and prep O1 handoff**
+
+No committed table yet.
+
+**b019e71 2026-11-11T19:16:24+05:30 O1: Opus read-only review of G3, all checks passed**
+
+No committed table yet.
+
+**bae4e27 2026-11-11T19:36:33+05:30 O2: Spike S1 Cowrie per-session persona investigation and verified PoC (Plan A accepted)**
+
+No committed table yet.
+
+**5ec76f9 2026-11-11T19:40:27+05:30 docs: comprehensive README overhaul with ground truth data, verified milestones, roadmap and progress metrics**
+
+No committed table yet.
+
+**fce2995 2026-11-11T19:44:42+05:30 docs: add comprehensive academic and technical references section to README per CLAIMS.md**
+
+No committed table yet.
+
+**dd394ce 2026-11-11T22:50:58+05:30 feat: complete Experiment 0 pipeline, baseline rules, gatekeeper visitor memory, policy, and feature extractor**
+
+No committed table yet.
+
+**87b91af 2026-11-11T23:06:11+05:30 docs: update DECISIONS.md and HANDOFF.md with all completed engineering subsystems**
+
+No committed table yet.
+
+**c2f417e 2026-11-11T23:44:14+05:30 docs: record arm simulation and natural experiment decisions and handoff update**
+
+No committed table yet.
+
+**9881fbf 2026-11-12T00:05:55+05:30 fix: address peer-review flaws, complete S3 part 2, fix exp0 harness, and ground all claims**
+
+No committed table yet.
+
+**424572e 2026-11-12T00:56:40+05:30 fix(exp0): complete baseline rule harness, prefix exclusions, and multiplicity bootstrap**
+
+Historical values copied by this script; not independently rerun:
+
+| Stage | Rule | Rule test | ML | ML test | Delta | CI |
+|---|---|---:|---|---:|---:|---|
+| S1 | R0_random | 0.0676 | TBD (Pending ML Training) |  | TBD | [TBD, TBD] |
+| S2 | R1_login_success | 1.0 | TBD (Pending ML Training) |  | TBD | [TBD, TBD] |
+| S3 | R6_failed_logins | 0.1111 | TBD (Pending ML Training) |  | TBD | [TBD, TBD] |
+
+**1ffe554 2026-11-12T21:56:33+05:30 Train ML model**
+
+Historical values copied by this script; not independently rerun:
+
+| Stage | Rule | Rule test | ML | ML test | Delta | CI |
+|---|---|---:|---|---:|---:|---|
+| S1 | R0_random | 0.0937 | LogisticRegression(C=0.1) | 0.6247 | 0.5309 | [0.3372, 0.913] |
+| S2 | R7_decision_tree | 0.4666 | LogisticRegression(C=0.01) | 0.6077 | 0.5059 | [0.3108, 0.9064] |
+| S3 | R6_failed_logins | 0.121 | HistGradientBoosting(lr=0.05,iter=100) | 0.3243 | 0.2225 | [0.0246, 0.7269] |
+
+**2084d58 2026-11-12T23:25:44+05:30 fix: remediate peer-review flaws, eliminate feature leakage, and ground policy thresholds**
+
+Exact chosen-rule scoring and bootstrap empty-draw guards added; duration removed, but the new S1 feature list still included post-authentication size/var counters.
+Historical values copied by this script; not independently rerun:
+
+| Stage | Rule | Rule test | ML | ML test | Delta | CI |
+|---|---|---:|---|---:|---:|---|
+| S1 | R0_random | 0.0937 | LogisticRegression(C=0.1) | 0.6247 | 0.531 | [0.3372, 0.913] |
+| S2 | R7_decision_tree | 0.4666 | LogisticRegression(C=0.01) | 0.6077 | 0.1411 | [0.1042, 0.1855] |
+| S3 | R6_failed_logins | 0.121 | HistGradientBoosting(lr=0.05,iter=100) | 0.3243 | 0.2033 | [0.0246, 0.285] |
+
+**208f780 2026-11-13T00:15:30+05:30 fix(exp0): eliminate stage feature leakage and implement deterministic tie-breaking and candidate model**
+
+Stage allowlists and stage-specific rule inputs introduced; fixed random tie-breaking and custom logistic-regression fallback added; training changed to a seeded reservoir sample; aggregate S4/S5 disabled.
+Committed stage rows unchanged; inspect source diff for implementation changes.
+
+**72b9f12 2026-11-13T00:15:38+05:30 feat(results): regenerate Gate 0 artifacts and record honest FAIL decision**
+
+Reports regenerated after the preceding code change; compare the stage rows below with the preceding committed table.
+Historical values copied by this script; not independently rerun:
+
+| Stage | Rule | Rule test | ML | ML test | Delta | CI |
+|---|---|---:|---|---:|---:|---|
+| S1 | R0_random | 0.097 | LogisticRegression(C=0.01) | 0.0572 | -0.0398 | [-0.0551, -0.0315] |
+| S2 | R7_decision_tree | 0.5632 | LogisticRegression(C=0.01) | 0.5497 | -0.0135 | [-0.0443, -0.0036] |
+| S3 | R6_failed_logins | 0.1151 | LogisticRegression(C=0.01) | 0.2919 | 0.1768 | [-0.0024, 0.6052] |
+
+**b990fc9 2026-11-13T00:15:51+05:30 docs(handoff): update handoff ledger with viva statement and honest accounting**
+
+Committed stage rows unchanged; inspect source diff for implementation changes.
+
+**c20dbd6 2026-11-13T00:27:51+05:30 docs(readme): update completion metrics, Gate 0 verdict, and unvarnished remaining tasks**
+
+Committed stage rows unchanged; inspect source diff for implementation changes.
+
+**4819ba5 2026-11-13T00:43:42+05:30 fix(recalibration): recalibrate maturity metrics to 55-60%, reconcile sensor keys, wire visitor memory, and document 6-step roadmap**
+
+Committed stage rows unchanged; inspect source diff for implementation changes.
+
+**22629af 2026-11-13T01:34:44+05:30 fix(analysis): correct paired cluster bootstrap to resample all clusters with dynamic budget cutoff**
+
+Bootstrap changed to include zero-positive clusters and recalculate the budget per draw, using fractional capture within tied score bins.
+Historical values copied by this script; not independently rerun:
+
+| Stage | Rule | Rule test | ML | ML test | Delta | CI |
+|---|---|---:|---|---:|---:|---|
+| S1 | R0_random | 0.097 | LogisticRegression(C=0.01) | 0.0572 | -0.0398 | [-0.0922, -0.0104] |
+| S2 | R7_decision_tree | 0.5632 | LogisticRegression(C=0.01) | 0.5497 | -0.0135 | [-0.0422, 0.0] |
+| S3 | R6_failed_logins | 0.1151 | LogisticRegression(C=0.01) | 0.2919 | 0.1768 | [0.0045, 0.619] |
+
+**e2a8195 2026-11-13T01:35:03+05:30 docs(audit): update progress accounting, handoff ledger, and decision log for runtime & statistical fixes**
+
+Committed stage rows unchanged; inspect source diff for implementation changes.
+
+**d099848 2026-11-13T01:56:15+05:30 feat(ml): integrate trained S3 model into gatekeeper with offline/live feature parity**
+
+Separate S3 exporter and serving integration added; exported calibration/evaluation use unfiltered sessions, unlike the official stage-filtered evaluation.
+Committed stage rows unchanged; inspect source diff for implementation changes.
+
+**a5c9092 2026-11-13T01:56:27+05:30 docs(progress): recalibrate maturity to 70% (~8.2/10) with verified live ML serving**
+
+Committed stage rows unchanged; inspect source diff for implementation changes.
+
+**85134c6 2026-11-13T02:00:50+05:30 docs(audit): update README and HANDOFF with 7.9/10 assessment and queue 4-item remediation agenda**
+
+Committed stage rows unchanged; inspect source diff for implementation changes.
+
+The first committed table already contains test-rule recalls; its commit precedes the second tag timestamps above.
+Later history changes stage allowlists, exact baseline scoring, deterministic ties, model fallback, and bootstrap cluster inclusion/budget cutoffs.
+The historical narrative claiming a different FAIL-stage point table does not match the committed table shown here; prefer Git evidence. The earlier summary before the first table has empty test-recall mappings, not measured recalls.
+Proposed tags for human review only: exp0-v3 and eval-v3. No tags created, moved, or deleted.
