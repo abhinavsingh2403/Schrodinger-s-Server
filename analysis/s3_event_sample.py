@@ -114,6 +114,7 @@ def list_zip_entries(url: str = ZENODO_DATA_ALL_URL) -> List[Dict[str, Any]]:
             "uncompressed_size": actual_u_size,
             "local_header_offset": actual_offset,
             "compression_method": comp_m,
+            "crc32": crc,
         })
         pos += 46 + fn_len + extra_len + comm_len
 
