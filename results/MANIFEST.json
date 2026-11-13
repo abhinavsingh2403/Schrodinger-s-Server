@@ -1,16 +1,24 @@
 {
   "project": "Schrodinger's Server: Adaptive SSH Honeypot Early Triage",
   "branch": "trainmodel",
-  "git_commit": "fe5e718c2e4c29a9692913ff967c43640deef092",
+  "git_commit": "455561e18f80d035061808ae400875b72adb31f7",
   "python_version": "3.12.10",
   "library_versions": {
+    "colorama": "0.4.6",
     "duckdb": "2.0.0",
+    "iniconfig": "2.3.1",
+    "packaging": "26.3",
+    "pip": "25.0.1",
+    "pluggy": "1.7.0",
+    "Pygments": "2.21.0",
     "pytest": "9.2.0"
   },
   "random_seeds": {
     "exp0_split_seed": 20261111,
     "tie_break_seed": 42,
-    "bootstrap_seed": 42
+    "bootstrap_seed": 20261111,
+    "audit_shuffle_seed": 20261111,
+    "training_reservoir_seed": 42
   },
   "data_inputs": {
     "session_aggregation.jsonl.gz": {
@@ -22,31 +30,87 @@
   "result_artifacts": {
     "results/exp0/splits.json": {
       "md5": "73babb336645549b135b6fe814f448a8",
-      "eval_ref": "EXPERIMENT0.md Section 3"
+      "eval_ref": "Audit output or unchanged input; see audit report"
     },
     "results/exp0/grid.json": {
       "md5": "3cc732d1c5c8a22214001b388024b6df",
-      "eval_ref": "EXPERIMENT0.md Section 6"
+      "eval_ref": "Audit output or unchanged input; see audit report"
     },
     "results/exp0/rules.json": {
-      "md5": "8daf5e2c97a2be216d503a2e3ba3f262",
-      "eval_ref": "EXPERIMENT0.md Section 7"
+      "md5": "8af3af27c7de6b16f08044c33207e2a9",
+      "eval_ref": "Audit output or unchanged input; see audit report"
     },
     "results/exp0/rules_summary.json": {
-      "md5": "b2d343ab714709719e9964fb18bb9004",
-      "eval_ref": "EXPERIMENT0.md Section 14"
+      "md5": "47967765357569f26b0cf2834d00203f",
+      "eval_ref": "Audit output or unchanged input; see audit report"
     },
     "results/exp0/table.csv": {
-      "md5": "d6e630e214e1556d455c3a4ee18e8156",
+      "md5": "fb19fd155d563e63cdd2fa08abc7c898",
       "eval_ref": "EXPERIMENT0.md Section 14"
     },
     "results/exp0/EXP0_RESULT.md": {
-      "md5": "b89ae8f5a475455ddab3657aef318704",
+      "md5": "f6a1234215745e55ec4d22620876b9b3",
       "eval_ref": "EXPERIMENT0.md Section 14"
     },
     "EXP0_RESULT.md": {
-      "md5": "b89ae8f5a475455ddab3657aef318704",
+      "md5": "f6a1234215745e55ec4d22620876b9b3",
       "eval_ref": "AGENTS.md Root Mirror"
+    },
+    "results/exp0/artifact_checks.json": {
+      "md5": "3634e95bad753d3561ce0da1fcaf6314",
+      "eval_ref": "Audit output or unchanged input; see audit report"
+    },
+    "results/exp0/audit_tests.json": {
+      "md5": "1ffb7cd64ed089dee8187e18a7240f50",
+      "eval_ref": "Audit output or unchanged input; see audit report"
+    },
+    "results/exp0/bootstrap_diagnostics.json": {
+      "md5": "1f20828a8e78da94a638298d877a83a9",
+      "eval_ref": "Audit output or unchanged input; see audit report"
+    },
+    "results/exp0/event_order.json": {
+      "md5": "bbc65116d665083b3c8c6034c2010b12",
+      "eval_ref": "Audit output or unchanged input; see audit report"
+    },
+    "results/exp0/family_comparison.json": {
+      "md5": "3c8caa9a519be0c8f01821e5067a959f",
+      "eval_ref": "Audit output or unchanged input; see audit report"
+    },
+    "results/exp0/model_s3.json": {
+      "md5": "f03f5e828dc683bd28c3e13849c1c1d2",
+      "eval_ref": "Audit output or unchanged input; see audit report"
+    },
+    "results/exp0/pins_audit.json": {
+      "md5": "b08c4fec7a033bd8ab385737a8328e05",
+      "eval_ref": "Audit output or unchanged input; see audit report"
+    },
+    "results/exp0/progress.json": {
+      "md5": "77f467005e091d947abc380f3dd0ff35",
+      "eval_ref": "Audit output or unchanged input; see audit report"
+    },
+    "results/exp0/robustness.json": {
+      "md5": "3f9401f74008f13b42d12d47f9ee99e4",
+      "eval_ref": "Audit output or unchanged input; see audit report"
+    },
+    "results/exp0/ROBUSTNESS.md": {
+      "md5": "4b98c8cee50e63a31b04d379d55c18db",
+      "eval_ref": "Audit output or unchanged input; see audit report"
+    },
+    "models/model_s3.json": {
+      "md5": "f03f5e828dc683bd28c3e13849c1c1d2",
+      "eval_ref": "Audit output or unchanged input; see audit report"
     }
+  },
+  "audit_source_sha256": {
+    "analysis\\exp0_artifact_checks.py": "109088d2dd75eaa5a91e59c3d2a1e254c522e11fc9fe18d25c21285266727867",
+    "analysis\\exp0_audit_ledger.py": "8a33c545906448436589baf638d88a049635e072ed890da06eddcf6b1572f9f5",
+    "analysis\\exp0_audit_report.py": "8b2afdbf8fd1b9d13d57f10d1b295dc916556f4a12a6bbbd14909b246f2ebfd0",
+    "analysis\\exp0_bootstrap_diag.py": "bf489965b90e72d48408013227702ac32bb3203a8d757daedd8e64f109ae73f7",
+    "analysis\\exp0_event_order.py": "357b322b7b2fbfd9533bb59b236a54f721640622a7a9ddbdc9ff4d4e2a2d0dbd",
+    "analysis\\exp0_family_comparison.py": "51ecf0e540c9654130370060179e89f4d9520e28744fff5a3818e06f6d5fe286",
+    "analysis\\exp0_robustness.py": "5e841f3fa90a3a620db181524bc4734fa9c25df089b00b02fa88ad6d445c7160",
+    "analysis\\exp0_rules.py": "60dcee8600e3ee9abc9bb728890eb592c5962f06c28144554e961859607e58f2",
+    "analysis\\exp0_splits.py": "36addcbf3aaa977b4b8a00a13621996456d87a6260f82413a813ae63238e2b59",
+    "analysis\\exp0_train.py": "621fe6c5778ea129b042d593201c47d8e6391d3c8dbaf168a4f24c6868afaf17"
   }
 }
