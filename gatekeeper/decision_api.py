@@ -27,6 +27,7 @@ from datetime import datetime, timezone
 from typing import Any
 
 from gatekeeper.feature_extractor import SessionFeatureExtractor
+from gatekeeper.features import stage_vector, STAGE_ALLOWED_FEATURES
 from gatekeeper.policy import EscalationPolicy
 from gatekeeper.visitor_memory import VisitorMemory, derive_visitor_id, get_masked_id
 
@@ -163,7 +164,7 @@ class DecisionEngine:
                     "cnt_session_params",
                 ])
                 aliases = self.model_metadata.get("feature_aliases", {})
-                row = []
+                normalized = {}
                 for fname in feature_names:
                     val = None
                     if fname in features:
@@ -177,7 +178,10 @@ class DecisionEngine:
                         f_val = float(val) if val is not None else 0.0
                     except (ValueError, TypeError):
                         f_val = 0.0
-                    row.append(f_val)
+                    normalized[fname] = f_val
+                if feature_names != STAGE_ALLOWED_FEATURES['S3']:
+                    raise ValueError('Saved model feature schema does not match canonical S3')
+                row = stage_vector('S3', normalized)
 
                 if hasattr(self.model, "predict_proba_single"):
                     score = self.model.predict_proba_single(row)

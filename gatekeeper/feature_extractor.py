@@ -12,6 +12,7 @@ from __future__ import annotations
 
 import re
 from typing import Any
+from gatekeeper.features import EVENT_COUNTERS, stage_counters
 
 
 class SessionFeatureExtractor:
@@ -43,13 +44,14 @@ class SessionFeatureExtractor:
         self.ts_login: str | None = None
         self.ts_cmd1: str | None = None
         # Aggregate event counters for offline/live parity (STAGE_ALLOWED_FEATURES)
-        self.cnt_session_connect: int = 1
+        self.cnt_session_connect: int = 0
         self.cnt_client_version: int = 0
         self.cnt_client_kex: int = 0
         self.cnt_client_fingerprint: int = 0
         self.cnt_client_size: int = 0
         self.cnt_client_var: int = 0
         self.cnt_session_params: int = 0
+        self.counters = {name: 0 for name in EVENT_COUNTERS.values()}
 
     @staticmethod
     def _to_list(val: Any) -> list[str]:
@@ -65,6 +67,8 @@ class SessionFeatureExtractor:
         Handles live events and raw data_all.zip flat records.
         """
         event_id = str(event.get("eventid", "") or "")
+        if event_id in EVENT_COUNTERS:
+            self.counters[EVENT_COUNTERS[event_id]] += 1
 
         # Top-level field ingestion (data_all flat schema compatibility)
         if event.get("version"):
@@ -168,10 +172,7 @@ class SessionFeatureExtractor:
             "s1_mac_count": len(self.macs),
             "s1_comp_count": len(self.compressions),
             # Model & dataset aggregate feature parity (STAGE_ALLOWED_FEATURES)
-            "cnt_session_connect": max(1, self.cnt_session_connect),
-            "cnt_client_version": max(1 if self.client_version else 0, self.cnt_client_version),
-            "cnt_client_kex": max(1 if self.kex_algs else 0, self.cnt_client_kex),
-            "cnt_client_fingerprint": max(1 if self.hassh else 0, self.cnt_client_fingerprint),
+            **stage_counters('S1', self.counters),
         }
         if stage == "S1":
             return feats
@@ -181,8 +182,7 @@ class SessionFeatureExtractor:
             "s2_auth_attempts": self.auth_attempts,
             "s2_failed_logins": self.failed_logins,
             "s2_has_success": 1 if self.auth_success else 0,
-            "cnt_login_failed": self.failed_logins,
-            "cnt_login_success": 1 if self.auth_success else 0,
+            **stage_counters('S2', self.counters),
         })
         if stage == "S2":
             return feats
@@ -193,9 +193,7 @@ class SessionFeatureExtractor:
             "s3_term_width": self.term_width,
             "s3_term_height": self.term_height,
             "s3_is_exec": 1 if self.is_exec else 0,
-            "cnt_client_size": max(1 if self.has_pty else 0, self.cnt_client_size),
-            "cnt_client_var": self.cnt_client_var,
-            "cnt_session_params": self.cnt_session_params,
+            **stage_counters('S3', self.counters),
             "has_pty": 1 if self.has_pty else 0,
         })
         if stage == "S3":

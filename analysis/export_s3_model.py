@@ -18,6 +18,7 @@ if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
 from analysis.exp0_rules import PurePythonLogisticRegression, recall_at_budget
+from gatekeeper.features import stage_vector
 from analysis.exp0_train import STAGE_ALLOWED_FEATURES, load_parquet_as_dict_records
 
 
@@ -35,7 +36,7 @@ def export_s3_model() -> Path:
     print(f"Stage S3 features ({len(features)}): {features}")
 
     def get_features(records):
-        X = [[float(r.get(f, 0) or 0) for f in features] for r in records]
+        X = [stage_vector("S3", r) for r in records]
         y = [int(r.get("v_full", 0)) for r in records]
         return X, y
 

@@ -52,33 +52,7 @@ from analysis.exp0_rules import (
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 logger = logging.getLogger(__name__)
 
-# Single source of truth for allowed aggregate features per stage
-# Duration, commands, file transfers, and port forward events are strictly banned
-STAGE_ALLOWED_FEATURES: Dict[str, List[str]] = {
-    "S1": ["cnt_session_connect", "cnt_client_version", "cnt_client_kex"],
-    "S2": [
-        "cnt_session_connect",
-        "cnt_client_version",
-        "cnt_client_kex",
-        "cnt_client_fingerprint",
-        "cnt_login_failed",
-        "cnt_login_success",
-    ],
-    "S3": [
-        "cnt_session_connect",
-        "cnt_client_version",
-        "cnt_client_kex",
-        "cnt_client_fingerprint",
-        "cnt_login_failed",
-        "cnt_login_success",
-        "cnt_client_size",
-        "cnt_client_var",
-        "cnt_session_params",
-    ],
-    # Stages S4 and S5 require event-level command logs and cannot be evaluated on aggregate counters
-    "S4": [],
-    "S5": [],
-}
+from gatekeeper.features import STAGE_ALLOWED_FEATURES, stage_vector
 
 # Valid baseline rules per stage per EXPERIMENT0.md §7
 # Note: On aggregate data, R5 version rarity and R3 interactive shell are proxy approximations.
@@ -813,7 +787,7 @@ def train_and_evaluate_ml_candidates(
     def get_features(records: List[Dict[str, Any]]) -> Tuple[List[List[float]], List[int], List[str]]:
         X, y, ips = [], [], []
         for r in records:
-            row_feats = [float(r.get(f, 0) or 0) for f in feats_allowed]
+            row_feats = stage_vector(stage, r)
             X.append(row_feats)
             y.append(int(r.get("v_full", 0)))
             ips.append(str(r.get("src_ip", "")))
