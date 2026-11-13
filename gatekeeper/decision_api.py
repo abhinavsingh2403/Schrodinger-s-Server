@@ -199,7 +199,8 @@ class DecisionEngine:
             except Exception:
                 pass
 
-        # 3. Pre-declared baseline rules & heuristic fallback
+        # 3. Placeholder heuristic scores, not fitted rule probabilities.
+        # In particular, the R7-labelled branch below does not execute a trained tree.
         has_success = features.get("s2_has_success", features.get("cnt_login_success", features.get("login_success", 0)))
         failed_logins = features.get("s2_failed_logins", features.get("cnt_login_failed", features.get("n_login_failed", 0)))
         has_pty = features.get("s3_has_pty", features.get("has_pty", 0))
