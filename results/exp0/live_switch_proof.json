@@ -1,0 +1,39 @@
+{
+  "scope": "LAB controlled thresholds; same real SSH transport, sequential channels; not ML evidence",
+  "policy_overrides": {
+    "S2": 1.1,
+    "S3": 1.1,
+    "max_escalation_fraction": 1.0
+  },
+  "before": "cat: /opt/deploy/config.env: No such file or directory\n",
+  "after": "lab\nDB_HOST=[masked-address]\nDB_USER=app_user\n",
+  "gatekeeper_down": "cat: /opt/deploy/config.env: No such file or directory\n",
+  "unique_decision_sessions": 1,
+  "decisions": [
+    {
+      "stage": "S1",
+      "tier": "T1"
+    },
+    {
+      "stage": "S2",
+      "tier": "T1"
+    },
+    {
+      "stage": "S3",
+      "tier": "T1"
+    },
+    {
+      "stage": "S4",
+      "tier": "T1"
+    },
+    {
+      "stage": "S3",
+      "tier": "T1"
+    },
+    {
+      "stage": "S5",
+      "tier": "T2"
+    }
+  ],
+  "passed": true
+}
