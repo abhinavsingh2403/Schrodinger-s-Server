@@ -1,0 +1,33 @@
+{
+  "implementation": "PurePythonLogisticRegression fallback, not sklearn LogisticRegression",
+  "candidates": [
+    {
+      "C": 0.01,
+      "validation_recall": 0.4480055832930692,
+      "test_recall": 0.29191321499013806
+    },
+    {
+      "C": 0.1,
+      "validation_recall": 0.4480055832930692,
+      "test_recall": 0.29191321499013806
+    },
+    {
+      "C": 1.0,
+      "validation_recall": 0.4480055832930692,
+      "test_recall": 0.29191321499013806
+    },
+    {
+      "C": 10.0,
+      "validation_recall": 0.4480055832930692,
+      "test_recall": 0.29191321499013806
+    }
+  ],
+  "best_lr": {
+    "C": 0.01,
+    "validation_recall": 0.4480055832930692,
+    "test_recall": 0.29191321499013806
+  },
+  "boundary": true,
+  "hist_gradient_boosting": "NOT RUN: absent in manifest-matching environment; no historical family winner recoverable for the current result",
+  "grid_audit": "The sklearn branch ignores max_leaf_nodes and min_samples_leaf grid dimensions. Not changed: pre-registered candidate changes require human review."
+}
