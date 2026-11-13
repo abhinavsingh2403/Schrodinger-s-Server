@@ -1,0 +1,91 @@
+{
+  "items": [
+    [
+      "S3 aggregate base rates",
+      2,
+      "Done",
+      "results/base_rates.json and analysis/s3_base_rates.py"
+    ],
+    [
+      "Event-schema check and group field",
+      2,
+      "Done",
+      "results/s3_event_schema.json; event order remains unverified"
+    ],
+    [
+      "Experiment 0 aggregate stages S1-S3 with leakage controls",
+      2,
+      "Partial",
+      "Stage guards exist; shuffled-label diagnostic fails and event ordering is unverified"
+    ],
+    [
+      "Experiment 0 event-level S4/S5",
+      2,
+      "Not done",
+      "NOT_EVALUABLE on aggregate data"
+    ],
+    [
+      "T1/T2 personas and real Cowrie integration on Linux",
+      2,
+      "Partial",
+      "Configs and unit tests exist; Linux collection fails because lark is absent"
+    ],
+    [
+      "Real hardware cost measurement (Spike S2)",
+      2,
+      "Not done",
+      "Nominal constants only"
+    ],
+    [
+      "Gatekeeper trained model and offline/live parity",
+      1,
+      "Partial",
+      "Model loads; parity uses one hand-built fixture, not shared offline/live extraction"
+    ],
+    [
+      "Escalation budget enforcement",
+      1,
+      "Partial",
+      "Decision counter with warmup and memory exceptions; not a strict session cap"
+    ],
+    [
+      "Persona-effect natural experiment",
+      1,
+      "Not done",
+      "Pending event-level group data"
+    ],
+    [
+      "Third-party detector evaluation (EVAL H4)",
+      1,
+      "Not done",
+      "Internal checks are not an independent detector evaluation"
+    ],
+    [
+      "Replay of real held-out traces",
+      1,
+      "Not done",
+      "SYNTHETIC command templates reconstructed from counters"
+    ],
+    [
+      "Dashboard using only script-generated numbers",
+      1,
+      "Partial",
+      "Reads result JSON and decision DB but has hard-coded numeric fallbacks"
+    ],
+    [
+      "Public-sensor shadow run under SAFETY checklist",
+      1,
+      "Not done",
+      "No verified run"
+    ],
+    [
+      "Final report, slides and viva pack",
+      1,
+      "Partial",
+      "Working reports exist; final reviewed pack is absent"
+    ]
+  ],
+  "earned": 8.0,
+  "total": 20,
+  "percentage": 40.0
+}

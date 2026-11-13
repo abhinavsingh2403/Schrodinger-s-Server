@@ -1,0 +1,98 @@
+## Current audit findings (supersedes earlier performance claims)
+
+| Task | Status | Command | Evidence / limitation |
+|---|---|---|---|
+| T1 | PARTLY | `python -m analysis.exp0_robustness; python -m analysis.exp0_robustness --supplement; python -m analysis.exp0_family_comparison` | Baseline sensitivity is robust; gradient-boosting family unavailable. See ROBUSTNESS.md. |
+| T2 | DONE | `python -m analysis.exp0_bootstrap_diag; python -m analysis.exp0_train --train-models` | Fixed unordered cluster iteration; official results regenerated. Concentration and weighted sensitivities recorded. |
+| T3 | PARTLY | `python -m analysis.exp0_artifact_checks; python -m analysis.exp0_event_order` | Shuffle sanity check fails; parameter events observed after commands. Size/var ordering remains unverified. |
+| T4 | DONE | `python -m pytest -q analysis/test_exp0_report_hygiene.py` | Generated CSV, JSON and reports explicitly mark aggregate proxies without changing scores. |
+| T5 | DONE | `python -m analysis.exp0_audit_ledger` | Tag timestamps, target commits and historical stage rows copied from Git into DECISIONS.md. |
+| T6 | DONE | `python -m analysis.progress_accounting` | Weighted completion 40.0% from the required checklist. |
+| T7 | PARTLY | `python -m analysis.exp0_audit_report --verify-pins` | Pins match the inspected project environment and index. Human must confirm it was the original run environment. |
+| T8 | DONE | `python -m analysis.exp0_audit_report --refresh-reports` | UTC run date; generated root and results reports are identical. |
+| T9 | PARTLY | `python -m pytest -q gatekeeper/test_model_inference_parity.py gatekeeper/test_policy.py sensor/test_adaptive_server.py` | Local checks pass; Linux collection fails on missing lark; dashboard truthfulness checks fail. |
+
+### Executed test suite
+
+```text
+........................................................................ [ 67%]
+...................................                                      [100%]
+=========================== short test summary info ===========================
+SKIPPED [1] sensor\test_spike_s1_poc.py:20: Twisted Conch required for Cowrie in-process tests
+107 passed, 1 skipped in 4.12s
+```
+
+Initial default Python could not import pytest; the project virtual environment was used. Restricted local HTTP access initially failed; the permitted loopback test run succeeded.
+
+### Scientific interpretation
+
+Reporting-only baseline verdict: **robust**. Best test rule: R7_decision_tree; official selection remains validation-based.
+Bootstrap verdict: both a reproducibility bug and a strong data-concentration effect. Sorting cluster IDs fixes process-dependent draws; the broad S3 distribution persists.
+S3 cluster diagnostics: `{"clusters": 1213, "concentration": {"top_1": {"clusters": 1, "sessions": 31313, "positives": 0, "session_share": 0.31066641532646116, "positive_share": 0.0}, "top_10": {"clusters": 10, "sessions": 83480, "positives": 4572, "session_share": 0.8282321192939985, "positive_share": 0.5304559693699965}, "top_one_percent": {"clusters": 13, "sessions": 84654, "positives": 4572, "session_share": 0.8398797535543143, "positive_share": 0.5304559693699965}}, "full": {"point_delta": 0.1768, "ci": [0.0052, 0.6125], "median": 0.18820693168474606, "draws": 10000, "below_zero": 50, "above_point_three": 3716, "above_point_five": 1761, "exact_zero": 0}, "exclude_top_one_percent": {"point_delta": 0.2802, "ci": [0.1961, 0.3966], "median": 0.2798524396699166, "draws": 10000, "below_zero": 0, "above_point_three": 3161, "above_point_five": 0, "exact_zero": 0}, "weight_cap": 362, "capped": {"point_delta": 0.1768, "ci": [0.2371, 0.5105], "median": 0.35437619002470727, "draws": 10000, "below_zero": 0, "above_point_three": 8449, "above_point_five": 109, "exact_zero": 0, "point_delta_note": "Point delta is the original unweighted point; CI and median use capped cluster weights."}}`
+S2 exact-zero bootstrap draws: 1192. Equal capture occurs in these draws; this does not mean the two score vectors are identical.
+Shuffle test recall: 0.65053951. This fails the requested near-budget sanity check; it is a leakage/bug signal requiring investigation, not by itself proof of leakage.
+Removing session parameters gives recall 0.10256410; removing all channel groups gives 0.10175194.
+Transfer-labelled sessions account for almost all captured positives; direct-tcpip-only sessions have no captured positives. This supports transfer-artifact discrimination, not a broad interactive-attacker claim.
+Event-order evidence: `{"sampled_day": "../logs_by_day/2025-06-27.json.gz", "sample_events": 679, "order": {"cowrie.client.size": {"before_first_command": 0, "after_first_command": 0, "sessions_with_command_and_feature": 0}, "cowrie.client.var": {"before_first_command": 0, "after_first_command": 0, "sessions_with_command_and_feature": 0}, "cowrie.session.params": {"before_first_command": 37, "after_first_command": 2, "sessions_with_command_and_feature": 37}}, "limitation": "Partial one-day stream; ordering is stored log order, not independently timestamp-validated chronology. It is not a guarantee that whole-session counters are prefix-only. TODO(verify): complete per-session prefix comparison."}`
+
+### Official result and viva-safe statement
+
+Gate 0 Outcome: PASS-ML - ML adds significant early triage signal before any command (Stages: S3).
+
+1. The regenerated aggregate-only evaluation reports PASS-ML at S3, with ML recall 0.2919 and baseline recall 0.1151.
+2. The fixed day split is a nine-day sample, and source-IP purging introduces survivorship bias.
+3. The result followed an exploratory path with test results visible, so it is exploratory-confirmatory.
+4. The gain mainly concerns transfer-labelled sessions; shuffled-label and event-order checks undermine a causal pre-command interpretation.
+5. Event-level prefix validation and unresolved integration checks are required before stronger scientific or deployment claims.
+
+### Integration audit
+
+- Parity: PASS for the existing handcrafted counter/event fixture and model scores; it does not read a parquet row, compare every feature, or establish one shared extraction module.
+- Budget: PASS for the existing exhaustion fixture. The counter is lifetime decisions per policy instance, resets on restart, permits a warmup and memory/current-tier exceptions, and does not count unique sessions. T3 takes another branch.
+- Decision scoring: only S3 uses the saved model. Other stages and exception fallbacks use placeholder constants, not fitted rule probabilities. Source-extracted score-return statements:
+```python
+return 0.05, "rule_r0_random", "R0_random"
+return 0.05, "rule_r0_random", "R0_random"
+return 0.10, "rule_r7_decision_tree", "R7_decision_tree"
+return 0.70, "rule_r1_login_success", "R1_login_success"
+return 0.40, "rule_r6_failed_logins", "R6_failed_logins"
+return 0.1151, "rule_r6_failed_logins", "R6_failed_logins"
+return 0.80, "rule_r2_pty_requested", "R2_pty_requested"
+return 0.35, "rule_r6_failed_logins", "R6_failed_logins"
+return 0.20, "heuristic_command_base", "HeuristicCommand"
+return 0.85, "heuristic_command_chain", "HeuristicCommand"
+calibrated_th = float(metadata.get("threshold_10pct_budget", 0.045197))
+calibrated_th = float(metadata.get("threshold_10pct_budget", 0.045197))
+```
+- Model-loading threshold defaults and zero-score exception paths are also constants; see gatekeeper/decision_api.py. They are not empirical probabilities.
+- Linux: attempted `wsl -d kali-linux --cd <repo> -- python3 -m pytest -q sensor/test_spike_s1_poc.py sensor/test_adaptive_server.py`; collection failed with `ModuleNotFoundError: No module named lark`. Integration with real Cowrie did not execute successfully in this task. Windows skips Twisted-dependent tests.
+- Dashboard: FAIL. JSON and decision-database sources coexist with numeric fallbacks, static fabricated live rows and random simulated updates in dashboard/templates/index.html. Panel labelling is not consistently tied to actual provenance.
+- Detector: harness/detector_runner.py correctly says EVAL H4 NOT YET EVALUATED; a visible dashboard notice now repeats that status and identifies synthetic demonstration data. Real held-out replay is NOT DONE: harness/replay/replay_engine.py builds SYNTHETIC command templates from counters.
+
+### TODO(verify) and human next steps
+
+- Investigate shuffled-label ranking and validate all channel counters against complete event-level prefixes; size/var ordering was not observed in the small sample.
+- Review tie-bin averaging versus the fixed-random-tie point statistic; no estimator redesign was made.
+- Confirm original run environment and exact saved-model identity beyond matching recall; review the omitted gradient-boosting family and ignored grid dimensions without retuning on test.
+- Install/reconcile the approved pinned Linux dependencies separately, then rerun real Cowrie integration. No packages were installed in this audit.
+- Repair dashboard synthetic/live labelling and session-level budget accounting in separate reviewed work.
+- Review the commits, push manually, and only then consider exp0-v3/eval-v3. No tags or remote branches were changed.
+
+### Executed integration-test evidence
+
+Parity tolerance assertion from the executed test:
+```python
+assert abs(prob_offline - prob_live) < 1e-6, f"Parity mismatch: offline={prob_offline}, live={prob_live}"
+```
+
+Budget exhaustion fixture from the executed test:
+```python
+def test_policy_budget_ceiling_enforcement() -> None:
+    policy = EscalationPolicy(threshold_t2=0.50)
+    policy.max_escalation_fraction = 0.10
+    policy.total_decisions = 200
+    policy.escalated_decisions = 25  # 12.5% > 10%
+    # With budget exhausted, a fresh session at T1 without memory should damp to T1
+    tier = policy.decide_tier(current_tier="T1", model_score=0.60)
+    assert tier == "T1"
+```

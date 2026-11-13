@@ -1,0 +1,6 @@
+{
+  "command": "C:\\Users\\abhip\\OneDrive\\Documents\\mini project\\.venv\\Scripts\\python.exe -m pytest -q -ra",
+  "returncode": 0,
+  "stdout": "........................................................................ [ 67%]\n...................................                                      [100%]\n=========================== short test summary info ===========================\nSKIPPED [1] sensor\\test_spike_s1_poc.py:20: Twisted Conch required for Cowrie in-process tests\n107 passed, 1 skipped in 4.12s\n",
+  "stderr": ""
+}
