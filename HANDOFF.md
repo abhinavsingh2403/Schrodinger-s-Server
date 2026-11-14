@@ -183,4 +183,20 @@ Human next steps: review subsequent completed commits before pushing; decide sep
 4. **Demo Design**: `harness/demo/run_lab_demo.sh` provisions a fresh `--db` per scenario (M5) to ensure initial T1 visitor memory; live switching demonstrates in-session escalation via sequential commands (`analysis/live_switch_proof.py`, noting lab threshold overrides).
 5. **Limitations (NOT Demonstrated)**: Concurrent multiplexed channels on one transport are not demonstrated; live switching uses lab threshold overrides (`S2=1.1, S3=1.1`) rather than pure ML weights; S4/S5 ML was not evaluated on event data.
 
+### Task 1: Debian 12 identity consistency runbook (WSL)
+- **Generation & Consistency Verification**:
+  ```bash
+  python3 -m sensor.build_honeyfs
+  python3 -m pytest -q infra/test_identity_consistency.py
+  ```
+- **Live Cowrie Verification**:
+  When Cowrie starts, verify banner and uname match Debian 12:
+  ```bash
+  ssh -p 2222 admin@127.0.0.1 "uname -a"
+  # Expected: Linux srv-app-01 6.1.0-21-amd64 #1 SMP PREEMPT_DYNAMIC Debian 6.1.90-1 (2024-05-03) x86_64 GNU/Linux
+  ssh -p 2222 admin@127.0.0.1 "cat /etc/os-release"
+  # Expected: PRETTY_NAME="Debian GNU/Linux 12 (bookworm)"
+  ```
+
+
 

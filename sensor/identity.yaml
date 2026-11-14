@@ -1,61 +1,40 @@
-# sensor/identity.yaml: Unified Identity Profile for Schrödinger's Server
-#
-# Per SPEC.md Section 5.1 & Risk R8:
-# All tiers (T1 Lite, T2 Hardened, T3 Real VM) MUST project a coherent,
-# identical system identity to eliminate trivial cross-tier fingerprinting tells.
+# Unified Identity Profile for Schrödinger's Server
+# Specified in SPEC.md Section 5.1 & Section 10
+# All tiers (T1 Lite, T2 Hardened, T3 Real) must match this profile to prevent fingerprinting.
 
-system_identity:
-  hostname: "srv04"
-  os_release:
-    name: "Ubuntu"
-    version: "22.04.3 LTS (Jammy Jellyfish)"
-    id: "ubuntu"
-    version_id: "22.04"
-    pretty_name: "Ubuntu 22.04.3 LTS"
-    version_codename: "jammy"
+distro: "Debian"
+release: "12 (bookworm)"
+codename: "bookworm"
+kernel: "6.1.0-21-amd64"
+arch: "x86_64"
+hostname: "srv-app-01"
+banner: "SSH-2.0-OpenSSH_9.2p1 Debian-2+deb12u3"
+server_version: "OpenSSH_9.2p1"
 
-  kernel:
-    name: "Linux"
-    release: "5.15.0-88-generic"
-    version: "#98-Ubuntu SMP Mon Oct 2 15:18:56 UTC 2023"
-    arch: "x86_64"
+os:
+  distro: "Debian"
+  release: "12 (bookworm)"
+  codename: "bookworm"
+  kernel: "6.1.0-21-amd64"
+  arch: "x86_64"
 
-  ssh_banner:
-    version_string: "SSH-2.0-OpenSSH_8.9p1 Ubuntu-3ubuntu0.6"
-    issue_net: "Ubuntu 22.04.3 LTS \\n \\l"
-    motd: |
-      Welcome to Ubuntu 22.04.3 LTS (GNU/Linux 5.15.0-88-generic x86_64)
+ssh:
+  banner: "SSH-2.0-OpenSSH_9.2p1 Debian-2+deb12u3"
+  server_version: "OpenSSH_9.2p1"
 
-       * Documentation:  https://help.ubuntu.com
-       * Management:     https://landscape.canonical.com
-       * Support:        https://ubuntu.com/advantage
+host:
+  hostname: "srv-app-01"
+  domain: "internal.lan"
+  uptime_baseline_seconds: 345600
 
-      System information as of %(datetime)s:
-        System load:  0.08, 0.03, 0.01
-        Usage of /:   18.4%% of 24.50GB
-        Memory usage: 22%%
-        Swap usage:   0%%
-        Processes:    112
-        Users logged in: 1
-
-      Last login: %(last_login)s from %(last_ip)s
-
-  users:
-    - username: "root"
-      uid: 0
-      gid: 0
-      home: "/root"
-      shell: "/bin/bash"
-    - username: "ubuntu"
-      uid: 1000
-      gid: 1000
-      home: "/home/ubuntu"
-      shell: "/bin/bash"
-
-  hardware:
-    cpu_model: "Intel(R) Xeon(R) Platinum 8272CL CPU @ 2.60GHz"
-    cpu_cores: 2
-    mem_total_kb: 4040188
-    mem_free_kb: 3124800
-    swap_total_kb: 2097148
-    swap_free_kb: 2097148
+users:
+  - username: "root"
+    uid: 0
+    gid: 0
+    shell: "/bin/bash"
+    home: "/root"
+  - username: "debian"
+    uid: 1000
+    gid: 1000
+    shell: "/bin/bash"
+    home: "/home/debian"
