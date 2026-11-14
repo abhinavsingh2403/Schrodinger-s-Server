@@ -1,12 +1,11 @@
 """Unit tests for sensor/run_sensor.py host allowlist enforcement.
 
-Pre-registered per SAFETY.md Section 2 and AGENTS.md Rule 6.
+Covers AGENTS.md Rule 6 (no connections outside the allowlist).
 Enforces that sensor launcher only communicates with allowlisted loopback / gatekeeper targets.
 """
 
 from __future__ import annotations
 
-import os
 import sys
 from pathlib import Path
 from unittest.mock import patch
