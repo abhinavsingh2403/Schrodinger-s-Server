@@ -198,5 +198,21 @@ Human next steps: review subsequent completed commits before pushing; decide sep
   # Expected: PRETTY_NAME="Debian GNU/Linux 12 (bookworm)"
   ```
 
+### Task 2: Attacker script execution and Gatekeeper DB notes
+- **Live Attacker Execution (WSL)**:
+  Run attacker scenarios with json line output:
+  ```bash
+  python3 -m harness.attackers.bot_like --host 127.0.0.1 --port 2222
+  python3 -m harness.attackers.interactive --host 127.0.0.1 --port 2222
+  python3 -m harness.attackers.transfer_like --host 127.0.0.1 --port 2222
+  ```
+  Each scenario authenticates via `SSH_ASKPASS` without argv password leakage, returns 0 on success, or exits with non-zero code upon SSH returncode 255.
+- **Gatekeeper DB Verification**:
+  Inspect the Gatekeeper SQLite database after the runs to verify recorded decisions:
+  ```bash
+  sqlite3 gatekeeper/gatekeeper.db "SELECT session_id, stage, score, tier_decided FROM decision_log ORDER BY id DESC LIMIT 10;"
+  ```
+
+
 
 
