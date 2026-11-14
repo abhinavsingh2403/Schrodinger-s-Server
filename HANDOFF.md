@@ -231,3 +231,14 @@ Retained historical SQLite evidence and prior-policy replay are generated in res
   ```bash
   sqlite3 gatekeeper/gatekeeper.db "SELECT session_id, stage, score, tier_decided FROM decision_log ORDER BY id DESC LIMIT 10;"
   ```
+
+### 2026-11-15 lab-profile redesign — REMAINING
+A PARTLY: gatekeeper/capture_lab_evidence.py captures unchanged lab-mode scenarios in the clean Linux checkout with temporary state. Generated observations and real fixtures are in results/exp0/lab_policy_evidence.json and harness/demo/fixtures/lab_policy_capture.json. Linux full suite passed; Windows full-suite invocation still requires its final result.
+Observed: interactive has PTY at S3; bot_like and transfer_like do not. Command sessions contain only their own command, so no S5 is observed. All scenarios reach T2 under the existing lab profile. Adapter command fields differ from extractor replay; use adapter_replay for actual launcher inputs.
+Finish A: add explicit PTY/transfer/direct-tcpip summaries and score_source capture (currently schema limitation is disclosed); S1 NEWKEYS is not reconstructible solely from JSON. Preserve real fixture provenance.
+B NOT STARTED: write semantic rule before implementation; PTY can separate interactive, but current adapter fields do not identify transfer semantics. Do not tune command length/token thresholds. Decide and document whether to expose verified semantic command evidence via the shared extractor or report transfer inseparability. Add captured-fixture default-regression/hash tests and fix lab S3 threshold precedence.
+C NOT STARTED: migrate policy_profile with UNKNOWN for historical rows, DEFAULT/LAB_DEMO for newly constructed engines, response field and validation/migration tests. Dashboard owner must add policy_profile to decision-log SELECTs and an explicit DEFAULT/LAB_DEMO/UNKNOWN badge.
+D NOT RUN: rerun revised LAB_DEMO and DEFAULT on fresh per-scenario state; generate lab_policy_proof.json; capture T2 file evidence only if actually observed.
+E NOT STARTED: mark superseded decisions, correct provenance flag claim, fix only README tail log paths. API provenance remains client supplied; presentation wording must say launcher-level enforcement.
+Attacker owner: interactive currently opens one connection per command; sustained-session command-count demonstrations require a separate harness change. Do not edit attackers in this block.
+No policy change, push, or tags in this checkpoint.
