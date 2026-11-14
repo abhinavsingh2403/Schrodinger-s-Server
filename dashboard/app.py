@@ -410,10 +410,11 @@ if __name__ == "__main__":
     parser.add_argument("--host", default="127.0.0.1", help="Host interface")
     parser.add_argument("--port", type=int, default=8080, help="Listen port")
     parser.add_argument("--mode", default="LAB", choices=["LAB", "LIVE"], help="Operational mode")
+    parser.add_argument("--db", default="gatekeeper/gatekeeper.db", help="Path to SQLite decision DB (default: gatekeeper/gatekeeper.db)")
     args = parser.parse_args()
 
-    dash = DashboardServer(host=args.host, port=args.port, mode=args.mode)
-    print(f"Starting Schrödinger's Server dashboard on http://{args.host}:{args.port}")
+    dash = DashboardServer(db_path=args.db, host=args.host, port=args.port, mode=args.mode)
+    print(f"Starting Schrödinger's Server dashboard on http://{args.host}:{args.port} [DB: {args.db}]")
     try:
         dash.start()
     except KeyboardInterrupt:

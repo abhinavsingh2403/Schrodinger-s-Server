@@ -107,3 +107,18 @@ def test_dashboard_html_rendering():
         assert "SIMULATED ORACLE (HINDSIGHT UPPER BOUND)" in html
         assert "EVAL H4 NOT YET EVALUATED" in html
         assert "NO DATA" in html
+
+
+def test_dashboard_custom_db_path():
+    """Verify DashboardServer correctly accepts and reads from a custom db_path."""
+    with tempfile.TemporaryDirectory() as tmp_dir:
+        custom_db = os.path.join(tmp_dir, "custom_gatekeeper.db")
+        memory = VisitorMemory(db_path=custom_db)
+        engine = DecisionEngine(db_path=custom_db, memory=memory)
+        engine.decide(session_id="sess_custom_01", source_ip="127.0.0.1", stage="S1")
+
+        server = DashboardServer(db_path=custom_db, port=0)
+        decisions = server.get_decisions_data()
+        assert decisions["status"] == "ok"
+        assert decisions["count"] == 1
+        assert decisions["decisions"][0]["session_id"] == "sess_custom_01"
