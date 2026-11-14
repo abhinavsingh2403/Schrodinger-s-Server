@@ -57,11 +57,11 @@ For detailed evidence, scope weights, and verification status for each item, see
 | **S1: Cowrie Persona Switching PoC** | Core | **DONE** | Plan A in-process Conch adapter subclass verified in mock loop (`sensor/spike_s1_poc.py`) |
 | **O3: Experiment 0 (`EXPERIMENT0.md`)** | Core (Gate 0) | **PARTIAL: PASS-ML at S3** | ML recall 0.2919; rule recall 0.1151; adjusted CI [0.0052, 0.6125]. Exploratory-confirmatory; shuffle and prefix-validity checks unresolved. See [audit](results/exp0/AUDIT.md). |
 | **Phase 1: Gatekeeper Engine & Memory** | MVP | **BUILT & TESTED** | REST HTTP server (`/health`, `/decide`, `/record_session`), `GatekeeperClient`, SQLite WAL visitor memory, upward-only policy with budget ceiling, parity extractor. Automatically loads `models/model_s3.json`; current test outcomes and limitations are in HANDOFF.md. |
-| **Phase 1: Sensor & Router Subsystems** | MVP | **BUILT & HOOKED** | `CowrieSSHSessionAdapter` with in-process Conch lifecycle hooks (handshake, auth, PTY, shell/exec, close), dynamic persona switching via hostname and filesystem overlay. |
-| **Phase 2: Adversary Harness & Infra** | MVP | **BUILT (Code/Tests)** | Detector runner with safety allowlist, synthetic replay engine, isolated docker compose with custom sensor volume mount and port binding `0.0.0.0:2222`. |
+| **Phase 1: Sensor & Router Subsystems** | MVP | **LOOPBACK VERIFIED** | `CowrieSSHSessionAdapter` with in-process Conch lifecycle hooks (handshake, auth, PTY, shell/exec, close), dynamic persona switching via hostname and filesystem overlay. Lab-verified on WSL loopback; Docker stack is NOT operational end-to-end. |
+| **Phase 2: Adversary Harness & Infra** | MVP | **CODE COMPLETE / LAB-ONLY** | Attacker scenarios (`bot_like`, `interactive`, `transfer_like`) with safe askpass auth and exit-code 255 checking. Unit tests pass; cross-VM network execution (Kali Linux -> WSL) not yet tested. |
 | **Phase 2: Cost & Arm Simulation** | MVP | **ORACLE BOUND** | Nominal cost model; Arm D labeled as retrospective hindsight upper bound (`results/arm_simulation.json`). |
 | **EVAL 5.3: Persona Natural Experiment** | MVP | **PENDING DATA** | Blocked on event-level `group` ingestion from `data_all.zip` (field absent in `session_aggregation`). |
-| **Phase 2: Results Dashboard** | MVP | **BUILT (Code/Tests)** | Cyber Protocol theme, privacy masking (`vis_xxxx`), zero npm dependencies, `/api/exp0` and `/api/model` endpoints added. |
+| **Phase 2: Results Dashboard** | MVP | **PARTIAL** | Cyber Protocol theme, privacy masking (`vis_xxxx`), zero npm dependencies. Reads SQLite `decision_log` and displays `NO DATA` when empty; continuous live-traffic stream not yet demonstrated. |
 | **Phase 3: Live VPS Trial / T3 VM Pool** | Post-MVP | **DEFERRED** | Dependent on Linux testbed with Twisted Conch runtime and live honeypot exposure. |
 
 ---
@@ -173,24 +173,32 @@ Based on rigorous peer audit, the remediation items are tracked as follows:
    * *Audit Finding*: Cowrie container was not forwarding transport or session events to custom adapter classes, and persona filesystem overlays were not dynamically updated upon tier escalation.
    * *Action Completed*: Subclassed Twisted Conch's `SSHSessionForCowrieUser` in `sensor/adaptive_server.py`, wiring `on_kex_completed`, `on_auth_completed`, `getPty` (terminal allocation), `openShell`/`execCommand`, and `closed` (session closing and visitor memory recording). Implemented `_on_tier_escalated` updating `self.server.hostname`, applying filesystem overlay, and updating `avatar.environ["HOSTNAME"]`. Bound Cowrie SSH listener to `0.0.0.0:2222`.
 
-### Immediate Antigravity Focus for Next Session (Pre-Cowrie Standalone ML Refinement)
-Based on the recorded code audit, the following four focused technical fixes are queued for the next working session:
-1. **Gatekeeper Docker Mounts**: Update `infra/docker-compose.yml` to mount `../models` and `../analysis` into the `gatekeeper` service so the containerized service loads `models/model_s3.json`.
-2. **Exported Model Provenance**: Applying the same S3 reach filter reproduces the official recall from the saved export. Its calibration still uses unfiltered validation data; review exact model identity and serving calibration separately.
-3. **Strict Feature Parity & Counter Initialization**: Initialize `cnt_session_connect` to 0 in `feature_extractor.py`, increment on session connect, and assert feature-by-feature dictionary equality in parity tests.
-4. **Session-Level Budget Accounting**: Track the live 10% escalation ceiling by unique session IDs rather than individual decision queries in `policy.py`.
+### 4. Live Demonstration Readiness & Technical Reality (November 24 Milestone)
 
-### Long-Term Operational Roadmap
-4. **Live Linux Practical Testbed (Priority 4) — DEFERRED FOR LIVE HONEYPOT PHASE**:
-   * *Audit Finding*: Unit tests pass in isolated mock loops, but end-to-end operation against real attacker tools has not been executed on live Linux/Kali environments.
-   * *Action*: Deploy honeypot on an Ubuntu lab host, execute automated scans and brute-force attacks from Kali Linux (Nmap, Hydra, SSH), and verify in real time that sessions are dynamically routed and logged in the dashboard.
+Direct inspection of `infra/docker-compose.yml`, `sensor/run_sensor.py`, `dashboard/app.py`, and `results/exp0/live_*_proof.json` establishes the current subsystem reality:
 
-5. **Independent Security Audit (Priority 5 - EVAL H4) — NEXT**:
-   * *Audit Finding*: In-repo detector runner tests check internal heuristics rather than independent third-party scanning.
-   * *Action*: Run `kaniini/honeypot-auditor` against the running honeypot container from an isolated network to verify zero Cowrie giveaways and strict OS coherence.
+| Subsystem | State | Verifiable Reality & Current Boundaries |
+|---|---|---|
+| **Kali Adversary Scripts** (`bot_like`, `interactive`, `transfer_like`) | **Code Complete & Tested** | Implemented in `harness/attackers/` with `SSH_ASKPASS` / `sshpass` credential handling without command-line argument leakage, OpenSSH returncode 255 checking, and single-line JSON summaries. Unit tests pass. **Live execution from an external Kali VM across host boundaries into Cowrie has not yet been executed.** |
+| **Cowrie ↔ Gatekeeper Inter-Process Communication** | **Lab-Verified on WSL Loopback** | Real Twisted Conch lifecycle hooks (`sensor/run_sensor.py`) communicate with `GatekeeperServer` over loopback HTTP (`http://127.0.0.1:5000`) and apply in-process T2 filesystem overlays (`results/exp0/live_switch_proof.json`, `results/exp0/live_sensor_proof.json`). **Network reachability from an external Kali VM host into the WSL guest is untested.** |
+| **Cowrie Event Telemetry** | **Verified in WSL** | Structured JSON logs (`var/log/cowrie/cowrie.json`) record real session events and can be monitored live via terminal `tail -f`. |
+| **Docker Compose Stack** | **NOT Operational End-to-End** | **Two architectural blockers prevent the Docker stack from functioning end-to-end as configured:**<br/>1. `infra/docker-compose.yml` runs the stock `cowrie/cowrie:v3.1.6` image rather than launching `sensor.run_sensor`, meaning **vanilla Cowrie runs in isolation and never invokes Gatekeeper.**<br/>2. `sensor/run_sensor.py` explicitly enforces loopback host validation (`urlparse(...).hostname != '127.0.0.1'`). In Docker, the service address is `http://gatekeeper:5000`, causing `run_sensor` to abort with a configuration error. |
+| **Telemetry Dashboard** | **Static / File-Based Only** | `dashboard/app.py` reads `decision_log` from SQLite and falls back to `NO DATA` badges. **It has never been demonstrated with continuous live honeypot traffic.** |
+| **Policy Escalation Behavior** | **Conservative Default (T1 Only)** | Under the default pre-registered policy, sessions do not escalate to T2 because strict budget ceilings and default heuristic thresholds require high-activity indicators. For live demonstration, a controlled lab policy or explicit escalation trigger (Option 3) is required to exhibit T2 files. |
 
-6. **Documentation & Release Synchronization (Priority 6) — NEXT**:
-   * Apply official git tags (`exp0-v3`, `eval-v3`) to record the reviewed exploratory audit and its unresolved limitations. Maintain complete transparency in reports and viva presentations.
+#### Demonstration Deployment Strategy
+
+1. **Path A (Primary / Verified for Nov 24 Demonstration — Native WSL)**:
+   Run all components natively inside WSL (where dependencies and loopback IPC are verified):
+   - **Terminal 1**: `python -m gatekeeper.decision_api --host 127.0.0.1 --port 5000 --db gatekeeper/gatekeeper.db`
+   - **Terminal 2**: `python -m sensor.run_sensor --state-dir var/cowrie --port 2222 --gatekeeper-url http://127.0.0.1:5000`
+   - **Terminal 3**: `python dashboard/app.py`
+   - **Terminal 4 / Kali VM**: Execute `harness/demo/run_lab_demo.sh` or individual adversary scripts against port `2222`.
+   - **Terminal 5 (Evidence)**: `tail -f var/cowrie/log/cowrie.json`.
+   - *Advantage*: Eliminates container networking and custom image packaging risks for the demo.
+
+2. **Path B (Full Docker Containerization — Stretch Goal)**:
+   Containerizing `sensor.run_sensor` requires authoring a custom Dockerfile extending `cowrie/cowrie:v3.1.6`, packaging repository code and dependencies into the container, and updating network validation rules to allow inter-container DNS routing (`gatekeeper`). This remains deferred as post-demonstration infrastructure work.
 
 ---
 
@@ -280,8 +288,30 @@ python -m venv .venv
 
 ### Run Unit Tests
 ```powershell
-.\.venv\Scripts\python -m pytest analysis/
+.\.venv\Scripts\python -m pytest -q
 ```
+
+### Live Honeypot Demonstration (Native WSL — Path A)
+To run the live honeypot integration demonstrator natively in WSL:
+```bash
+# Terminal 1: Decision Gatekeeper
+python -m gatekeeper.decision_api --host 127.0.0.1 --port 5000 --db gatekeeper/gatekeeper.db
+
+# Terminal 2: Cowrie Adaptive Sensor Launcher
+python -m sensor.run_sensor --state-dir var/cowrie --port 2222 --gatekeeper-url http://127.0.0.1:5000
+
+# Terminal 3: Telemetry Dashboard
+python dashboard/app.py
+
+# Terminal 4: Adversary Attack Execution (from Kali Linux or local shell)
+bash harness/demo/run_lab_demo.sh
+```
+
+### Containerization Status (Docker Compose)
+Running `docker compose up` currently starts isolated services, but containerized end-to-end integration remains in development:
+1. `sensor` uses the stock `cowrie/cowrie:v3.1.6` image rather than launching `sensor.run_sensor`.
+2. `sensor.run_sensor` enforces loopback host validation (`127.0.0.1`), which rejects the Docker DNS service name `http://gatekeeper:5000`.
+Use **Path A (native WSL)** for verified end-to-end operation.
 
 ### Reproduce Spike S1 Persona Switching PoC
 ```bash
