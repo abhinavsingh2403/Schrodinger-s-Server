@@ -160,3 +160,74 @@ Earlier B/C REMAINING entries above are superseded here; broader Q/V work remain
 
 ### Historical first-S2 audit follow-up
 Retained historical SQLite evidence and prior-policy replay are generated in results/exp0/live_historical_proof.json by analysis/live_historical_proof.py. The database has no durable budget tables. The prior policy startup allowance reproduces the observed S1-to-S2 escalation using recorded scores with fresh counters and T1 memory. This explains a compatible mechanism; the original running code revision, input features, exact in-memory counters and visitor snapshot were not logged and remain TODO(verify). Current replay must not be presented as historical state recovery.
+
+## Gemini worktree evaluation notes (Tasks M1 & M2)
+
+### Task M1: Decision latency benchmark measurement
+- **Test ID**: `gatekeeper/test_model_inference_parity.py::test_decision_latency_benchmark`
+- **Thresholds**: Pure ML inference `p50 < 0.05ms` (50 us); Full decision pipeline `p50 < 6.0ms`, `p95 < 12.0ms`.
+- **Windows (5 isolated runs)**:
+  - Pipeline p50 per run: [3.788, 3.812, 4.167, 4.151, 4.157] ms
+  - Pipeline p50 median: 4.151 ms, max: 4.167 ms (Pipeline p95 max: 6.545 ms, p99 max: 15.838 ms; Pure ML p50: 1.60 us)
+  - Isolated pass/fail: 5 passed, 0 failed (5/5).
+- **WSL (5 isolated runs)**:
+  - Pipeline p50 per run: [3.464, 3.096, 2.943, 3.199, 3.928] ms
+  - Pipeline p50 median: 3.199 ms, max: 3.928 ms (Pipeline p95 max: 6.701 ms, p99 max: 10.447 ms; Pure ML p50: 1.05 us)
+  - Isolated pass/fail: 5 passed, 0 failed (5/5).
+- **Diagnosis**: Hypothesis: The intermittent test failure on Windows during full-suite runs (recorded p50=49.309ms vs 6.0ms threshold) is an OS benchmark timing artifact caused by SQLite WAL disk flush and NTFS tempfile I/O contention under concurrent test suite load, rather than an algorithmic or pure ML slowdown (pure ML inference p50 is 1.60 us on Windows and 1.05 us on WSL).
+
+### Task M2: WSL package check
+- Output of `python -c "import sklearn; print(sklearn.__version__)"` in WSL `.venv`: `ModuleNotFoundError: No module named 'sklearn'`
+- TODO(human): install scikit-learn in the WSL venv
+
+### Task M5: Fresh-memory demo runs and decision table
+- **WSL Runbook (Human execution)**:
+  Do NOT run `git pull` in `~/schrodinger` (holds uncommitted work). Instead, clone/copy the `gemini-g12` branch into a clean folder `~/schrodinger-verify` (per Task M3 procedure) and execute:
+  ```bash
+  cd ~/schrodinger-verify
+  bash harness/demo/run_lab_demo.sh
+  ```
+- **Expected vs Bad Outcomes**:
+  - **GOOD**: `bot_like` scenario stays at T1 through S1/S2/S3 (low score, within budget); `interactive` and `transfer_like` scenarios escalate to T2 upon reaching trigger thresholds.
+  - **BAD**: Every scenario escalates to T2 at S1, or `bot_like` escalates to T2 (if this occurs, report the stage and score; do not alter threshold definitions).
+- **Decision Table Schema & Output**:
+  - `decision_log` table columns verified via SQLite: `(id, session_id, visitor_id, stage, score, tier_decided, latency_ms, timestamp)`.
+  - Stored: `session_id`, `stage`, `tier_decided`, `score`.
+  - Column `threshold` is NOT stored in `decision_log`: labeled `TODO(verify): threshold column not stored in decision_log schema`.
+
+### Task M6: Demo design note
+1. **Stage Evaluation Events**: S1 at `ssh_NEWKEYS` (`sensor/run_sensor.py:73`); S2 at `cowrie.login.success/failed` (`sensor/run_sensor.py:38-39`); S3 at `cowrie.session.params` (`sensor/run_sensor.py:40-41`); S4 (first command) and S5 (subsequent commands) at `cowrie.command.input` (`sensor/run_sensor.py:42-43`, `sensor/adaptive_server.py:265,272`).
+2. **Escalation & Visibility**: `_evaluate_stage` calls `escalate_to()` (`sensor/adaptive_server.py:303`), firing `_apply_fs_overlay` (`sensor/adaptive_server.py:341-360`) which populates T2 decoys (`/opt/deploy/config.env`, `/var/www/html/index.html`) in Cowrie's active filesystem; visitor sees them on subsequent commands.
+3. **Interactive SSH**: Plain `ssh -p 2222` connects to Debian 12 shell (`srv-app-01`); initial `cat /opt/deploy/config.env` returns `No such file`, but returns decoy DB credentials once escalated.
+4. **Demo Design**: `harness/demo/run_lab_demo.sh` provisions a fresh `--db` per scenario (M5) to ensure initial T1 visitor memory; live switching demonstrates in-session escalation via sequential commands (`analysis/live_switch_proof.py`, noting lab threshold overrides).
+5. **Limitations (NOT Demonstrated)**: Concurrent multiplexed channels on one transport are not demonstrated; live switching uses lab threshold overrides (`S2=1.1, S3=1.1`) rather than pure ML weights; S4/S5 ML was not evaluated on event data.
+
+### Task 1: Debian 12 identity consistency runbook (WSL)
+- **Generation & Consistency Verification**:
+  ```bash
+  python3 -m sensor.build_honeyfs
+  python3 -m pytest -q infra/test_identity_consistency.py
+  ```
+- **Live Cowrie Verification**:
+  When Cowrie starts, verify banner and uname match Debian 12:
+  ```bash
+  ssh -p 2222 admin@127.0.0.1 "uname -a"
+  # Expected: Linux srv-app-01 6.1.0-21-amd64 #1 SMP PREEMPT_DYNAMIC Debian 6.1.90-1 (2024-05-03) x86_64 GNU/Linux
+  ssh -p 2222 admin@127.0.0.1 "cat /etc/os-release"
+  # Expected: PRETTY_NAME="Debian GNU/Linux 12 (bookworm)"
+  ```
+
+### Task 2: Attacker script execution and Gatekeeper DB notes
+- **Live Attacker Execution (WSL)**:
+  Run attacker scenarios with json line output:
+  ```bash
+  python3 -m harness.attackers.bot_like --host 127.0.0.1 --port 2222
+  python3 -m harness.attackers.interactive --host 127.0.0.1 --port 2222
+  python3 -m harness.attackers.transfer_like --host 127.0.0.1 --port 2222
+  ```
+  Each scenario authenticates via `SSH_ASKPASS` without argv password leakage, returns 0 on success, or exits with non-zero code upon SSH returncode 255.
+- **Gatekeeper DB Verification**:
+  Inspect the Gatekeeper SQLite database after the runs to verify recorded decisions:
+  ```bash
+  sqlite3 gatekeeper/gatekeeper.db "SELECT session_id, stage, score, tier_decided FROM decision_log ORDER BY id DESC LIMIT 10;"
+  ```

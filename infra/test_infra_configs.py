@@ -28,9 +28,9 @@ def test_cowrie_config_safety_rules():
     assert "[ssh]" in content
     assert "listen_endpoints" in content
 
-    # Identity matching identity.yaml (Ubuntu 22.04 LTS / OpenSSH 8.9p1)
+    # Identity matching identity.yaml (Debian 12 Bookworm / OpenSSH 9.2p1)
     assert "srv-app-01" in content
-    assert "OpenSSH_8.9p1" in content
+    assert "OpenSSH_9.2p1" in content
 
 
 def test_egress_firewall_script_rules():

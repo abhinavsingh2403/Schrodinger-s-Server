@@ -21,7 +21,7 @@ def test_persona_manager_identity_coherence():
         p2 = pm.get_persona("T2")
 
         # Distro and kernel must be strictly identical across tiers
-        assert p1.distro == p2.distro == "Ubuntu"
+        assert p1.distro == p2.distro == "Debian"
         assert p1.hostname == p2.hostname
         assert p1.kernel_release == p2.kernel_release
 

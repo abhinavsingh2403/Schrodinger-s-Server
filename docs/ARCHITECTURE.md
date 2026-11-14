@@ -36,7 +36,7 @@ graph TD
 ## 2. Technical Glossary
 
 - **Visitor**: A source identity derived via salted HMAC of the incoming IP address, ensuring privacy preservation with zero raw IP persistence in decision logs [SPEC §3, SPEC §5.2].
-- **Sensor (Cowrie)**: The pinned SSH honeypot daemon that ingests inbound traffic, enforces a consistent identity profile, and publishes structured event telemetry [SPEC §5.1, README §3].
+- **Sensor (Cowrie)**: The pinned SSH honeypot daemon that ingests inbound traffic, enforces a consistent identity profile (Debian 12 bookworm, OpenSSH 9.2p1, kernel 6.1.0-21-amd64), and publishes structured event telemetry via adaptive Conch hooks (Status: lab-verified on loopback only; see results/exp0/ASTRA2_REPORT.md and HANDOFF.md) [SPEC §5.1, README §3].
 - **Gatekeeper**: The centralized decision engine responsible for extracting stage features, computing model scores, enforcing budget constraints, tracking visitor history, and assigning honeypot tiers [SPEC §5.2, README §3].
 - **Tier T1 (Lite)**: Low-interaction baseline emulation shell maintaining a matched identity profile at minimum resource cost [SPEC §3, SPEC §5.1, README §3].
 - **Tier T2 (Hardened)**: Medium-interaction emulation environment featuring a custom fake filesystem overlay, rich command outputs, and local decoy artifacts [SPEC §3, SPEC §5.1, README §3].
@@ -50,4 +50,4 @@ graph TD
 - **Escalation Budget**: A pre-declared operational ceiling restricting the fraction of sessions escalated to higher tiers to prevent resource exhaustion [SPEC §3, SPEC §5.2, README §3].
 - **Gate 0**: The pre-registered empirical milestone evaluating whether learned statistical models demonstrate recall improvement over simple pre-declared baseline rules [SPEC §0, README §2].
 - **Oracle Arm**: The retrospective hindsight simulation baseline that computes upper-bound yield efficiency assuming full post-hoc knowledge of session activity [SPEC §3, README §3].
-- **Identity Profile**: A uniform system configuration across hostnames, distribution banners, kernel versions, and account names shared across tiers to prevent cross-tier fingerprinting [SPEC §3, SPEC §5.1, README §3].
+- **Identity Profile**: A uniform system configuration across hostnames (`srv-app-01`), distribution banners (Debian 12 bookworm), OpenSSH version (`SSH-2.0-OpenSSH_9.2p1 Debian-2+deb12u3`), kernel versions (`6.1.0-21-amd64`), and account names shared across tiers to prevent cross-tier fingerprinting [SPEC §3, SPEC §5.1, README §3].
