@@ -384,16 +384,17 @@
   <script>
     // Live Search and Tier Filter
     function filterTable() {
-      const search = document.getElementById('searchInput').value.toLowerCase();
-      const tierFilter = document.getElementById('tierFilter').value;
+      const search = (document.getElementById('searchInput')?.value || '').toLowerCase().trim();
+      const tierFilter = document.getElementById('tierFilter')?.value || 'ALL';
       const rows = document.querySelectorAll('#decisionsTableBody tr');
 
       rows.forEach(row => {
         if (row.id === 'noDecisionsRow') return;
         const text = row.innerText.toLowerCase();
-        const matchesSearch = text.includes(search);
-        const matchesTier = tierFilter === 'ALL' || text.includes(tierFilter.toLowerCase());
-        row.style.display = matchesSearch && matchesTier ? '' : 'none';
+        const matchesSearch = !search || text.includes(search);
+        const rowTier = row.dataset.tier || '';
+        const matchesTier = tierFilter === 'ALL' || rowTier === tierFilter;
+        row.style.display = (matchesSearch && matchesTier) ? '' : 'none';
       });
     }
 
@@ -577,6 +578,7 @@
             tbody.innerHTML = '';
             for (const d of decData.decisions) {
               const tr = document.createElement('tr');
+              tr.dataset.tier = d.tier || 'T1';
               const tierBadge = d.tier === 'T3'
                 ? '<span class="px-2.5 py-0.5 rounded-full bg-purple-500/20 text-purple-300 font-bold border border-purple-500/40">T3 REAL VM</span>'
                 : d.tier === 'T2'
@@ -608,6 +610,8 @@
               `;
               tbody.appendChild(tr);
             }
+            // Re-apply any active search or tier filter so user selection persists across 5s polls
+            filterTable();
           } else {
             tbody.innerHTML = '<tr id="noDecisionsRow"><td colspan="8" class="py-6 text-center text-zinc-500 font-mono text-xs">NO DATA</td></tr>';
           }
