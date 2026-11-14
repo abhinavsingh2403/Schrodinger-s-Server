@@ -182,23 +182,25 @@ Direct inspection of `infra/docker-compose.yml`, `sensor/run_sensor.py`, `dashbo
 | **Kali Adversary Scripts** (`bot_like`, `interactive`, `transfer_like`) | **Code Complete & Tested** | Implemented in `harness/attackers/` with `SSH_ASKPASS` / `sshpass` credential handling without command-line argument leakage, OpenSSH returncode 255 checking, and single-line JSON summaries. Unit tests pass. **Live execution from an external Kali VM across host boundaries into Cowrie has not yet been executed.** |
 | **Cowrie ↔ Gatekeeper Inter-Process Communication** | **Lab-Verified on WSL Loopback** | Real Twisted Conch lifecycle hooks (`sensor/run_sensor.py`) communicate with `GatekeeperServer` over loopback HTTP (`http://127.0.0.1:5000`) and apply in-process T2 filesystem overlays (`results/exp0/live_switch_proof.json`, `results/exp0/live_sensor_proof.json`). **Network reachability from an external Kali VM host into the WSL guest is untested.** |
 | **Cowrie Event Telemetry** | **Verified in WSL** | Structured JSON logs (`var/log/cowrie/cowrie.json`) record real session events and can be monitored live via terminal `tail -f`. |
-| **Docker Compose Stack** | **NOT Operational End-to-End** | **Two architectural blockers prevent the Docker stack from functioning end-to-end as configured:**<br/>1. `infra/docker-compose.yml` runs the stock `cowrie/cowrie:v3.1.6` image rather than launching `sensor.run_sensor`, meaning **vanilla Cowrie runs in isolation and never invokes Gatekeeper.**<br/>2. `sensor/run_sensor.py` explicitly enforces loopback host validation (`urlparse(...).hostname != '127.0.0.1'`). In Docker, the service address is `http://gatekeeper:5000`, causing `run_sensor` to abort with a configuration error. |
+| **Docker Compose Stack** | **NOT Operational End-to-End** | **Direct inspection reveals four concrete issues blocking end-to-end container execution:**<br/>1. **Stock Image vs Custom Launcher**: `infra/docker-compose.yml` runs stock `cowrie/cowrie:v3.1.6`, which launches vanilla Cowrie in isolation and never invokes `sensor.run_sensor` or Gatekeeper.<br/>2. **Loopback Gatekeeper Enforcement**: `sensor/run_sensor.py:88-89` checks `urlparse(args.gatekeeper_url).hostname != '127.0.0.1'` and aborts via `parser.error()`. In Docker, the container address is `http://gatekeeper:5000`, which immediately aborts launcher startup.<br/>3. **Gatekeeper Volume Mounts & Silent ML Disablement**: `../analysis` is unmounted in Gatekeeper, causing an immediate `ImportError` on `PurePythonLogisticRegression`. Furthermore, `../models` is unmounted; `gatekeeper/decision_api.py:107` catches missing model files and silently sets `self.model = None`, falling back to heuristic rules without failing or logging an error. A strict startup model validation check is required.<br/>4. **Network Egress / Routing Uncertainty**: `internal_honeypot_net` is declared `internal: true` while publishing port `2222`. Docker internal bridges omit default gateways; bidirectional TCP routing back to the host interface remains an unverified hypothesis on Linux. *(Note: Gatekeeper itself requires zero third-party pip packages; policy, decision logic, and inference fallbacks run on pure Python standard library).* |
 | **Telemetry Dashboard** | **Static / File-Based Only** | `dashboard/app.py` reads `decision_log` from SQLite and falls back to `NO DATA` badges. **It has never been demonstrated with continuous live honeypot traffic.** |
 | **Policy Escalation Behavior** | **Conservative Default (T1 Only)** | Under the default pre-registered policy, sessions do not escalate to T2 because strict budget ceilings and default heuristic thresholds require high-activity indicators. For live demonstration, a controlled lab policy or explicit escalation trigger (Option 3) is required to exhibit T2 files. |
 
 #### Demonstration Deployment Strategy
 
-1. **Path A (Primary / Verified for Nov 24 Demonstration — Native WSL)**:
+1. **Path A (Primary / Low-Risk Strategy for Nov 24 Demonstration — Native WSL)**:
    Run all components natively inside WSL (where dependencies and loopback IPC are verified):
    - **Terminal 1**: `python -m gatekeeper.decision_api --host 127.0.0.1 --port 5000 --db gatekeeper/gatekeeper.db`
    - **Terminal 2**: `python -m sensor.run_sensor --state-dir var/cowrie --port 2222 --gatekeeper-url http://127.0.0.1:5000`
    - **Terminal 3**: `python dashboard/app.py`
    - **Terminal 4 / Kali VM**: Execute `harness/demo/run_lab_demo.sh` or individual adversary scripts against port `2222`.
    - **Terminal 5 (Evidence)**: `tail -f var/cowrie/log/cowrie.json`.
-   - *Advantage*: Eliminates container networking and custom image packaging risks for the demo.
+   - *Current Remaining Scope for Path A*: Testing external network reachability from the Kali VM to WSL port 2222, configuring the Option 3 demo escalation profile (so decoys visibly appear during the presentation), verifying dashboard live updates, and dry-run rehearsals.
 
-2. **Path B (Full Docker Containerization — Stretch Goal)**:
-   Containerizing `sensor.run_sensor` requires authoring a custom Dockerfile extending `cowrie/cowrie:v3.1.6`, packaging repository code and dependencies into the container, and updating network validation rules to allow inter-container DNS routing (`gatekeeper`). This remains deferred as post-demonstration infrastructure work.
+2. **Path B (Full Docker Containerization — Dual-Track Stretch Goal)**:
+   - Install Docker Desktop and verify the daemon via `docker run --rm hello-world`.
+   - Containerizing the full stack requires authoring a custom Dockerfile for the sensor extending `cowrie/cowrie:v3.1.6`, passing Gatekeeper DNS allowance flags to `run_sensor.py`, mounting `analysis/` and `models/`, adding an explicit startup model-validation check, and validating `internal: true` bridge routing.
+   - *Schedule*: Keep both paths open. If Docker end-to-end integration passes verification by Tue Nov 17, it can be demonstrated; otherwise, Path A (native WSL) is the reliable fallback.
 
 ---
 
@@ -308,10 +310,13 @@ bash harness/demo/run_lab_demo.sh
 ```
 
 ### Containerization Status (Docker Compose)
-Running `docker compose up` currently starts isolated services, but containerized end-to-end integration remains in development:
-1. `sensor` uses the stock `cowrie/cowrie:v3.1.6` image rather than launching `sensor.run_sensor`.
-2. `sensor.run_sensor` enforces loopback host validation (`127.0.0.1`), which rejects the Docker DNS service name `http://gatekeeper:5000`.
-Use **Path A (native WSL)** for verified end-to-end operation.
+Running `docker compose up` currently starts isolated containers, but containerized end-to-end integration is not operational:
+1. `sensor` runs stock `cowrie/cowrie:v3.1.6` instead of launching `sensor.run_sensor`.
+2. `sensor.run_sensor` validates `urlparse(args.gatekeeper_url).hostname != '127.0.0.1'`, aborting via `parser.error` on Docker's service name `http://gatekeeper:5000`.
+3. Gatekeeper volume mounts omit `../analysis` (causing `ImportError`) and `../models` (causing silent fallback to `self.model = None` where ML deactivates without a startup error).
+4. `internal_honeypot_net` (`internal: true`) requires physical verification for inbound port `2222` return routing.
+*(Gatekeeper requires no third-party pip dependencies, running on standard library and pure-Python modules).*
+Use **Path A (native WSL)** as the primary verified path while Docker containerization is developed.
 
 ### Reproduce Spike S1 Persona Switching PoC
 ```bash
