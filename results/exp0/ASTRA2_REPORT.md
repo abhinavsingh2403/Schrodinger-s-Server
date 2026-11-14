@@ -1,8 +1,11 @@
 # Astra second-block implementation report
 
-P0: DONE (metric audit and reruns; scientific validation remains inconclusive).
+P0: PARTLY (metric audit and reruns; scientific validation remains inconclusive).
 
 The old metric selected the exact ceiling budget and passed the new invariants. The mismatch was fixed-random-tie point recall versus expected-tie bootstrap. One expected boundary-tie function now serves both. The shuffled-training-label null is not a uniform random ranking: the finite-iteration constant-prevalence gradient control reproduces it. Optimizer/grid/labels/splits were not changed to force a desired result.
+
+> [!WARNING]
+> Permutation null mean recall (0.64909783) meets or exceeds observed recall (0.29196616); learned signal is indistinguishable from label-shuffle noise.
 
 Permutations: 200; observed recall 0.29196616; null mean 0.64909783, SD 0.00014698, range [0.64904231, 0.64949426]; upper-tail plus-one fraction 1.00000000. This is descriptive, not a calibrated clustered p-value.
 
@@ -25,11 +28,13 @@ Exact generated Gate 0 result:
 | S2 | 0.5497 | 0.5477 | 0.5632 | 0.5609 | -0.0135 | -0.0132 |
 | S3 | 0.2919 | 0.292 | 0.1151 | 0.1118 | 0.1768 | 0.1802 |
 
+*(Note: Old metrics preserved from frozen snapshot commit e2a8195: table_before_p0.csv)*
+
 Full confidence intervals and concentration limitations: P0_REPORT.md and ROBUSTNESS.md.
 
 Executed P0 commands: `python -m analysis.exp0_train --train-models`; `python -m analysis.exp0_permutation_null`; `python -m analysis.exp0_robustness` and `--supplement`; `python -m analysis.exp0_bootstrap_diag`; `python -m analysis.exp0_artifact_checks`; `python -m analysis.exp0_family_comparison`; `python -m analysis.metric_audit` before the change and `--after`; `python -m analysis.p0_report` to regenerate comparisons and interpretation. Numeric output is preserved in their JSON/table artifacts.
 
-P1: DONE (real loopback Cowrie).
+P1: PARTLY (real loopback Cowrie).
 
 The new launcher registers real transport/event hooks without editing pinned Cowrie. It uses the existing HTTP client, short timeout, loopback bindings and blocked Twisted outbound connections. T2 adds decoy files without overriding operator identity. The same real SSH transport was tested using sequential channels; this is not a concurrent-channel isolation proof.
 

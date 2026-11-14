@@ -179,14 +179,14 @@ def generate_report(
         if p.is_file() and p.suffix in (".json", ".md", ".csv") and p.name != "ASTRA2_MANIFEST.json"
     ) if root.is_dir() else []
 
-    model_files = [root / "model_s3.json", repo_root / "models" / "model_s3.json"]
+    model_files = [root / "model_s3.json", Path("models") / "model_s3.json"]
 
     manifest = {
         "head": git_head,
         "dirty": git_dirty,
         "source_sha256": {p.relative_to(repo_root).as_posix(): file_hash(p) for p in paths},
         "artifact_sha256": {p.name: file_hash(p) for p in artifact_files},
-        "model_sha256": {p.as_posix(): file_hash(p) for p in model_files},
+        "model_sha256": {p.as_posix(): file_hash(repo_root / p if not p.is_absolute() else p) for p in model_files},
         "permutation_seeds": null.get("seeds", []),
         "event_day_selection": study.get("selection"),
         "notes": "Hashes record final working source; P0 MANIFEST is historical run provenance. No push or tags.",
