@@ -501,3 +501,9 @@ Run each existing attacker unchanged with isolated temporary state and a fresh l
 
 ### 2026-11-15 — LAB_DEMO semantic trigger (supersedes prior lab thresholds)
 Choose PTY requested at S3 as the sole lab trigger, scored as a binary mechanism indicator. Successful authentication alone and command length/token count do not qualify. Captured interactive requests PTY; bot_like and transfer_like do not. Transfer_like remains T1: current adapter inputs do not identify transfer semantics and we reject tuning command lengths to distinguish it. No S5 evidence exists in these separate-command sessions. This is a LAB-only mechanism demonstration, not ML evidence. Lab thresholds win over model calibration; default policy and scoring stay unchanged.
+
+### 2026-11-15 — Persist engine-selected policy profile
+Record DEFAULT or LAB_DEMO from engine construction, never client input. Migrate old rows as UNKNOWN and constrain stored values. Return the profile even on fail-cheap responses so policy provenance remains explicit.
+
+### 2026-11-15 — Launcher identity from unified config
+Apply verified Cowrie environment keys from config/identity.yaml before initialization, with repository honeyfs resolved at runtime. Parse the required top-level scalar identity fields without a new dependency. Kernel build text uses the declared distro/release identity, since no build timestamp is declared; do not invent one. Capture actual SSH output before and after; no infra or honeyfs edits.

@@ -62,6 +62,7 @@ class DecisionEngine:
             self.salt = salt or os.environ.get("VISITOR_SALT", "schrodinger-dev-salt-2026").encode("utf-8")
         self.memory = memory or VisitorMemory(self.db_path, salt=self.salt)
         self.lab_mode = lab_mode
+        self.policy_profile = 'LAB_DEMO' if lab_mode else 'DEFAULT'
         self.policy = policy or (EscalationPolicy(config_path=Path(__file__).resolve().parent.parent / 'config/policy_lab.yaml')
                                  if lab_mode else EscalationPolicy(threshold_t2=0.50, threshold_t3=0.85))
         self.model = model
@@ -156,6 +157,8 @@ class DecisionEngine:
                 cols = [row[1] for row in cursor.fetchall()]
                 if "provenance" not in cols:
                     conn.execute("ALTER TABLE decision_log ADD COLUMN provenance TEXT NOT NULL DEFAULT 'UNKNOWN'")
+                if 'policy_profile' not in cols:
+                    conn.execute("ALTER TABLE decision_log ADD COLUMN policy_profile TEXT NOT NULL DEFAULT 'UNKNOWN' CHECK(policy_profile IN ('UNKNOWN','DEFAULT','LAB_DEMO'))")
         except Exception:
             pass
 
@@ -301,9 +304,9 @@ class DecisionEngine:
                 latency_ms = (time.perf_counter() - start_time) * 1000.0
                 conn.execute(
                     """INSERT INTO decision_log (
-                        session_id, visitor_id, stage, score, tier_decided, latency_ms, timestamp, provenance
-                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)""",
-                    (session_id, visitor_id, stage, score, target_tier, latency_ms, now, provenance))
+                        session_id, visitor_id, stage, score, tier_decided, latency_ms, timestamp, provenance, policy_profile
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)""",
+                    (session_id, visitor_id, stage, score, target_tier, latency_ms, now, provenance, self.policy_profile))
 
             return {
                 "session_id": session_id,
@@ -318,6 +321,7 @@ class DecisionEngine:
                 "latency_ms": round(latency_ms, 3),
                 "fail_cheap": False,
                 "budget": budget,
+                "policy_profile": self.policy_profile,
                 "provenance": provenance,
             }
 
@@ -331,6 +335,7 @@ class DecisionEngine:
                 "score": 0.0,
                 "score_source": "fail_cheap_fallback",
                 "model_name": "None",
+                "policy_profile": self.policy_profile,
                 "threshold_applied": 0.50,
                 "tier": current_tier if current_tier in ("T1", "T2", "T3") else "T1",
                 "target_tier": current_tier if current_tier in ("T1", "T2", "T3") else "T1",
