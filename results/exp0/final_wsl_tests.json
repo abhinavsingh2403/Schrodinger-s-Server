@@ -1,6 +1,6 @@
 {
   "command": [
-    "/home/kali/schrodinger/.venv/bin/python",
+    "python",
     "-m",
     "pytest",
     "-q"
@@ -74,5 +74,7 @@
     "sensor/adaptive_server.py": "173aeebdd431e7d0cc863f103d020cda6297cdb561ec4048cc31c2ba5192e68c",
     "sensor/test_adaptive_server.py": "5a0e3df5a5b88cdb35f82b2a88514681b78b1c7a1302b87abd2bfdf5757f22f3",
     "sensor/test_spike_s1_poc.py": "99f7017aed7d9b622be22d17bbc3dd4e5a0c4f55f96e945e4f9b0fb223e88e52"
-  }
+  },
+  "interpreter": "wsl-venv python",
+  "metadata_note": "Historical test output retained; interpreter path normalized for portability. This migration is not a new test run."
 }

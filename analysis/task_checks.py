@@ -15,7 +15,8 @@ def main():
     command = [sys.executable, '-m', 'pytest', '-q']
     run = subprocess.run(command, capture_output=True, text=True)
     output = run.stdout + run.stderr
-    result = {'command': command, 'exit_code': run.returncode, 'output': output,
+    output = output.replace(str(Path.cwd()), '<repo>').replace(str(Path.home()), '<home>')
+    result = {'command': ['python', '-m', 'pytest', '-q'], 'interpreter': 'python', 'exit_code': run.returncode, 'output': output,
         'python': platform.python_version(), 'platform': platform.system(),
         'source_sha256': {p.as_posix(): hashlib.sha256(p.read_bytes()).hexdigest()
             for folder in ('analysis', 'gatekeeper', 'sensor') for p in Path(folder).glob('*.py')}}

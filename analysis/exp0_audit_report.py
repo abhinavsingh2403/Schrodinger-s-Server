@@ -37,7 +37,7 @@ def verify_pins():
 def verify_tests():
     """Capture real suite output; never substitute an expected count."""
     result = subprocess.run([sys.executable, '-m', 'pytest', '-q', '-ra'], capture_output=True, text=True)
-    (ROOT / 'audit_tests.json').write_text(json.dumps({'command': f'{sys.executable} -m pytest -q -ra',
+    (ROOT / 'audit_tests.json').write_text(json.dumps({'command': 'python -m pytest -q -ra',
         'returncode': result.returncode, 'stdout': result.stdout, 'stderr': result.stderr}, indent=2) + '\n')
     print(result.stdout)
     if result.returncode:

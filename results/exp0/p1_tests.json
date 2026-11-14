@@ -1,6 +1,6 @@
 {
   "command": [
-    "C:\\Users\\abhip\\OneDrive\\Documents\\mini project\\.venv\\Scripts\\python.exe",
+    "python",
     "-m",
     "pytest",
     "-q"
@@ -71,5 +71,7 @@
     "sensor/spike_s1_poc.py": "dc8194061593709536153bdc848bb9cc7b61825d990d8cf23a88538927e24b80",
     "sensor/test_adaptive_server.py": "428d789cb81156e2d8f6f96797b311c62c295905179de1074d51a31d3fc8cb3e",
     "sensor/test_spike_s1_poc.py": "99f7017aed7d9b622be22d17bbc3dd4e5a0c4f55f96e945e4f9b0fb223e88e52"
-  }
+  },
+  "interpreter": "python",
+  "metadata_note": "Historical test output retained; interpreter path normalized for portability. This migration is not a new test run."
 }

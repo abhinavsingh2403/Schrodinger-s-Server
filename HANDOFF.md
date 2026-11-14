@@ -132,3 +132,12 @@ def test_policy_budget_ceiling_enforcement() -> None:
   - *Doubt*: Per Docker documentation on `--internal` bridge networks, Docker does not configure a default gateway on internal bridges, preventing any container from communicating outside the bridge. While host DNAT routes incoming packets into the container, return TCP packets to the host interface may be dropped by the kernel when routing tables lack a gateway.
   - *Recommendation for Human Review*: Verify on the target Linux machine whether bidirectional SSH traffic succeeds over `127.0.0.1:2222` with `internal: true`. If TCP resets occur, consider dual-homing the `sensor` (one ingress bridge for the published SSH port, and an internal bridge for unrouted Gatekeeper communication).
 
+
+
+## Codex review follow-up — REMAINING
+
+Q1 PARTLY: portable command metadata and historical evidence migration implemented; generated reports no longer contain the prior operator paths. Those paths remain in Git history; no history rewrite was performed.
+Evidence: results/exp0/q1_tests.json and q1_initial_tests.json preserve Windows runs; q1_wsl_tests.json preserves the passing WSL run. Windows still fails the existing decision-latency benchmark; documentation checks pass. No timing thresholds were weakened.
+REMAINING: resolve Windows latency gate and finish Q1 tracked-file privacy audit; implement Q2 independent-memory live proofs; Q3 evidence-derived statuses/warning/manifest robustness; Q4 concise interactive-demo handoff; optional Q5 package check; mandatory V clean committed-clone installation and live proofs.
+TODO(verify): V has NOT RUN; existing WSL validation is not clean-clone validation. Do not describe this follow-up as complete.
+Human next steps: review subsequent completed commits before pushing; decide separately whether to rewrite historical path exposure. No tags or push in this follow-up.

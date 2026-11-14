@@ -90,7 +90,7 @@ Validation commands and actual output:
 
 ## p0
 
-`C:\Users\abhip\OneDrive\Documents\mini project\.venv\Scripts\python.exe -m pytest -q`
+`python -m pytest -q`
 
 ```text
 ........................................................................ [ 51%]
@@ -100,7 +100,7 @@ Validation commands and actual output:
 
 ## p1
 
-`C:\Users\abhip\OneDrive\Documents\mini project\.venv\Scripts\python.exe -m pytest -q`
+`python -m pytest -q`
 
 ```text
 ........................................................................ [ 51%]
@@ -110,7 +110,7 @@ Validation commands and actual output:
 
 ## p1_wsl
 
-`/home/kali/schrodinger/.venv/bin/python -m pytest -q`
+`python -m pytest -q`
 
 ```text
 ........................................................................ [ 51%]
@@ -120,7 +120,7 @@ Validation commands and actual output:
 
 ## p2
 
-`C:\Users\abhip\OneDrive\Documents\mini project\.venv\Scripts\python.exe -m pytest -q`
+`python -m pytest -q`
 
 ```text
 ........................................................................ [ 50%]
@@ -130,7 +130,7 @@ Validation commands and actual output:
 
 ## p3
 
-`C:\Users\abhip\OneDrive\Documents\mini project\.venv\Scripts\python.exe -m pytest -q`
+`python -m pytest -q`
 
 ```text
 ........................................................................ [ 49%]
@@ -141,7 +141,7 @@ Validation commands and actual output:
 
 ## p4
 
-`C:\Users\abhip\OneDrive\Documents\mini project\.venv\Scripts\python.exe -m pytest -q`
+`python -m pytest -q`
 
 ```text
 ........................................................................ [ 48%]
@@ -152,7 +152,7 @@ Validation commands and actual output:
 
 ## final_windows
 
-`C:\Users\abhip\OneDrive\Documents\mini project\.venv\Scripts\python.exe -m pytest -q`
+`python -m pytest -q`
 
 ```text
 ........................................................................ [ 48%]
@@ -163,7 +163,7 @@ Validation commands and actual output:
 
 ## final_wsl
 
-`/home/kali/schrodinger/.venv/bin/python -m pytest -q`
+`python -m pytest -q`
 
 ```text
 ........................................................................ [ 48%]
