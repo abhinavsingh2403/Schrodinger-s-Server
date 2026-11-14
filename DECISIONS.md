@@ -447,3 +447,12 @@ Document event-driven opportunities and visible filesystem overlays from the lau
 
 ### 2026-11-14 — Historical S2 evidence audit
 Inspect the retained SQLite database read-only and export only stage, score, tier and schema evidence. Replay the pre-durable-budget policy using recorded scores, explicitly assuming fresh counters and T1 memory. Do not infer a recovered runtime snapshot from mutable visitor rows; distinguish reproducible explanation from proven historical process state.
+
+### 2026-11-14: Explicit SYNTHETIC provenance labeling for offline UI test probes
+- **Status**: ACCEPTED
+- **Owner**: P2/P3 (Gatekeeper / Dashboard Lead)
+- **Context**: `harness/demo/populate_demo_db.py` creates scripted probe dictionaries for pipeline and dashboard verification. Mislabeling them as "authentic lab decisions" violates AGENTS.md Rules 1 & 2.
+- **Decision**: Update `populate_demo_db.py` to label all probe sessions with prefix `sess_synth_` and provenance `SYNTHETIC`. Update `dashboard/app.py` and `index.html` to automatically detect synthetic sessions and render a dedicated amber `SYNTHETIC` badge.
+- **Alternatives considered**: Deleting `populate_demo_db.py` entirely (rejected: offline UI rendering and integration tests need non-empty DB fixtures).
+- **Why**: Strict truthfulness under AGENTS.md Rules 1, 2, and 19. Prevents confusion between scripted test probes and genuine empirical honeypot traffic.
+- **Consequences**: `gatekeeper.db` when populated via `populate_demo_db.py` cleanly declares itself `SYNTHETIC` in all API responses and UI panels.
