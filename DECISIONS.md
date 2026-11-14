@@ -482,3 +482,16 @@ Inspect the retained SQLite database read-only and export only stage, score, tie
 - **Alternatives considered**: Continuing to use `'LAB'` as fallback (rejected: violates AGENTS.md Rule 1 and Rule 2 truthfulness; unverified or missing provenance must fail-closed as `UNKNOWN`).
 - **Why**: Strict fail-closed provenance guarantees that neither missing metadata nor command-line flags can elevate unverified or lab data to authentic live status.
 - **Consequences**: Verified with 8 gatekeeper tests, 18 dashboard tests, and 7 sensor tests (209 total suite passes). Legacy or omitted provenance safely becomes `UNKNOWN`.
+
+### 2026-11-15: Lab sensor provenance default to LAB and reservation of LIVE for VPS trial
+- **Status**: ACCEPTED
+- **Owner**: P1/P3 (Honeypot Sensor & Security Lead)
+- **Context**: `sensor/run_sensor.py` is a loopback-only lab launcher used for local integration and automated lab runs. Tagging its decisions as `'LIVE'` risked falsely representing synthetic or lab loopback sessions as internet-facing telemetry.
+- **Decision**:
+  1. Default `run_sensor.py` and `LifecycleBridge` decisions to `'LAB'`.
+  2. Add `--provenance` CLI option to `run_sensor.py` with choices `['LAB', 'LIVE']` defaulting to `'LAB'`. The `'LIVE'` label is strictly reserved for the gated public VPS honeypot trial with real internet-facing adversary traffic.
+  3. Remove default value from `AdaptiveSessionAdapter` parameter `provenance` (`*, provenance: str`), requiring all callers to supply the provenance label explicitly.
+  4. Update `harness/replay/replay_engine.py` and sensor unit tests to supply `provenance="LAB"` explicitly.
+- **Alternatives considered**: Retaining `'LIVE'` as default in `AdaptiveSessionAdapter` (rejected: silently defaults local lab adapters to live status, violating AGENTS.md Rules 1 & 2 on truthfulness).
+- **Why**: Strict separation between loopback lab executions and authenticated public-facing VPS trials ensures zero misattribution in decision logs and dashboards.
+- **Consequences**: Decisions made via `run_sensor.py` are labeled `'LAB'` by default. Only an explicit `--provenance LIVE` invocation during the internet-facing deployment can emit `'LIVE'` decisions.

@@ -16,10 +16,11 @@ from gatekeeper.feature_extractor import SessionFeatureExtractor
 
 class LifecycleBridge:
     """Keep one decision state per SSH transport, including pre-authentication events."""
-    def __init__(self, client, personas=None):
+    def __init__(self, client, personas=None, provenance='LAB'):
         from sensor.adaptive_server import PersonaManager
         self.client = client
         self.personas = personas or PersonaManager()
+        self.provenance = provenance
         self.sessions = {}
 
     def event(self, event):
@@ -30,7 +31,7 @@ class LifecycleBridge:
         name = event.get('eventid')
         if name == 'cowrie.session.connect' and sid not in self.sessions:
             self.sessions[sid] = (AdaptiveSessionAdapter(str(event['src_ip']), str(sid),
-                self.client, self.personas, provenance='LIVE'), SessionFeatureExtractor())
+                self.client, self.personas, provenance=self.provenance), SessionFeatureExtractor())
         if sid not in self.sessions:
             return
         adapter, extractor = self.sessions[sid]
@@ -79,11 +80,18 @@ def install(bridge):
     HoneyPotSSHTransport.ssh_NEWKEYS = newkeys
 
 
-def main():
+def make_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--state-dir', type=Path, required=True)
     parser.add_argument('--gatekeeper-url', default='http://127.0.0.1:5000')
     parser.add_argument('--port', type=int, default=2222)
+    parser.add_argument('--provenance', default='LAB', choices=['LAB', 'LIVE'],
+                        help='Decision provenance label (default: LAB; LIVE reserved for gated VPS trial)')
+    return parser
+
+
+def main():
+    parser = make_parser()
     args = parser.parse_args()
     gk_host = urlparse(args.gatekeeper_url).hostname
     if gk_host not in ('127.0.0.1', 'localhost', 'gatekeeper'):
@@ -108,7 +116,7 @@ def main():
     reactor.connectSSL = blocked
     reactor.listenUDP = blocked
     reactor.resolve = lambda *a, **kw: defer.fail(PermissionError('DNS disabled in adaptive lab launcher'))
-    install(LifecycleBridge(GatekeeperClient(base_url=args.gatekeeper_url, timeout=.2)))
+    install(LifecycleBridge(GatekeeperClient(base_url=args.gatekeeper_url, timeout=.2), provenance=args.provenance))
     from twisted.scripts import twistd
     sys.argv = ['twistd', '-n', '--umask=0022', '--pidfile', 'var/run/adaptive.pid',
                 '--logger', 'cowrie.python.logfile.stdoutLogger', 'cowrie']

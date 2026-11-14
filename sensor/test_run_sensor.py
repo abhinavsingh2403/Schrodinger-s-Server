@@ -96,3 +96,46 @@ def test_host_allowlist_rejects_forbidden_targets(
     assert exc_info.value.code == 2
     captured = capsys.readouterr()
     assert "This lab launcher only permits loopback (127.0.0.1/localhost) or gatekeeper container" in captured.err
+
+
+def test_run_sensor_provenance_cli_default_lab(tmp_path: Path) -> None:
+    """Verify run_sensor CLI defaults --provenance to LAB."""
+    parser = run_sensor.make_parser()
+    args = parser.parse_args(["--state-dir", str(tmp_path), "--gatekeeper-url", "http://127.0.0.1:5000"])
+    assert args.provenance == "LAB"
+
+
+def test_run_sensor_provenance_cli_live_option(tmp_path: Path) -> None:
+    """Verify run_sensor CLI accepts --provenance LIVE for gated VPS trial."""
+    parser = run_sensor.make_parser()
+    args = parser.parse_args(["--state-dir", str(tmp_path), "--gatekeeper-url", "http://127.0.0.1:5000", "--provenance", "LIVE"])
+    assert args.provenance == "LIVE"
+
+
+def test_run_sensor_provenance_cli_invalid_rejected(tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]) -> None:
+    """Verify run_sensor CLI rejects invalid --provenance with SystemExit(2)."""
+    parser = run_sensor.make_parser()
+    with pytest.raises(SystemExit) as exc_info:
+        parser.parse_args(["--state-dir", str(tmp_path), "--provenance", "FORGED"])
+
+    assert exc_info.value.code == 2
+    captured = capsys.readouterr()
+    assert "invalid choice: 'FORGED'" in captured.err
+
+
+def test_lifecycle_bridge_provenance_default_and_forwarding() -> None:
+    """Verify LifecycleBridge defaults provenance to LAB and passes it to AdaptiveSessionAdapter."""
+    bridge = run_sensor.LifecycleBridge(client=None)
+    assert bridge.provenance == "LAB"
+
+    # Simulate connect event
+    event = {
+        "eventid": "cowrie.session.connect",
+        "session": "sess_bridge_test",
+        "src_ip": "127.0.0.1",
+    }
+    bridge.event(event)
+    assert "sess_bridge_test" in bridge.sessions
+    adapter, _ = bridge.sessions["sess_bridge_test"]
+    assert adapter.provenance == "LAB"
+

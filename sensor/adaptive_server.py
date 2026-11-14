@@ -170,8 +170,11 @@ class AdaptiveSessionAdapter:
         decision_engine: Any = None,
         persona_manager: Optional[PersonaManager] = None,
         on_tier_changed: Optional[Any] = None,
-        provenance: str = "LIVE",
+        *,
+        provenance: str,
     ) -> None:
+        if provenance not in ("SYNTHETIC", "LAB", "LIVE", "UNKNOWN"):
+            raise ValueError(f"Invalid provenance {provenance!r}; must be one of ('SYNTHETIC', 'LAB', 'LIVE', 'UNKNOWN')")
         self.visitor_ip = visitor_ip
         self.session_id = session_id
         self.provenance = provenance
@@ -329,7 +332,7 @@ if COWRIE_AVAILABLE and shellsession is not None:
                 self.persona_manager = self.adapter.persona_manager
             else:
                 self.persona_manager = PersonaManager()
-                self.adapter = AdaptiveSessionAdapter(visitor_ip, session_id, decision_engine, self.persona_manager)
+                self.adapter = AdaptiveSessionAdapter(visitor_ip, session_id, decision_engine, self.persona_manager, provenance="LAB")
             self.adapter.on_tier_changed = self._on_tier_escalated
             self.lifecycle = lifecycle
 

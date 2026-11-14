@@ -46,6 +46,7 @@ def test_adaptive_session_escalation_flow():
             session_id="sess_001",
             decision_engine=engine,
             persona_manager=pm,
+            provenance="LAB",
         )
 
         # Starts at T1
@@ -79,6 +80,7 @@ def test_adaptive_session_monotone_upward_invariant():
             session_id="sess_002",
             decision_engine=engine,
             persona_manager=pm,
+            provenance="LAB",
         )
 
         # Manually force escalation to T2
@@ -105,6 +107,7 @@ def test_adaptive_session_fail_cheap_guarantee():
             session_id="sess_003",
             decision_engine=BrokenEngine(),
             persona_manager=pm,
+            provenance="LAB",
         )
 
         # Triggers decision with broken engine
@@ -128,6 +131,7 @@ def test_adaptive_session_full_lifecycle_visitor_memory_persistence():
             session_id="sess_lifecycle_01",
             decision_engine=engine,
             persona_manager=pm,
+            provenance="LAB",
         )
         adapter1.on_kex_completed(client_version="SSH-2.0-OpenSSH_8.9", hassh="12345")
         adapter1.on_auth_completed(success=True, failed_count=5, username="root")
@@ -152,6 +156,7 @@ def test_adaptive_session_full_lifecycle_visitor_memory_persistence():
             session_id="sess_lifecycle_02",
             decision_engine=engine,
             persona_manager=pm,
+            provenance="LAB",
         )
         assert adapter2.visitor_ip == ip
         # Memory lookup in decide recognizes returning visitor
@@ -174,6 +179,7 @@ def test_adaptive_session_tier_changed_callback():
             decision_engine=None,
             persona_manager=pm,
             on_tier_changed=callback,
+            provenance="LAB",
         )
 
         assert adapter.current_tier == "T1"
@@ -186,32 +192,65 @@ def test_adaptive_session_tier_changed_callback():
         assert escalations[0][0] == "T2"
 
 
-def test_adaptive_session_live_provenance_explicit():
-    """Verify live sensor path AdaptiveSessionAdapter records provenance='LIVE' explicitly."""
+def test_adaptive_session_requires_explicit_provenance():
+    """Verify AdaptiveSessionAdapter requires explicit provenance and writes it to decision log."""
     import sqlite3
     with tempfile.TemporaryDirectory() as tmp_dir:
-        db_path = os.path.join(tmp_dir, "sensor_live.db")
+        db_path = os.path.join(tmp_dir, "sensor_prov.db")
         memory = VisitorMemory(db_path=db_path)
         engine = DecisionEngine(db_path=db_path, memory=memory)
         pm = PersonaManager(base_dir=tmp_dir)
 
-        adapter = AdaptiveSessionAdapter(
+        # 1. Omitting provenance parameter raises TypeError
+        with pytest.raises(TypeError, match="provenance"):
+            AdaptiveSessionAdapter(  # type: ignore[call-arg]
+                visitor_ip="198.51.100.98",
+                session_id="sess_missing_prov",
+                decision_engine=engine,
+                persona_manager=pm,
+            )
+
+        # 2. Invalid provenance raises ValueError
+        with pytest.raises(ValueError, match="Invalid provenance"):
+            AdaptiveSessionAdapter(
+                visitor_ip="198.51.100.98",
+                session_id="sess_bad_prov",
+                decision_engine=engine,
+                persona_manager=pm,
+                provenance="INVALID_TAG",
+            )
+
+        # 3. Explicit LAB provenance (default lab launcher) writes LAB to SQLite
+        adapter_lab = AdaptiveSessionAdapter(
             visitor_ip="198.51.100.99",
-            session_id="sess_live_sensor_01",
+            session_id="sess_lab_sensor_01",
+            decision_engine=engine,
+            persona_manager=pm,
+            provenance="LAB",
+        )
+        assert adapter_lab.provenance == "LAB"
+        adapter_lab.on_kex_completed(client_version="SSH-2.0-OpenSSH_8.9", hassh="test_hassh")
+
+        conn = sqlite3.connect(db_path)
+        row = conn.execute("SELECT provenance FROM decision_log WHERE session_id = 'sess_lab_sensor_01'").fetchone()
+        conn.close()
+        assert row is not None
+        assert row[0] == "LAB"
+
+        # 4. Explicit LIVE provenance (reserved for gated VPS trial) writes LIVE to SQLite
+        adapter_live = AdaptiveSessionAdapter(
+            visitor_ip="198.51.100.100",
+            session_id="sess_live_vps_01",
             decision_engine=engine,
             persona_manager=pm,
             provenance="LIVE",
         )
-        assert adapter.provenance == "LIVE"
+        assert adapter_live.provenance == "LIVE"
+        adapter_live.on_kex_completed(client_version="SSH-2.0-OpenSSH_8.9", hassh="test_hassh")
 
-        # Trigger stage decision via adapter
-        adapter.on_kex_completed(client_version="SSH-2.0-OpenSSH_8.9", hassh="test_hassh")
-
-        # Verify row in SQLite has provenance='LIVE'
         conn = sqlite3.connect(db_path)
-        row = conn.execute("SELECT provenance FROM decision_log WHERE session_id = 'sess_live_sensor_01'").fetchone()
+        row_live = conn.execute("SELECT provenance FROM decision_log WHERE session_id = 'sess_live_vps_01'").fetchone()
         conn.close()
-
-        assert row is not None
-        assert row[0] == "LIVE"
+        assert row_live is not None
+        assert row_live[0] == "LIVE"
 

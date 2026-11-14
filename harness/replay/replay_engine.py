@@ -124,6 +124,7 @@ class BotnetReplayEngine:
             session_id=f"replay_{trace.name}",
             decision_engine=self.decision_engine,
             persona_manager=self.persona_manager,
+            provenance="LAB",
         )
 
         starting_tier = adapter.current_tier
