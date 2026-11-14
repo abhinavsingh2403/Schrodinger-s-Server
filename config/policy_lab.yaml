@@ -1,5 +1,5 @@
 # policy_lab.yaml: LAB MODE thresholds for live demonstrations
-# Lower thresholds so interactive attackers visibly trigger T2 escalation
+# LAB mechanism demo only: binary PTY-request indicator; not ML evidence.
 # Use with: python -m gatekeeper.decision_api --lab-mode
 #
 # Production thresholds remain in policy.yaml (unchanged).
@@ -13,11 +13,11 @@ budget:
 thresholds:
   tau_v2:
     S0: 0.50
-    S1: 0.40
-    S2: 0.15                          # Login success (score 0.70) easily triggers T2
-    S3: 0.04                          # Matches ML model's calibrated 10% budget threshold
-    S4: 0.15
-    S5: 0.10
+    S1: 0.50
+    S2: 0.50
+    S3: 0.50
+    S4: 0.50
+    S5: 0.50
   tau_v3:
     S0: 0.98
     S1: 0.95

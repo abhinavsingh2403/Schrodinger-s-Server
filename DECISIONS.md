@@ -498,3 +498,6 @@ Inspect the retained SQLite database read-only and export only stage, score, tie
 
 ### 2026-11-15 — Capture lab policy evidence before redesign
 Run each existing attacker unchanged with isolated temporary state and a fresh lab-policy database. Record masked decision rows and replay Cowrie events through both the shared extractor and the actual lifecycle adapter, distinguishing their command-stage vectors. This observation step selects no trigger and changes no policy.
+
+### 2026-11-15 — LAB_DEMO semantic trigger (supersedes prior lab thresholds)
+Choose PTY requested at S3 as the sole lab trigger, scored as a binary mechanism indicator. Successful authentication alone and command length/token count do not qualify. Captured interactive requests PTY; bot_like and transfer_like do not. Transfer_like remains T1: current adapter inputs do not identify transfer semantics and we reject tuning command lengths to distinguish it. No S5 evidence exists in these separate-command sessions. This is a LAB-only mechanism demonstration, not ML evidence. Lab thresholds win over model calibration; default policy and scoring stay unchanged.

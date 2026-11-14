@@ -53,6 +53,7 @@ class DecisionEngine:
         model: Any | None = None,
         model_path: str | Path | None = None,
         memory: VisitorMemory | None = None,
+        lab_mode: bool = False,
     ) -> None:
         self.db_path = str(db_path or getattr(memory, 'db_path', 'gatekeeper/gatekeeper.db'))
         if isinstance(salt, str):
@@ -60,7 +61,9 @@ class DecisionEngine:
         else:
             self.salt = salt or os.environ.get("VISITOR_SALT", "schrodinger-dev-salt-2026").encode("utf-8")
         self.memory = memory or VisitorMemory(self.db_path, salt=self.salt)
-        self.policy = policy or EscalationPolicy(threshold_t2=0.50, threshold_t3=0.85)
+        self.lab_mode = lab_mode
+        self.policy = policy or (EscalationPolicy(config_path=Path(__file__).resolve().parent.parent / 'config/policy_lab.yaml')
+                                 if lab_mode else EscalationPolicy(threshold_t2=0.50, threshold_t3=0.85))
         self.model = model
         self.model_metadata: dict[str, Any] = {}
         if self.model is None:
@@ -78,7 +81,8 @@ class DecisionEngine:
                     self.model = loaded_model
                     self.model_metadata = metadata
                     calibrated_th = float(metadata.get("threshold_10pct_budget", 0.045197))
-                    self.policy.thresholds_v2["S3"] = calibrated_th
+                    if not self.lab_mode:
+                        self.policy.thresholds_v2["S3"] = calibrated_th
                     return
                 except Exception:
                     pass
@@ -102,7 +106,8 @@ class DecisionEngine:
                     self.model_metadata = metadata
                     # Calibrated 10% escalation budget threshold from validation set
                     calibrated_th = float(metadata.get("threshold_10pct_budget", 0.045197))
-                    self.policy.thresholds_v2["S3"] = calibrated_th
+                    if not self.lab_mode:
+                        self.policy.thresholds_v2["S3"] = calibrated_th
                     return
                 except Exception:
                     pass
@@ -159,6 +164,9 @@ class DecisionEngine:
         
         Returns (score, score_source, model_name).
         """
+        if self.lab_mode:
+            requested = stage == 'S3' and features.get('s3_has_pty', features.get('has_pty', 0)) > 0
+            return float(requested), 'lab_pty_mechanism', 'LAB_DEMO_NOT_ML'
         # 1. Learned ML model (S3 Post-Auth Channel Setup)
         if self.model is not None and stage == "S3":
             try:
@@ -516,7 +524,7 @@ def run_server(
         print(f"[LAB MODE] S2 threshold: {policy.get_threshold_t2('S2')}, "
               f"S3 threshold: {policy.get_threshold_t2('S3')}, "
               f"budget: {policy.max_escalation_fraction:.0%}")
-        engine = DecisionEngine(db_path=db_path, policy=policy)
+        engine = DecisionEngine(db_path=db_path, policy=policy, lab_mode=True)
     else:
         engine = DecisionEngine(db_path=db_path)
     server = http.server.HTTPServer((host, port), GatekeeperHTTPHandler)
