@@ -1,0 +1,9 @@
+{
+  "provenance": "LAB actual SSH stdout",
+  "command": "cat /opt/deploy/config.env",
+  "returncode": 1,
+  "stdout": "cat: /opt/deploy/config.env: No such file or directory\n",
+  "cowrie_command_inputs": [
+    "cat /opt/deploy/config.env"
+  ]
+}
