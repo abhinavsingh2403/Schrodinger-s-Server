@@ -1,0 +1,38 @@
+{
+  "platform": "Windows",
+  "runs": [
+    {
+      "p50_ms": 3.896,
+      "p95_ms": 4.672,
+      "p99_ms": 7.471,
+      "exit_code": 0
+    },
+    {
+      "p50_ms": 3.907,
+      "p95_ms": 4.839,
+      "p99_ms": 17.469,
+      "exit_code": 0
+    },
+    {
+      "p50_ms": 3.673,
+      "p95_ms": 4.409,
+      "p99_ms": 12.827,
+      "exit_code": 0
+    },
+    {
+      "p50_ms": 3.636,
+      "p95_ms": 4.328,
+      "p99_ms": 10.598,
+      "exit_code": 0
+    },
+    {
+      "p50_ms": 3.601,
+      "p95_ms": 4.218,
+      "p99_ms": 5.085,
+      "exit_code": 0
+    }
+  ],
+  "median_p50_ms": 3.673,
+  "max_p99_ms": 17.469,
+  "scope": "Maximum reported p99 across runs, not maximum individual request latency; localhost HTTP overhead excluded."
+}

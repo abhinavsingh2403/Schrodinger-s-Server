@@ -1,0 +1,38 @@
+{
+  "platform": "Linux",
+  "runs": [
+    {
+      "p50_ms": 4.021,
+      "p95_ms": 7.362,
+      "p99_ms": 9.115,
+      "exit_code": 0
+    },
+    {
+      "p50_ms": 3.937,
+      "p95_ms": 7.561,
+      "p99_ms": 10.062,
+      "exit_code": 0
+    },
+    {
+      "p50_ms": 3.79,
+      "p95_ms": 6.406,
+      "p99_ms": 9.157,
+      "exit_code": 0
+    },
+    {
+      "p50_ms": 3.483,
+      "p95_ms": 5.165,
+      "p99_ms": 7.548,
+      "exit_code": 0
+    },
+    {
+      "p50_ms": 3.074,
+      "p95_ms": 4.535,
+      "p99_ms": 6.62,
+      "exit_code": 0
+    }
+  ],
+  "median_p50_ms": 3.79,
+  "max_p99_ms": 10.062,
+  "scope": "Maximum reported p99 across runs, not maximum individual request latency; localhost HTTP overhead excluded."
+}
