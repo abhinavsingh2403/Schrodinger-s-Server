@@ -105,11 +105,14 @@ def test_run_sensor_provenance_cli_default_lab(tmp_path: Path) -> None:
     assert args.provenance == "LAB"
 
 
-def test_run_sensor_provenance_cli_live_option(tmp_path: Path) -> None:
-    """Verify run_sensor CLI accepts --provenance LIVE for gated VPS trial."""
+def test_run_sensor_provenance_cli_live_rejected_until_vps_trial(tmp_path: Path, capsys: pytest.CaptureFixture[str]) -> None:
+    """Verify run_sensor CLI rejects --provenance LIVE until the gated VPS trial."""
     parser = run_sensor.make_parser()
-    args = parser.parse_args(["--state-dir", str(tmp_path), "--gatekeeper-url", "http://127.0.0.1:5000", "--provenance", "LIVE"])
-    assert args.provenance == "LIVE"
+    with pytest.raises(SystemExit) as exc_info:
+        parser.parse_args(["--state-dir", str(tmp_path), "--gatekeeper-url", "http://127.0.0.1:5000", "--provenance", "LIVE"])
+    assert exc_info.value.code == 2
+    captured = capsys.readouterr()
+    assert "invalid choice: 'LIVE'" in captured.err
 
 
 def test_run_sensor_provenance_cli_invalid_rejected(tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]) -> None:

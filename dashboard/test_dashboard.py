@@ -124,7 +124,7 @@ def test_dashboard_synthetic_provenance_marking():
         server = DashboardServer(db_path=db_path, port=0, mode="LAB")
         decisions_data = server.get_decisions_data()
         assert decisions_data["status"] == "ok"
-        # Must be detected as SYNTHETIC via column, never mislabeled as authentic LAB or LIVE
+        # Must be detected as SYNTHETIC via column, never mislabeled as LAB or LIVE
         assert decisions_data["source"] == "SYNTHETIC"
         assert decisions_data["decisions"][0]["provenance"] == "SYNTHETIC"
 
@@ -157,7 +157,7 @@ def test_dashboard_mixed_rows_provenance():
         engine = DecisionEngine(db_path=mixed_db, memory=memory)
 
         # Record 1 LAB row and 1 SYNTHETIC row
-        engine.decide(session_id="sess_real_lab_01", source_ip="127.0.0.1", stage="S1", provenance="LAB")
+        engine.decide(session_id="sess_test_lab_01", source_ip="127.0.0.1", stage="S1", provenance="LAB")
         engine.decide(session_id="sess_scripted_02", source_ip="192.0.2.20", stage="S1", provenance="SYNTHETIC")
 
         server = DashboardServer(db_path=mixed_db, port=0, mode="LAB")
@@ -170,7 +170,7 @@ def test_dashboard_mixed_rows_provenance():
 
         # Verify per-row provenance is read and preserved
         row_provs = {d["session_id"]: d["provenance"] for d in decisions_data["decisions"]}
-        assert row_provs["sess_real_lab_01"] == "LAB"
+        assert row_provs["sess_test_lab_01"] == "LAB"
         assert row_provs["sess_scripted_02"] == "SYNTHETIC"
 
         # Stats endpoint returns MIXED aggregate source
@@ -255,7 +255,7 @@ def test_dashboard_lab_only_db_under_mode_live_not_labeled_live():
         memory = VisitorMemory(db_path=lab_db)
         engine = DecisionEngine(db_path=lab_db, memory=memory)
 
-        # Populate authentic LAB decisions
+        # Populate LAB decisions
         engine.decide(session_id="sess_lab_01", source_ip="127.0.0.1", stage="S1", provenance="LAB")
         engine.decide(session_id="sess_lab_02", source_ip="127.0.0.1", stage="S2", provenance="LAB")
 

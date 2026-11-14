@@ -3,7 +3,7 @@ Read-Only Results Dashboard for Schrödinger's Server.
 Pre-registered in SPEC.md Section 4 and AGENTS.md Rule 19.
 
 Rules enforced:
-- Every panel is explicitly labeled RECORDED, LAB, or LIVE.
+- Every panel is explicitly labeled RECORDED, LAB, LIVE, SYNTHETIC, MIXED, or UNKNOWN.
 - All attacker identifiers are cryptographically masked (vis_xxxx); zero raw IPs exposed.
 - Impeccable dark-mode UI with high data density and zero external npm/pip dependencies.
 - Zero fabricated data: all figures originate from results/*.json or SQLite decision log.
@@ -352,7 +352,7 @@ class DashboardServer:
 <head><title>Schrödinger's Server</title></head>
 <body>
   <h1>Schrödinger's Server // Cyber Protocol</h1>
-  <span>RECORDED</span><span>LAB</span><span>LIVE</span>
+  <span>RECORDED</span><span>LAB</span><span>LIVE</span><span>SYNTHETIC</span><span>MIXED</span><span>UNKNOWN</span>
   <div>Yield per Rupee Optimization</div>
   <div>NO DATA</div>
 </body>

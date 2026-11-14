@@ -85,7 +85,7 @@ def make_parser() -> argparse.ArgumentParser:
     parser.add_argument('--state-dir', type=Path, required=True)
     parser.add_argument('--gatekeeper-url', default='http://127.0.0.1:5000')
     parser.add_argument('--port', type=int, default=2222)
-    parser.add_argument('--provenance', default='LAB', choices=['LAB', 'LIVE'],
+    parser.add_argument('--provenance', default='LAB', choices=['LAB'],
                         help='Decision provenance label (default: LAB; LIVE reserved for gated VPS trial)')
     return parser
 

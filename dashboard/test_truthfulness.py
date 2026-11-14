@@ -82,7 +82,7 @@ def test_no_base_rates_literals_in_dashboard():
 
 
 def test_each_api_panel_payload_includes_source_key():
-    """Verify each API panel payload in app.py includes a `source` key with one of RECORDED, LAB, LIVE."""
+    """Verify each API panel payload in app.py includes a `source` key with one of RECORDED, LAB, LIVE, SYNTHETIC, MIXED, or UNKNOWN."""
     with tempfile.TemporaryDirectory() as tmp_dir:
         db_path = os.path.join(tmp_dir, "dash.db")
         server = DashboardServer(db_path=db_path, port=0)
