@@ -141,3 +141,23 @@ Evidence: results/exp0/q1_tests.json and q1_initial_tests.json preserve Windows 
 REMAINING: resolve Windows latency gate and finish Q1 tracked-file privacy audit; implement Q2 independent-memory live proofs; Q3 evidence-derived statuses/warning/manifest robustness; Q4 concise interactive-demo handoff; optional Q5 package check; mandatory V clean committed-clone installation and live proofs.
 TODO(verify): V has NOT RUN; existing WSL validation is not clean-clone validation. Do not describe this follow-up as complete.
 Human next steps: review subsequent completed commits before pushing; decide separately whether to rewrite historical path exposure. No tags or push in this follow-up.
+
+## Gemini worktree evaluation notes (Tasks M1 & M2)
+
+### Task M1: Decision latency benchmark measurement
+- **Test ID**: `gatekeeper/test_model_inference_parity.py::test_decision_latency_benchmark`
+- **Thresholds**: Pure ML inference `p50 < 0.05ms` (50 us); Full decision pipeline `p50 < 6.0ms`, `p95 < 12.0ms`.
+- **Windows (5 isolated runs)**:
+  - Pipeline p50 per run: [3.788, 3.812, 4.167, 4.151, 4.157] ms
+  - Pipeline p50 median: 4.151 ms, max: 4.167 ms (Pipeline p95 max: 6.545 ms, p99 max: 15.838 ms; Pure ML p50: 1.60 us)
+  - Isolated pass/fail: 5 passed, 0 failed (5/5).
+- **WSL (5 isolated runs)**:
+  - Pipeline p50 per run: [3.464, 3.096, 2.943, 3.199, 3.928] ms
+  - Pipeline p50 median: 3.199 ms, max: 3.928 ms (Pipeline p95 max: 6.701 ms, p99 max: 10.447 ms; Pure ML p50: 1.05 us)
+  - Isolated pass/fail: 5 passed, 0 failed (5/5).
+- **Diagnosis**: Hypothesis: The intermittent test failure on Windows during full-suite runs (recorded p50=49.309ms vs 6.0ms threshold) is an OS benchmark timing artifact caused by SQLite WAL disk flush and NTFS tempfile I/O contention under concurrent test suite load, rather than an algorithmic or pure ML slowdown (pure ML inference p50 is 1.60 us on Windows and 1.05 us on WSL).
+
+### Task M2: WSL package check
+- Output of `python -c "import sklearn; print(sklearn.__version__)"` in WSL `.venv`: `ModuleNotFoundError: No module named 'sklearn'`
+- TODO(human): install scikit-learn in the WSL venv
+
