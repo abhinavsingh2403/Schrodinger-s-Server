@@ -242,3 +242,4 @@ D NOT RUN: rerun revised LAB_DEMO and DEFAULT on fresh per-scenario state; gener
 E NOT STARTED: mark superseded decisions, correct provenance flag claim, fix only README tail log paths. API provenance remains client supplied; presentation wording must say launcher-level enforcement.
 Attacker owner: interactive currently opens one connection per command; sustained-session command-count demonstrations require a separate harness change. Do not edit attackers in this block.
 No policy change, push, or tags in this checkpoint.
+Windows full-suite run was interrupted after it did not finish during this checkpoint; no Windows pass count is claimed. Rerun and collect the tail before completing the remaining tasks.
