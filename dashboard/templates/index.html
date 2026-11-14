@@ -282,9 +282,10 @@
     <div class="cyber-card p-5 shadow-2xl">
       <div class="flex flex-col md:flex-row md:items-center md:justify-between pb-4 border-b border-[#1A2639] gap-3">
         <div>
-          <h2 class="text-base font-bold text-white flex items-center gap-2">
+          <h2 class="text-base font-bold text-white flex flex-wrap items-center gap-2">
             Gatekeeper Decision Stream
             <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30" id="decisionsSourceBadge">LAB</span>
+            <span class="px-2 py-0.5 rounded text-[10px] font-mono border border-zinc-600 text-zinc-300" id="decisionsPolicyBadge" aria-live="polite" title="Policy for displayed decisions. LAB_DEMO demonstrates a mechanism, not ML evidence.">Policy: UNKNOWN</span>
           </h2>
           <p class="text-xs text-[#94A3B8] mt-0.5">Real-time session classification, HMAC-SHA256 privacy visitor masking, and tier routing</p>
         </div>
@@ -572,10 +573,15 @@
       }
 
       // 3. Decisions API
+      const policyBadge = document.getElementById('decisionsPolicyBadge');
+      policyBadge.textContent = 'Policy: UNKNOWN';
       try {
         const decRes = await fetch('/api/decisions');
         if (decRes.ok) {
           const decData = await decRes.json();
+          const profiles = ['DEFAULT', 'LAB_DEMO', 'UNKNOWN', 'MIXED'];
+          const profile = profiles.includes(decData.policy_profile) ? decData.policy_profile : 'UNKNOWN';
+          policyBadge.textContent = `Policy: ${profile}${profile === 'LAB_DEMO' ? ' · mechanism demo' : ''}`;
           const badgeEl = document.getElementById('decisionsSourceBadge');
           if (badgeEl) {
             badgeEl.innerText = decData.source || 'UNKNOWN';
@@ -594,6 +600,7 @@
           if (decData.status === "ok" && decData.decisions && decData.decisions.length > 0) {
             tbody.innerHTML = '';
             for (const d of decData.decisions) {
+              const rowProfile = ['DEFAULT', 'LAB_DEMO'].includes(d.policy_profile) ? d.policy_profile : 'UNKNOWN';
               const tr = document.createElement('tr');
               tr.dataset.tier = d.tier || 'T1';
               const tierBadge = d.tier === 'T3'
@@ -616,7 +623,7 @@
                     </div>
                   </div>
                 </td>
-                <td class="py-3 px-3 font-mono">${tierBadge}</td>
+                <td class="py-3 px-3 font-mono">${tierBadge}<div class="mt-1 text-[10px] text-zinc-400" title="Policy profile, independent of traffic provenance">Policy: ${rowProfile}</div></td>
                 <td class="py-3 px-3 font-mono text-[#00FF41]">${d.latency_ms} ms</td>
                 <td class="py-3 px-3 font-mono text-zinc-400 truncate max-w-xs">${d.timestamp ? d.timestamp.split('T')[1].slice(0, 8) + ' UTC' : (decData.source || 'UNKNOWN') + ' evaluation'}</td>
                 <td class="py-3 px-3 text-center">

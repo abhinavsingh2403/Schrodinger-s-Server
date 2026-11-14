@@ -31,6 +31,23 @@ logger = logging.getLogger("dashboard")
 VALID_PROVENANCES = frozenset({"SYNTHETIC", "LAB", "LIVE", "UNKNOWN"})
 
 
+def normalize_policy_profile(value):
+    """Only engine-defined profiles are meaningful; legacy/invalid values stay unknown."""
+    return value if value in ('DEFAULT', 'LAB_DEMO') else 'UNKNOWN'
+
+
+def resolve_policy_profile(profiles):
+    """Summarize the rows represented by this response, including unknown rows."""
+    unique = {normalize_policy_profile(value) for value in profiles}
+    return next(iter(unique)) if len(unique) == 1 else ('MIXED' if unique else 'UNKNOWN')
+
+
+def policy_profile_select(conn):
+    """Read older databases without migrating or hiding their decision rows."""
+    columns = {row[1] for row in conn.execute('PRAGMA table_info(decision_log)')}
+    return 'policy_profile' if 'policy_profile' in columns else "'UNKNOWN' AS policy_profile"
+
+
 def resolve_decision_provenance(mode: str, row_provenances: List[str]) -> str:
     """
     Deterministically resolves the aggregate sensor/decision provenance label.
@@ -144,11 +161,13 @@ class DashboardServer:
         total_decisions = 0
         latencies: List[float] = []
         row_provenances: List[str] = []
+        profiles = []
 
         conn = self._get_db_connection()
         if conn:
             try:
-                rows = conn.execute("SELECT session_id, tier_decided, latency_ms, provenance FROM decision_log").fetchall()
+                profile_column = policy_profile_select(conn)
+                rows = conn.execute(f"SELECT session_id, tier_decided, latency_ms, provenance, {profile_column} FROM decision_log").fetchall()
                 for r in rows:
                     t = r["tier_decided"]
                     tier_counts[t] = tier_counts.get(t, 0) + 1
@@ -156,6 +175,7 @@ class DashboardServer:
                     raw_prov = r["provenance"] if ("provenance" in r.keys() and r["provenance"]) else "UNKNOWN"
                     prov = raw_prov.upper() if raw_prov and raw_prov.upper() in VALID_PROVENANCES else "UNKNOWN"
                     row_provenances.append(prov)
+                    profiles.append(r['policy_profile'])
                 total_decisions = len(rows)
             except Exception:
                 pass
@@ -169,6 +189,7 @@ class DashboardServer:
         sensor_source = resolve_decision_provenance(self.mode, row_provenances)
 
         sensor_stats = {
+            "policy_profile": resolve_policy_profile(profiles),
             "source": sensor_source,
             "label": sensor_source,
             "total_decisions": total_decisions,
@@ -191,7 +212,7 @@ class DashboardServer:
         """Returns the recent decision stream with cryptographically masked visitor IDs."""
         if not os.path.exists(self.db_path):
             fallback_source = resolve_decision_provenance(self.mode, [])
-            return {"status": "NO DATA", "source": fallback_source, "label": fallback_source, "decisions": []}
+            return {"status": "NO DATA", "source": fallback_source, "label": fallback_source, "policy_profile": "UNKNOWN", "decisions": []}
 
         decisions: List[Dict[str, Any]] = []
         row_provenances: List[str] = []
@@ -199,9 +220,10 @@ class DashboardServer:
 
         if conn:
             try:
+                profile_column = policy_profile_select(conn)
                 rows = conn.execute(
-                    """
-                    SELECT session_id, visitor_id, stage, score, tier_decided, latency_ms, timestamp, provenance
+                    f"""
+                    SELECT session_id, visitor_id, stage, score, tier_decided, latency_ms, timestamp, provenance, {profile_column}
                     FROM decision_log
                     ORDER BY id DESC LIMIT ?
                     """,
@@ -223,6 +245,7 @@ class DashboardServer:
                         "latency_ms": round(float(r["latency_ms"]), 2),
                         "timestamp": r["timestamp"],
                         "provenance": prov,
+                        "policy_profile": normalize_policy_profile(r['policy_profile']),
                     })
             except Exception:
                 pass
@@ -237,6 +260,7 @@ class DashboardServer:
             "source": source,
             "label": source,
             "count": len(decisions),
+            "policy_profile": resolve_policy_profile(r['policy_profile'] for r in decisions),
             "decisions": decisions,
         }
 
