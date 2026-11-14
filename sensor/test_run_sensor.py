@@ -1,0 +1,99 @@
+"""Unit tests for sensor/run_sensor.py host allowlist enforcement.
+
+Pre-registered per SAFETY.md Section 2 and AGENTS.md Rule 6.
+Enforces that sensor launcher only communicates with allowlisted loopback / gatekeeper targets.
+"""
+
+from __future__ import annotations
+
+import os
+import sys
+from pathlib import Path
+from unittest.mock import patch
+import pytest
+
+from sensor import run_sensor
+
+
+class AllowlistPassed(Exception):
+    """Sentinel exception raised after the host allowlist validation succeeds."""
+
+
+ALLOWED_URL_CASES = [
+    "http://127.0.0.1:5000",
+    "http://localhost:5000",
+    "http://gatekeeper:5000",
+    "http://127.0.0.1",
+    "http://localhost",
+    "http://gatekeeper",
+    "http://127.0.0.1:8080",
+    "http://localhost:8080",
+    "http://gatekeeper:8080",
+    "http://LOCALHOST:5000",
+    "http://GateKeeper:5000",
+]
+
+REJECTED_URL_CASES = [
+    # External and non-loopback domains / IPs
+    "http://127.0.0.1.evil.com:5000",
+    "http://evil.com:5000",
+    "http://0.0.0.0:5000",
+    "http://10.0.0.1:5000",
+    "http://192.168.1.1:5000",
+    # Empty string
+    "",
+    # IPv6 forms not in allowlist
+    "http://[::1]:5000",
+    "http://[::]:5000",
+    "http://[fe80::1]:5000",
+    # Trailing dot lookalikes
+    "http://localhost.:5000",
+    "http://gatekeeper.:5000",
+    "http://127.0.0.1.:5000",
+    # Subdomain lookalikes
+    "http://localhost.evil.com:5000",
+    "http://gatekeeper.evil.com:5000",
+    "http://127.0.0.1.attacker.net:5000",
+    # Mixed-case lookalikes targeting external domains
+    "http://LocalHost.evil.com:5000",
+    "http://GateKeeper.evil.com:5000",
+    # Userinfo spoofing
+    "http://gatekeeper@evil.com:5000",
+    "http://localhost@evil.com:5000",
+]
+
+
+@pytest.mark.parametrize("url", ALLOWED_URL_CASES)
+def test_host_allowlist_permits_allowed_targets(url: str, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    """Verify that legitimate loopback and container service targets pass validation."""
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        ["run_sensor", "--state-dir", str(tmp_path), "--gatekeeper-url", url],
+    )
+    # Intercept execution immediately after allowlist validation succeeds
+    with patch("os.chdir", side_effect=AllowlistPassed):
+        with patch.object(Path, "mkdir"):
+            with pytest.raises(AllowlistPassed):
+                run_sensor.main()
+
+
+@pytest.mark.parametrize("url", REJECTED_URL_CASES)
+def test_host_allowlist_rejects_forbidden_targets(
+    url: str, tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    """Verify that non-allowlisted IPs, lookalikes, IPv6, and external domains are rejected with SystemExit(2)."""
+    argv = ["run_sensor", "--state-dir", str(tmp_path)]
+    if url != "":
+        argv.extend(["--gatekeeper-url", url])
+    else:
+        argv.extend(["--gatekeeper-url="])
+
+    monkeypatch.setattr(sys, "argv", argv)
+
+    with pytest.raises(SystemExit) as exc_info:
+        run_sensor.main()
+
+    assert exc_info.value.code == 2
+    captured = capsys.readouterr()
+    assert "This lab launcher only permits loopback (127.0.0.1/localhost) or gatekeeper container" in captured.err
