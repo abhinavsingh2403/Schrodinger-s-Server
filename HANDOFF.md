@@ -161,3 +161,26 @@ Human next steps: review subsequent completed commits before pushing; decide sep
 - Output of `python -c "import sklearn; print(sklearn.__version__)"` in WSL `.venv`: `ModuleNotFoundError: No module named 'sklearn'`
 - TODO(human): install scikit-learn in the WSL venv
 
+### Task M5: Fresh-memory demo runs and decision table
+- **WSL Runbook (Human execution)**:
+  Do NOT run `git pull` in `~/schrodinger` (holds uncommitted work). Instead, clone/copy the `gemini-g12` branch into a clean folder `~/schrodinger-verify` (per Task M3 procedure) and execute:
+  ```bash
+  cd ~/schrodinger-verify
+  bash harness/demo/run_lab_demo.sh
+  ```
+- **Expected vs Bad Outcomes**:
+  - **GOOD**: `bot_like` scenario stays at T1 through S1/S2/S3 (low score, within budget); `interactive` and `transfer_like` scenarios escalate to T2 upon reaching trigger thresholds.
+  - **BAD**: Every scenario escalates to T2 at S1, or `bot_like` escalates to T2 (if this occurs, report the stage and score; do not alter threshold definitions).
+- **Decision Table Schema & Output**:
+  - `decision_log` table columns verified via SQLite: `(id, session_id, visitor_id, stage, score, tier_decided, latency_ms, timestamp)`.
+  - Stored: `session_id`, `stage`, `tier_decided`, `score`.
+  - Column `threshold` is NOT stored in `decision_log`: labeled `TODO(verify): threshold column not stored in decision_log schema`.
+
+### Task M6: Demo design note
+1. **Stage Evaluation Events**: S1 at `ssh_NEWKEYS` (`sensor/run_sensor.py:73`); S2 at `cowrie.login.success/failed` (`sensor/run_sensor.py:38-39`); S3 at `cowrie.session.params` (`sensor/run_sensor.py:40-41`); S4 (first command) and S5 (subsequent commands) at `cowrie.command.input` (`sensor/run_sensor.py:42-43`, `sensor/adaptive_server.py:265,272`).
+2. **Escalation & Visibility**: `_evaluate_stage` calls `escalate_to()` (`sensor/adaptive_server.py:303`), firing `_apply_fs_overlay` (`sensor/adaptive_server.py:341-360`) which populates T2 decoys (`/opt/deploy/config.env`, `/var/www/html/index.html`) in Cowrie's active filesystem; visitor sees them on subsequent commands.
+3. **Interactive SSH**: Plain `ssh -p 2222` connects to Debian 12 shell (`srv-app-01`); initial `cat /opt/deploy/config.env` returns `No such file`, but returns decoy DB credentials once escalated.
+4. **Demo Design**: `harness/demo/run_lab_demo.sh` provisions a fresh `--db` per scenario (M5) to ensure initial T1 visitor memory; live switching demonstrates in-session escalation via sequential commands (`analysis/live_switch_proof.py`, noting lab threshold overrides).
+5. **Limitations (NOT Demonstrated)**: Concurrent multiplexed channels on one transport are not demonstrated; live switching uses lab threshold overrides (`S2=1.1, S3=1.1`) rather than pure ML weights; S4/S5 ML was not evaluated on event data.
+
+
