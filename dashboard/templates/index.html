@@ -599,7 +599,7 @@
                 </td>
                 <td class="py-3 px-3 font-mono">${tierBadge}</td>
                 <td class="py-3 px-3 font-mono text-[#00FF41]">${d.latency_ms} ms</td>
-                <td class="py-3 px-3 font-mono text-zinc-400 truncate max-w-xs">Live classification</td>
+                <td class="py-3 px-3 font-mono text-zinc-400 truncate max-w-xs">${d.timestamp ? d.timestamp.split('T')[1].slice(0, 8) + ' UTC' : (decData.source || 'LAB') + ' evaluation'}</td>
                 <td class="py-3 px-3 text-center">
                   <button class="px-2 py-0.5 rounded bg-[#060A13] hover:bg-[#00FF41]/20 text-[#00FF41] border border-[#1A2639] hover:border-[#00FF41]/40 text-xs font-semibold font-mono transition">
                     INSPECT
