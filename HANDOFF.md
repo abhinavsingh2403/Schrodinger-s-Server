@@ -146,3 +146,14 @@ Human next steps: review subsequent completed commits before pushing; decide sep
 A: repeated portable timing evidence is in results/exp0/live_latency_windows.json and live_latency_linux.json. Windows isolated runs pass but the full suite intermittently fails; its timing benchmark now defaults to an explicit host-sensitivity skip, with SCHRODINGER_RUN_TIMING=1 for opt-in measurement. WSL retains original thresholds. Specific host cause remains TODO(verify); reported maxima are maxima of per-run p99, not worst individual requests.
 REMAINING B: inspect historical S2 inputs where available, use the existing separate --db option per scenario, add fresh/remembered/down tests, rerun live_sensor_proof with real score/tier rows and commit after green tests. Do not tune policy.
 REMAINING C: add at most ten lines of code-cited interactive demo design after B, then test and commit. No B or C implementation was started in this checkpoint.
+
+### Codex B/C completion and interactive demo design
+B: independent scenario databases and score rows implemented in analysis/live_sensor_proof.py; see generated live_sensor_proof.json for decisions and diagnostic replay.
+Visitor identity is HMAC-SHA256 of source IP with the configured salt (gatekeeper/visitor_memory.py:28); shared loopback sources share memory within a database.
+Remembered highest tier supplies a monotone floor (gatekeeper/policy.py:189); fresh databases isolate memory and reset budget accounting.
+S1 runs after NEWKEYS (sensor/run_sensor.py:73); S2 after each auth result and S3 on session.params (sensor/run_sensor.py:38).
+Commands trigger S4 then S5 (sensor/adaptive_server.py:261); escalation applies filesystem overlays (sensor/adaptive_server.py:336), including opt/deploy/config.env.
+Demo two independent sessions with fresh databases; show actual decisions. A T2 file appears only if unchanged policy and budget admit escalation; fresh sessions may remain T1.
+Not demonstrated: concurrent channels, validated ML evidence, or S4/S5 ML; command-stage scoring is heuristic.
+TODO(verify): historical first-S2 exact inputs, memory and budget were not preserved in the committed proof; current successful-auth replay explains scoring but cannot reconstruct that historical admission.
+Earlier B/C REMAINING entries above are superseded here; broader Q/V work remains outside this A/B/C block.
