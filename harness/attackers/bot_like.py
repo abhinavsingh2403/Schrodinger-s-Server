@@ -28,7 +28,7 @@ def run_bot_like(
     port: int = 2222,
     dry_run: bool = False,
     username: str = "root",
-    password: str = "root",
+    password: str = "password",
 ) -> ScenarioResult:
     """Executes the bot-like attacker scenario. Returns ScenarioResult."""
     assert_lab_target_allowlisted(host)
@@ -38,7 +38,7 @@ def run_bot_like(
     reason = "completed"
 
     if dry_run:
-        failed_attempts = [("admin", "123456"), ("user", "password")]
+        failed_attempts = [("root", "root"), ("root", "123456")]
         for u, _ in failed_attempts:
             action_msg = f"[FAILED_LOGIN_ATTEMPT] user={u} pass=*** host={host}:{port}"
             actions.append(action_msg)
@@ -61,14 +61,15 @@ def run_bot_like(
         return ScenarioResult("bot_like", host, port, ok=True, returncode=0, reason="dry-run", actions=actions)
 
     # 1. Failed login attempts (brute force scanner simulation)
-    failed_attempts = [("admin", "123456"), ("user", "password")]
+    # Cowrie userdb.example explicitly denies root:root and root:123456
+    failed_attempts = [("root", "root"), ("root", "123456")]
     for u, p in failed_attempts:
         action_msg = f"[FAILED_LOGIN_ATTEMPT] user={u} pass=*** host={host}:{port}"
         actions.append(action_msg)
         res = execute_ssh_command(host, port, u, password=p, command="exit")
         # In failed attempts, exit code 255 or 1 is normal auth rejection
 
-    # 2. Successful login attempt
+    # 2. Successful login attempt (Cowrie userdb.example accepts root:password)
     succ_msg = f"[LOGIN_SUCCESS] user={username} host={host}:{port}"
     actions.append(succ_msg)
     res = execute_ssh_command(host, port, username, password=password, command="exit")
@@ -104,7 +105,7 @@ def main() -> None:
     parser.add_argument("--host", default="127.0.0.1", help="Target honeypot host (must be lab allowlisted)")
     parser.add_argument("--port", type=int, default=2222, help="Target honeypot SSH port")
     parser.add_argument("--username", default="root", help="Honeypot login username")
-    parser.add_argument("--password", default="root", help="Honeypot login password")
+    parser.add_argument("--password", default="password", help="Honeypot login password")
     parser.add_argument("--dry-run", action="store_true", help="Print actions without sending network traffic")
     args = parser.parse_args()
 

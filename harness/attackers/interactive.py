@@ -37,7 +37,7 @@ def run_interactive(
     port: int = 2222,
     dry_run: bool = False,
     username: str = "root",
-    password: str = "root",
+    password: str = "password",
 ) -> ScenarioResult:
     """Executes the interactive reconnaissance scenario with PTY allocation."""
     assert_lab_target_allowlisted(host)
@@ -87,7 +87,7 @@ def main() -> None:
     parser.add_argument("--host", default="127.0.0.1", help="Target honeypot host (must be lab allowlisted)")
     parser.add_argument("--port", type=int, default=2222, help="Target honeypot SSH port")
     parser.add_argument("--username", default="root", help="Honeypot login username")
-    parser.add_argument("--password", default="root", help="Honeypot login password")
+    parser.add_argument("--password", default="password", help="Honeypot login password")
     parser.add_argument("--dry-run", action="store_true", help="Print actions without sending network traffic")
     args = parser.parse_args()
 

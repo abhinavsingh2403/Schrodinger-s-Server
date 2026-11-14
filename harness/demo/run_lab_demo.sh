@@ -84,7 +84,7 @@ for scenario in "${SCENARIOS[@]}"; do
     COWRIE_STATE="$(mktemp -d /tmp/cowrie_state_XXXXXX)"
     ASKPASS="$(mktemp /tmp/askpass_XXXXXX)"
 
-    printf '#!/bin/sh\nprintf "%%s\\n" root\n' > "$ASKPASS"
+    printf '#!/bin/sh\nprintf "%%s\\n" password\n' > "$ASKPASS"
     chmod 700 "$ASKPASS"
 
     GK_PID=""
