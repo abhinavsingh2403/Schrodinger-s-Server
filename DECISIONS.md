@@ -458,6 +458,8 @@ Inspect the retained SQLite database read-only and export only stage, score, tie
 - **Consequences**: `gatekeeper.db` when populated via `populate_demo_db.py` cleanly declares itself `SYNTHETIC` in all API responses and UI panels.
 
 ### 2026-11-14: Per-row provenance storage in decision_log and removal of prefix inference
+
+SUPERSEDED by 2026-11-15: Fail-closed provenance enforcement and removal of LAB defaults (superseded details retained below).
 - **Status**: ACCEPTED
 - **Owner**: P2/P3 (Gatekeeper / Dashboard Lead)
 - **Context**: Relying on string prefixes (`sess_synth_`) to infer decision provenance in the dashboard violates separation of concerns and creates fragile coupling between session names and provenance.
@@ -489,7 +491,7 @@ Inspect the retained SQLite database read-only and export only stage, score, tie
 - **Context**: `sensor/run_sensor.py` is a loopback-only lab launcher used for local integration and automated lab runs. Tagging its decisions as `'LIVE'` risked falsely representing synthetic or lab loopback sessions as internet-facing telemetry.
 - **Decision**:
   1. Default `run_sensor.py` and `LifecycleBridge` decisions to `'LAB'`.
-  2. Add `--provenance` CLI option to `run_sensor.py` with choices `['LAB', 'LIVE']` defaulting to `'LAB'`. The `'LIVE'` label is strictly reserved for the gated public VPS honeypot trial with real internet-facing adversary traffic.
+  2. Add `--provenance` CLI option to `run_sensor.py` with choices `['LAB']` (verified in make_parser; LIVE is rejected by this launcher) defaulting to `'LAB'`. The `'LIVE'` label is strictly reserved for the gated public VPS honeypot trial with real internet-facing adversary traffic.
   3. Remove default value from `AdaptiveSessionAdapter` parameter `provenance` (`*, provenance: str`), requiring all callers to supply the provenance label explicitly.
   4. Update `harness/replay/replay_engine.py` and sensor unit tests to supply `provenance="LAB"` explicitly.
 - **Alternatives considered**: Retaining `'LIVE'` as default in `AdaptiveSessionAdapter` (rejected: silently defaults local lab adapters to live status, violating AGENTS.md Rules 1 & 2 on truthfulness).
@@ -508,3 +510,9 @@ Record DEFAULT or LAB_DEMO from engine construction, never client input. Migrate
 ### 2026-11-15 — Launcher identity from unified config
 Apply verified Cowrie environment keys from config/identity.yaml before initialization, with repository honeyfs resolved at runtime. Parse the required top-level scalar identity fields without a new dependency. Kernel build text uses the declared distro/release identity, since no build timestamp is declared; do not invent one. Capture actual SSH output before and after; no infra or honeyfs edits.
 The real identity check showed contents_path alone did not expose os-release: pinned Cowrie init_honeyfs only maps existing regular virtual files. Add the os-release virtual entry during launcher filesystem initialization and map its existing honeyfs bytes; no generated identity file or upstream source change.
+
+### 2026-11-15 — Record live policy proof sources
+Persist score_source alongside policy_profile so the live proof reports actual decision provenance rather than inferred sources. Keep original observation fixtures intact; write revised default and lab runs into a separate generated proof. Existing source values migrate as UNKNOWN.
+
+### 2026-11-15 � Documentation alignment
+Correct launcher provenance choices to LAB only and evidence log paths to the state directory. Mark prior demo/provenance statements superseded without deleting their history. API provenance is client supplied; LIVE exclusion is launcher-level enforcement only.
