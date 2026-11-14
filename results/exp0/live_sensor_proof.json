@@ -18,568 +18,402 @@
     }
   ],
   "harness_limitation": "The harness ignores its password argument and does not check SSH return codes. Its two labelled failed-login attempts may authenticate under default Cowrie userdb. Trust the real event/decision log, not action labels.",
-  "t2_file_transcript": "DB_HOST=[masked-address]\nDB_USER=app_user\nWarning: Permanently added '[[masked-address]]:2222' (ED25519) to the list of known hosts.\n",
-  "transcript_returncode": 0,
+  "memory_scope": "Fresh database and budget ledger per scenario; shared within each scenario",
   "decisions": [
     {
+      "scenario": "bot_like",
       "session": "session-1",
       "stage": "S1",
-      "tier": "T1"
+      "tier": "T1",
+      "score": 0.05
     },
     {
+      "scenario": "bot_like",
       "session": "session-1",
       "stage": "S2",
-      "tier": "T2"
+      "tier": "T1",
+      "score": 0.7
     },
     {
+      "scenario": "bot_like",
       "session": "session-1",
       "stage": "S3",
-      "tier": "T2"
+      "tier": "T1",
+      "score": 0.04519740586489645
     },
     {
+      "scenario": "bot_like",
       "session": "session-1",
       "stage": "S4",
-      "tier": "T2"
+      "tier": "T1",
+      "score": 0.2
     },
     {
+      "scenario": "bot_like",
       "session": "session-2",
       "stage": "S1",
-      "tier": "T2"
+      "tier": "T1",
+      "score": 0.05
     },
     {
+      "scenario": "bot_like",
       "session": "session-2",
       "stage": "S2",
-      "tier": "T2"
+      "tier": "T1",
+      "score": 0.7
     },
     {
+      "scenario": "bot_like",
       "session": "session-2",
       "stage": "S3",
-      "tier": "T2"
+      "tier": "T1",
+      "score": 0.04519740586489645
     },
     {
+      "scenario": "bot_like",
       "session": "session-2",
       "stage": "S4",
-      "tier": "T2"
+      "tier": "T1",
+      "score": 0.2
     },
     {
+      "scenario": "bot_like",
       "session": "session-3",
       "stage": "S1",
-      "tier": "T2"
+      "tier": "T1",
+      "score": 0.05
     },
     {
+      "scenario": "bot_like",
       "session": "session-3",
       "stage": "S2",
-      "tier": "T2"
+      "tier": "T1",
+      "score": 0.7
     },
     {
+      "scenario": "bot_like",
+      "session": "session-3",
+      "stage": "S3",
+      "tier": "T1",
+      "score": 0.04519740586489645
+    },
+    {
+      "scenario": "bot_like",
+      "session": "session-3",
+      "stage": "S4",
+      "tier": "T1",
+      "score": 0.2
+    },
+    {
+      "scenario": "bot_like",
+      "session": "session-4",
+      "stage": "S1",
+      "tier": "T1",
+      "score": 0.05
+    },
+    {
+      "scenario": "bot_like",
+      "session": "session-4",
+      "stage": "S2",
+      "tier": "T1",
+      "score": 0.7
+    },
+    {
+      "scenario": "bot_like",
+      "session": "session-4",
+      "stage": "S3",
+      "tier": "T1",
+      "score": 0.04519740586489645
+    },
+    {
+      "scenario": "bot_like",
+      "session": "session-4",
+      "stage": "S4",
+      "tier": "T1",
+      "score": 0.2
+    },
+    {
+      "scenario": "interactive",
+      "session": "session-1",
+      "stage": "S1",
+      "tier": "T1",
+      "score": 0.05
+    },
+    {
+      "scenario": "interactive",
+      "session": "session-1",
+      "stage": "S2",
+      "tier": "T1",
+      "score": 0.7
+    },
+    {
+      "scenario": "interactive",
+      "session": "session-1",
+      "stage": "S3",
+      "tier": "T1",
+      "score": 0.04519873006726848
+    },
+    {
+      "scenario": "interactive",
+      "session": "session-1",
+      "stage": "S4",
+      "tier": "T1",
+      "score": 0.2
+    },
+    {
+      "scenario": "interactive",
+      "session": "session-2",
+      "stage": "S1",
+      "tier": "T1",
+      "score": 0.05
+    },
+    {
+      "scenario": "interactive",
+      "session": "session-2",
+      "stage": "S2",
+      "tier": "T1",
+      "score": 0.7
+    },
+    {
+      "scenario": "interactive",
+      "session": "session-2",
+      "stage": "S3",
+      "tier": "T1",
+      "score": 0.04519873006726848
+    },
+    {
+      "scenario": "interactive",
+      "session": "session-2",
+      "stage": "S4",
+      "tier": "T1",
+      "score": 0.2
+    },
+    {
+      "scenario": "interactive",
+      "session": "session-3",
+      "stage": "S1",
+      "tier": "T1",
+      "score": 0.05
+    },
+    {
+      "scenario": "interactive",
       "session": "session-3",
       "stage": "S2",
-      "tier": "T2"
+      "tier": "T1",
+      "score": 0.7
     },
     {
+      "scenario": "interactive",
+      "session": "session-3",
+      "stage": "S3",
+      "tier": "T1",
+      "score": 0.04519873006726848
+    },
+    {
+      "scenario": "interactive",
+      "session": "session-3",
+      "stage": "S4",
+      "tier": "T1",
+      "score": 0.2
+    },
+    {
+      "scenario": "interactive",
+      "session": "session-4",
+      "stage": "S1",
+      "tier": "T1",
+      "score": 0.05
+    },
+    {
+      "scenario": "interactive",
+      "session": "session-4",
+      "stage": "S2",
+      "tier": "T1",
+      "score": 0.7
+    },
+    {
+      "scenario": "interactive",
+      "session": "session-4",
+      "stage": "S3",
+      "tier": "T1",
+      "score": 0.04519873006726848
+    },
+    {
+      "scenario": "interactive",
+      "session": "session-4",
+      "stage": "S4",
+      "tier": "T1",
+      "score": 0.2
+    },
+    {
+      "scenario": "interactive",
+      "session": "session-5",
+      "stage": "S1",
+      "tier": "T1",
+      "score": 0.05
+    },
+    {
+      "scenario": "interactive",
+      "session": "session-5",
+      "stage": "S2",
+      "tier": "T1",
+      "score": 0.7
+    },
+    {
+      "scenario": "interactive",
+      "session": "session-5",
+      "stage": "S3",
+      "tier": "T1",
+      "score": 0.04519873006726848
+    },
+    {
+      "scenario": "interactive",
+      "session": "session-5",
+      "stage": "S4",
+      "tier": "T1",
+      "score": 0.2
+    },
+    {
+      "scenario": "interactive",
+      "session": "session-6",
+      "stage": "S1",
+      "tier": "T1",
+      "score": 0.05
+    },
+    {
+      "scenario": "interactive",
+      "session": "session-6",
+      "stage": "S2",
+      "tier": "T1",
+      "score": 0.7
+    },
+    {
+      "scenario": "interactive",
+      "session": "session-6",
+      "stage": "S3",
+      "tier": "T1",
+      "score": 0.04519873006726848
+    },
+    {
+      "scenario": "interactive",
+      "session": "session-6",
+      "stage": "S4",
+      "tier": "T1",
+      "score": 0.2
+    },
+    {
+      "scenario": "transfer_like",
+      "session": "session-1",
+      "stage": "S1",
+      "tier": "T1",
+      "score": 0.05
+    },
+    {
+      "scenario": "transfer_like",
+      "session": "session-1",
+      "stage": "S2",
+      "tier": "T1",
+      "score": 0.7
+    },
+    {
+      "scenario": "transfer_like",
+      "session": "session-1",
+      "stage": "S3",
+      "tier": "T1",
+      "score": 0.04519740586489645
+    },
+    {
+      "scenario": "transfer_like",
+      "session": "session-1",
+      "stage": "S4",
+      "tier": "T1",
+      "score": 0.2
+    },
+    {
+      "scenario": "transfer_like",
+      "session": "session-2",
+      "stage": "S1",
+      "tier": "T1",
+      "score": 0.05
+    },
+    {
+      "scenario": "transfer_like",
+      "session": "session-2",
+      "stage": "S2",
+      "tier": "T1",
+      "score": 0.7
+    },
+    {
+      "scenario": "transfer_like",
+      "session": "session-2",
+      "stage": "S3",
+      "tier": "T1",
+      "score": 0.04519740586489645
+    },
+    {
+      "scenario": "transfer_like",
+      "session": "session-2",
+      "stage": "S4",
+      "tier": "T1",
+      "score": 0.2
+    },
+    {
+      "scenario": "transfer_like",
+      "session": "session-3",
+      "stage": "S1",
+      "tier": "T1",
+      "score": 0.05
+    },
+    {
+      "scenario": "transfer_like",
       "session": "session-3",
       "stage": "S2",
-      "tier": "T2"
+      "tier": "T1",
+      "score": 0.7
     },
     {
-      "session": "session-4",
-      "stage": "S1",
-      "tier": "T2"
-    },
-    {
-      "session": "session-4",
-      "stage": "S2",
-      "tier": "T2"
-    },
-    {
-      "session": "session-4",
-      "stage": "S2",
-      "tier": "T2"
-    },
-    {
-      "session": "session-4",
-      "stage": "S2",
-      "tier": "T2"
-    },
-    {
-      "session": "session-5",
-      "stage": "S1",
-      "tier": "T2"
-    },
-    {
-      "session": "session-5",
-      "stage": "S2",
-      "tier": "T2"
-    },
-    {
-      "session": "session-5",
-      "stage": "S2",
-      "tier": "T2"
-    },
-    {
-      "session": "session-5",
-      "stage": "S2",
-      "tier": "T2"
-    },
-    {
-      "session": "session-6",
-      "stage": "S1",
-      "tier": "T2"
-    },
-    {
-      "session": "session-6",
-      "stage": "S2",
-      "tier": "T2"
-    },
-    {
-      "session": "session-6",
-      "stage": "S2",
-      "tier": "T2"
-    },
-    {
-      "session": "session-6",
-      "stage": "S2",
-      "tier": "T2"
-    },
-    {
-      "session": "session-7",
-      "stage": "S1",
-      "tier": "T2"
-    },
-    {
-      "session": "session-7",
-      "stage": "S2",
-      "tier": "T2"
-    },
-    {
-      "session": "session-7",
-      "stage": "S2",
-      "tier": "T2"
-    },
-    {
-      "session": "session-7",
-      "stage": "S2",
-      "tier": "T2"
-    },
-    {
-      "session": "session-8",
-      "stage": "S1",
-      "tier": "T2"
-    },
-    {
-      "session": "session-8",
-      "stage": "S2",
-      "tier": "T2"
-    },
-    {
-      "session": "session-8",
-      "stage": "S2",
-      "tier": "T2"
-    },
-    {
-      "session": "session-8",
-      "stage": "S2",
-      "tier": "T2"
-    },
-    {
-      "session": "session-9",
-      "stage": "S1",
-      "tier": "T2"
-    },
-    {
-      "session": "session-9",
-      "stage": "S2",
-      "tier": "T2"
-    },
-    {
-      "session": "session-9",
-      "stage": "S2",
-      "tier": "T2"
-    },
-    {
-      "session": "session-9",
-      "stage": "S2",
-      "tier": "T2"
-    },
-    {
-      "session": "session-10",
-      "stage": "S1",
-      "tier": "T2"
-    },
-    {
-      "session": "session-10",
-      "stage": "S2",
-      "tier": "T2"
-    },
-    {
-      "session": "session-10",
-      "stage": "S2",
-      "tier": "T2"
-    },
-    {
-      "session": "session-10",
-      "stage": "S2",
-      "tier": "T2"
-    },
-    {
-      "session": "session-11",
-      "stage": "S1",
-      "tier": "T2"
-    },
-    {
-      "session": "session-11",
-      "stage": "S2",
-      "tier": "T2"
-    },
-    {
-      "session": "session-11",
-      "stage": "S2",
-      "tier": "T2"
-    },
-    {
-      "session": "session-11",
-      "stage": "S2",
-      "tier": "T2"
-    },
-    {
-      "session": "session-12",
-      "stage": "S1",
-      "tier": "T2"
-    },
-    {
-      "session": "session-12",
-      "stage": "S2",
-      "tier": "T2"
-    },
-    {
-      "session": "session-12",
-      "stage": "S2",
-      "tier": "T2"
-    },
-    {
-      "session": "session-12",
-      "stage": "S2",
-      "tier": "T2"
-    },
-    {
-      "session": "session-13",
-      "stage": "S1",
-      "tier": "T2"
-    },
-    {
-      "session": "session-13",
-      "stage": "S2",
-      "tier": "T2"
-    },
-    {
-      "session": "session-13",
-      "stage": "S2",
-      "tier": "T2"
-    },
-    {
-      "session": "session-13",
-      "stage": "S2",
-      "tier": "T2"
-    },
-    {
-      "session": "session-14",
-      "stage": "S1",
-      "tier": "T2"
-    },
-    {
-      "session": "session-14",
-      "stage": "S2",
-      "tier": "T2"
-    },
-    {
-      "session": "session-14",
-      "stage": "S2",
-      "tier": "T2"
-    },
-    {
-      "session": "session-14",
-      "stage": "S2",
-      "tier": "T2"
-    },
-    {
-      "session": "session-15",
-      "stage": "S1",
-      "tier": "T2"
-    },
-    {
-      "session": "session-15",
-      "stage": "S2",
-      "tier": "T2"
-    },
-    {
-      "session": "session-15",
+      "scenario": "transfer_like",
+      "session": "session-3",
       "stage": "S3",
-      "tier": "T2"
+      "tier": "T1",
+      "score": 0.04519740586489645
     },
     {
-      "session": "session-15",
+      "scenario": "transfer_like",
+      "session": "session-3",
       "stage": "S4",
-      "tier": "T2"
-    },
-    {
-      "session": "session-16",
-      "stage": "S1",
-      "tier": "T2"
-    },
-    {
-      "session": "session-16",
-      "stage": "S2",
-      "tier": "T2"
-    },
-    {
-      "session": "session-16",
-      "stage": "S3",
-      "tier": "T2"
-    },
-    {
-      "session": "session-16",
-      "stage": "S4",
-      "tier": "T2"
-    },
-    {
-      "session": "session-17",
-      "stage": "S1",
-      "tier": "T2"
-    },
-    {
-      "session": "session-17",
-      "stage": "S2",
-      "tier": "T2"
-    },
-    {
-      "session": "session-17",
-      "stage": "S3",
-      "tier": "T2"
-    },
-    {
-      "session": "session-17",
-      "stage": "S4",
-      "tier": "T2"
-    },
-    {
-      "session": "session-18",
-      "stage": "S1",
-      "tier": "T2"
-    },
-    {
-      "session": "session-18",
-      "stage": "S2",
-      "tier": "T2"
-    },
-    {
-      "session": "session-18",
-      "stage": "S3",
-      "tier": "T2"
-    },
-    {
-      "session": "session-18",
-      "stage": "S4",
-      "tier": "T2"
-    },
-    {
-      "session": "session-19",
-      "stage": "S1",
-      "tier": "T2"
-    },
-    {
-      "session": "session-19",
-      "stage": "S2",
-      "tier": "T2"
-    },
-    {
-      "session": "session-19",
-      "stage": "S3",
-      "tier": "T2"
-    },
-    {
-      "session": "session-19",
-      "stage": "S4",
-      "tier": "T2"
-    },
-    {
-      "session": "session-20",
-      "stage": "S1",
-      "tier": "T2"
-    },
-    {
-      "session": "session-20",
-      "stage": "S2",
-      "tier": "T2"
-    },
-    {
-      "session": "session-20",
-      "stage": "S3",
-      "tier": "T2"
-    },
-    {
-      "session": "session-20",
-      "stage": "S4",
-      "tier": "T2"
-    },
-    {
-      "session": "session-21",
-      "stage": "S1",
-      "tier": "T2"
-    },
-    {
-      "session": "session-21",
-      "stage": "S2",
-      "tier": "T2"
-    },
-    {
-      "session": "session-21",
-      "stage": "S3",
-      "tier": "T2"
-    },
-    {
-      "session": "session-21",
-      "stage": "S4",
-      "tier": "T2"
-    },
-    {
-      "session": "session-22",
-      "stage": "S1",
-      "tier": "T2"
-    },
-    {
-      "session": "session-22",
-      "stage": "S2",
-      "tier": "T2"
-    },
-    {
-      "session": "session-22",
-      "stage": "S3",
-      "tier": "T2"
-    },
-    {
-      "session": "session-22",
-      "stage": "S4",
-      "tier": "T2"
-    },
-    {
-      "session": "session-23",
-      "stage": "S1",
-      "tier": "T2"
-    },
-    {
-      "session": "session-23",
-      "stage": "S2",
-      "tier": "T2"
-    },
-    {
-      "session": "session-23",
-      "stage": "S3",
-      "tier": "T2"
-    },
-    {
-      "session": "session-23",
-      "stage": "S4",
-      "tier": "T2"
-    },
-    {
-      "session": "session-24",
-      "stage": "S1",
-      "tier": "T2"
-    },
-    {
-      "session": "session-24",
-      "stage": "S2",
-      "tier": "T2"
-    },
-    {
-      "session": "session-24",
-      "stage": "S3",
-      "tier": "T2"
-    },
-    {
-      "session": "session-24",
-      "stage": "S4",
-      "tier": "T2"
-    },
-    {
-      "session": "session-25",
-      "stage": "S1",
-      "tier": "T2"
-    },
-    {
-      "session": "session-25",
-      "stage": "S2",
-      "tier": "T2"
-    },
-    {
-      "session": "session-25",
-      "stage": "S3",
-      "tier": "T2"
-    },
-    {
-      "session": "session-25",
-      "stage": "S4",
-      "tier": "T2"
-    },
-    {
-      "session": "session-26",
-      "stage": "S1",
-      "tier": "T2"
-    },
-    {
-      "session": "session-26",
-      "stage": "S2",
-      "tier": "T2"
-    },
-    {
-      "session": "session-26",
-      "stage": "S3",
-      "tier": "T2"
-    },
-    {
-      "session": "session-26",
-      "stage": "S4",
-      "tier": "T2"
-    },
-    {
-      "session": "session-27",
-      "stage": "S1",
-      "tier": "T2"
-    },
-    {
-      "session": "session-27",
-      "stage": "S2",
-      "tier": "T2"
-    },
-    {
-      "session": "session-27",
-      "stage": "S3",
-      "tier": "T2"
-    },
-    {
-      "session": "session-27",
-      "stage": "S4",
-      "tier": "T2"
-    },
-    {
-      "session": "session-28",
-      "stage": "S1",
-      "tier": "T2"
-    },
-    {
-      "session": "session-28",
-      "stage": "S2",
-      "tier": "T2"
-    },
-    {
-      "session": "session-28",
-      "stage": "S3",
-      "tier": "T2"
-    },
-    {
-      "session": "session-28",
-      "stage": "S4",
-      "tier": "T2"
+      "tier": "T1",
+      "score": 0.2
     }
-  ]
+  ],
+  "s2_replay": {
+    "scope": "Current default successful-auth replay; historical exact inputs and budget are unavailable",
+    "features": {
+      "s2_has_success": 1,
+      "s2_failed_logins": 0
+    },
+    "memory_before": {
+      "highest_tier_served": "T1"
+    },
+    "decision": {
+      "session_id": "replay",
+      "visitor_id": "vis_c9707826",
+      "stage": "S2",
+      "score": 0.7,
+      "score_source": "rule_r1_login_success",
+      "model_name": "R1_login_success",
+      "threshold_applied": 0.7,
+      "tier": "T1",
+      "target_tier": "T1",
+      "latency_ms": 0.545,
+      "fail_cheap": false,
+      "budget": {
+        "window": "since ledger inception",
+        "sessions": 1,
+        "escalated_sessions": 0,
+        "limit": 0,
+        "blocked": true,
+        "mandatory_over_cap": 0
+      }
+    }
+  }
 }

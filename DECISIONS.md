@@ -438,3 +438,9 @@ Run the unchanged latency test five times per platform; record printed decision 
 A outcome: all repeated runs passed unchanged on both platforms; retain existing warmup and thresholds. Earlier failures are intermittent host-condition observations, not a reproduced persistent transaction regression. Specific OS, antivirus or fsync causation remains TODO(verify). Measured decision percentiles are in live_latency_windows.json and live_latency_linux.json; HTTP overhead and worst-case timeout guarantees are not established.
 
 Before remediation: the Windows full-suite timing assertion fails again while all isolated repeats pass. Choose an explicit Windows-only default skip for the environment-sensitive timing benchmark, with opt-in measurement retained; keep WSL enforcement and numerical thresholds unchanged. This does not prove a specific OS subsystem cause.
+
+### 2026-11-14 — Independent lab scenario memory
+Use the existing decision API --db option with a new temporary database and sensor state per scenario. This also resets the durable budget ledger; retain its default admission rules. Reject salt/source overrides because they change visitor identity semantics. Capture stored scores and distinguish historical evidence from current replay; missing historical inputs remain unverified.
+
+### 2026-11-14 — Honest interactive demo scope
+Document event-driven opportunities and visible filesystem overlays from the launcher. Use separate fresh databases for independent sessions; describe T2 as conditional on unchanged policy and budget. Reject a guaranteed escalation narrative because the recorded fresh-scenario run does not establish it.
