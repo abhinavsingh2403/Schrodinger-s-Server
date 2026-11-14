@@ -141,3 +141,8 @@ Evidence: results/exp0/q1_tests.json and q1_initial_tests.json preserve Windows 
 REMAINING: resolve Windows latency gate and finish Q1 tracked-file privacy audit; implement Q2 independent-memory live proofs; Q3 evidence-derived statuses/warning/manifest robustness; Q4 concise interactive-demo handoff; optional Q5 package check; mandatory V clean committed-clone installation and live proofs.
 TODO(verify): V has NOT RUN; existing WSL validation is not clean-clone validation. Do not describe this follow-up as complete.
 Human next steps: review subsequent completed commits before pushing; decide separately whether to rewrite historical path exposure. No tags or push in this follow-up.
+
+### Codex A/B/C checkpoint — REMAINING
+A: repeated portable timing evidence is in results/exp0/live_latency_windows.json and live_latency_linux.json. Windows isolated runs pass but the full suite intermittently fails; its timing benchmark now defaults to an explicit host-sensitivity skip, with SCHRODINGER_RUN_TIMING=1 for opt-in measurement. WSL retains original thresholds. Specific host cause remains TODO(verify); reported maxima are maxima of per-run p99, not worst individual requests.
+REMAINING B: inspect historical S2 inputs where available, use the existing separate --db option per scenario, add fresh/remembered/down tests, rerun live_sensor_proof with real score/tier rows and commit after green tests. Do not tune policy.
+REMAINING C: add at most ten lines of code-cited interactive demo design after B, then test and commit. No B or C implementation was started in this checkpoint.
