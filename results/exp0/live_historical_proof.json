@@ -1,0 +1,70 @@
+{
+  "scope": "LAB historical SQLite read-only inspection; identifiers omitted",
+  "decision_count": 112,
+  "first_session_through_s2": [
+    {
+      "id": 1,
+      "stage": "S1",
+      "score": 0.05,
+      "tier": "T1",
+      "timestamp": "2026-11-13T15:54:30.503141+00:00"
+    },
+    {
+      "id": 2,
+      "stage": "S2",
+      "score": 0.7,
+      "tier": "T2",
+      "timestamp": "2026-11-13T15:54:30.525409+00:00"
+    }
+  ],
+  "earlier_same_visitor_decisions": 1,
+  "schema": {
+    "decision_log": [
+      "id",
+      "session_id",
+      "visitor_id",
+      "stage",
+      "score",
+      "tier_decided",
+      "latency_ms",
+      "timestamp"
+    ],
+    "visitors": [
+      "visitor_id",
+      "first_seen",
+      "last_seen",
+      "n_sessions",
+      "highest_tier_served",
+      "last_value_label",
+      "last_agent_score"
+    ]
+  },
+  "limitations": "Decision log does not record input features, prior visitor snapshot, or budget snapshot. Current visitor rows are mutable and cannot establish prior state.",
+  "historical_policy_replay": {
+    "revision": "86d19b35a9c2c92954c102331329d573038db142",
+    "assumptions": "Fresh policy counters, T1 memory, recorded scores; not a recovered process snapshot",
+    "rows": [
+      {
+        "stage": "S1",
+        "score": 0.05,
+        "threshold": 0.8,
+        "tier": "T1",
+        "budget_before": {
+          "total_decisions": 0,
+          "escalated_decisions": 0
+        }
+      },
+      {
+        "stage": "S2",
+        "score": 0.7,
+        "threshold": 0.7,
+        "tier": "T2",
+        "budget_before": {
+          "total_decisions": 1,
+          "escalated_decisions": 0
+        }
+      }
+    ],
+    "interpretation": "Historical policy treats budget rate as zero through its startup decision window. This permits score-based S2 escalation under the stated assumptions."
+  }
+}

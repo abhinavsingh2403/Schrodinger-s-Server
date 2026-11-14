@@ -444,3 +444,6 @@ Use the existing decision API --db option with a new temporary database and sens
 
 ### 2026-11-14 — Honest interactive demo scope
 Document event-driven opportunities and visible filesystem overlays from the launcher. Use separate fresh databases for independent sessions; describe T2 as conditional on unchanged policy and budget. Reject a guaranteed escalation narrative because the recorded fresh-scenario run does not establish it.
+
+### 2026-11-14 — Historical S2 evidence audit
+Inspect the retained SQLite database read-only and export only stage, score, tier and schema evidence. Replay the pre-durable-budget policy using recorded scores, explicitly assuming fresh counters and T1 memory. Do not infer a recovered runtime snapshot from mutable visitor rows; distinguish reproducible explanation from proven historical process state.

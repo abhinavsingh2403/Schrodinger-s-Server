@@ -157,3 +157,6 @@ Demo two independent sessions with fresh databases; show actual decisions. A T2 
 Not demonstrated: concurrent channels, validated ML evidence, or S4/S5 ML; command-stage scoring is heuristic.
 TODO(verify): historical first-S2 exact inputs, memory and budget were not preserved in the committed proof; current successful-auth replay explains scoring but cannot reconstruct that historical admission.
 Earlier B/C REMAINING entries above are superseded here; broader Q/V work remains outside this A/B/C block.
+
+### Historical first-S2 audit follow-up
+Retained historical SQLite evidence and prior-policy replay are generated in results/exp0/live_historical_proof.json by analysis/live_historical_proof.py. The database has no durable budget tables. The prior policy startup allowance reproduces the observed S1-to-S2 escalation using recorded scores with fresh counters and T1 memory. This explains a compatible mechanism; the original running code revision, input features, exact in-memory counters and visitor snapshot were not logged and remain TODO(verify). Current replay must not be presented as historical state recovery.
