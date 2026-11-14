@@ -28,6 +28,9 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 logger = logging.getLogger("dashboard")
 
 
+VALID_PROVENANCES = frozenset({"SYNTHETIC", "LAB", "LIVE", "UNKNOWN"})
+
+
 def resolve_decision_provenance(mode: str, row_provenances: List[str]) -> str:
     """
     Deterministically resolves the aggregate sensor/decision provenance label.
@@ -35,28 +38,28 @@ def resolve_decision_provenance(mode: str, row_provenances: List[str]) -> str:
 
     Rules:
     1. If there are no rows in the decision log:
-       Return 'SYNTHETIC' if mode == 'SYNTHETIC' else 'LAB'.
+       Return 'SYNTHETIC' if mode == 'SYNTHETIC' else 'UNKNOWN'.
     2. If all rows share the same provenance (e.g. all 'SYNTHETIC' or all 'LAB'):
-       Return 'SYNTHETIC' if all are 'SYNTHETIC', 'LIVE' if mode == 'LIVE', else the row provenance.
+       Return that row provenance.
+       Note: A LAB-only DB under mode == 'LIVE' returns 'LAB', not 'LIVE'.
     3. If rows have mixed provenance (e.g. some 'SYNTHETIC' and some 'LAB'):
        Return 'MIXED'.
     """
     if not row_provenances:
-        return "SYNTHETIC" if mode.upper() == "SYNTHETIC" else "LAB"
+        return "SYNTHETIC" if mode.upper() == "SYNTHETIC" else "UNKNOWN"
 
-    unique_prov = {p.upper() for p in row_provenances if p}
+    clean_prov = [
+        p.upper() if (p and p.upper() in VALID_PROVENANCES) else "UNKNOWN"
+        for p in row_provenances
+    ]
+    unique_prov = set(clean_prov)
     if not unique_prov:
-        return "SYNTHETIC" if mode.upper() == "SYNTHETIC" else "LAB"
+        return "SYNTHETIC" if mode.upper() == "SYNTHETIC" else "UNKNOWN"
 
     if len(unique_prov) > 1:
         return "MIXED"
 
-    single_prov = next(iter(unique_prov))
-    if single_prov == "SYNTHETIC":
-        return "SYNTHETIC"
-    if mode.upper() == "LIVE":
-        return "LIVE"
-    return single_prov
+    return next(iter(unique_prov))
 
 
 class DashboardServer:
@@ -80,7 +83,7 @@ class DashboardServer:
         self.natural_experiment_path = str(natural_experiment_path)
         self.model_path = str(model_path)
         self.exp0_path = str(exp0_path)
-        self.mode = mode.upper() if mode.upper() in ("LIVE", "LAB", "SYNTHETIC") else "LAB"
+        self.mode = mode.upper() if mode.upper() in ("LIVE", "LAB", "SYNTHETIC", "UNKNOWN") else "UNKNOWN"
         self.host = host
         self.port = port
         self.httpd: Optional[http.server.HTTPServer] = None
@@ -150,7 +153,8 @@ class DashboardServer:
                     t = r["tier_decided"]
                     tier_counts[t] = tier_counts.get(t, 0) + 1
                     latencies.append(float(r["latency_ms"]))
-                    prov = r["provenance"] if ("provenance" in r.keys() and r["provenance"]) else "LAB"
+                    raw_prov = r["provenance"] if ("provenance" in r.keys() and r["provenance"]) else "UNKNOWN"
+                    prov = raw_prov.upper() if raw_prov and raw_prov.upper() in VALID_PROVENANCES else "UNKNOWN"
                     row_provenances.append(prov)
                 total_decisions = len(rows)
             except Exception:
@@ -207,7 +211,8 @@ class DashboardServer:
                 for r in rows:
                     vid = r["visitor_id"]
                     masked = vid if vid.startswith("vis_") else f"vis_{vid[:8]}"
-                    prov = r["provenance"] if ("provenance" in r.keys() and r["provenance"]) else "LAB"
+                    raw_prov = r["provenance"] if ("provenance" in r.keys() and r["provenance"]) else "UNKNOWN"
+                    prov = raw_prov.upper() if raw_prov and raw_prov.upper() in VALID_PROVENANCES else "UNKNOWN"
                     row_provenances.append(prov)
                     decisions.append({
                         "session_id": r["session_id"],
@@ -448,7 +453,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Schrödinger's Server Dashboard")
     parser.add_argument("--host", default="127.0.0.1", help="Host interface")
     parser.add_argument("--port", type=int, default=8080, help="Listen port")
-    parser.add_argument("--mode", default="LAB", choices=["LAB", "LIVE", "SYNTHETIC"], help="Operational mode")
+    parser.add_argument("--mode", default="LAB", choices=["LAB", "LIVE", "SYNTHETIC", "UNKNOWN"], help="Operational mode")
     parser.add_argument("--db", default="gatekeeper/gatekeeper.db", help="Path to SQLite decision DB (default: gatekeeper/gatekeeper.db)")
     args = parser.parse_args()
 

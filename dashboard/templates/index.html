@@ -113,6 +113,9 @@
           <span class="px-2.5 py-1 rounded-md text-xs font-medium cyber-inner text-amber-400 border border-amber-500/20" id="badgeSynthetic">
             SYNTHETIC
           </span>
+          <span class="px-2.5 py-1 rounded-md text-xs font-medium cyber-inner text-zinc-400 border border-zinc-500/20" id="badgeUnknown">
+            UNKNOWN
+          </span>
         </div>
       </div>
     </header>
@@ -451,7 +454,7 @@
 
           if (stats.status === "ok" && stats.sensor) {
             const ss = stats.sensor;
-            const sBadge = ss.source || 'LAB';
+            const sBadge = ss.source || 'UNKNOWN';
             document.getElementById('kpiEscalationBadge').innerText = sBadge;
             document.getElementById('kpiLatencyBadge').innerText = sBadge;
             document.getElementById('headerEngineMode').innerText = `GATEKEEPER ${sBadge}`;
@@ -575,13 +578,15 @@
           const decData = await decRes.json();
           const badgeEl = document.getElementById('decisionsSourceBadge');
           if (badgeEl) {
-            badgeEl.innerText = decData.source || 'LAB';
+            badgeEl.innerText = decData.source || 'UNKNOWN';
             if (decData.source === 'SYNTHETIC') {
               badgeEl.className = "px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30";
             } else if (decData.source === 'LIVE') {
               badgeEl.className = "px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-purple-500/20 text-purple-300 border border-purple-500/30";
-            } else {
+            } else if (decData.source === 'LAB') {
               badgeEl.className = "px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30";
+            } else {
+              badgeEl.className = "px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-zinc-500/20 text-zinc-300 border border-zinc-500/30";
             }
           }
 
@@ -613,7 +618,7 @@
                 </td>
                 <td class="py-3 px-3 font-mono">${tierBadge}</td>
                 <td class="py-3 px-3 font-mono text-[#00FF41]">${d.latency_ms} ms</td>
-                <td class="py-3 px-3 font-mono text-zinc-400 truncate max-w-xs">${d.timestamp ? d.timestamp.split('T')[1].slice(0, 8) + ' UTC' : (decData.source || 'LAB') + ' evaluation'}</td>
+                <td class="py-3 px-3 font-mono text-zinc-400 truncate max-w-xs">${d.timestamp ? d.timestamp.split('T')[1].slice(0, 8) + ' UTC' : (decData.source || 'UNKNOWN') + ' evaluation'}</td>
                 <td class="py-3 px-3 text-center">
                   <button class="px-2 py-0.5 rounded bg-[#060A13] hover:bg-[#00FF41]/20 text-[#00FF41] border border-[#1A2639] hover:border-[#00FF41]/40 text-xs font-semibold font-mono transition">
                     INSPECT

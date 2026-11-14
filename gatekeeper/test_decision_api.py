@@ -4,12 +4,13 @@ Unit tests for gatekeeper DecisionEngine and decision API contract.
 
 from __future__ import annotations
 
+import json
 import sqlite3
 from pathlib import Path
 
 import pytest
 
-from gatekeeper.decision_api import DecisionEngine
+from gatekeeper.decision_api import DecisionEngine, GatekeeperClient
 
 
 def test_decision_engine_basic_flow(tmp_path: Path) -> None:
@@ -174,7 +175,89 @@ def test_gatekeeper_http_service_and_client_lifecycle(tmp_path: Path) -> None:
         assert fallback["fail_cheap"] is True
         assert fallback["tier"] == "T1"
 
+        # 5. Invalid provenance payload returns HTTP 400 Bad Request
+        bad_payload = json.dumps({"session_id": "sess_bad_prov", "provenance": "FORGED_VAL"}).encode("utf-8")
+        req_bad = urllib.request.Request(
+            f"http://127.0.0.1:{port}/decide",
+            data=bad_payload,
+            headers={"Content-Type": "application/json"},
+        )
+        with pytest.raises(urllib.error.HTTPError) as exc_info:
+            urllib.request.urlopen(req_bad, timeout=2.0)
+        assert exc_info.value.code == 400
+
     finally:
         server.shutdown()
         server.server_close()
+
+
+def test_decision_provenance_validation(tmp_path: Path) -> None:
+    """Verify provenance is strictly validated against {SYNTHETIC, LAB, LIVE, UNKNOWN} and fails closed."""
+    db_file = tmp_path / "prov_val.db"
+    engine = DecisionEngine(db_path=db_file, salt=b"prov-salt")
+
+    # 1. Invalid provenance is strictly rejected (raises ValueError)
+    for bad_prov in ("INVALID", "FORGED", "prod", "telemetry", ""):
+        with pytest.raises(ValueError, match="Invalid provenance"):
+            engine.decide(session_id="sess_invalid", source_ip="127.0.0.1", stage="S1", provenance=bad_prov)
+
+    # 2. GatekeeperClient rejects invalid provenance before transmission
+    client = GatekeeperClient()
+    with pytest.raises(ValueError, match="Invalid provenance"):
+        client.decide(session_id="sess_invalid_client", provenance="HACKED")
+
+    # 3. Missing provenance defaults safely to UNKNOWN (fail-closed, no LAB default)
+    d_default = engine.decide(session_id="sess_missing_prov", source_ip="127.0.0.1", stage="S1")
+    assert d_default["provenance"] == "UNKNOWN"
+
+    # Verify UNKNOWN is written to SQLite row
+    conn = sqlite3.connect(db_file)
+    row = conn.execute("SELECT provenance FROM decision_log WHERE session_id = 'sess_missing_prov'").fetchone()
+    conn.close()
+    assert row is not None
+    assert row[0] == "UNKNOWN"
+
+    # 4. Each allowed provenance value succeeds
+    for valid_prov in ("SYNTHETIC", "LAB", "LIVE", "UNKNOWN"):
+        d = engine.decide(session_id=f"sess_{valid_prov.lower()}", source_ip="127.0.0.1", stage="S1", provenance=valid_prov)
+        assert d["provenance"] == valid_prov
+
+
+def test_legacy_db_migration_defaults_to_unknown(tmp_path: Path) -> None:
+    """Verify legacy SQLite tables lacking provenance column migrate to DEFAULT 'UNKNOWN'."""
+    db_file = tmp_path / "legacy_v0.db"
+    conn = sqlite3.connect(db_file)
+    conn.execute(
+        """
+        CREATE TABLE decision_log (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            session_id TEXT NOT NULL,
+            visitor_id TEXT NOT NULL,
+            stage TEXT NOT NULL,
+            score REAL NOT NULL,
+            tier_decided TEXT NOT NULL,
+            latency_ms REAL NOT NULL,
+            timestamp TEXT NOT NULL
+        )
+        """
+    )
+    conn.execute(
+        """
+        INSERT INTO decision_log (session_id, visitor_id, stage, score, tier_decided, latency_ms, timestamp)
+        VALUES ('sess_legacy_v0', 'vis_test', 'S1', 0.12, 'T1', 0.85, '2026-11-14T10:00:00Z')
+        """
+    )
+    conn.commit()
+    conn.close()
+
+    # Initializing DecisionEngine triggers automatic migration
+    DecisionEngine(db_path=db_file, salt=b"mig-salt")
+
+    # Verify column was added with 'UNKNOWN' default and historical row has 'UNKNOWN'
+    conn = sqlite3.connect(db_file)
+    row = conn.execute("SELECT provenance FROM decision_log WHERE session_id = 'sess_legacy_v0'").fetchone()
+    conn.close()
+    assert row is not None
+    assert row[0] == "UNKNOWN"
+
 

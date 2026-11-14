@@ -170,9 +170,11 @@ class AdaptiveSessionAdapter:
         decision_engine: Any = None,
         persona_manager: Optional[PersonaManager] = None,
         on_tier_changed: Optional[Any] = None,
+        provenance: str = "LIVE",
     ) -> None:
         self.visitor_ip = visitor_ip
         self.session_id = session_id
+        self.provenance = provenance
         if isinstance(decision_engine, str):
             from gatekeeper.decision_api import GatekeeperClient
             self.decision_engine = GatekeeperClient(base_url=decision_engine)
@@ -298,6 +300,7 @@ class AdaptiveSessionAdapter:
                 stage=stage,
                 features=features,
                 current_tier=self.current_tier,
+                provenance=self.provenance,
             )
             target_tier = resp.get("target_tier") or resp.get("tier", "T1")
             self.escalate_to(target_tier)

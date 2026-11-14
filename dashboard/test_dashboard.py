@@ -42,8 +42,8 @@ def test_dashboard_decisions_masking_rule():
         engine = DecisionEngine(db_path=db_path, memory=memory)
 
         # Make decisions with simulated raw IPs
-        engine.decide(session_id="sess_t1", source_ip="198.51.100.11", stage="S1")
-        engine.decide(session_id="sess_t2", source_ip="203.0.113.88", stage="S4", features={"s4_cmd1_has_pipe": 1})
+        engine.decide(session_id="sess_t1", source_ip="198.51.100.11", stage="S1", provenance="LAB")
+        engine.decide(session_id="sess_t2", source_ip="203.0.113.88", stage="S4", features={"s4_cmd1_has_pipe": 1}, provenance="LAB")
 
         server = DashboardServer(db_path=db_path, port=0)
         decisions_data = server.get_decisions_data()
@@ -104,6 +104,7 @@ def test_dashboard_html_rendering():
         assert "LAB" in html
         assert "LIVE" in html
         assert "SYNTHETIC" in html
+        assert "UNKNOWN" in html
         assert "Yield per Rupee" in html
         assert "SIMULATED ORACLE (HINDSIGHT UPPER BOUND)" in html
         assert "EVAL H4 NOT YET EVALUATED" in html
@@ -220,3 +221,55 @@ def test_dashboard_custom_db_path():
         assert decisions["status"] == "ok"
         assert decisions["count"] == 1
         assert decisions["decisions"][0]["session_id"] == "sess_custom_01"
+
+
+def test_dashboard_missing_provenance_becomes_unknown():
+    """Verify missing/null provenance in decision log or empty DB safely resolves to UNKNOWN."""
+    with tempfile.TemporaryDirectory() as tmp_dir:
+        # Case 1: Empty database without SYNTHETIC mode
+        empty_db = os.path.join(tmp_dir, "empty_unk.db")
+        server = DashboardServer(db_path=empty_db, port=0, mode="LAB")
+        assert server.get_decisions_data()["source"] == "UNKNOWN"
+        assert server.get_stats_data()["sensor"]["source"] == "UNKNOWN"
+
+        # Case 2: Database with rows having NULL or missing provenance
+        null_db = os.path.join(tmp_dir, "null_prov.db")
+        memory = VisitorMemory(db_path=null_db)
+        engine = DecisionEngine(db_path=null_db, memory=memory)
+        # Calling decide() with default provenance writes UNKNOWN
+        engine.decide(session_id="sess_legacy_01", source_ip="127.0.0.1", stage="S1")
+
+        server2 = DashboardServer(db_path=null_db, port=0, mode="LAB")
+        dec_data = server2.get_decisions_data()
+        assert dec_data["source"] == "UNKNOWN"
+        assert dec_data["decisions"][0]["provenance"] == "UNKNOWN"
+
+        stats_data = server2.get_stats_data()
+        assert stats_data["sensor"]["source"] == "UNKNOWN"
+
+
+def test_dashboard_lab_only_db_under_mode_live_not_labeled_live():
+    """Verify that a database containing only LAB decisions is NOT labeled LIVE under --mode LIVE."""
+    with tempfile.TemporaryDirectory() as tmp_dir:
+        lab_db = os.path.join(tmp_dir, "lab_only.db")
+        memory = VisitorMemory(db_path=lab_db)
+        engine = DecisionEngine(db_path=lab_db, memory=memory)
+
+        # Populate authentic LAB decisions
+        engine.decide(session_id="sess_lab_01", source_ip="127.0.0.1", stage="S1", provenance="LAB")
+        engine.decide(session_id="sess_lab_02", source_ip="127.0.0.1", stage="S2", provenance="LAB")
+
+        # Start dashboard in LIVE mode
+        server = DashboardServer(db_path=lab_db, port=0, mode="LIVE")
+
+        # Both /api/decisions and /api/stats must report LAB, never falsely claiming LIVE
+        dec_data = server.get_decisions_data()
+        assert dec_data["source"] == "LAB"
+        assert dec_data["label"] == "LAB"
+        for d in dec_data["decisions"]:
+            assert d["provenance"] == "LAB"
+
+        stats_data = server.get_stats_data()
+        assert stats_data["sensor"]["source"] == "LAB"
+        assert stats_data["sensor"]["label"] == "LAB"
+

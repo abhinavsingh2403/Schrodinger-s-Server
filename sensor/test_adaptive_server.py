@@ -184,3 +184,34 @@ def test_adaptive_session_tier_changed_callback():
         assert success is True
         assert len(escalations) == 1
         assert escalations[0][0] == "T2"
+
+
+def test_adaptive_session_live_provenance_explicit():
+    """Verify live sensor path AdaptiveSessionAdapter records provenance='LIVE' explicitly."""
+    import sqlite3
+    with tempfile.TemporaryDirectory() as tmp_dir:
+        db_path = os.path.join(tmp_dir, "sensor_live.db")
+        memory = VisitorMemory(db_path=db_path)
+        engine = DecisionEngine(db_path=db_path, memory=memory)
+        pm = PersonaManager(base_dir=tmp_dir)
+
+        adapter = AdaptiveSessionAdapter(
+            visitor_ip="198.51.100.99",
+            session_id="sess_live_sensor_01",
+            decision_engine=engine,
+            persona_manager=pm,
+            provenance="LIVE",
+        )
+        assert adapter.provenance == "LIVE"
+
+        # Trigger stage decision via adapter
+        adapter.on_kex_completed(client_version="SSH-2.0-OpenSSH_8.9", hassh="test_hassh")
+
+        # Verify row in SQLite has provenance='LIVE'
+        conn = sqlite3.connect(db_path)
+        row = conn.execute("SELECT provenance FROM decision_log WHERE session_id = 'sess_live_sensor_01'").fetchone()
+        conn.close()
+
+        assert row is not None
+        assert row[0] == "LIVE"
+

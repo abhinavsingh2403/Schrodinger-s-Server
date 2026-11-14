@@ -87,7 +87,7 @@ def test_each_api_panel_payload_includes_source_key():
         db_path = os.path.join(tmp_dir, "dash.db")
         server = DashboardServer(db_path=db_path, port=0)
 
-        valid_sources = {"RECORDED", "LAB", "LIVE", "SYNTHETIC", "MIXED"}
+        valid_sources = {"RECORDED", "LAB", "LIVE", "SYNTHETIC", "MIXED", "UNKNOWN"}
 
         # 1. /api/stats
         stats = server.get_stats_data()
@@ -142,20 +142,28 @@ def test_provenance_three_source_cases_and_missing_file():
         # Populate at least one decision in LAB mode
         memory = VisitorMemory(db_path=db_path)
         engine = DecisionEngine(db_path=db_path, memory=memory)
-        engine.decide(session_id="sess_lab_01", source_ip="127.0.0.1", stage="S1")
+        engine.decide(session_id="sess_lab_01", source_ip="127.0.0.1", stage="S1", provenance="LAB")
         lab_decisions = lab_server.get_decisions_data()
         assert lab_decisions["source"] == "LAB"
 
-        # 3. Case LIVE: mode is LIVE and log is non-empty
-        live_server = DashboardServer(db_path=db_path, mode="LIVE", port=0)
+        # 3. Case LIVE: mode is LIVE and log contains authentic LIVE decisions
+        live_db_path = os.path.join(tmp_dir, "live_dash.db")
+        live_mem = VisitorMemory(db_path=live_db_path)
+        live_engine = DecisionEngine(db_path=live_db_path, memory=live_mem)
+        live_engine.decide(session_id="sess_live_01", source_ip="127.0.0.1", stage="S1", provenance="LIVE")
+        live_server = DashboardServer(db_path=live_db_path, mode="LIVE", port=0)
         live_decisions = live_server.get_decisions_data()
         assert live_decisions["source"] == "LIVE"
 
-        # 3b. Empty LIVE log falls back to LAB
+        # 3b. Empty LIVE log falls back to UNKNOWN (fail-closed, no LAB default)
         empty_db_path = os.path.join(tmp_dir, "empty.db")
         empty_live_server = DashboardServer(db_path=empty_db_path, mode="LIVE", port=0)
         empty_decisions = empty_live_server.get_decisions_data()
-        assert empty_decisions["source"] == "LAB"
+        assert empty_decisions["source"] == "UNKNOWN"
+
+        # 3c. LAB-only DB under mode LIVE remains labeled LAB
+        lab_under_live_server = DashboardServer(db_path=db_path, mode="LIVE", port=0)
+        assert lab_under_live_server.get_decisions_data()["source"] == "LAB"
 
         # 4. Case Missing-File: If source file is missing, return status 'NO DATA'
         missing_server = DashboardServer(

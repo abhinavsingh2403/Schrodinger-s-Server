@@ -469,3 +469,16 @@ Inspect the retained SQLite database read-only and export only stage, score, tie
 - **Alternatives considered**: Retaining session name prefix checks (rejected: brittle and does not allow mixed or renamed sessions).
 - **Why**: Enforces AGENTS.md Rules 1 & 2 by making provenance an explicit, verifiable database attribute rather than an inferred heuristic.
 - **Consequences**: Decision rows carry verifiable provenance. Dashboard can handle renamed sessions, mixed provenance, and empty databases without heuristic guesswork.
+
+### 2026-11-15: Fail-closed provenance enforcement and removal of LAB defaults
+- **Status**: ACCEPTED
+- **Owner**: P2/P3 (Gatekeeper / Sensor / Dashboard Lead)
+- **Context**: Defaulting missing or legacy provenance to `'LAB'` created false assumptions and risked misattributing unverified traffic as authentic lab operations. Additionally, running the dashboard under `--mode LIVE` on a database with only `LAB` decisions improperly labeled the aggregate source as `LIVE`.
+- **Decision**:
+  1. Remove all `'LAB'` defaults across the stack: SQLite table definition (`provenance TEXT NOT NULL DEFAULT 'UNKNOWN'`), legacy table migration (`DEFAULT 'UNKNOWN'`), `DecisionEngine.decide` parameter (`provenance: str = "UNKNOWN"`), `GatekeeperClient.decide` parameter (`provenance: str = "UNKNOWN"`), and `GatekeeperHTTPHandler` payload extraction.
+  2. Validate provenance strictly against `VALID_PROVENANCES = frozenset({"SYNTHETIC", "LAB", "LIVE", "UNKNOWN"})`. In `DecisionEngine.decide` and `GatekeeperClient.decide`, reject invalid values by raising `ValueError`. In `GatekeeperHTTPHandler`, reject invalid provenance with HTTP 400 Bad Request.
+  3. Ensure the live sensor path (`sensor/adaptive_server.py:AdaptiveSessionAdapter` and `sensor/run_sensor.py:LifecycleBridge`) explicitly passes `provenance="LIVE"` to the decision engine.
+  4. Update `resolve_decision_provenance` in `dashboard/app.py`: an empty database resolves to `"SYNTHETIC"` if `--mode SYNTHETIC` else `"UNKNOWN"`. When decisions exist, aggregate source reflects true row provenance: a `LAB`-only database under `--mode LIVE` reports `"LAB"`, never `"LIVE"`. Add badge and styling for `"UNKNOWN"` in `dashboard/templates/index.html`.
+- **Alternatives considered**: Continuing to use `'LAB'` as fallback (rejected: violates AGENTS.md Rule 1 and Rule 2 truthfulness; unverified or missing provenance must fail-closed as `UNKNOWN`).
+- **Why**: Strict fail-closed provenance guarantees that neither missing metadata nor command-line flags can elevate unverified or lab data to authentic live status.
+- **Consequences**: Verified with 8 gatekeeper tests, 18 dashboard tests, and 7 sensor tests (209 total suite passes). Legacy or omitted provenance safely becomes `UNKNOWN`.

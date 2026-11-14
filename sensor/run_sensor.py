@@ -30,7 +30,7 @@ class LifecycleBridge:
         name = event.get('eventid')
         if name == 'cowrie.session.connect' and sid not in self.sessions:
             self.sessions[sid] = (AdaptiveSessionAdapter(str(event['src_ip']), str(sid),
-                self.client, self.personas), SessionFeatureExtractor())
+                self.client, self.personas, provenance='LIVE'), SessionFeatureExtractor())
         if sid not in self.sessions:
             return
         adapter, extractor = self.sessions[sid]

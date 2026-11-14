@@ -31,6 +31,8 @@ from gatekeeper.features import stage_vector, STAGE_ALLOWED_FEATURES
 from gatekeeper.policy import EscalationPolicy, SessionBudget
 from gatekeeper.visitor_memory import VisitorMemory, derive_visitor_id, get_masked_id
 
+VALID_PROVENANCES = frozenset({"SYNTHETIC", "LAB", "LIVE", "UNKNOWN"})
+
 try:
     from analysis.exp0_rules import PurePythonLogisticRegression
 except ImportError:
@@ -133,7 +135,7 @@ class DecisionEngine:
                         tier_decided TEXT NOT NULL,
                         latency_ms REAL NOT NULL,
                         timestamp TEXT NOT NULL,
-                        provenance TEXT NOT NULL DEFAULT 'LAB'
+                        provenance TEXT NOT NULL DEFAULT 'UNKNOWN'
                     )
                     """
                 )
@@ -148,7 +150,7 @@ class DecisionEngine:
                 cursor.execute("PRAGMA table_info(decision_log)")
                 cols = [row[1] for row in cursor.fetchall()]
                 if "provenance" not in cols:
-                    conn.execute("ALTER TABLE decision_log ADD COLUMN provenance TEXT NOT NULL DEFAULT 'LAB'")
+                    conn.execute("ALTER TABLE decision_log ADD COLUMN provenance TEXT NOT NULL DEFAULT 'UNKNOWN'")
         except Exception:
             pass
 
@@ -253,12 +255,15 @@ class DecisionEngine:
         features: dict[str, Any] | None = None,
         current_tier: str = "T1",
         visitor_ip: str | None = None,
-        provenance: str = "LAB",
+        provenance: str = "UNKNOWN",
     ) -> dict[str, Any]:
         """
         Evaluate session and return tier decision with strict fail-cheap safety.
         Accepts either source_ip or visitor_ip.
         """
+        if provenance not in VALID_PROVENANCES:
+            raise ValueError(f"Invalid provenance {provenance!r}; must be one of {sorted(VALID_PROVENANCES)}")
+
         ip = source_ip or visitor_ip or "127.0.0.1"
         feats = features or {}
         start_time = time.perf_counter()
@@ -323,6 +328,7 @@ class DecisionEngine:
                 "target_tier": current_tier if current_tier in ("T1", "T2", "T3") else "T1",
                 "latency_ms": round(latency_ms, 3),
                 "fail_cheap": True,
+                "provenance": provenance,
             }
 
     def record_session(
@@ -362,8 +368,10 @@ class GatekeeperClient:
         features: dict[str, Any] | None = None,
         current_tier: str = "T1",
         visitor_ip: str | None = None,
-        provenance: str = "LAB",
+        provenance: str = "UNKNOWN",
     ) -> dict[str, Any]:
+        if provenance not in VALID_PROVENANCES:
+            raise ValueError(f"Invalid provenance {provenance!r}; must be one of {sorted(VALID_PROVENANCES)}")
         url = f"{self.base_url}/decide"
         payload = {
             "session_id": session_id,
@@ -392,6 +400,7 @@ class GatekeeperClient:
             "target_tier": current_tier if current_tier in ("T1", "T2", "T3") else "T1",
             "latency_ms": 0.0,
             "fail_cheap": True,
+            "provenance": provenance,
         }
 
     def record_session(
@@ -447,13 +456,21 @@ class GatekeeperHTTPHandler(http.server.BaseHTTPRequestHandler):
             return
 
         if self.path == "/decide":
+            prov = payload.get("provenance", "UNKNOWN")
+            if prov not in VALID_PROVENANCES:
+                self.send_response(400)
+                self.send_header("Content-Type", "application/json")
+                self.end_headers()
+                self.wfile.write(json.dumps({"error": f"Invalid provenance: {prov}"}).encode("utf-8"))
+                return
+
             resp = engine.decide(
                 session_id=payload.get("session_id", "sess_unknown"),
                 source_ip=payload.get("source_ip") or payload.get("visitor_ip"),
                 stage=payload.get("stage", "S0"),
                 features=payload.get("features", {}),
                 current_tier=payload.get("current_tier", "T1"),
-                provenance=payload.get("provenance", "LAB"),
+                provenance=prov,
             )
             self.send_response(200)
             self.send_header("Content-Type", "application/json")
