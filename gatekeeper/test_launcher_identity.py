@@ -14,5 +14,5 @@ def test_identity_overrides():
     for env, key in [('HONEYPOT_HOSTNAME','hostname'), ('SHELL_KERNEL_VERSION','kernel'),
                      ('SHELL_HARDWARE_PLATFORM','arch'), ('SSH_VERSION','banner')]:
         assert overrides['COWRIE_'+env] == config[key]
-    assert overrides['COWRIE_SHELL_KERNEL_BUILD_STRING'] == config['distro']+' '+config['release']
+    assert overrides['COWRIE_SHELL_KERNEL_BUILD_STRING'] == config['kernel_build_string']
     assert Path(overrides['COWRIE_HONEYPOT_CONTENTS_PATH']) == root / 'sensor/honeyfs'

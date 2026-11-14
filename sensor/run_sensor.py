@@ -137,7 +137,7 @@ def identity_overrides():
         'COWRIE_HONEYPOT_HOSTNAME': values['hostname'],
         'COWRIE_HONEYPOT_CONTENTS_PATH': str((root / 'sensor/honeyfs').resolve()),
         'COWRIE_SHELL_KERNEL_VERSION': values['kernel'],
-        'COWRIE_SHELL_KERNEL_BUILD_STRING': values['distro'] + ' ' + values['release'],
+        'COWRIE_SHELL_KERNEL_BUILD_STRING': values['kernel_build_string'],
         'COWRIE_SHELL_HARDWARE_PLATFORM': values['arch'],
         'COWRIE_SSH_VERSION': values['banner'],
     }
