@@ -1,0 +1,6 @@
+{
+  "provenance": "LAB actual SSH stdout",
+  "command": "hostname; cat /etc/os-release; uname -a",
+  "returncode": 0,
+  "stdout": "svr04\nLinux svr04 6.1.0-21-amd64 #1 SMP PREEMPT_DYNAMIC Debian 6.1.90-1 (2024-05-03) x86_64 GNU/Linux\n"
+}

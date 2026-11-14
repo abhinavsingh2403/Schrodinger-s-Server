@@ -1,0 +1,6 @@
+{
+  "provenance": "LAB actual SSH stdout",
+  "command": "hostname; cat /etc/os-release; uname -a",
+  "returncode": 0,
+  "stdout": "srv-app-01\nPRETTY_NAME=\"Debian GNU/Linux 12 (bookworm)\"\nNAME=\"Debian GNU/Linux\"\nVERSION_ID=\"12\"\nVERSION=\"12 (bookworm)\"\nVERSION_CODENAME=bookworm\nID=debian\nHOME_URL=\"https://www.debian.org/\"\nSUPPORT_URL=\"https://www.debian.org/support\"\nBUG_REPORT_URL=\"https://bugs.debian.org/\"\nLinux srv-app-01 6.1.0-21-amd64 Debian 12 (bookworm) x86_64 GNU/Linux\n"
+}

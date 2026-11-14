@@ -507,3 +507,4 @@ Record DEFAULT or LAB_DEMO from engine construction, never client input. Migrate
 
 ### 2026-11-15 — Launcher identity from unified config
 Apply verified Cowrie environment keys from config/identity.yaml before initialization, with repository honeyfs resolved at runtime. Parse the required top-level scalar identity fields without a new dependency. Kernel build text uses the declared distro/release identity, since no build timestamp is declared; do not invent one. Capture actual SSH output before and after; no infra or honeyfs edits.
+The real identity check showed contents_path alone did not expose os-release: pinned Cowrie init_honeyfs only maps existing regular virtual files. Add the os-release virtual entry during launcher filesystem initialization and map its existing honeyfs bytes; no generated identity file or upstream source change.

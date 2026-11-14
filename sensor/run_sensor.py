@@ -98,7 +98,8 @@ def main():
         parser.error('This lab launcher only permits loopback (127.0.0.1/localhost) or gatekeeper container')
     args.state_dir.mkdir(parents=True, exist_ok=True)
     os.chdir(args.state_dir)
-    # Verified EnvironmentConfigParser overrides; no identity keys are changed.
+    os.environ.update(identity_overrides())
+    # Verified EnvironmentConfigParser overrides.
     os.environ.update(COWRIE_SSH_LISTEN_ENDPOINTS=f'tcp:{args.port}:interface=127.0.0.1',
         COWRIE_SSH_FORWARDING='false', COWRIE_TELNET_ENABLED='false',
         COWRIE_HONEYPOT_BACKEND='shell')
@@ -108,6 +109,7 @@ def main():
     check_initialized()
     first_time_use()
     from twisted.internet import reactor, defer
+    install_identity_file()
     # All Twisted-originated outbound traffic is disabled in this lab process.
     # The loopback GatekeeperClient uses urllib with the separately checked URL.
     def blocked(*args, **kwargs):
@@ -121,6 +123,39 @@ def main():
     sys.argv = ['twistd', '-n', '--umask=0022', '--pidfile', 'var/run/adaptive.pid',
                 '--logger', 'cowrie.python.logfile.stdoutLogger', 'cowrie']
     twistd.run()
+
+
+def identity_overrides():
+    """Resolve declared scalar identity fields into pinned Cowrie environment keys."""
+    root = Path(__file__).resolve().parents[1]
+    values = {}
+    for line in (root / 'config/identity.yaml').read_text().splitlines():
+        if line and not line[0].isspace() and not line.startswith('#') and ':' in line:
+            key, value = line.split(':', 1)
+            values[key] = value.strip().strip('"').strip("'")
+    return {
+        'COWRIE_HONEYPOT_HOSTNAME': values['hostname'],
+        'COWRIE_HONEYPOT_CONTENTS_PATH': str((root / 'sensor/honeyfs').resolve()),
+        'COWRIE_SHELL_KERNEL_VERSION': values['kernel'],
+        'COWRIE_SHELL_KERNEL_BUILD_STRING': values['distro'] + ' ' + values['release'],
+        'COWRIE_SHELL_HARDWARE_PLATFORM': values['arch'],
+        'COWRIE_SSH_VERSION': values['banner'],
+    }
+
+
+def install_identity_file():
+    """Map os-release even when the stock virtual tree lacks a regular entry."""
+    from cowrie.shell import fs
+    original = fs.HoneyPotFilesystem.init_honeyfs
+
+    def initialize(filesystem, contents_path):
+        original(filesystem, contents_path)
+        source = Path(contents_path) / 'etc/os-release'
+        if source.is_file():
+            filesystem.mkfile('/etc/os-release', 0, 0, source.stat().st_size, 0o100644)
+            filesystem.update_realfile(filesystem.getfile('/etc/os-release'), str(source))
+
+    fs.HoneyPotFilesystem.init_honeyfs = initialize
 
 
 if __name__ == '__main__':
