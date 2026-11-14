@@ -37,8 +37,10 @@ services:
     volumes:
       - ../gatekeeper:/app/gatekeeper:ro
       - ../config:/app/config:ro
+      - ../analysis:/app/analysis:ro
+      - ../models:/app/models:ro
       - gatekeeper-data:/app/data
-    command: ["python", "-m", "gatekeeper.decision_api", "--host", "0.0.0.0", "--port", "5000", "--db", "/app/data/gatekeeper.db"]
+    command: ["python", "-m", "gatekeeper.decision_api", "--host", "0.0.0.0", "--port", "5000", "--db", "/app/data/gatekeeper.db", "--lab-mode"]
     ports:
       - "127.0.0.1:5000:5000"
     healthcheck:
@@ -61,7 +63,7 @@ services:
       - ../dashboard:/app/dashboard:ro
       - ../results:/app/results:ro
       - gatekeeper-data:/app/gatekeeper:ro
-    command: ["python", "dashboard/app.py", "--host", "0.0.0.0", "--port", "8080", "--mode", "LAB"]
+    command: ["python", "dashboard/app.py", "--host", "0.0.0.0", "--port", "8080", "--mode", "LAB", "--db", "/app/gatekeeper/gatekeeper.db"]
     networks:
       - internal_honeypot_net
 

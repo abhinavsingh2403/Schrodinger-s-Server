@@ -85,8 +85,9 @@ def main():
     parser.add_argument('--gatekeeper-url', default='http://127.0.0.1:5000')
     parser.add_argument('--port', type=int, default=2222)
     args = parser.parse_args()
-    if urlparse(args.gatekeeper_url).hostname != '127.0.0.1':
-        parser.error('This lab launcher only permits the loopback gatekeeper')
+    gk_host = urlparse(args.gatekeeper_url).hostname
+    if gk_host not in ('127.0.0.1', 'localhost', 'gatekeeper'):
+        parser.error('This lab launcher only permits loopback (127.0.0.1/localhost) or gatekeeper container')
     args.state_dir.mkdir(parents=True, exist_ok=True)
     os.chdir(args.state_dir)
     # Verified EnvironmentConfigParser overrides; no identity keys are changed.
