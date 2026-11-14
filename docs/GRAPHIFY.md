@@ -30,8 +30,8 @@ graph TD
     %% ==========================================
     subgraph SENSOR_TIER ["2. Cowrie Honeypot Sensor [sensor/, infra/]"]
         COWRIE_DAEMON["Cowrie SSH Daemon v3.1.6<br/>[infra/cowrie.cfg]"]
-        ID_PROFILE["identity.yaml<br/>(srv-app-01, OpenSSH_8.9p1)"]
-        CONCH_ADAPTER["CowrieSSHSessionAdapter<br/>[sensor/adaptive_server.py]"]
+        ID_PROFILE["identity.yaml<br/>(srv-app-01, OpenSSH_9.2p1, Debian 12)"]
+        CONCH_ADAPTER["CowrieSSHSessionAdapter<br/>[sensor/adaptive_server.py]<br/>(Status: lab-verified on loopback only;<br/>see results/exp0/ASTRA2_REPORT.md and HANDOFF.md)"]
         HOOKS["Lifecycle Hooks:<br/>• ssh_version_received (S1)<br/>• user_authenticated (S2)<br/>• pty_requested (S3)<br/>• command_received (S4/S5)"]
     end
 
@@ -247,7 +247,7 @@ sequenceDiagram
 | Layer | Primary Files | Core Invariants Enforced |
 |---|---|---|
 | **Ingress Safety** | `harness/attackers/common.py`<br/>`infra/docker-compose.yml` | Strict allowlist: `127.0.0.1`, `localhost`, and RFC 1918 private subnets only. Public routable IPs raise `SafetyViolationError`. Internal Docker network blocks outbound internet egress. |
-| **Sensor & Conch** | `sensor/adaptive_server.py`<br/>`infra/cowrie.cfg`<br/>`config/identity.yaml` | Protocol hooks capture telemetry across stages S1 to S5. Identical identity profile (`srv-app-01`, `OpenSSH_8.9p1`) shared across tiers to prevent cross-tier fingerprinting. |
+| **Sensor & Conch** | `sensor/adaptive_server.py`<br/>`infra/cowrie.cfg`<br/>`config/identity.yaml` | Protocol hooks capture telemetry across stages S1 to S5. Identical identity profile (`srv-app-01`, `OpenSSH_9.2p1`, Debian 12) shared across tiers to prevent cross-tier fingerprinting. Status: lab-verified on loopback only; see results/exp0/ASTRA2_REPORT.md and HANDOFF.md. |
 | **Gatekeeper Decision Engine** | `gatekeeper/decision_api.py`<br/>`gatekeeper/policy.py`<br/>`gatekeeper/feature_extractor.py` | Fail-cheap guarantee: any internal exception or corrupted model defaults to T1 Lite without dropping connections. Upward-only monotone tier transitions (T1 &rarr; T2 &rarr; T3; never downgrade). Budget ceiling restricts escalations. |
 | **Privacy & Memory** | `gatekeeper/visitor_memory.py` | Zero raw IP storage: visitor identifiers are generated via salted HMAC-SHA256 (`vis_xxxxxxxx`). SQLite database uses Write-Ahead Logging (WAL) for concurrency. |
 | **Model Inference** | `models/model_s3.json`<br/>`analysis/exp0_rules.py` | Zero external ML dependencies in production runtime: `PurePythonLogisticRegression` executes standalone matrix multiplication and sigmoid evaluation in under 2 microseconds. |

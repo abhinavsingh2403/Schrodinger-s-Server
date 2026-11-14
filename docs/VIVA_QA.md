@@ -74,7 +74,7 @@ Source IPs are cryptographically hashed using salted HMAC-SHA256 upon arrival to
 If the Gatekeeper service encounters an internal error, corrupted model, or network timeout, the honeypot defaults safely to Tier T1 Lite rather than dropping the connection or raising an uncaught exception [gatekeeper/decision_api.py, SPEC.md §5.2].
 
 ### Q19: How is identical identity maintained across tiers to prevent fingerprinting?
-The system enforces a shared identity profile (srv-app-01, Ubuntu 22.04 LTS, OpenSSH 8.9p1) across both T1 and T2 configurations, ensuring that an escalated session does not reveal contradictory OS banners or kernel strings [config/identity.yaml, infra/cowrie.cfg].
+The system enforces a shared identity profile (srv-app-01, Debian 12 Bookworm, OpenSSH 9.2p1) across both T1 and T2 configurations, ensuring that an escalated session does not reveal contradictory OS banners or kernel strings [config/identity.yaml, infra/cowrie.cfg].
 
 ### Q20: What is the difference between Plan A and Plan B escalation mechanisms?
 Plan A uses an in-process Twisted Conch adapter hook inside Cowrie to switch environments dynamically during a session. Plan B is a fallback multi-instance TCP front-end that splices connections across instances between sessions [SPEC.md §5.3, sensor/adaptive_server.py].
