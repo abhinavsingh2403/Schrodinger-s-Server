@@ -516,3 +516,7 @@ Persist score_source alongside policy_profile so the live proof reports actual d
 
 ### 2026-11-15 — Documentation alignment
 Correct launcher provenance choices to LAB only and evidence log paths to the state directory. Mark prior demo/provenance statements superseded without deleting their history. API provenance is client supplied; LIVE exclusion is launcher-level enforcement only.
+
+### 2026-11-15 â€” S3 score diagnosis and identity build declaration
+Compare captured DEFAULT adapter vectors with extractor/offline vectors and recompute frozen model scores; do not change weights or default behaviour. Report full precision to distinguish rounded-equal scores. Extend the scripted file check to DEFAULT and retain actual stdout/stderr. Task F explicitly authorizes adding kernel_build_string to config/identity.yaml; use the supplied declaration rather than constructing it from distro/release. Existing os-release mapping already works and no custom pickle is needed.
+The repository's identity-consistency test requires config/identity.yaml and sensor/identity.yaml to be identical. Mirror the explicitly requested kernel_build_string field into the sensor copy; this minimal dependent edit preserves the existing identity invariant. No infra or honeyfs change.

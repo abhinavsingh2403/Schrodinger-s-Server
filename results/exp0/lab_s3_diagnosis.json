@@ -1,0 +1,395 @@
+{
+  "provenance": "LAB captured DEFAULT proof; no model or feature changes",
+  "features": [
+    "cnt_session_connect",
+    "cnt_client_version",
+    "cnt_client_kex",
+    "cnt_client_fingerprint",
+    "cnt_login_failed",
+    "cnt_login_success",
+    "cnt_client_size",
+    "cnt_client_var",
+    "cnt_session_params"
+  ],
+  "zero_vector_score": 0.15482228386498245,
+  "pty_model_effect": {
+    "feature": "cnt_client_size",
+    "weight": 0.00012273860779473373,
+    "range": 4.0,
+    "logit_change_per_event": 3.0684651948683434e-05
+  },
+  "rows": [
+    {
+      "scenario": "bot_like",
+      "session": "session-3",
+      "live_vector": [
+        1.0,
+        1.0,
+        1.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        1.0,
+        1.0
+      ],
+      "offline_vector": [
+        1.0,
+        1.0,
+        1.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        1.0,
+        1.0
+      ],
+      "all_zero": false,
+      "missing_fields": [],
+      "stored_score": 0.04519740586489645,
+      "recomputed_score": 0.04519740586489645,
+      "score_source": "ml_model_s3"
+    },
+    {
+      "scenario": "bot_like",
+      "session": "session-4",
+      "live_vector": [
+        1.0,
+        1.0,
+        1.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        1.0,
+        1.0
+      ],
+      "offline_vector": [
+        1.0,
+        1.0,
+        1.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        1.0,
+        1.0
+      ],
+      "all_zero": false,
+      "missing_fields": [],
+      "stored_score": 0.04519740586489645,
+      "recomputed_score": 0.04519740586489645,
+      "score_source": "ml_model_s3"
+    },
+    {
+      "scenario": "bot_like",
+      "session": "session-5",
+      "live_vector": [
+        1.0,
+        1.0,
+        1.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        1.0,
+        1.0
+      ],
+      "offline_vector": [
+        1.0,
+        1.0,
+        1.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        1.0,
+        1.0
+      ],
+      "all_zero": false,
+      "missing_fields": [],
+      "stored_score": 0.04519740586489645,
+      "recomputed_score": 0.04519740586489645,
+      "score_source": "ml_model_s3"
+    },
+    {
+      "scenario": "interactive",
+      "session": "session-1",
+      "live_vector": [
+        1.0,
+        1.0,
+        1.0,
+        0.0,
+        0.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "offline_vector": [
+        1.0,
+        1.0,
+        1.0,
+        0.0,
+        0.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "all_zero": false,
+      "missing_fields": [],
+      "stored_score": 0.04519873006726848,
+      "recomputed_score": 0.04519873006726848,
+      "score_source": "ml_model_s3"
+    },
+    {
+      "scenario": "interactive",
+      "session": "session-2",
+      "live_vector": [
+        1.0,
+        1.0,
+        1.0,
+        0.0,
+        0.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "offline_vector": [
+        1.0,
+        1.0,
+        1.0,
+        0.0,
+        0.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "all_zero": false,
+      "missing_fields": [],
+      "stored_score": 0.04519873006726848,
+      "recomputed_score": 0.04519873006726848,
+      "score_source": "ml_model_s3"
+    },
+    {
+      "scenario": "interactive",
+      "session": "session-3",
+      "live_vector": [
+        1.0,
+        1.0,
+        1.0,
+        0.0,
+        0.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "offline_vector": [
+        1.0,
+        1.0,
+        1.0,
+        0.0,
+        0.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "all_zero": false,
+      "missing_fields": [],
+      "stored_score": 0.04519873006726848,
+      "recomputed_score": 0.04519873006726848,
+      "score_source": "ml_model_s3"
+    },
+    {
+      "scenario": "interactive",
+      "session": "session-4",
+      "live_vector": [
+        1.0,
+        1.0,
+        1.0,
+        0.0,
+        0.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "offline_vector": [
+        1.0,
+        1.0,
+        1.0,
+        0.0,
+        0.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "all_zero": false,
+      "missing_fields": [],
+      "stored_score": 0.04519873006726848,
+      "recomputed_score": 0.04519873006726848,
+      "score_source": "ml_model_s3"
+    },
+    {
+      "scenario": "interactive",
+      "session": "session-5",
+      "live_vector": [
+        1.0,
+        1.0,
+        1.0,
+        0.0,
+        0.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "offline_vector": [
+        1.0,
+        1.0,
+        1.0,
+        0.0,
+        0.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "all_zero": false,
+      "missing_fields": [],
+      "stored_score": 0.04519873006726848,
+      "recomputed_score": 0.04519873006726848,
+      "score_source": "ml_model_s3"
+    },
+    {
+      "scenario": "interactive",
+      "session": "session-6",
+      "live_vector": [
+        1.0,
+        1.0,
+        1.0,
+        0.0,
+        0.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "offline_vector": [
+        1.0,
+        1.0,
+        1.0,
+        0.0,
+        0.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "all_zero": false,
+      "missing_fields": [],
+      "stored_score": 0.04519873006726848,
+      "recomputed_score": 0.04519873006726848,
+      "score_source": "ml_model_s3"
+    },
+    {
+      "scenario": "transfer_like",
+      "session": "session-1",
+      "live_vector": [
+        1.0,
+        1.0,
+        1.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        1.0,
+        1.0
+      ],
+      "offline_vector": [
+        1.0,
+        1.0,
+        1.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        1.0,
+        1.0
+      ],
+      "all_zero": false,
+      "missing_fields": [],
+      "stored_score": 0.04519740586489645,
+      "recomputed_score": 0.04519740586489645,
+      "score_source": "ml_model_s3"
+    },
+    {
+      "scenario": "transfer_like",
+      "session": "session-2",
+      "live_vector": [
+        1.0,
+        1.0,
+        1.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        1.0,
+        1.0
+      ],
+      "offline_vector": [
+        1.0,
+        1.0,
+        1.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        1.0,
+        1.0
+      ],
+      "all_zero": false,
+      "missing_fields": [],
+      "stored_score": 0.04519740586489645,
+      "recomputed_score": 0.04519740586489645,
+      "score_source": "ml_model_s3"
+    },
+    {
+      "scenario": "transfer_like",
+      "session": "session-3",
+      "live_vector": [
+        1.0,
+        1.0,
+        1.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        1.0,
+        1.0
+      ],
+      "offline_vector": [
+        1.0,
+        1.0,
+        1.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        1.0,
+        1.0
+      ],
+      "all_zero": false,
+      "missing_fields": [],
+      "stored_score": 0.04519740586489645,
+      "recomputed_score": 0.04519740586489645,
+      "score_source": "ml_model_s3"
+    }
+  ]
+}
