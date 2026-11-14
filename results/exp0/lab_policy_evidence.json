@@ -1,0 +1,2772 @@
+{
+  "provenance": "LAB: captured events and stored decisions; replay vectors explicitly labelled",
+  "date": "2026-11-14T20:22:24.463083+00:00",
+  "commit": "b21810f875089c8f0f1a8f8cd96b1543c5a3076c",
+  "command": "python -m gatekeeper.capture_lab_evidence",
+  "scenarios": [
+    {
+      "scenario": "bot_like",
+      "returncode": 0,
+      "sessions": [
+        {
+          "session": "session-1",
+          "events": [
+            "cowrie.session.connect",
+            "cowrie.client.version",
+            "cowrie.client.kex",
+            "cowrie.login.failed",
+            "cowrie.login.failed",
+            "cowrie.login.failed",
+            "cowrie.session.closed"
+          ],
+          "command_count": 0,
+          "extractor_replay": [
+            {
+              "stage": "S2",
+              "features": {
+                "s1_ver_len": 31,
+                "s1_has_hassh": 1,
+                "s1_is_openssh": 1,
+                "s1_is_libssh": 0,
+                "s1_is_paramiko": 0,
+                "s1_kex_count": 14,
+                "s1_cipher_count": 6,
+                "s1_mac_count": 10,
+                "s1_comp_count": 2,
+                "cnt_session_connect": 1.0,
+                "cnt_client_version": 1.0,
+                "cnt_client_kex": 1.0,
+                "s2_auth_attempts": 1,
+                "s2_failed_logins": 1,
+                "s2_has_success": 0,
+                "cnt_client_fingerprint": 0.0,
+                "cnt_login_failed": 1.0,
+                "cnt_login_success": 0.0
+              }
+            },
+            {
+              "stage": "S2",
+              "features": {
+                "s1_ver_len": 31,
+                "s1_has_hassh": 1,
+                "s1_is_openssh": 1,
+                "s1_is_libssh": 0,
+                "s1_is_paramiko": 0,
+                "s1_kex_count": 14,
+                "s1_cipher_count": 6,
+                "s1_mac_count": 10,
+                "s1_comp_count": 2,
+                "cnt_session_connect": 1.0,
+                "cnt_client_version": 1.0,
+                "cnt_client_kex": 1.0,
+                "s2_auth_attempts": 2,
+                "s2_failed_logins": 2,
+                "s2_has_success": 0,
+                "cnt_client_fingerprint": 0.0,
+                "cnt_login_failed": 2.0,
+                "cnt_login_success": 0.0
+              }
+            },
+            {
+              "stage": "S2",
+              "features": {
+                "s1_ver_len": 31,
+                "s1_has_hassh": 1,
+                "s1_is_openssh": 1,
+                "s1_is_libssh": 0,
+                "s1_is_paramiko": 0,
+                "s1_kex_count": 14,
+                "s1_cipher_count": 6,
+                "s1_mac_count": 10,
+                "s1_comp_count": 2,
+                "cnt_session_connect": 1.0,
+                "cnt_client_version": 1.0,
+                "cnt_client_kex": 1.0,
+                "s2_auth_attempts": 3,
+                "s2_failed_logins": 3,
+                "s2_has_success": 0,
+                "cnt_client_fingerprint": 0.0,
+                "cnt_login_failed": 3.0,
+                "cnt_login_success": 0.0
+              }
+            }
+          ],
+          "adapter_replay": [
+            {
+              "stage": "S2",
+              "features": {
+                "s1_ver_len": 31,
+                "s1_has_hassh": 1,
+                "s1_is_openssh": 1,
+                "s1_is_libssh": 0,
+                "s1_is_paramiko": 0,
+                "s1_kex_count": 14,
+                "s1_cipher_count": 6,
+                "s1_mac_count": 10,
+                "s1_comp_count": 2,
+                "cnt_session_connect": 1.0,
+                "cnt_client_version": 1.0,
+                "cnt_client_kex": 1.0,
+                "s2_auth_attempts": 1,
+                "s2_failed_logins": 1,
+                "s2_has_success": 0,
+                "cnt_client_fingerprint": 0.0,
+                "cnt_login_failed": 1.0,
+                "cnt_login_success": 0.0
+              }
+            },
+            {
+              "stage": "S2",
+              "features": {
+                "s1_ver_len": 31,
+                "s1_has_hassh": 1,
+                "s1_is_openssh": 1,
+                "s1_is_libssh": 0,
+                "s1_is_paramiko": 0,
+                "s1_kex_count": 14,
+                "s1_cipher_count": 6,
+                "s1_mac_count": 10,
+                "s1_comp_count": 2,
+                "cnt_session_connect": 1.0,
+                "cnt_client_version": 1.0,
+                "cnt_client_kex": 1.0,
+                "s2_auth_attempts": 2,
+                "s2_failed_logins": 2,
+                "s2_has_success": 0,
+                "cnt_client_fingerprint": 0.0,
+                "cnt_login_failed": 2.0,
+                "cnt_login_success": 0.0
+              }
+            },
+            {
+              "stage": "S2",
+              "features": {
+                "s1_ver_len": 31,
+                "s1_has_hassh": 1,
+                "s1_is_openssh": 1,
+                "s1_is_libssh": 0,
+                "s1_is_paramiko": 0,
+                "s1_kex_count": 14,
+                "s1_cipher_count": 6,
+                "s1_mac_count": 10,
+                "s1_comp_count": 2,
+                "cnt_session_connect": 1.0,
+                "cnt_client_version": 1.0,
+                "cnt_client_kex": 1.0,
+                "s2_auth_attempts": 3,
+                "s2_failed_logins": 3,
+                "s2_has_success": 0,
+                "cnt_client_fingerprint": 0.0,
+                "cnt_login_failed": 3.0,
+                "cnt_login_success": 0.0
+              }
+            }
+          ],
+          "decisions": [
+            {
+              "stage": "S1",
+              "score": 0.05,
+              "tier_decided": "T1",
+              "provenance": "LAB"
+            },
+            {
+              "stage": "S2",
+              "score": 0.1,
+              "tier_decided": "T1",
+              "provenance": "LAB"
+            },
+            {
+              "stage": "S2",
+              "score": 0.1,
+              "tier_decided": "T1",
+              "provenance": "LAB"
+            },
+            {
+              "stage": "S2",
+              "score": 0.1,
+              "tier_decided": "T1",
+              "provenance": "LAB"
+            }
+          ],
+          "limitations": "S1 NEWKEYS is a transport hook, not reconstructed from JSON. Score source is not stored in this decision schema."
+        },
+        {
+          "session": "session-2",
+          "events": [
+            "cowrie.session.connect",
+            "cowrie.client.version",
+            "cowrie.client.kex",
+            "cowrie.login.failed",
+            "cowrie.login.failed",
+            "cowrie.login.failed",
+            "cowrie.session.closed"
+          ],
+          "command_count": 0,
+          "extractor_replay": [
+            {
+              "stage": "S2",
+              "features": {
+                "s1_ver_len": 31,
+                "s1_has_hassh": 1,
+                "s1_is_openssh": 1,
+                "s1_is_libssh": 0,
+                "s1_is_paramiko": 0,
+                "s1_kex_count": 14,
+                "s1_cipher_count": 6,
+                "s1_mac_count": 10,
+                "s1_comp_count": 2,
+                "cnt_session_connect": 1.0,
+                "cnt_client_version": 1.0,
+                "cnt_client_kex": 1.0,
+                "s2_auth_attempts": 1,
+                "s2_failed_logins": 1,
+                "s2_has_success": 0,
+                "cnt_client_fingerprint": 0.0,
+                "cnt_login_failed": 1.0,
+                "cnt_login_success": 0.0
+              }
+            },
+            {
+              "stage": "S2",
+              "features": {
+                "s1_ver_len": 31,
+                "s1_has_hassh": 1,
+                "s1_is_openssh": 1,
+                "s1_is_libssh": 0,
+                "s1_is_paramiko": 0,
+                "s1_kex_count": 14,
+                "s1_cipher_count": 6,
+                "s1_mac_count": 10,
+                "s1_comp_count": 2,
+                "cnt_session_connect": 1.0,
+                "cnt_client_version": 1.0,
+                "cnt_client_kex": 1.0,
+                "s2_auth_attempts": 2,
+                "s2_failed_logins": 2,
+                "s2_has_success": 0,
+                "cnt_client_fingerprint": 0.0,
+                "cnt_login_failed": 2.0,
+                "cnt_login_success": 0.0
+              }
+            },
+            {
+              "stage": "S2",
+              "features": {
+                "s1_ver_len": 31,
+                "s1_has_hassh": 1,
+                "s1_is_openssh": 1,
+                "s1_is_libssh": 0,
+                "s1_is_paramiko": 0,
+                "s1_kex_count": 14,
+                "s1_cipher_count": 6,
+                "s1_mac_count": 10,
+                "s1_comp_count": 2,
+                "cnt_session_connect": 1.0,
+                "cnt_client_version": 1.0,
+                "cnt_client_kex": 1.0,
+                "s2_auth_attempts": 3,
+                "s2_failed_logins": 3,
+                "s2_has_success": 0,
+                "cnt_client_fingerprint": 0.0,
+                "cnt_login_failed": 3.0,
+                "cnt_login_success": 0.0
+              }
+            }
+          ],
+          "adapter_replay": [
+            {
+              "stage": "S2",
+              "features": {
+                "s1_ver_len": 31,
+                "s1_has_hassh": 1,
+                "s1_is_openssh": 1,
+                "s1_is_libssh": 0,
+                "s1_is_paramiko": 0,
+                "s1_kex_count": 14,
+                "s1_cipher_count": 6,
+                "s1_mac_count": 10,
+                "s1_comp_count": 2,
+                "cnt_session_connect": 1.0,
+                "cnt_client_version": 1.0,
+                "cnt_client_kex": 1.0,
+                "s2_auth_attempts": 1,
+                "s2_failed_logins": 1,
+                "s2_has_success": 0,
+                "cnt_client_fingerprint": 0.0,
+                "cnt_login_failed": 1.0,
+                "cnt_login_success": 0.0
+              }
+            },
+            {
+              "stage": "S2",
+              "features": {
+                "s1_ver_len": 31,
+                "s1_has_hassh": 1,
+                "s1_is_openssh": 1,
+                "s1_is_libssh": 0,
+                "s1_is_paramiko": 0,
+                "s1_kex_count": 14,
+                "s1_cipher_count": 6,
+                "s1_mac_count": 10,
+                "s1_comp_count": 2,
+                "cnt_session_connect": 1.0,
+                "cnt_client_version": 1.0,
+                "cnt_client_kex": 1.0,
+                "s2_auth_attempts": 2,
+                "s2_failed_logins": 2,
+                "s2_has_success": 0,
+                "cnt_client_fingerprint": 0.0,
+                "cnt_login_failed": 2.0,
+                "cnt_login_success": 0.0
+              }
+            },
+            {
+              "stage": "S2",
+              "features": {
+                "s1_ver_len": 31,
+                "s1_has_hassh": 1,
+                "s1_is_openssh": 1,
+                "s1_is_libssh": 0,
+                "s1_is_paramiko": 0,
+                "s1_kex_count": 14,
+                "s1_cipher_count": 6,
+                "s1_mac_count": 10,
+                "s1_comp_count": 2,
+                "cnt_session_connect": 1.0,
+                "cnt_client_version": 1.0,
+                "cnt_client_kex": 1.0,
+                "s2_auth_attempts": 3,
+                "s2_failed_logins": 3,
+                "s2_has_success": 0,
+                "cnt_client_fingerprint": 0.0,
+                "cnt_login_failed": 3.0,
+                "cnt_login_success": 0.0
+              }
+            }
+          ],
+          "decisions": [
+            {
+              "stage": "S1",
+              "score": 0.05,
+              "tier_decided": "T1",
+              "provenance": "LAB"
+            },
+            {
+              "stage": "S2",
+              "score": 0.1,
+              "tier_decided": "T1",
+              "provenance": "LAB"
+            },
+            {
+              "stage": "S2",
+              "score": 0.1,
+              "tier_decided": "T1",
+              "provenance": "LAB"
+            },
+            {
+              "stage": "S2",
+              "score": 0.1,
+              "tier_decided": "T1",
+              "provenance": "LAB"
+            }
+          ],
+          "limitations": "S1 NEWKEYS is a transport hook, not reconstructed from JSON. Score source is not stored in this decision schema."
+        },
+        {
+          "session": "session-3",
+          "events": [
+            "cowrie.session.connect",
+            "cowrie.client.version",
+            "cowrie.client.kex",
+            "cowrie.login.success",
+            "cowrie.client.var",
+            "cowrie.session.params",
+            "cowrie.command.input",
+            "cowrie.log.closed",
+            "cowrie.session.closed"
+          ],
+          "command_count": 1,
+          "extractor_replay": [
+            {
+              "stage": "S2",
+              "features": {
+                "s1_ver_len": 31,
+                "s1_has_hassh": 1,
+                "s1_is_openssh": 1,
+                "s1_is_libssh": 0,
+                "s1_is_paramiko": 0,
+                "s1_kex_count": 14,
+                "s1_cipher_count": 6,
+                "s1_mac_count": 10,
+                "s1_comp_count": 2,
+                "cnt_session_connect": 1.0,
+                "cnt_client_version": 1.0,
+                "cnt_client_kex": 1.0,
+                "s2_auth_attempts": 1,
+                "s2_failed_logins": 0,
+                "s2_has_success": 1,
+                "cnt_client_fingerprint": 0.0,
+                "cnt_login_failed": 0.0,
+                "cnt_login_success": 1.0
+              }
+            },
+            {
+              "stage": "S3",
+              "features": {
+                "s1_ver_len": 31,
+                "s1_has_hassh": 1,
+                "s1_is_openssh": 1,
+                "s1_is_libssh": 0,
+                "s1_is_paramiko": 0,
+                "s1_kex_count": 14,
+                "s1_cipher_count": 6,
+                "s1_mac_count": 10,
+                "s1_comp_count": 2,
+                "cnt_session_connect": 1.0,
+                "cnt_client_version": 1.0,
+                "cnt_client_kex": 1.0,
+                "s2_auth_attempts": 1,
+                "s2_failed_logins": 0,
+                "s2_has_success": 1,
+                "cnt_client_fingerprint": 0.0,
+                "cnt_login_failed": 0.0,
+                "cnt_login_success": 1.0,
+                "s3_has_pty": 0,
+                "s3_term_width": 0,
+                "s3_term_height": 0,
+                "s3_is_exec": 0,
+                "cnt_client_size": 0.0,
+                "cnt_client_var": 1.0,
+                "cnt_session_params": 1.0,
+                "has_pty": 0
+              }
+            },
+            {
+              "stage": "S4",
+              "features": {
+                "s1_ver_len": 31,
+                "s1_has_hassh": 1,
+                "s1_is_openssh": 1,
+                "s1_is_libssh": 0,
+                "s1_is_paramiko": 0,
+                "s1_kex_count": 14,
+                "s1_cipher_count": 6,
+                "s1_mac_count": 10,
+                "s1_comp_count": 2,
+                "cnt_session_connect": 1.0,
+                "cnt_client_version": 1.0,
+                "cnt_client_kex": 1.0,
+                "s2_auth_attempts": 1,
+                "s2_failed_logins": 0,
+                "s2_has_success": 1,
+                "cnt_client_fingerprint": 0.0,
+                "cnt_login_failed": 0.0,
+                "cnt_login_success": 1.0,
+                "s3_has_pty": 0,
+                "s3_term_width": 0,
+                "s3_term_height": 0,
+                "s3_is_exec": 0,
+                "cnt_client_size": 0.0,
+                "cnt_client_var": 1.0,
+                "cnt_session_params": 1.0,
+                "has_pty": 0,
+                "s4_cmd1_len": 4,
+                "s4_cmd1_has_pipe": 0,
+                "s4_cmd1_has_redirect": 0,
+                "s4_cmd1_has_chain": 0
+              }
+            }
+          ],
+          "adapter_replay": [
+            {
+              "stage": "S2",
+              "features": {
+                "s1_ver_len": 31,
+                "s1_has_hassh": 1,
+                "s1_is_openssh": 1,
+                "s1_is_libssh": 0,
+                "s1_is_paramiko": 0,
+                "s1_kex_count": 14,
+                "s1_cipher_count": 6,
+                "s1_mac_count": 10,
+                "s1_comp_count": 2,
+                "cnt_session_connect": 1.0,
+                "cnt_client_version": 1.0,
+                "cnt_client_kex": 1.0,
+                "s2_auth_attempts": 1,
+                "s2_failed_logins": 0,
+                "s2_has_success": 1,
+                "cnt_client_fingerprint": 0.0,
+                "cnt_login_failed": 0.0,
+                "cnt_login_success": 1.0
+              }
+            },
+            {
+              "stage": "S3",
+              "features": {
+                "s1_ver_len": 31,
+                "s1_has_hassh": 1,
+                "s1_is_openssh": 1,
+                "s1_is_libssh": 0,
+                "s1_is_paramiko": 0,
+                "s1_kex_count": 14,
+                "s1_cipher_count": 6,
+                "s1_mac_count": 10,
+                "s1_comp_count": 2,
+                "cnt_session_connect": 1.0,
+                "cnt_client_version": 1.0,
+                "cnt_client_kex": 1.0,
+                "s2_auth_attempts": 1,
+                "s2_failed_logins": 0,
+                "s2_has_success": 1,
+                "cnt_client_fingerprint": 0.0,
+                "cnt_login_failed": 0.0,
+                "cnt_login_success": 1.0,
+                "s3_has_pty": 0,
+                "s3_term_width": 0,
+                "s3_term_height": 0,
+                "s3_is_exec": 0,
+                "cnt_client_size": 0.0,
+                "cnt_client_var": 1.0,
+                "cnt_session_params": 1.0,
+                "has_pty": 0
+              }
+            },
+            {
+              "stage": "S4",
+              "features": {
+                "cmd_length": 4,
+                "token_count": 1,
+                "chaining_ops_count": 0,
+                "distinct_cmd_ratio": 1.0
+              }
+            }
+          ],
+          "decisions": [
+            {
+              "stage": "S1",
+              "score": 0.05,
+              "tier_decided": "T1",
+              "provenance": "LAB"
+            },
+            {
+              "stage": "S2",
+              "score": 0.7,
+              "tier_decided": "T2",
+              "provenance": "LAB"
+            },
+            {
+              "stage": "S3",
+              "score": 0.04519740586489645,
+              "tier_decided": "T2",
+              "provenance": "LAB"
+            },
+            {
+              "stage": "S4",
+              "score": 0.2,
+              "tier_decided": "T2",
+              "provenance": "LAB"
+            }
+          ],
+          "limitations": "S1 NEWKEYS is a transport hook, not reconstructed from JSON. Score source is not stored in this decision schema."
+        },
+        {
+          "session": "session-4",
+          "events": [
+            "cowrie.session.connect",
+            "cowrie.client.version",
+            "cowrie.client.kex",
+            "cowrie.login.success",
+            "cowrie.client.var",
+            "cowrie.session.params",
+            "cowrie.command.input",
+            "cowrie.log.closed",
+            "cowrie.session.closed"
+          ],
+          "command_count": 1,
+          "extractor_replay": [
+            {
+              "stage": "S2",
+              "features": {
+                "s1_ver_len": 31,
+                "s1_has_hassh": 1,
+                "s1_is_openssh": 1,
+                "s1_is_libssh": 0,
+                "s1_is_paramiko": 0,
+                "s1_kex_count": 14,
+                "s1_cipher_count": 6,
+                "s1_mac_count": 10,
+                "s1_comp_count": 2,
+                "cnt_session_connect": 1.0,
+                "cnt_client_version": 1.0,
+                "cnt_client_kex": 1.0,
+                "s2_auth_attempts": 1,
+                "s2_failed_logins": 0,
+                "s2_has_success": 1,
+                "cnt_client_fingerprint": 0.0,
+                "cnt_login_failed": 0.0,
+                "cnt_login_success": 1.0
+              }
+            },
+            {
+              "stage": "S3",
+              "features": {
+                "s1_ver_len": 31,
+                "s1_has_hassh": 1,
+                "s1_is_openssh": 1,
+                "s1_is_libssh": 0,
+                "s1_is_paramiko": 0,
+                "s1_kex_count": 14,
+                "s1_cipher_count": 6,
+                "s1_mac_count": 10,
+                "s1_comp_count": 2,
+                "cnt_session_connect": 1.0,
+                "cnt_client_version": 1.0,
+                "cnt_client_kex": 1.0,
+                "s2_auth_attempts": 1,
+                "s2_failed_logins": 0,
+                "s2_has_success": 1,
+                "cnt_client_fingerprint": 0.0,
+                "cnt_login_failed": 0.0,
+                "cnt_login_success": 1.0,
+                "s3_has_pty": 0,
+                "s3_term_width": 0,
+                "s3_term_height": 0,
+                "s3_is_exec": 0,
+                "cnt_client_size": 0.0,
+                "cnt_client_var": 1.0,
+                "cnt_session_params": 1.0,
+                "has_pty": 0
+              }
+            },
+            {
+              "stage": "S4",
+              "features": {
+                "s1_ver_len": 31,
+                "s1_has_hassh": 1,
+                "s1_is_openssh": 1,
+                "s1_is_libssh": 0,
+                "s1_is_paramiko": 0,
+                "s1_kex_count": 14,
+                "s1_cipher_count": 6,
+                "s1_mac_count": 10,
+                "s1_comp_count": 2,
+                "cnt_session_connect": 1.0,
+                "cnt_client_version": 1.0,
+                "cnt_client_kex": 1.0,
+                "s2_auth_attempts": 1,
+                "s2_failed_logins": 0,
+                "s2_has_success": 1,
+                "cnt_client_fingerprint": 0.0,
+                "cnt_login_failed": 0.0,
+                "cnt_login_success": 1.0,
+                "s3_has_pty": 0,
+                "s3_term_width": 0,
+                "s3_term_height": 0,
+                "s3_is_exec": 0,
+                "cnt_client_size": 0.0,
+                "cnt_client_var": 1.0,
+                "cnt_session_params": 1.0,
+                "has_pty": 0,
+                "s4_cmd1_len": 8,
+                "s4_cmd1_has_pipe": 0,
+                "s4_cmd1_has_redirect": 0,
+                "s4_cmd1_has_chain": 0
+              }
+            }
+          ],
+          "adapter_replay": [
+            {
+              "stage": "S2",
+              "features": {
+                "s1_ver_len": 31,
+                "s1_has_hassh": 1,
+                "s1_is_openssh": 1,
+                "s1_is_libssh": 0,
+                "s1_is_paramiko": 0,
+                "s1_kex_count": 14,
+                "s1_cipher_count": 6,
+                "s1_mac_count": 10,
+                "s1_comp_count": 2,
+                "cnt_session_connect": 1.0,
+                "cnt_client_version": 1.0,
+                "cnt_client_kex": 1.0,
+                "s2_auth_attempts": 1,
+                "s2_failed_logins": 0,
+                "s2_has_success": 1,
+                "cnt_client_fingerprint": 0.0,
+                "cnt_login_failed": 0.0,
+                "cnt_login_success": 1.0
+              }
+            },
+            {
+              "stage": "S3",
+              "features": {
+                "s1_ver_len": 31,
+                "s1_has_hassh": 1,
+                "s1_is_openssh": 1,
+                "s1_is_libssh": 0,
+                "s1_is_paramiko": 0,
+                "s1_kex_count": 14,
+                "s1_cipher_count": 6,
+                "s1_mac_count": 10,
+                "s1_comp_count": 2,
+                "cnt_session_connect": 1.0,
+                "cnt_client_version": 1.0,
+                "cnt_client_kex": 1.0,
+                "s2_auth_attempts": 1,
+                "s2_failed_logins": 0,
+                "s2_has_success": 1,
+                "cnt_client_fingerprint": 0.0,
+                "cnt_login_failed": 0.0,
+                "cnt_login_success": 1.0,
+                "s3_has_pty": 0,
+                "s3_term_width": 0,
+                "s3_term_height": 0,
+                "s3_is_exec": 0,
+                "cnt_client_size": 0.0,
+                "cnt_client_var": 1.0,
+                "cnt_session_params": 1.0,
+                "has_pty": 0
+              }
+            },
+            {
+              "stage": "S4",
+              "features": {
+                "cmd_length": 8,
+                "token_count": 2,
+                "chaining_ops_count": 0,
+                "distinct_cmd_ratio": 1.0
+              }
+            }
+          ],
+          "decisions": [
+            {
+              "stage": "S1",
+              "score": 0.05,
+              "tier_decided": "T2",
+              "provenance": "LAB"
+            },
+            {
+              "stage": "S2",
+              "score": 0.7,
+              "tier_decided": "T2",
+              "provenance": "LAB"
+            },
+            {
+              "stage": "S3",
+              "score": 0.04519740586489645,
+              "tier_decided": "T2",
+              "provenance": "LAB"
+            },
+            {
+              "stage": "S4",
+              "score": 0.2,
+              "tier_decided": "T2",
+              "provenance": "LAB"
+            }
+          ],
+          "limitations": "S1 NEWKEYS is a transport hook, not reconstructed from JSON. Score source is not stored in this decision schema."
+        },
+        {
+          "session": "session-5",
+          "events": [
+            "cowrie.session.connect",
+            "cowrie.client.version",
+            "cowrie.client.kex",
+            "cowrie.login.success",
+            "cowrie.client.var",
+            "cowrie.session.params",
+            "cowrie.command.input",
+            "cowrie.log.closed",
+            "cowrie.session.closed"
+          ],
+          "command_count": 1,
+          "extractor_replay": [
+            {
+              "stage": "S2",
+              "features": {
+                "s1_ver_len": 31,
+                "s1_has_hassh": 1,
+                "s1_is_openssh": 1,
+                "s1_is_libssh": 0,
+                "s1_is_paramiko": 0,
+                "s1_kex_count": 14,
+                "s1_cipher_count": 6,
+                "s1_mac_count": 10,
+                "s1_comp_count": 2,
+                "cnt_session_connect": 1.0,
+                "cnt_client_version": 1.0,
+                "cnt_client_kex": 1.0,
+                "s2_auth_attempts": 1,
+                "s2_failed_logins": 0,
+                "s2_has_success": 1,
+                "cnt_client_fingerprint": 0.0,
+                "cnt_login_failed": 0.0,
+                "cnt_login_success": 1.0
+              }
+            },
+            {
+              "stage": "S3",
+              "features": {
+                "s1_ver_len": 31,
+                "s1_has_hassh": 1,
+                "s1_is_openssh": 1,
+                "s1_is_libssh": 0,
+                "s1_is_paramiko": 0,
+                "s1_kex_count": 14,
+                "s1_cipher_count": 6,
+                "s1_mac_count": 10,
+                "s1_comp_count": 2,
+                "cnt_session_connect": 1.0,
+                "cnt_client_version": 1.0,
+                "cnt_client_kex": 1.0,
+                "s2_auth_attempts": 1,
+                "s2_failed_logins": 0,
+                "s2_has_success": 1,
+                "cnt_client_fingerprint": 0.0,
+                "cnt_login_failed": 0.0,
+                "cnt_login_success": 1.0,
+                "s3_has_pty": 0,
+                "s3_term_width": 0,
+                "s3_term_height": 0,
+                "s3_is_exec": 0,
+                "cnt_client_size": 0.0,
+                "cnt_client_var": 1.0,
+                "cnt_session_params": 1.0,
+                "has_pty": 0
+              }
+            },
+            {
+              "stage": "S4",
+              "features": {
+                "s1_ver_len": 31,
+                "s1_has_hassh": 1,
+                "s1_is_openssh": 1,
+                "s1_is_libssh": 0,
+                "s1_is_paramiko": 0,
+                "s1_kex_count": 14,
+                "s1_cipher_count": 6,
+                "s1_mac_count": 10,
+                "s1_comp_count": 2,
+                "cnt_session_connect": 1.0,
+                "cnt_client_version": 1.0,
+                "cnt_client_kex": 1.0,
+                "s2_auth_attempts": 1,
+                "s2_failed_logins": 0,
+                "s2_has_success": 1,
+                "cnt_client_fingerprint": 0.0,
+                "cnt_login_failed": 0.0,
+                "cnt_login_success": 1.0,
+                "s3_has_pty": 0,
+                "s3_term_width": 0,
+                "s3_term_height": 0,
+                "s3_is_exec": 0,
+                "cnt_client_size": 0.0,
+                "cnt_client_var": 1.0,
+                "cnt_session_params": 1.0,
+                "has_pty": 0,
+                "s4_cmd1_len": 17,
+                "s4_cmd1_has_pipe": 0,
+                "s4_cmd1_has_redirect": 0,
+                "s4_cmd1_has_chain": 0
+              }
+            }
+          ],
+          "adapter_replay": [
+            {
+              "stage": "S2",
+              "features": {
+                "s1_ver_len": 31,
+                "s1_has_hassh": 1,
+                "s1_is_openssh": 1,
+                "s1_is_libssh": 0,
+                "s1_is_paramiko": 0,
+                "s1_kex_count": 14,
+                "s1_cipher_count": 6,
+                "s1_mac_count": 10,
+                "s1_comp_count": 2,
+                "cnt_session_connect": 1.0,
+                "cnt_client_version": 1.0,
+                "cnt_client_kex": 1.0,
+                "s2_auth_attempts": 1,
+                "s2_failed_logins": 0,
+                "s2_has_success": 1,
+                "cnt_client_fingerprint": 0.0,
+                "cnt_login_failed": 0.0,
+                "cnt_login_success": 1.0
+              }
+            },
+            {
+              "stage": "S3",
+              "features": {
+                "s1_ver_len": 31,
+                "s1_has_hassh": 1,
+                "s1_is_openssh": 1,
+                "s1_is_libssh": 0,
+                "s1_is_paramiko": 0,
+                "s1_kex_count": 14,
+                "s1_cipher_count": 6,
+                "s1_mac_count": 10,
+                "s1_comp_count": 2,
+                "cnt_session_connect": 1.0,
+                "cnt_client_version": 1.0,
+                "cnt_client_kex": 1.0,
+                "s2_auth_attempts": 1,
+                "s2_failed_logins": 0,
+                "s2_has_success": 1,
+                "cnt_client_fingerprint": 0.0,
+                "cnt_login_failed": 0.0,
+                "cnt_login_success": 1.0,
+                "s3_has_pty": 0,
+                "s3_term_width": 0,
+                "s3_term_height": 0,
+                "s3_is_exec": 0,
+                "cnt_client_size": 0.0,
+                "cnt_client_var": 1.0,
+                "cnt_session_params": 1.0,
+                "has_pty": 0
+              }
+            },
+            {
+              "stage": "S4",
+              "features": {
+                "cmd_length": 17,
+                "token_count": 2,
+                "chaining_ops_count": 0,
+                "distinct_cmd_ratio": 1.0
+              }
+            }
+          ],
+          "decisions": [
+            {
+              "stage": "S1",
+              "score": 0.05,
+              "tier_decided": "T2",
+              "provenance": "LAB"
+            },
+            {
+              "stage": "S2",
+              "score": 0.7,
+              "tier_decided": "T2",
+              "provenance": "LAB"
+            },
+            {
+              "stage": "S3",
+              "score": 0.04519740586489645,
+              "tier_decided": "T2",
+              "provenance": "LAB"
+            },
+            {
+              "stage": "S4",
+              "score": 0.2,
+              "tier_decided": "T2",
+              "provenance": "LAB"
+            }
+          ],
+          "limitations": "S1 NEWKEYS is a transport hook, not reconstructed from JSON. Score source is not stored in this decision schema."
+        }
+      ]
+    },
+    {
+      "scenario": "interactive",
+      "returncode": 0,
+      "sessions": [
+        {
+          "session": "session-1",
+          "events": [
+            "cowrie.session.connect",
+            "cowrie.client.version",
+            "cowrie.client.kex",
+            "cowrie.login.success",
+            "cowrie.client.size",
+            "cowrie.client.var",
+            "cowrie.session.params",
+            "cowrie.command.input",
+            "cowrie.log.closed",
+            "cowrie.session.closed"
+          ],
+          "command_count": 1,
+          "extractor_replay": [
+            {
+              "stage": "S2",
+              "features": {
+                "s1_ver_len": 31,
+                "s1_has_hassh": 1,
+                "s1_is_openssh": 1,
+                "s1_is_libssh": 0,
+                "s1_is_paramiko": 0,
+                "s1_kex_count": 14,
+                "s1_cipher_count": 6,
+                "s1_mac_count": 10,
+                "s1_comp_count": 2,
+                "cnt_session_connect": 1.0,
+                "cnt_client_version": 1.0,
+                "cnt_client_kex": 1.0,
+                "s2_auth_attempts": 1,
+                "s2_failed_logins": 0,
+                "s2_has_success": 1,
+                "cnt_client_fingerprint": 0.0,
+                "cnt_login_failed": 0.0,
+                "cnt_login_success": 1.0
+              }
+            },
+            {
+              "stage": "S3",
+              "features": {
+                "s1_ver_len": 31,
+                "s1_has_hassh": 1,
+                "s1_is_openssh": 1,
+                "s1_is_libssh": 0,
+                "s1_is_paramiko": 0,
+                "s1_kex_count": 14,
+                "s1_cipher_count": 6,
+                "s1_mac_count": 10,
+                "s1_comp_count": 2,
+                "cnt_session_connect": 1.0,
+                "cnt_client_version": 1.0,
+                "cnt_client_kex": 1.0,
+                "s2_auth_attempts": 1,
+                "s2_failed_logins": 0,
+                "s2_has_success": 1,
+                "cnt_client_fingerprint": 0.0,
+                "cnt_login_failed": 0.0,
+                "cnt_login_success": 1.0,
+                "s3_has_pty": 1,
+                "s3_term_width": 0,
+                "s3_term_height": 0,
+                "s3_is_exec": 0,
+                "cnt_client_size": 1.0,
+                "cnt_client_var": 1.0,
+                "cnt_session_params": 1.0,
+                "has_pty": 1
+              }
+            },
+            {
+              "stage": "S4",
+              "features": {
+                "s1_ver_len": 31,
+                "s1_has_hassh": 1,
+                "s1_is_openssh": 1,
+                "s1_is_libssh": 0,
+                "s1_is_paramiko": 0,
+                "s1_kex_count": 14,
+                "s1_cipher_count": 6,
+                "s1_mac_count": 10,
+                "s1_comp_count": 2,
+                "cnt_session_connect": 1.0,
+                "cnt_client_version": 1.0,
+                "cnt_client_kex": 1.0,
+                "s2_auth_attempts": 1,
+                "s2_failed_logins": 0,
+                "s2_has_success": 1,
+                "cnt_client_fingerprint": 0.0,
+                "cnt_login_failed": 0.0,
+                "cnt_login_success": 1.0,
+                "s3_has_pty": 1,
+                "s3_term_width": 0,
+                "s3_term_height": 0,
+                "s3_is_exec": 0,
+                "cnt_client_size": 1.0,
+                "cnt_client_var": 1.0,
+                "cnt_session_params": 1.0,
+                "has_pty": 1,
+                "s4_cmd1_len": 8,
+                "s4_cmd1_has_pipe": 0,
+                "s4_cmd1_has_redirect": 0,
+                "s4_cmd1_has_chain": 0
+              }
+            }
+          ],
+          "adapter_replay": [
+            {
+              "stage": "S2",
+              "features": {
+                "s1_ver_len": 31,
+                "s1_has_hassh": 1,
+                "s1_is_openssh": 1,
+                "s1_is_libssh": 0,
+                "s1_is_paramiko": 0,
+                "s1_kex_count": 14,
+                "s1_cipher_count": 6,
+                "s1_mac_count": 10,
+                "s1_comp_count": 2,
+                "cnt_session_connect": 1.0,
+                "cnt_client_version": 1.0,
+                "cnt_client_kex": 1.0,
+                "s2_auth_attempts": 1,
+                "s2_failed_logins": 0,
+                "s2_has_success": 1,
+                "cnt_client_fingerprint": 0.0,
+                "cnt_login_failed": 0.0,
+                "cnt_login_success": 1.0
+              }
+            },
+            {
+              "stage": "S3",
+              "features": {
+                "s1_ver_len": 31,
+                "s1_has_hassh": 1,
+                "s1_is_openssh": 1,
+                "s1_is_libssh": 0,
+                "s1_is_paramiko": 0,
+                "s1_kex_count": 14,
+                "s1_cipher_count": 6,
+                "s1_mac_count": 10,
+                "s1_comp_count": 2,
+                "cnt_session_connect": 1.0,
+                "cnt_client_version": 1.0,
+                "cnt_client_kex": 1.0,
+                "s2_auth_attempts": 1,
+                "s2_failed_logins": 0,
+                "s2_has_success": 1,
+                "cnt_client_fingerprint": 0.0,
+                "cnt_login_failed": 0.0,
+                "cnt_login_success": 1.0,
+                "s3_has_pty": 1,
+                "s3_term_width": 0,
+                "s3_term_height": 0,
+                "s3_is_exec": 0,
+                "cnt_client_size": 1.0,
+                "cnt_client_var": 1.0,
+                "cnt_session_params": 1.0,
+                "has_pty": 1
+              }
+            },
+            {
+              "stage": "S4",
+              "features": {
+                "cmd_length": 8,
+                "token_count": 2,
+                "chaining_ops_count": 0,
+                "distinct_cmd_ratio": 1.0
+              }
+            }
+          ],
+          "decisions": [
+            {
+              "stage": "S1",
+              "score": 0.05,
+              "tier_decided": "T1",
+              "provenance": "LAB"
+            },
+            {
+              "stage": "S2",
+              "score": 0.7,
+              "tier_decided": "T2",
+              "provenance": "LAB"
+            },
+            {
+              "stage": "S3",
+              "score": 0.04519873006726848,
+              "tier_decided": "T2",
+              "provenance": "LAB"
+            },
+            {
+              "stage": "S4",
+              "score": 0.2,
+              "tier_decided": "T2",
+              "provenance": "LAB"
+            }
+          ],
+          "limitations": "S1 NEWKEYS is a transport hook, not reconstructed from JSON. Score source is not stored in this decision schema."
+        },
+        {
+          "session": "session-2",
+          "events": [
+            "cowrie.session.connect",
+            "cowrie.client.version",
+            "cowrie.client.kex",
+            "cowrie.login.success",
+            "cowrie.client.size",
+            "cowrie.client.var",
+            "cowrie.session.params",
+            "cowrie.command.input",
+            "cowrie.log.closed",
+            "cowrie.session.closed"
+          ],
+          "command_count": 1,
+          "extractor_replay": [
+            {
+              "stage": "S2",
+              "features": {
+                "s1_ver_len": 31,
+                "s1_has_hassh": 1,
+                "s1_is_openssh": 1,
+                "s1_is_libssh": 0,
+                "s1_is_paramiko": 0,
+                "s1_kex_count": 14,
+                "s1_cipher_count": 6,
+                "s1_mac_count": 10,
+                "s1_comp_count": 2,
+                "cnt_session_connect": 1.0,
+                "cnt_client_version": 1.0,
+                "cnt_client_kex": 1.0,
+                "s2_auth_attempts": 1,
+                "s2_failed_logins": 0,
+                "s2_has_success": 1,
+                "cnt_client_fingerprint": 0.0,
+                "cnt_login_failed": 0.0,
+                "cnt_login_success": 1.0
+              }
+            },
+            {
+              "stage": "S3",
+              "features": {
+                "s1_ver_len": 31,
+                "s1_has_hassh": 1,
+                "s1_is_openssh": 1,
+                "s1_is_libssh": 0,
+                "s1_is_paramiko": 0,
+                "s1_kex_count": 14,
+                "s1_cipher_count": 6,
+                "s1_mac_count": 10,
+                "s1_comp_count": 2,
+                "cnt_session_connect": 1.0,
+                "cnt_client_version": 1.0,
+                "cnt_client_kex": 1.0,
+                "s2_auth_attempts": 1,
+                "s2_failed_logins": 0,
+                "s2_has_success": 1,
+                "cnt_client_fingerprint": 0.0,
+                "cnt_login_failed": 0.0,
+                "cnt_login_success": 1.0,
+                "s3_has_pty": 1,
+                "s3_term_width": 0,
+                "s3_term_height": 0,
+                "s3_is_exec": 0,
+                "cnt_client_size": 1.0,
+                "cnt_client_var": 1.0,
+                "cnt_session_params": 1.0,
+                "has_pty": 1
+              }
+            },
+            {
+              "stage": "S4",
+              "features": {
+                "s1_ver_len": 31,
+                "s1_has_hassh": 1,
+                "s1_is_openssh": 1,
+                "s1_is_libssh": 0,
+                "s1_is_paramiko": 0,
+                "s1_kex_count": 14,
+                "s1_cipher_count": 6,
+                "s1_mac_count": 10,
+                "s1_comp_count": 2,
+                "cnt_session_connect": 1.0,
+                "cnt_client_version": 1.0,
+                "cnt_client_kex": 1.0,
+                "s2_auth_attempts": 1,
+                "s2_failed_logins": 0,
+                "s2_has_success": 1,
+                "cnt_client_fingerprint": 0.0,
+                "cnt_login_failed": 0.0,
+                "cnt_login_success": 1.0,
+                "s3_has_pty": 1,
+                "s3_term_width": 0,
+                "s3_term_height": 0,
+                "s3_is_exec": 0,
+                "cnt_client_size": 1.0,
+                "cnt_client_var": 1.0,
+                "cnt_session_params": 1.0,
+                "has_pty": 1,
+                "s4_cmd1_len": 2,
+                "s4_cmd1_has_pipe": 0,
+                "s4_cmd1_has_redirect": 0,
+                "s4_cmd1_has_chain": 0
+              }
+            }
+          ],
+          "adapter_replay": [
+            {
+              "stage": "S2",
+              "features": {
+                "s1_ver_len": 31,
+                "s1_has_hassh": 1,
+                "s1_is_openssh": 1,
+                "s1_is_libssh": 0,
+                "s1_is_paramiko": 0,
+                "s1_kex_count": 14,
+                "s1_cipher_count": 6,
+                "s1_mac_count": 10,
+                "s1_comp_count": 2,
+                "cnt_session_connect": 1.0,
+                "cnt_client_version": 1.0,
+                "cnt_client_kex": 1.0,
+                "s2_auth_attempts": 1,
+                "s2_failed_logins": 0,
+                "s2_has_success": 1,
+                "cnt_client_fingerprint": 0.0,
+                "cnt_login_failed": 0.0,
+                "cnt_login_success": 1.0
+              }
+            },
+            {
+              "stage": "S3",
+              "features": {
+                "s1_ver_len": 31,
+                "s1_has_hassh": 1,
+                "s1_is_openssh": 1,
+                "s1_is_libssh": 0,
+                "s1_is_paramiko": 0,
+                "s1_kex_count": 14,
+                "s1_cipher_count": 6,
+                "s1_mac_count": 10,
+                "s1_comp_count": 2,
+                "cnt_session_connect": 1.0,
+                "cnt_client_version": 1.0,
+                "cnt_client_kex": 1.0,
+                "s2_auth_attempts": 1,
+                "s2_failed_logins": 0,
+                "s2_has_success": 1,
+                "cnt_client_fingerprint": 0.0,
+                "cnt_login_failed": 0.0,
+                "cnt_login_success": 1.0,
+                "s3_has_pty": 1,
+                "s3_term_width": 0,
+                "s3_term_height": 0,
+                "s3_is_exec": 0,
+                "cnt_client_size": 1.0,
+                "cnt_client_var": 1.0,
+                "cnt_session_params": 1.0,
+                "has_pty": 1
+              }
+            },
+            {
+              "stage": "S4",
+              "features": {
+                "cmd_length": 2,
+                "token_count": 1,
+                "chaining_ops_count": 0,
+                "distinct_cmd_ratio": 1.0
+              }
+            }
+          ],
+          "decisions": [
+            {
+              "stage": "S1",
+              "score": 0.05,
+              "tier_decided": "T2",
+              "provenance": "LAB"
+            },
+            {
+              "stage": "S2",
+              "score": 0.7,
+              "tier_decided": "T2",
+              "provenance": "LAB"
+            },
+            {
+              "stage": "S3",
+              "score": 0.04519873006726848,
+              "tier_decided": "T2",
+              "provenance": "LAB"
+            },
+            {
+              "stage": "S4",
+              "score": 0.2,
+              "tier_decided": "T2",
+              "provenance": "LAB"
+            }
+          ],
+          "limitations": "S1 NEWKEYS is a transport hook, not reconstructed from JSON. Score source is not stored in this decision schema."
+        },
+        {
+          "session": "session-3",
+          "events": [
+            "cowrie.session.connect",
+            "cowrie.client.version",
+            "cowrie.client.kex",
+            "cowrie.login.success",
+            "cowrie.client.size",
+            "cowrie.client.var",
+            "cowrie.session.params",
+            "cowrie.command.input",
+            "cowrie.log.closed",
+            "cowrie.session.closed"
+          ],
+          "command_count": 1,
+          "extractor_replay": [
+            {
+              "stage": "S2",
+              "features": {
+                "s1_ver_len": 31,
+                "s1_has_hassh": 1,
+                "s1_is_openssh": 1,
+                "s1_is_libssh": 0,
+                "s1_is_paramiko": 0,
+                "s1_kex_count": 14,
+                "s1_cipher_count": 6,
+                "s1_mac_count": 10,
+                "s1_comp_count": 2,
+                "cnt_session_connect": 1.0,
+                "cnt_client_version": 1.0,
+                "cnt_client_kex": 1.0,
+                "s2_auth_attempts": 1,
+                "s2_failed_logins": 0,
+                "s2_has_success": 1,
+                "cnt_client_fingerprint": 0.0,
+                "cnt_login_failed": 0.0,
+                "cnt_login_success": 1.0
+              }
+            },
+            {
+              "stage": "S3",
+              "features": {
+                "s1_ver_len": 31,
+                "s1_has_hassh": 1,
+                "s1_is_openssh": 1,
+                "s1_is_libssh": 0,
+                "s1_is_paramiko": 0,
+                "s1_kex_count": 14,
+                "s1_cipher_count": 6,
+                "s1_mac_count": 10,
+                "s1_comp_count": 2,
+                "cnt_session_connect": 1.0,
+                "cnt_client_version": 1.0,
+                "cnt_client_kex": 1.0,
+                "s2_auth_attempts": 1,
+                "s2_failed_logins": 0,
+                "s2_has_success": 1,
+                "cnt_client_fingerprint": 0.0,
+                "cnt_login_failed": 0.0,
+                "cnt_login_success": 1.0,
+                "s3_has_pty": 1,
+                "s3_term_width": 0,
+                "s3_term_height": 0,
+                "s3_is_exec": 0,
+                "cnt_client_size": 1.0,
+                "cnt_client_var": 1.0,
+                "cnt_session_params": 1.0,
+                "has_pty": 1
+              }
+            },
+            {
+              "stage": "S4",
+              "features": {
+                "s1_ver_len": 31,
+                "s1_has_hassh": 1,
+                "s1_is_openssh": 1,
+                "s1_is_libssh": 0,
+                "s1_is_paramiko": 0,
+                "s1_kex_count": 14,
+                "s1_cipher_count": 6,
+                "s1_mac_count": 10,
+                "s1_comp_count": 2,
+                "cnt_session_connect": 1.0,
+                "cnt_client_version": 1.0,
+                "cnt_client_kex": 1.0,
+                "s2_auth_attempts": 1,
+                "s2_failed_logins": 0,
+                "s2_has_success": 1,
+                "cnt_client_fingerprint": 0.0,
+                "cnt_login_failed": 0.0,
+                "cnt_login_success": 1.0,
+                "s3_has_pty": 1,
+                "s3_term_width": 0,
+                "s3_term_height": 0,
+                "s3_is_exec": 0,
+                "cnt_client_size": 1.0,
+                "cnt_client_var": 1.0,
+                "cnt_session_params": 1.0,
+                "has_pty": 1,
+                "s4_cmd1_len": 6,
+                "s4_cmd1_has_pipe": 0,
+                "s4_cmd1_has_redirect": 0,
+                "s4_cmd1_has_chain": 0
+              }
+            }
+          ],
+          "adapter_replay": [
+            {
+              "stage": "S2",
+              "features": {
+                "s1_ver_len": 31,
+                "s1_has_hassh": 1,
+                "s1_is_openssh": 1,
+                "s1_is_libssh": 0,
+                "s1_is_paramiko": 0,
+                "s1_kex_count": 14,
+                "s1_cipher_count": 6,
+                "s1_mac_count": 10,
+                "s1_comp_count": 2,
+                "cnt_session_connect": 1.0,
+                "cnt_client_version": 1.0,
+                "cnt_client_kex": 1.0,
+                "s2_auth_attempts": 1,
+                "s2_failed_logins": 0,
+                "s2_has_success": 1,
+                "cnt_client_fingerprint": 0.0,
+                "cnt_login_failed": 0.0,
+                "cnt_login_success": 1.0
+              }
+            },
+            {
+              "stage": "S3",
+              "features": {
+                "s1_ver_len": 31,
+                "s1_has_hassh": 1,
+                "s1_is_openssh": 1,
+                "s1_is_libssh": 0,
+                "s1_is_paramiko": 0,
+                "s1_kex_count": 14,
+                "s1_cipher_count": 6,
+                "s1_mac_count": 10,
+                "s1_comp_count": 2,
+                "cnt_session_connect": 1.0,
+                "cnt_client_version": 1.0,
+                "cnt_client_kex": 1.0,
+                "s2_auth_attempts": 1,
+                "s2_failed_logins": 0,
+                "s2_has_success": 1,
+                "cnt_client_fingerprint": 0.0,
+                "cnt_login_failed": 0.0,
+                "cnt_login_success": 1.0,
+                "s3_has_pty": 1,
+                "s3_term_width": 0,
+                "s3_term_height": 0,
+                "s3_is_exec": 0,
+                "cnt_client_size": 1.0,
+                "cnt_client_var": 1.0,
+                "cnt_session_params": 1.0,
+                "has_pty": 1
+              }
+            },
+            {
+              "stage": "S4",
+              "features": {
+                "cmd_length": 6,
+                "token_count": 1,
+                "chaining_ops_count": 0,
+                "distinct_cmd_ratio": 1.0
+              }
+            }
+          ],
+          "decisions": [
+            {
+              "stage": "S1",
+              "score": 0.05,
+              "tier_decided": "T2",
+              "provenance": "LAB"
+            },
+            {
+              "stage": "S2",
+              "score": 0.7,
+              "tier_decided": "T2",
+              "provenance": "LAB"
+            },
+            {
+              "stage": "S3",
+              "score": 0.04519873006726848,
+              "tier_decided": "T2",
+              "provenance": "LAB"
+            },
+            {
+              "stage": "S4",
+              "score": 0.2,
+              "tier_decided": "T2",
+              "provenance": "LAB"
+            }
+          ],
+          "limitations": "S1 NEWKEYS is a transport hook, not reconstructed from JSON. Score source is not stored in this decision schema."
+        },
+        {
+          "session": "session-4",
+          "events": [
+            "cowrie.session.connect",
+            "cowrie.client.version",
+            "cowrie.client.kex",
+            "cowrie.login.success",
+            "cowrie.client.size",
+            "cowrie.client.var",
+            "cowrie.session.params",
+            "cowrie.command.input",
+            "cowrie.log.closed",
+            "cowrie.session.closed"
+          ],
+          "command_count": 1,
+          "extractor_replay": [
+            {
+              "stage": "S2",
+              "features": {
+                "s1_ver_len": 31,
+                "s1_has_hassh": 1,
+                "s1_is_openssh": 1,
+                "s1_is_libssh": 0,
+                "s1_is_paramiko": 0,
+                "s1_kex_count": 14,
+                "s1_cipher_count": 6,
+                "s1_mac_count": 10,
+                "s1_comp_count": 2,
+                "cnt_session_connect": 1.0,
+                "cnt_client_version": 1.0,
+                "cnt_client_kex": 1.0,
+                "s2_auth_attempts": 1,
+                "s2_failed_logins": 0,
+                "s2_has_success": 1,
+                "cnt_client_fingerprint": 0.0,
+                "cnt_login_failed": 0.0,
+                "cnt_login_success": 1.0
+              }
+            },
+            {
+              "stage": "S3",
+              "features": {
+                "s1_ver_len": 31,
+                "s1_has_hassh": 1,
+                "s1_is_openssh": 1,
+                "s1_is_libssh": 0,
+                "s1_is_paramiko": 0,
+                "s1_kex_count": 14,
+                "s1_cipher_count": 6,
+                "s1_mac_count": 10,
+                "s1_comp_count": 2,
+                "cnt_session_connect": 1.0,
+                "cnt_client_version": 1.0,
+                "cnt_client_kex": 1.0,
+                "s2_auth_attempts": 1,
+                "s2_failed_logins": 0,
+                "s2_has_success": 1,
+                "cnt_client_fingerprint": 0.0,
+                "cnt_login_failed": 0.0,
+                "cnt_login_success": 1.0,
+                "s3_has_pty": 1,
+                "s3_term_width": 0,
+                "s3_term_height": 0,
+                "s3_is_exec": 0,
+                "cnt_client_size": 1.0,
+                "cnt_client_var": 1.0,
+                "cnt_session_params": 1.0,
+                "has_pty": 1
+              }
+            },
+            {
+              "stage": "S4",
+              "features": {
+                "s1_ver_len": 31,
+                "s1_has_hassh": 1,
+                "s1_is_openssh": 1,
+                "s1_is_libssh": 0,
+                "s1_is_paramiko": 0,
+                "s1_kex_count": 14,
+                "s1_cipher_count": 6,
+                "s1_mac_count": 10,
+                "s1_comp_count": 2,
+                "cnt_session_connect": 1.0,
+                "cnt_client_version": 1.0,
+                "cnt_client_kex": 1.0,
+                "s2_auth_attempts": 1,
+                "s2_failed_logins": 0,
+                "s2_has_success": 1,
+                "cnt_client_fingerprint": 0.0,
+                "cnt_login_failed": 0.0,
+                "cnt_login_success": 1.0,
+                "s3_has_pty": 1,
+                "s3_term_width": 0,
+                "s3_term_height": 0,
+                "s3_is_exec": 0,
+                "cnt_client_size": 1.0,
+                "cnt_client_var": 1.0,
+                "cnt_session_params": 1.0,
+                "has_pty": 1,
+                "s4_cmd1_len": 15,
+                "s4_cmd1_has_pipe": 0,
+                "s4_cmd1_has_redirect": 0,
+                "s4_cmd1_has_chain": 0
+              }
+            }
+          ],
+          "adapter_replay": [
+            {
+              "stage": "S2",
+              "features": {
+                "s1_ver_len": 31,
+                "s1_has_hassh": 1,
+                "s1_is_openssh": 1,
+                "s1_is_libssh": 0,
+                "s1_is_paramiko": 0,
+                "s1_kex_count": 14,
+                "s1_cipher_count": 6,
+                "s1_mac_count": 10,
+                "s1_comp_count": 2,
+                "cnt_session_connect": 1.0,
+                "cnt_client_version": 1.0,
+                "cnt_client_kex": 1.0,
+                "s2_auth_attempts": 1,
+                "s2_failed_logins": 0,
+                "s2_has_success": 1,
+                "cnt_client_fingerprint": 0.0,
+                "cnt_login_failed": 0.0,
+                "cnt_login_success": 1.0
+              }
+            },
+            {
+              "stage": "S3",
+              "features": {
+                "s1_ver_len": 31,
+                "s1_has_hassh": 1,
+                "s1_is_openssh": 1,
+                "s1_is_libssh": 0,
+                "s1_is_paramiko": 0,
+                "s1_kex_count": 14,
+                "s1_cipher_count": 6,
+                "s1_mac_count": 10,
+                "s1_comp_count": 2,
+                "cnt_session_connect": 1.0,
+                "cnt_client_version": 1.0,
+                "cnt_client_kex": 1.0,
+                "s2_auth_attempts": 1,
+                "s2_failed_logins": 0,
+                "s2_has_success": 1,
+                "cnt_client_fingerprint": 0.0,
+                "cnt_login_failed": 0.0,
+                "cnt_login_success": 1.0,
+                "s3_has_pty": 1,
+                "s3_term_width": 0,
+                "s3_term_height": 0,
+                "s3_is_exec": 0,
+                "cnt_client_size": 1.0,
+                "cnt_client_var": 1.0,
+                "cnt_session_params": 1.0,
+                "has_pty": 1
+              }
+            },
+            {
+              "stage": "S4",
+              "features": {
+                "cmd_length": 15,
+                "token_count": 2,
+                "chaining_ops_count": 0,
+                "distinct_cmd_ratio": 1.0
+              }
+            }
+          ],
+          "decisions": [
+            {
+              "stage": "S1",
+              "score": 0.05,
+              "tier_decided": "T2",
+              "provenance": "LAB"
+            },
+            {
+              "stage": "S2",
+              "score": 0.7,
+              "tier_decided": "T2",
+              "provenance": "LAB"
+            },
+            {
+              "stage": "S3",
+              "score": 0.04519873006726848,
+              "tier_decided": "T2",
+              "provenance": "LAB"
+            },
+            {
+              "stage": "S4",
+              "score": 0.2,
+              "tier_decided": "T2",
+              "provenance": "LAB"
+            }
+          ],
+          "limitations": "S1 NEWKEYS is a transport hook, not reconstructed from JSON. Score source is not stored in this decision schema."
+        },
+        {
+          "session": "session-5",
+          "events": [
+            "cowrie.session.connect",
+            "cowrie.client.version",
+            "cowrie.client.kex",
+            "cowrie.login.success",
+            "cowrie.client.size",
+            "cowrie.client.var",
+            "cowrie.session.params",
+            "cowrie.command.input",
+            "cowrie.log.closed",
+            "cowrie.session.closed"
+          ],
+          "command_count": 1,
+          "extractor_replay": [
+            {
+              "stage": "S2",
+              "features": {
+                "s1_ver_len": 31,
+                "s1_has_hassh": 1,
+                "s1_is_openssh": 1,
+                "s1_is_libssh": 0,
+                "s1_is_paramiko": 0,
+                "s1_kex_count": 14,
+                "s1_cipher_count": 6,
+                "s1_mac_count": 10,
+                "s1_comp_count": 2,
+                "cnt_session_connect": 1.0,
+                "cnt_client_version": 1.0,
+                "cnt_client_kex": 1.0,
+                "s2_auth_attempts": 1,
+                "s2_failed_logins": 0,
+                "s2_has_success": 1,
+                "cnt_client_fingerprint": 0.0,
+                "cnt_login_failed": 0.0,
+                "cnt_login_success": 1.0
+              }
+            },
+            {
+              "stage": "S3",
+              "features": {
+                "s1_ver_len": 31,
+                "s1_has_hassh": 1,
+                "s1_is_openssh": 1,
+                "s1_is_libssh": 0,
+                "s1_is_paramiko": 0,
+                "s1_kex_count": 14,
+                "s1_cipher_count": 6,
+                "s1_mac_count": 10,
+                "s1_comp_count": 2,
+                "cnt_session_connect": 1.0,
+                "cnt_client_version": 1.0,
+                "cnt_client_kex": 1.0,
+                "s2_auth_attempts": 1,
+                "s2_failed_logins": 0,
+                "s2_has_success": 1,
+                "cnt_client_fingerprint": 0.0,
+                "cnt_login_failed": 0.0,
+                "cnt_login_success": 1.0,
+                "s3_has_pty": 1,
+                "s3_term_width": 0,
+                "s3_term_height": 0,
+                "s3_is_exec": 0,
+                "cnt_client_size": 1.0,
+                "cnt_client_var": 1.0,
+                "cnt_session_params": 1.0,
+                "has_pty": 1
+              }
+            },
+            {
+              "stage": "S4",
+              "features": {
+                "s1_ver_len": 31,
+                "s1_has_hassh": 1,
+                "s1_is_openssh": 1,
+                "s1_is_libssh": 0,
+                "s1_is_paramiko": 0,
+                "s1_kex_count": 14,
+                "s1_cipher_count": 6,
+                "s1_mac_count": 10,
+                "s1_comp_count": 2,
+                "cnt_session_connect": 1.0,
+                "cnt_client_version": 1.0,
+                "cnt_client_kex": 1.0,
+                "s2_auth_attempts": 1,
+                "s2_failed_logins": 0,
+                "s2_has_success": 1,
+                "cnt_client_fingerprint": 0.0,
+                "cnt_login_failed": 0.0,
+                "cnt_login_success": 1.0,
+                "s3_has_pty": 1,
+                "s3_term_width": 0,
+                "s3_term_height": 0,
+                "s3_is_exec": 0,
+                "cnt_client_size": 1.0,
+                "cnt_client_var": 1.0,
+                "cnt_session_params": 1.0,
+                "has_pty": 1,
+                "s4_cmd1_len": 6,
+                "s4_cmd1_has_pipe": 0,
+                "s4_cmd1_has_redirect": 0,
+                "s4_cmd1_has_chain": 0
+              }
+            }
+          ],
+          "adapter_replay": [
+            {
+              "stage": "S2",
+              "features": {
+                "s1_ver_len": 31,
+                "s1_has_hassh": 1,
+                "s1_is_openssh": 1,
+                "s1_is_libssh": 0,
+                "s1_is_paramiko": 0,
+                "s1_kex_count": 14,
+                "s1_cipher_count": 6,
+                "s1_mac_count": 10,
+                "s1_comp_count": 2,
+                "cnt_session_connect": 1.0,
+                "cnt_client_version": 1.0,
+                "cnt_client_kex": 1.0,
+                "s2_auth_attempts": 1,
+                "s2_failed_logins": 0,
+                "s2_has_success": 1,
+                "cnt_client_fingerprint": 0.0,
+                "cnt_login_failed": 0.0,
+                "cnt_login_success": 1.0
+              }
+            },
+            {
+              "stage": "S3",
+              "features": {
+                "s1_ver_len": 31,
+                "s1_has_hassh": 1,
+                "s1_is_openssh": 1,
+                "s1_is_libssh": 0,
+                "s1_is_paramiko": 0,
+                "s1_kex_count": 14,
+                "s1_cipher_count": 6,
+                "s1_mac_count": 10,
+                "s1_comp_count": 2,
+                "cnt_session_connect": 1.0,
+                "cnt_client_version": 1.0,
+                "cnt_client_kex": 1.0,
+                "s2_auth_attempts": 1,
+                "s2_failed_logins": 0,
+                "s2_has_success": 1,
+                "cnt_client_fingerprint": 0.0,
+                "cnt_login_failed": 0.0,
+                "cnt_login_success": 1.0,
+                "s3_has_pty": 1,
+                "s3_term_width": 0,
+                "s3_term_height": 0,
+                "s3_is_exec": 0,
+                "cnt_client_size": 1.0,
+                "cnt_client_var": 1.0,
+                "cnt_session_params": 1.0,
+                "has_pty": 1
+              }
+            },
+            {
+              "stage": "S4",
+              "features": {
+                "cmd_length": 6,
+                "token_count": 2,
+                "chaining_ops_count": 0,
+                "distinct_cmd_ratio": 1.0
+              }
+            }
+          ],
+          "decisions": [
+            {
+              "stage": "S1",
+              "score": 0.05,
+              "tier_decided": "T2",
+              "provenance": "LAB"
+            },
+            {
+              "stage": "S2",
+              "score": 0.7,
+              "tier_decided": "T2",
+              "provenance": "LAB"
+            },
+            {
+              "stage": "S3",
+              "score": 0.04519873006726848,
+              "tier_decided": "T2",
+              "provenance": "LAB"
+            },
+            {
+              "stage": "S4",
+              "score": 0.2,
+              "tier_decided": "T2",
+              "provenance": "LAB"
+            }
+          ],
+          "limitations": "S1 NEWKEYS is a transport hook, not reconstructed from JSON. Score source is not stored in this decision schema."
+        },
+        {
+          "session": "session-6",
+          "events": [
+            "cowrie.session.connect",
+            "cowrie.client.version",
+            "cowrie.client.kex",
+            "cowrie.login.success",
+            "cowrie.client.size",
+            "cowrie.client.var",
+            "cowrie.session.params",
+            "cowrie.command.input",
+            "cowrie.log.closed",
+            "cowrie.session.closed"
+          ],
+          "command_count": 1,
+          "extractor_replay": [
+            {
+              "stage": "S2",
+              "features": {
+                "s1_ver_len": 31,
+                "s1_has_hassh": 1,
+                "s1_is_openssh": 1,
+                "s1_is_libssh": 0,
+                "s1_is_paramiko": 0,
+                "s1_kex_count": 14,
+                "s1_cipher_count": 6,
+                "s1_mac_count": 10,
+                "s1_comp_count": 2,
+                "cnt_session_connect": 1.0,
+                "cnt_client_version": 1.0,
+                "cnt_client_kex": 1.0,
+                "s2_auth_attempts": 1,
+                "s2_failed_logins": 0,
+                "s2_has_success": 1,
+                "cnt_client_fingerprint": 0.0,
+                "cnt_login_failed": 0.0,
+                "cnt_login_success": 1.0
+              }
+            },
+            {
+              "stage": "S3",
+              "features": {
+                "s1_ver_len": 31,
+                "s1_has_hassh": 1,
+                "s1_is_openssh": 1,
+                "s1_is_libssh": 0,
+                "s1_is_paramiko": 0,
+                "s1_kex_count": 14,
+                "s1_cipher_count": 6,
+                "s1_mac_count": 10,
+                "s1_comp_count": 2,
+                "cnt_session_connect": 1.0,
+                "cnt_client_version": 1.0,
+                "cnt_client_kex": 1.0,
+                "s2_auth_attempts": 1,
+                "s2_failed_logins": 0,
+                "s2_has_success": 1,
+                "cnt_client_fingerprint": 0.0,
+                "cnt_login_failed": 0.0,
+                "cnt_login_success": 1.0,
+                "s3_has_pty": 1,
+                "s3_term_width": 0,
+                "s3_term_height": 0,
+                "s3_is_exec": 0,
+                "cnt_client_size": 1.0,
+                "cnt_client_var": 1.0,
+                "cnt_session_params": 1.0,
+                "has_pty": 1
+              }
+            },
+            {
+              "stage": "S4",
+              "features": {
+                "s1_ver_len": 31,
+                "s1_has_hassh": 1,
+                "s1_is_openssh": 1,
+                "s1_is_libssh": 0,
+                "s1_is_paramiko": 0,
+                "s1_kex_count": 14,
+                "s1_cipher_count": 6,
+                "s1_mac_count": 10,
+                "s1_comp_count": 2,
+                "cnt_session_connect": 1.0,
+                "cnt_client_version": 1.0,
+                "cnt_client_kex": 1.0,
+                "s2_auth_attempts": 1,
+                "s2_failed_logins": 0,
+                "s2_has_success": 1,
+                "cnt_client_fingerprint": 0.0,
+                "cnt_login_failed": 0.0,
+                "cnt_login_success": 1.0,
+                "s3_has_pty": 1,
+                "s3_term_width": 0,
+                "s3_term_height": 0,
+                "s3_is_exec": 0,
+                "cnt_client_size": 1.0,
+                "cnt_client_var": 1.0,
+                "cnt_session_params": 1.0,
+                "has_pty": 1,
+                "s4_cmd1_len": 6,
+                "s4_cmd1_has_pipe": 0,
+                "s4_cmd1_has_redirect": 0,
+                "s4_cmd1_has_chain": 0
+              }
+            }
+          ],
+          "adapter_replay": [
+            {
+              "stage": "S2",
+              "features": {
+                "s1_ver_len": 31,
+                "s1_has_hassh": 1,
+                "s1_is_openssh": 1,
+                "s1_is_libssh": 0,
+                "s1_is_paramiko": 0,
+                "s1_kex_count": 14,
+                "s1_cipher_count": 6,
+                "s1_mac_count": 10,
+                "s1_comp_count": 2,
+                "cnt_session_connect": 1.0,
+                "cnt_client_version": 1.0,
+                "cnt_client_kex": 1.0,
+                "s2_auth_attempts": 1,
+                "s2_failed_logins": 0,
+                "s2_has_success": 1,
+                "cnt_client_fingerprint": 0.0,
+                "cnt_login_failed": 0.0,
+                "cnt_login_success": 1.0
+              }
+            },
+            {
+              "stage": "S3",
+              "features": {
+                "s1_ver_len": 31,
+                "s1_has_hassh": 1,
+                "s1_is_openssh": 1,
+                "s1_is_libssh": 0,
+                "s1_is_paramiko": 0,
+                "s1_kex_count": 14,
+                "s1_cipher_count": 6,
+                "s1_mac_count": 10,
+                "s1_comp_count": 2,
+                "cnt_session_connect": 1.0,
+                "cnt_client_version": 1.0,
+                "cnt_client_kex": 1.0,
+                "s2_auth_attempts": 1,
+                "s2_failed_logins": 0,
+                "s2_has_success": 1,
+                "cnt_client_fingerprint": 0.0,
+                "cnt_login_failed": 0.0,
+                "cnt_login_success": 1.0,
+                "s3_has_pty": 1,
+                "s3_term_width": 0,
+                "s3_term_height": 0,
+                "s3_is_exec": 0,
+                "cnt_client_size": 1.0,
+                "cnt_client_var": 1.0,
+                "cnt_session_params": 1.0,
+                "has_pty": 1
+              }
+            },
+            {
+              "stage": "S4",
+              "features": {
+                "cmd_length": 6,
+                "token_count": 2,
+                "chaining_ops_count": 0,
+                "distinct_cmd_ratio": 1.0
+              }
+            }
+          ],
+          "decisions": [
+            {
+              "stage": "S1",
+              "score": 0.05,
+              "tier_decided": "T2",
+              "provenance": "LAB"
+            },
+            {
+              "stage": "S2",
+              "score": 0.7,
+              "tier_decided": "T2",
+              "provenance": "LAB"
+            },
+            {
+              "stage": "S3",
+              "score": 0.04519873006726848,
+              "tier_decided": "T2",
+              "provenance": "LAB"
+            },
+            {
+              "stage": "S4",
+              "score": 0.2,
+              "tier_decided": "T2",
+              "provenance": "LAB"
+            }
+          ],
+          "limitations": "S1 NEWKEYS is a transport hook, not reconstructed from JSON. Score source is not stored in this decision schema."
+        }
+      ]
+    },
+    {
+      "scenario": "transfer_like",
+      "returncode": 0,
+      "sessions": [
+        {
+          "session": "session-1",
+          "events": [
+            "cowrie.session.connect",
+            "cowrie.client.version",
+            "cowrie.client.kex",
+            "cowrie.login.success",
+            "cowrie.client.var",
+            "cowrie.session.params",
+            "cowrie.command.input",
+            "cowrie.log.closed",
+            "cowrie.session.closed"
+          ],
+          "command_count": 1,
+          "extractor_replay": [
+            {
+              "stage": "S2",
+              "features": {
+                "s1_ver_len": 31,
+                "s1_has_hassh": 1,
+                "s1_is_openssh": 1,
+                "s1_is_libssh": 0,
+                "s1_is_paramiko": 0,
+                "s1_kex_count": 14,
+                "s1_cipher_count": 6,
+                "s1_mac_count": 10,
+                "s1_comp_count": 2,
+                "cnt_session_connect": 1.0,
+                "cnt_client_version": 1.0,
+                "cnt_client_kex": 1.0,
+                "s2_auth_attempts": 1,
+                "s2_failed_logins": 0,
+                "s2_has_success": 1,
+                "cnt_client_fingerprint": 0.0,
+                "cnt_login_failed": 0.0,
+                "cnt_login_success": 1.0
+              }
+            },
+            {
+              "stage": "S3",
+              "features": {
+                "s1_ver_len": 31,
+                "s1_has_hassh": 1,
+                "s1_is_openssh": 1,
+                "s1_is_libssh": 0,
+                "s1_is_paramiko": 0,
+                "s1_kex_count": 14,
+                "s1_cipher_count": 6,
+                "s1_mac_count": 10,
+                "s1_comp_count": 2,
+                "cnt_session_connect": 1.0,
+                "cnt_client_version": 1.0,
+                "cnt_client_kex": 1.0,
+                "s2_auth_attempts": 1,
+                "s2_failed_logins": 0,
+                "s2_has_success": 1,
+                "cnt_client_fingerprint": 0.0,
+                "cnt_login_failed": 0.0,
+                "cnt_login_success": 1.0,
+                "s3_has_pty": 0,
+                "s3_term_width": 0,
+                "s3_term_height": 0,
+                "s3_is_exec": 0,
+                "cnt_client_size": 0.0,
+                "cnt_client_var": 1.0,
+                "cnt_session_params": 1.0,
+                "has_pty": 0
+              }
+            },
+            {
+              "stage": "S4",
+              "features": {
+                "s1_ver_len": 31,
+                "s1_has_hassh": 1,
+                "s1_is_openssh": 1,
+                "s1_is_libssh": 0,
+                "s1_is_paramiko": 0,
+                "s1_kex_count": 14,
+                "s1_cipher_count": 6,
+                "s1_mac_count": 10,
+                "s1_comp_count": 2,
+                "cnt_session_connect": 1.0,
+                "cnt_client_version": 1.0,
+                "cnt_client_kex": 1.0,
+                "s2_auth_attempts": 1,
+                "s2_failed_logins": 0,
+                "s2_has_success": 1,
+                "cnt_client_fingerprint": 0.0,
+                "cnt_login_failed": 0.0,
+                "cnt_login_success": 1.0,
+                "s3_has_pty": 0,
+                "s3_term_width": 0,
+                "s3_term_height": 0,
+                "s3_is_exec": 0,
+                "cnt_client_size": 0.0,
+                "cnt_client_var": 1.0,
+                "cnt_session_params": 1.0,
+                "has_pty": 0,
+                "s4_cmd1_len": 63,
+                "s4_cmd1_has_pipe": 0,
+                "s4_cmd1_has_redirect": 0,
+                "s4_cmd1_has_chain": 0
+              }
+            }
+          ],
+          "adapter_replay": [
+            {
+              "stage": "S2",
+              "features": {
+                "s1_ver_len": 31,
+                "s1_has_hassh": 1,
+                "s1_is_openssh": 1,
+                "s1_is_libssh": 0,
+                "s1_is_paramiko": 0,
+                "s1_kex_count": 14,
+                "s1_cipher_count": 6,
+                "s1_mac_count": 10,
+                "s1_comp_count": 2,
+                "cnt_session_connect": 1.0,
+                "cnt_client_version": 1.0,
+                "cnt_client_kex": 1.0,
+                "s2_auth_attempts": 1,
+                "s2_failed_logins": 0,
+                "s2_has_success": 1,
+                "cnt_client_fingerprint": 0.0,
+                "cnt_login_failed": 0.0,
+                "cnt_login_success": 1.0
+              }
+            },
+            {
+              "stage": "S3",
+              "features": {
+                "s1_ver_len": 31,
+                "s1_has_hassh": 1,
+                "s1_is_openssh": 1,
+                "s1_is_libssh": 0,
+                "s1_is_paramiko": 0,
+                "s1_kex_count": 14,
+                "s1_cipher_count": 6,
+                "s1_mac_count": 10,
+                "s1_comp_count": 2,
+                "cnt_session_connect": 1.0,
+                "cnt_client_version": 1.0,
+                "cnt_client_kex": 1.0,
+                "s2_auth_attempts": 1,
+                "s2_failed_logins": 0,
+                "s2_has_success": 1,
+                "cnt_client_fingerprint": 0.0,
+                "cnt_login_failed": 0.0,
+                "cnt_login_success": 1.0,
+                "s3_has_pty": 0,
+                "s3_term_width": 0,
+                "s3_term_height": 0,
+                "s3_is_exec": 0,
+                "cnt_client_size": 0.0,
+                "cnt_client_var": 1.0,
+                "cnt_session_params": 1.0,
+                "has_pty": 0
+              }
+            },
+            {
+              "stage": "S4",
+              "features": {
+                "cmd_length": 63,
+                "token_count": 5,
+                "chaining_ops_count": 0,
+                "distinct_cmd_ratio": 1.0
+              }
+            }
+          ],
+          "decisions": [
+            {
+              "stage": "S1",
+              "score": 0.05,
+              "tier_decided": "T1",
+              "provenance": "LAB"
+            },
+            {
+              "stage": "S2",
+              "score": 0.7,
+              "tier_decided": "T2",
+              "provenance": "LAB"
+            },
+            {
+              "stage": "S3",
+              "score": 0.04519740586489645,
+              "tier_decided": "T2",
+              "provenance": "LAB"
+            },
+            {
+              "stage": "S4",
+              "score": 0.2,
+              "tier_decided": "T2",
+              "provenance": "LAB"
+            }
+          ],
+          "limitations": "S1 NEWKEYS is a transport hook, not reconstructed from JSON. Score source is not stored in this decision schema."
+        },
+        {
+          "session": "session-2",
+          "events": [
+            "cowrie.session.connect",
+            "cowrie.client.version",
+            "cowrie.client.kex",
+            "cowrie.login.success",
+            "cowrie.client.var",
+            "cowrie.session.params",
+            "cowrie.command.input",
+            "cowrie.log.closed",
+            "cowrie.session.closed"
+          ],
+          "command_count": 1,
+          "extractor_replay": [
+            {
+              "stage": "S2",
+              "features": {
+                "s1_ver_len": 31,
+                "s1_has_hassh": 1,
+                "s1_is_openssh": 1,
+                "s1_is_libssh": 0,
+                "s1_is_paramiko": 0,
+                "s1_kex_count": 14,
+                "s1_cipher_count": 6,
+                "s1_mac_count": 10,
+                "s1_comp_count": 2,
+                "cnt_session_connect": 1.0,
+                "cnt_client_version": 1.0,
+                "cnt_client_kex": 1.0,
+                "s2_auth_attempts": 1,
+                "s2_failed_logins": 0,
+                "s2_has_success": 1,
+                "cnt_client_fingerprint": 0.0,
+                "cnt_login_failed": 0.0,
+                "cnt_login_success": 1.0
+              }
+            },
+            {
+              "stage": "S3",
+              "features": {
+                "s1_ver_len": 31,
+                "s1_has_hassh": 1,
+                "s1_is_openssh": 1,
+                "s1_is_libssh": 0,
+                "s1_is_paramiko": 0,
+                "s1_kex_count": 14,
+                "s1_cipher_count": 6,
+                "s1_mac_count": 10,
+                "s1_comp_count": 2,
+                "cnt_session_connect": 1.0,
+                "cnt_client_version": 1.0,
+                "cnt_client_kex": 1.0,
+                "s2_auth_attempts": 1,
+                "s2_failed_logins": 0,
+                "s2_has_success": 1,
+                "cnt_client_fingerprint": 0.0,
+                "cnt_login_failed": 0.0,
+                "cnt_login_success": 1.0,
+                "s3_has_pty": 0,
+                "s3_term_width": 0,
+                "s3_term_height": 0,
+                "s3_is_exec": 0,
+                "cnt_client_size": 0.0,
+                "cnt_client_var": 1.0,
+                "cnt_session_params": 1.0,
+                "has_pty": 0
+              }
+            },
+            {
+              "stage": "S4",
+              "features": {
+                "s1_ver_len": 31,
+                "s1_has_hassh": 1,
+                "s1_is_openssh": 1,
+                "s1_is_libssh": 0,
+                "s1_is_paramiko": 0,
+                "s1_kex_count": 14,
+                "s1_cipher_count": 6,
+                "s1_mac_count": 10,
+                "s1_comp_count": 2,
+                "cnt_session_connect": 1.0,
+                "cnt_client_version": 1.0,
+                "cnt_client_kex": 1.0,
+                "s2_auth_attempts": 1,
+                "s2_failed_logins": 0,
+                "s2_has_success": 1,
+                "cnt_client_fingerprint": 0.0,
+                "cnt_login_failed": 0.0,
+                "cnt_login_success": 1.0,
+                "s3_has_pty": 0,
+                "s3_term_width": 0,
+                "s3_term_height": 0,
+                "s3_is_exec": 0,
+                "cnt_client_size": 0.0,
+                "cnt_client_var": 1.0,
+                "cnt_session_params": 1.0,
+                "has_pty": 0,
+                "s4_cmd1_len": 28,
+                "s4_cmd1_has_pipe": 0,
+                "s4_cmd1_has_redirect": 0,
+                "s4_cmd1_has_chain": 0
+              }
+            }
+          ],
+          "adapter_replay": [
+            {
+              "stage": "S2",
+              "features": {
+                "s1_ver_len": 31,
+                "s1_has_hassh": 1,
+                "s1_is_openssh": 1,
+                "s1_is_libssh": 0,
+                "s1_is_paramiko": 0,
+                "s1_kex_count": 14,
+                "s1_cipher_count": 6,
+                "s1_mac_count": 10,
+                "s1_comp_count": 2,
+                "cnt_session_connect": 1.0,
+                "cnt_client_version": 1.0,
+                "cnt_client_kex": 1.0,
+                "s2_auth_attempts": 1,
+                "s2_failed_logins": 0,
+                "s2_has_success": 1,
+                "cnt_client_fingerprint": 0.0,
+                "cnt_login_failed": 0.0,
+                "cnt_login_success": 1.0
+              }
+            },
+            {
+              "stage": "S3",
+              "features": {
+                "s1_ver_len": 31,
+                "s1_has_hassh": 1,
+                "s1_is_openssh": 1,
+                "s1_is_libssh": 0,
+                "s1_is_paramiko": 0,
+                "s1_kex_count": 14,
+                "s1_cipher_count": 6,
+                "s1_mac_count": 10,
+                "s1_comp_count": 2,
+                "cnt_session_connect": 1.0,
+                "cnt_client_version": 1.0,
+                "cnt_client_kex": 1.0,
+                "s2_auth_attempts": 1,
+                "s2_failed_logins": 0,
+                "s2_has_success": 1,
+                "cnt_client_fingerprint": 0.0,
+                "cnt_login_failed": 0.0,
+                "cnt_login_success": 1.0,
+                "s3_has_pty": 0,
+                "s3_term_width": 0,
+                "s3_term_height": 0,
+                "s3_is_exec": 0,
+                "cnt_client_size": 0.0,
+                "cnt_client_var": 1.0,
+                "cnt_session_params": 1.0,
+                "has_pty": 0
+              }
+            },
+            {
+              "stage": "S4",
+              "features": {
+                "cmd_length": 28,
+                "token_count": 3,
+                "chaining_ops_count": 0,
+                "distinct_cmd_ratio": 1.0
+              }
+            }
+          ],
+          "decisions": [
+            {
+              "stage": "S1",
+              "score": 0.05,
+              "tier_decided": "T2",
+              "provenance": "LAB"
+            },
+            {
+              "stage": "S2",
+              "score": 0.7,
+              "tier_decided": "T2",
+              "provenance": "LAB"
+            },
+            {
+              "stage": "S3",
+              "score": 0.04519740586489645,
+              "tier_decided": "T2",
+              "provenance": "LAB"
+            },
+            {
+              "stage": "S4",
+              "score": 0.2,
+              "tier_decided": "T2",
+              "provenance": "LAB"
+            }
+          ],
+          "limitations": "S1 NEWKEYS is a transport hook, not reconstructed from JSON. Score source is not stored in this decision schema."
+        },
+        {
+          "session": "session-3",
+          "events": [
+            "cowrie.session.connect",
+            "cowrie.client.version",
+            "cowrie.client.kex",
+            "cowrie.login.success",
+            "cowrie.client.var",
+            "cowrie.session.params",
+            "cowrie.command.input",
+            "cowrie.log.closed",
+            "cowrie.session.closed"
+          ],
+          "command_count": 1,
+          "extractor_replay": [
+            {
+              "stage": "S2",
+              "features": {
+                "s1_ver_len": 31,
+                "s1_has_hassh": 1,
+                "s1_is_openssh": 1,
+                "s1_is_libssh": 0,
+                "s1_is_paramiko": 0,
+                "s1_kex_count": 14,
+                "s1_cipher_count": 6,
+                "s1_mac_count": 10,
+                "s1_comp_count": 2,
+                "cnt_session_connect": 1.0,
+                "cnt_client_version": 1.0,
+                "cnt_client_kex": 1.0,
+                "s2_auth_attempts": 1,
+                "s2_failed_logins": 0,
+                "s2_has_success": 1,
+                "cnt_client_fingerprint": 0.0,
+                "cnt_login_failed": 0.0,
+                "cnt_login_success": 1.0
+              }
+            },
+            {
+              "stage": "S3",
+              "features": {
+                "s1_ver_len": 31,
+                "s1_has_hassh": 1,
+                "s1_is_openssh": 1,
+                "s1_is_libssh": 0,
+                "s1_is_paramiko": 0,
+                "s1_kex_count": 14,
+                "s1_cipher_count": 6,
+                "s1_mac_count": 10,
+                "s1_comp_count": 2,
+                "cnt_session_connect": 1.0,
+                "cnt_client_version": 1.0,
+                "cnt_client_kex": 1.0,
+                "s2_auth_attempts": 1,
+                "s2_failed_logins": 0,
+                "s2_has_success": 1,
+                "cnt_client_fingerprint": 0.0,
+                "cnt_login_failed": 0.0,
+                "cnt_login_success": 1.0,
+                "s3_has_pty": 0,
+                "s3_term_width": 0,
+                "s3_term_height": 0,
+                "s3_is_exec": 0,
+                "cnt_client_size": 0.0,
+                "cnt_client_var": 1.0,
+                "cnt_session_params": 1.0,
+                "has_pty": 0
+              }
+            },
+            {
+              "stage": "S4",
+              "features": {
+                "s1_ver_len": 31,
+                "s1_has_hassh": 1,
+                "s1_is_openssh": 1,
+                "s1_is_libssh": 0,
+                "s1_is_paramiko": 0,
+                "s1_kex_count": 14,
+                "s1_cipher_count": 6,
+                "s1_mac_count": 10,
+                "s1_comp_count": 2,
+                "cnt_session_connect": 1.0,
+                "cnt_client_version": 1.0,
+                "cnt_client_kex": 1.0,
+                "s2_auth_attempts": 1,
+                "s2_failed_logins": 0,
+                "s2_has_success": 1,
+                "cnt_client_fingerprint": 0.0,
+                "cnt_login_failed": 0.0,
+                "cnt_login_success": 1.0,
+                "s3_has_pty": 0,
+                "s3_term_width": 0,
+                "s3_term_height": 0,
+                "s3_is_exec": 0,
+                "cnt_client_size": 0.0,
+                "cnt_client_var": 1.0,
+                "cnt_session_params": 1.0,
+                "has_pty": 0,
+                "s4_cmd1_len": 26,
+                "s4_cmd1_has_pipe": 0,
+                "s4_cmd1_has_redirect": 0,
+                "s4_cmd1_has_chain": 0
+              }
+            }
+          ],
+          "adapter_replay": [
+            {
+              "stage": "S2",
+              "features": {
+                "s1_ver_len": 31,
+                "s1_has_hassh": 1,
+                "s1_is_openssh": 1,
+                "s1_is_libssh": 0,
+                "s1_is_paramiko": 0,
+                "s1_kex_count": 14,
+                "s1_cipher_count": 6,
+                "s1_mac_count": 10,
+                "s1_comp_count": 2,
+                "cnt_session_connect": 1.0,
+                "cnt_client_version": 1.0,
+                "cnt_client_kex": 1.0,
+                "s2_auth_attempts": 1,
+                "s2_failed_logins": 0,
+                "s2_has_success": 1,
+                "cnt_client_fingerprint": 0.0,
+                "cnt_login_failed": 0.0,
+                "cnt_login_success": 1.0
+              }
+            },
+            {
+              "stage": "S3",
+              "features": {
+                "s1_ver_len": 31,
+                "s1_has_hassh": 1,
+                "s1_is_openssh": 1,
+                "s1_is_libssh": 0,
+                "s1_is_paramiko": 0,
+                "s1_kex_count": 14,
+                "s1_cipher_count": 6,
+                "s1_mac_count": 10,
+                "s1_comp_count": 2,
+                "cnt_session_connect": 1.0,
+                "cnt_client_version": 1.0,
+                "cnt_client_kex": 1.0,
+                "s2_auth_attempts": 1,
+                "s2_failed_logins": 0,
+                "s2_has_success": 1,
+                "cnt_client_fingerprint": 0.0,
+                "cnt_login_failed": 0.0,
+                "cnt_login_success": 1.0,
+                "s3_has_pty": 0,
+                "s3_term_width": 0,
+                "s3_term_height": 0,
+                "s3_is_exec": 0,
+                "cnt_client_size": 0.0,
+                "cnt_client_var": 1.0,
+                "cnt_session_params": 1.0,
+                "has_pty": 0
+              }
+            },
+            {
+              "stage": "S4",
+              "features": {
+                "cmd_length": 26,
+                "token_count": 3,
+                "chaining_ops_count": 0,
+                "distinct_cmd_ratio": 1.0
+              }
+            }
+          ],
+          "decisions": [
+            {
+              "stage": "S1",
+              "score": 0.05,
+              "tier_decided": "T2",
+              "provenance": "LAB"
+            },
+            {
+              "stage": "S2",
+              "score": 0.7,
+              "tier_decided": "T2",
+              "provenance": "LAB"
+            },
+            {
+              "stage": "S3",
+              "score": 0.04519740586489645,
+              "tier_decided": "T2",
+              "provenance": "LAB"
+            },
+            {
+              "stage": "S4",
+              "score": 0.2,
+              "tier_decided": "T2",
+              "provenance": "LAB"
+            }
+          ],
+          "limitations": "S1 NEWKEYS is a transport hook, not reconstructed from JSON. Score source is not stored in this decision schema."
+        }
+      ]
+    }
+  ]
+}

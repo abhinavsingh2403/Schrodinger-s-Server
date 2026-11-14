@@ -495,3 +495,6 @@ Inspect the retained SQLite database read-only and export only stage, score, tie
 - **Alternatives considered**: Retaining `'LIVE'` as default in `AdaptiveSessionAdapter` (rejected: silently defaults local lab adapters to live status, violating AGENTS.md Rules 1 & 2 on truthfulness).
 - **Why**: Strict separation between loopback lab executions and authenticated public-facing VPS trials ensures zero misattribution in decision logs and dashboards.
 - **Consequences**: Decisions made via `run_sensor.py` are labeled `'LAB'` by default. Only an explicit `--provenance LIVE` invocation during the internet-facing deployment can emit `'LIVE'` decisions.
+
+### 2026-11-15 — Capture lab policy evidence before redesign
+Run each existing attacker unchanged with isolated temporary state and a fresh lab-policy database. Record masked decision rows and replay Cowrie events through both the shared extractor and the actual lifecycle adapter, distinguishing their command-stage vectors. This observation step selects no trigger and changes no policy.
