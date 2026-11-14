@@ -65,7 +65,7 @@ if [ "$DRY_RUN" -eq 1 ]; then
     for scenario in "${SCENARIOS[@]}"; do
         echo "[DRY-RUN] --- Scenario: $scenario ---"
         echo "[DRY-RUN] 1. Would create temp DB: mktemp /tmp/gk_demo_XXXXXX.db"
-        echo "[DRY-RUN] 2. Would start Gatekeeper: $PYTHON -m gatekeeper.decision_api --host 127.0.0.1 --port $GK_PORT --db <db_path>"
+        echo "[DRY-RUN] 2. Would start Gatekeeper: $PYTHON -m gatekeeper.decision_api --host 127.0.0.1 --port $GK_PORT --db <db_path> --lab-mode"
         echo "[DRY-RUN] 3. Would start Sensor: $PYTHON -m sensor.run_sensor --state-dir <cowrie_state> --port $PORT --gatekeeper-url http://127.0.0.1:$GK_PORT"
         echo "[DRY-RUN] 4. Would execute attacker: $PYTHON -m harness.attackers.$scenario --host $HOST --port $PORT"
         echo "[DRY-RUN] 5. Would print schema and decision log rows from SQLite database"
@@ -103,8 +103,8 @@ for scenario in "${SCENARIOS[@]}"; do
         rm -rf "$COWRIE_STATE"
     }
 
-    # Start Gatekeeper
-    "$PYTHON" -m gatekeeper.decision_api --host 127.0.0.1 --port "$GK_PORT" --db "$DB_PATH" > /dev/null 2>&1 &
+    # Start Gatekeeper in lab mode (demo-friendly thresholds)
+    "$PYTHON" -m gatekeeper.decision_api --host 127.0.0.1 --port "$GK_PORT" --db "$DB_PATH" --lab-mode > /dev/null 2>&1 &
     GK_PID=$!
 
     # Wait for Gatekeeper to be responsive

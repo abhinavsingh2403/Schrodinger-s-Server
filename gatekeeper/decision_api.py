@@ -472,12 +472,28 @@ def run_server(
     host: str = "0.0.0.0",
     port: int = 5000,
     db_path: str | Path = "gatekeeper/gatekeeper.db",
+    lab_mode: bool = False,
 ) -> None:
-    """Starts the Gatekeeper HTTP service."""
-    engine = DecisionEngine(db_path=db_path)
+    """Starts the Gatekeeper HTTP service.
+
+    When lab_mode is True, loads config/policy_lab.yaml with lower escalation
+    thresholds so interactive attackers visibly trigger T2 in live demos.
+    Production thresholds in config/policy.yaml are never modified.
+    """
+    if lab_mode:
+        lab_config = Path(__file__).resolve().parent.parent / "config" / "policy_lab.yaml"
+        policy = EscalationPolicy(config_path=lab_config)
+        print(f"[LAB MODE] Loaded demo thresholds from {lab_config}")
+        print(f"[LAB MODE] S2 threshold: {policy.get_threshold_t2('S2')}, "
+              f"S3 threshold: {policy.get_threshold_t2('S3')}, "
+              f"budget: {policy.max_escalation_fraction:.0%}")
+        engine = DecisionEngine(db_path=db_path, policy=policy)
+    else:
+        engine = DecisionEngine(db_path=db_path)
     server = http.server.HTTPServer((host, port), GatekeeperHTTPHandler)
     server.decision_engine = engine  # type: ignore[attr-defined]
-    print(f"Gatekeeper Decision Service listening on http://{host}:{port}")
+    mode_label = "LAB" if lab_mode else "PRODUCTION"
+    print(f"Gatekeeper Decision Service [{mode_label}] listening on http://{host}:{port}")
     try:
         server.serve_forever()
     except KeyboardInterrupt:
@@ -491,5 +507,8 @@ if __name__ == "__main__":
     parser.add_argument("--host", default="0.0.0.0", help="HTTP host to bind (default: 0.0.0.0)")
     parser.add_argument("--port", type=int, default=5000, help="HTTP port to bind (default: 5000)")
     parser.add_argument("--db", default="gatekeeper/gatekeeper.db", help="Path to SQLite DB")
+    parser.add_argument("--lab-mode", action="store_true",
+                        help="Use lower demo thresholds (config/policy_lab.yaml) so interactive "
+                             "attackers visibly trigger T2 escalation in live demonstrations")
     args = parser.parse_args()
-    run_server(host=args.host, port=args.port, db_path=args.db)
+    run_server(host=args.host, port=args.port, db_path=args.db, lab_mode=args.lab_mode)
