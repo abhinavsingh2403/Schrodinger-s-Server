@@ -87,7 +87,7 @@ def test_each_api_panel_payload_includes_source_key():
         db_path = os.path.join(tmp_dir, "dash.db")
         server = DashboardServer(db_path=db_path, port=0)
 
-        valid_sources = {"RECORDED", "LAB", "LIVE"}
+        valid_sources = {"RECORDED", "LAB", "LIVE", "SYNTHETIC", "MIXED"}
 
         # 1. /api/stats
         stats = server.get_stats_data()

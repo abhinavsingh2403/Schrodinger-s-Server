@@ -456,3 +456,16 @@ Inspect the retained SQLite database read-only and export only stage, score, tie
 - **Alternatives considered**: Deleting `populate_demo_db.py` entirely (rejected: offline UI rendering and integration tests need non-empty DB fixtures).
 - **Why**: Strict truthfulness under AGENTS.md Rules 1, 2, and 19. Prevents confusion between scripted test probes and genuine empirical honeypot traffic.
 - **Consequences**: `gatekeeper.db` when populated via `populate_demo_db.py` cleanly declares itself `SYNTHETIC` in all API responses and UI panels.
+
+### 2026-11-14: Per-row provenance storage in decision_log and removal of prefix inference
+- **Status**: ACCEPTED
+- **Owner**: P2/P3 (Gatekeeper / Dashboard Lead)
+- **Context**: Relying on string prefixes (`sess_synth_`) to infer decision provenance in the dashboard violates separation of concerns and creates fragile coupling between session names and provenance.
+- **Decision**:
+  1. Add `provenance TEXT NOT NULL DEFAULT 'LAB'` column to `decision_log` table in `gatekeeper/decision_api.py`, with automatic migration for legacy SQLite databases.
+  2. Have `harness/demo/populate_demo_db.py` pass explicit `provenance="SYNTHETIC"` when recording decisions; remove the `populate_lab_decisions` alias and clean docstrings.
+  3. Replace prefix-based checking in `dashboard/app.py` with a single shared helper `resolve_decision_provenance(mode, row_provenances)` called by both `/api/stats` and `/api/decisions`.
+  4. Return `provenance` per row in `/api/decisions`. If rows have mixed provenance, report aggregate source as `"MIXED"`. If the DB is empty and `--mode SYNTHETIC` is configured, report `"SYNTHETIC"`.
+- **Alternatives considered**: Retaining session name prefix checks (rejected: brittle and does not allow mixed or renamed sessions).
+- **Why**: Enforces AGENTS.md Rules 1 & 2 by making provenance an explicit, verifiable database attribute rather than an inferred heuristic.
+- **Consequences**: Decision rows carry verifiable provenance. Dashboard can handle renamed sessions, mixed provenance, and empty databases without heuristic guesswork.

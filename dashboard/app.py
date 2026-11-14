@@ -28,6 +28,37 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 logger = logging.getLogger("dashboard")
 
 
+def resolve_decision_provenance(mode: str, row_provenances: List[str]) -> str:
+    """
+    Deterministically resolves the aggregate sensor/decision provenance label.
+    Shared by both /api/stats and /api/decisions.
+
+    Rules:
+    1. If there are no rows in the decision log:
+       Return 'SYNTHETIC' if mode == 'SYNTHETIC' else 'LAB'.
+    2. If all rows share the same provenance (e.g. all 'SYNTHETIC' or all 'LAB'):
+       Return 'SYNTHETIC' if all are 'SYNTHETIC', 'LIVE' if mode == 'LIVE', else the row provenance.
+    3. If rows have mixed provenance (e.g. some 'SYNTHETIC' and some 'LAB'):
+       Return 'MIXED'.
+    """
+    if not row_provenances:
+        return "SYNTHETIC" if mode.upper() == "SYNTHETIC" else "LAB"
+
+    unique_prov = {p.upper() for p in row_provenances if p}
+    if not unique_prov:
+        return "SYNTHETIC" if mode.upper() == "SYNTHETIC" else "LAB"
+
+    if len(unique_prov) > 1:
+        return "MIXED"
+
+    single_prov = next(iter(unique_prov))
+    if single_prov == "SYNTHETIC":
+        return "SYNTHETIC"
+    if mode.upper() == "LIVE":
+        return "LIVE"
+    return single_prov
+
+
 class DashboardServer:
     """Core state and data provider for the read-only dashboard."""
 
@@ -105,22 +136,22 @@ class DashboardServer:
             logger.warning("Error reading %s: %s", self.base_rates_path, e)
             return {"status": "NO DATA", "source": "RECORDED"}
 
-        # Sensor decisions stats (LAB / LIVE / SYNTHETIC)
+        # Sensor decisions stats (LAB / LIVE / SYNTHETIC / MIXED)
         tier_counts = {"T1": 0, "T2": 0, "T3": 0}
         total_decisions = 0
         latencies: List[float] = []
-        is_synthetic = (self.mode == "SYNTHETIC")
+        row_provenances: List[str] = []
 
         conn = self._get_db_connection()
         if conn:
             try:
-                rows = conn.execute("SELECT session_id, tier_decided, latency_ms FROM decision_log").fetchall()
-                if rows and all(r["session_id"].startswith("sess_synth_") for r in rows):
-                    is_synthetic = True
+                rows = conn.execute("SELECT session_id, tier_decided, latency_ms, provenance FROM decision_log").fetchall()
                 for r in rows:
                     t = r["tier_decided"]
                     tier_counts[t] = tier_counts.get(t, 0) + 1
                     latencies.append(float(r["latency_ms"]))
+                    prov = r["provenance"] if ("provenance" in r.keys() and r["provenance"]) else "LAB"
+                    row_provenances.append(prov)
                 total_decisions = len(rows)
             except Exception:
                 pass
@@ -130,13 +161,8 @@ class DashboardServer:
         latencies.sort()
         p95_lat = latencies[int(len(latencies) * 0.95)] if latencies else None
 
-        # Provenance: SYNTHETIC if configured or synthetic test sessions; LIVE if mode is LIVE; else LAB
-        if is_synthetic:
-            sensor_source = "SYNTHETIC"
-        elif self.mode == "LIVE" and total_decisions > 0:
-            sensor_source = "LIVE"
-        else:
-            sensor_source = "LAB"
+        # Shared provenance resolution across stats and decisions
+        sensor_source = resolve_decision_provenance(self.mode, row_provenances)
 
         sensor_stats = {
             "source": sensor_source,
@@ -160,16 +186,18 @@ class DashboardServer:
     def get_decisions_data(self, limit: int = 50) -> Dict[str, Any]:
         """Returns the recent decision stream with cryptographically masked visitor IDs."""
         if not os.path.exists(self.db_path):
-            return {"status": "NO DATA", "source": "LAB", "decisions": []}
+            fallback_source = resolve_decision_provenance(self.mode, [])
+            return {"status": "NO DATA", "source": fallback_source, "label": fallback_source, "decisions": []}
 
         decisions: List[Dict[str, Any]] = []
+        row_provenances: List[str] = []
         conn = self._get_db_connection()
 
         if conn:
             try:
                 rows = conn.execute(
                     """
-                    SELECT session_id, visitor_id, stage, score, tier_decided, latency_ms, timestamp
+                    SELECT session_id, visitor_id, stage, score, tier_decided, latency_ms, timestamp, provenance
                     FROM decision_log
                     ORDER BY id DESC LIMIT ?
                     """,
@@ -179,6 +207,8 @@ class DashboardServer:
                 for r in rows:
                     vid = r["visitor_id"]
                     masked = vid if vid.startswith("vis_") else f"vis_{vid[:8]}"
+                    prov = r["provenance"] if ("provenance" in r.keys() and r["provenance"]) else "LAB"
+                    row_provenances.append(prov)
                     decisions.append({
                         "session_id": r["session_id"],
                         "visitor_id": masked,
@@ -187,20 +217,15 @@ class DashboardServer:
                         "tier": r["tier_decided"],
                         "latency_ms": round(float(r["latency_ms"]), 2),
                         "timestamp": r["timestamp"],
+                        "provenance": prov,
                     })
             except Exception:
                 pass
             finally:
                 conn.close()
 
-        # Provenance: SYNTHETIC if configured or synthetic test sessions; LIVE if mode is LIVE; else LAB
-        is_synthetic = (self.mode == "SYNTHETIC") or (len(decisions) > 0 and all(d["session_id"].startswith("sess_synth_") for d in decisions))
-        if is_synthetic:
-            source = "SYNTHETIC"
-        elif self.mode == "LIVE" and len(decisions) > 0:
-            source = "LIVE"
-        else:
-            source = "LAB"
+        # Shared provenance resolution across stats and decisions
+        source = resolve_decision_provenance(self.mode, row_provenances)
 
         return {
             "status": "ok",

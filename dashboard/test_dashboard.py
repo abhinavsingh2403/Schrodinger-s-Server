@@ -111,23 +111,100 @@ def test_dashboard_html_rendering():
 
 
 def test_dashboard_synthetic_provenance_marking():
-    """Verify AGENTS.md Rules 1 & 2: Scripted/synthetic probe sessions are strictly labeled SYNTHETIC."""
+    """Verify AGENTS.md Rules 1 & 2: Scripted/synthetic probe sessions are strictly labeled SYNTHETIC via provenance column."""
     with tempfile.TemporaryDirectory() as tmp_dir:
         db_path = os.path.join(tmp_dir, "synth.db")
         memory = VisitorMemory(db_path=db_path)
         engine = DecisionEngine(db_path=db_path, memory=memory)
 
-        # Record a synthetic probe session
-        engine.decide(session_id="sess_synth_bot_01", source_ip="192.0.2.10", stage="S1")
+        # Record a synthetic probe session with explicit column provenance
+        engine.decide(session_id="sess_synth_bot_01", source_ip="192.0.2.10", stage="S1", provenance="SYNTHETIC")
 
         server = DashboardServer(db_path=db_path, port=0, mode="LAB")
         decisions_data = server.get_decisions_data()
         assert decisions_data["status"] == "ok"
-        # Must be detected as SYNTHETIC, never mislabeled as authentic LAB or LIVE
+        # Must be detected as SYNTHETIC via column, never mislabeled as authentic LAB or LIVE
         assert decisions_data["source"] == "SYNTHETIC"
+        assert decisions_data["decisions"][0]["provenance"] == "SYNTHETIC"
 
         stats = server.get_stats_data()
         assert stats["sensor"]["source"] == "SYNTHETIC"
+
+
+def test_dashboard_empty_db_with_synthetic_mode():
+    """Verify that an empty database with --mode SYNTHETIC returns SYNTHETIC provenance for both endpoints."""
+    with tempfile.TemporaryDirectory() as tmp_dir:
+        empty_db = os.path.join(tmp_dir, "empty_synth.db")
+        server = DashboardServer(db_path=empty_db, port=0, mode="SYNTHETIC")
+
+        # 1. /api/decisions
+        decisions_data = server.get_decisions_data()
+        assert decisions_data["source"] == "SYNTHETIC"
+        assert decisions_data["label"] == "SYNTHETIC"
+
+        # 2. /api/stats
+        stats_data = server.get_stats_data()
+        assert stats_data["sensor"]["source"] == "SYNTHETIC"
+        assert stats_data["sensor"]["label"] == "SYNTHETIC"
+
+
+def test_dashboard_mixed_rows_provenance():
+    """Verify that a database containing mixed provenance rows returns MIXED aggregate source and preserves per-row provenance."""
+    with tempfile.TemporaryDirectory() as tmp_dir:
+        mixed_db = os.path.join(tmp_dir, "mixed.db")
+        memory = VisitorMemory(db_path=mixed_db)
+        engine = DecisionEngine(db_path=mixed_db, memory=memory)
+
+        # Record 1 LAB row and 1 SYNTHETIC row
+        engine.decide(session_id="sess_real_lab_01", source_ip="127.0.0.1", stage="S1", provenance="LAB")
+        engine.decide(session_id="sess_scripted_02", source_ip="192.0.2.20", stage="S1", provenance="SYNTHETIC")
+
+        server = DashboardServer(db_path=mixed_db, port=0, mode="LAB")
+
+        # Decisions endpoint returns MIXED aggregate source
+        decisions_data = server.get_decisions_data()
+        assert decisions_data["status"] == "ok"
+        assert decisions_data["source"] == "MIXED"
+        assert decisions_data["count"] == 2
+
+        # Verify per-row provenance is read and preserved
+        row_provs = {d["session_id"]: d["provenance"] for d in decisions_data["decisions"]}
+        assert row_provs["sess_real_lab_01"] == "LAB"
+        assert row_provs["sess_scripted_02"] == "SYNTHETIC"
+
+        # Stats endpoint returns MIXED aggregate source
+        stats_data = server.get_stats_data()
+        assert stats_data["sensor"]["source"] == "MIXED"
+
+
+def test_dashboard_renamed_session_id_provenance_column():
+    """Verify that provenance is read strictly from the column, NOT inferred from session ID prefixes."""
+    with tempfile.TemporaryDirectory() as tmp_dir:
+        db_path = os.path.join(tmp_dir, "renamed.db")
+        memory = VisitorMemory(db_path=db_path)
+        engine = DecisionEngine(db_path=db_path, memory=memory)
+
+        # Session with arbitrary name having NO 'synth' prefix, but column provenance = 'SYNTHETIC'
+        engine.decide(session_id="custom_honeypot_eval_alpha", source_ip="192.0.2.33", stage="S1", provenance="SYNTHETIC")
+
+        server = DashboardServer(db_path=db_path, port=0, mode="LAB")
+        decisions_data = server.get_decisions_data()
+        assert decisions_data["source"] == "SYNTHETIC"
+        assert decisions_data["decisions"][0]["provenance"] == "SYNTHETIC"
+
+        stats_data = server.get_stats_data()
+        assert stats_data["sensor"]["source"] == "SYNTHETIC"
+
+        # Opposite case: Session with 'synth' in its name, but column provenance = 'LAB'
+        db_path2 = os.path.join(tmp_dir, "renamed_lab.db")
+        memory2 = VisitorMemory(db_path=db_path2)
+        engine2 = DecisionEngine(db_path=db_path2, memory=memory2)
+        engine2.decide(session_id="sess_synth_name_misleading", source_ip="127.0.0.1", stage="S1", provenance="LAB")
+
+        server2 = DashboardServer(db_path=db_path2, port=0, mode="LAB")
+        decisions2 = server2.get_decisions_data()
+        assert decisions2["source"] == "LAB"
+        assert decisions2["decisions"][0]["provenance"] == "LAB"
 
 
 def test_dashboard_custom_db_path():

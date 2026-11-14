@@ -132,7 +132,8 @@ class DecisionEngine:
                         score REAL NOT NULL,
                         tier_decided TEXT NOT NULL,
                         latency_ms REAL NOT NULL,
-                        timestamp TEXT NOT NULL
+                        timestamp TEXT NOT NULL,
+                        provenance TEXT NOT NULL DEFAULT 'LAB'
                     )
                     """
                 )
@@ -142,6 +143,12 @@ class DecisionEngine:
                     ON decision_log(session_id)
                     """
                 )
+                # Check for legacy databases missing provenance column
+                cursor = conn.cursor()
+                cursor.execute("PRAGMA table_info(decision_log)")
+                cols = [row[1] for row in cursor.fetchall()]
+                if "provenance" not in cols:
+                    conn.execute("ALTER TABLE decision_log ADD COLUMN provenance TEXT NOT NULL DEFAULT 'LAB'")
         except Exception:
             pass
 
@@ -246,6 +253,7 @@ class DecisionEngine:
         features: dict[str, Any] | None = None,
         current_tier: str = "T1",
         visitor_ip: str | None = None,
+        provenance: str = "LAB",
     ) -> dict[str, Any]:
         """
         Evaluate session and return tier decision with strict fail-cheap safety.
@@ -280,9 +288,9 @@ class DecisionEngine:
                 latency_ms = (time.perf_counter() - start_time) * 1000.0
                 conn.execute(
                     """INSERT INTO decision_log (
-                        session_id, visitor_id, stage, score, tier_decided, latency_ms, timestamp
-                    ) VALUES (?, ?, ?, ?, ?, ?, ?)""",
-                    (session_id, visitor_id, stage, score, target_tier, latency_ms, now))
+                        session_id, visitor_id, stage, score, tier_decided, latency_ms, timestamp, provenance
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)""",
+                    (session_id, visitor_id, stage, score, target_tier, latency_ms, now, provenance))
 
             return {
                 "session_id": session_id,
@@ -297,6 +305,7 @@ class DecisionEngine:
                 "latency_ms": round(latency_ms, 3),
                 "fail_cheap": False,
                 "budget": budget,
+                "provenance": provenance,
             }
 
         except Exception:
@@ -353,6 +362,7 @@ class GatekeeperClient:
         features: dict[str, Any] | None = None,
         current_tier: str = "T1",
         visitor_ip: str | None = None,
+        provenance: str = "LAB",
     ) -> dict[str, Any]:
         url = f"{self.base_url}/decide"
         payload = {
@@ -361,6 +371,7 @@ class GatekeeperClient:
             "stage": stage,
             "features": features or {},
             "current_tier": current_tier,
+            "provenance": provenance,
         }
         try:
             data = json.dumps(payload).encode("utf-8")
@@ -442,6 +453,7 @@ class GatekeeperHTTPHandler(http.server.BaseHTTPRequestHandler):
                 stage=payload.get("stage", "S0"),
                 features=payload.get("features", {}),
                 current_tier=payload.get("current_tier", "T1"),
+                provenance=payload.get("provenance", "LAB"),
             )
             self.send_response(200)
             self.send_header("Content-Type", "application/json")

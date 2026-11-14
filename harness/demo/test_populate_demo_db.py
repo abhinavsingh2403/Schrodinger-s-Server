@@ -23,6 +23,10 @@ def test_populate_synthetic_decisions(tmp_path: Path) -> None:
 
     assert len(rows) == 9
 
+    # Verify all generated rows carry explicit SYNTHETIC provenance
+    for r in rows:
+        assert r["provenance"] == "SYNTHETIC"
+
     # Verify synthetic bot probe session stays at T1
     bot_rows = [r for r in rows if r["session_id"] == "sess_synth_bot_01"]
     assert len(bot_rows) == 2
