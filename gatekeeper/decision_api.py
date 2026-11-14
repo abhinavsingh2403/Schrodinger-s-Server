@@ -159,6 +159,8 @@ class DecisionEngine:
                     conn.execute("ALTER TABLE decision_log ADD COLUMN provenance TEXT NOT NULL DEFAULT 'UNKNOWN'")
                 if 'policy_profile' not in cols:
                     conn.execute("ALTER TABLE decision_log ADD COLUMN policy_profile TEXT NOT NULL DEFAULT 'UNKNOWN' CHECK(policy_profile IN ('UNKNOWN','DEFAULT','LAB_DEMO'))")
+                if 'score_source' not in cols:
+                    conn.execute("ALTER TABLE decision_log ADD COLUMN score_source TEXT NOT NULL DEFAULT 'UNKNOWN'")
         except Exception:
             pass
 
@@ -304,9 +306,9 @@ class DecisionEngine:
                 latency_ms = (time.perf_counter() - start_time) * 1000.0
                 conn.execute(
                     """INSERT INTO decision_log (
-                        session_id, visitor_id, stage, score, tier_decided, latency_ms, timestamp, provenance, policy_profile
-                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)""",
-                    (session_id, visitor_id, stage, score, target_tier, latency_ms, now, provenance, self.policy_profile))
+                        session_id, visitor_id, stage, score, tier_decided, latency_ms, timestamp, provenance, policy_profile, score_source
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
+                    (session_id, visitor_id, stage, score, target_tier, latency_ms, now, provenance, self.policy_profile, score_source))
 
             return {
                 "session_id": session_id,

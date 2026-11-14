@@ -1,0 +1,9 @@
+{
+  "provenance": "LAB actual SSH stdout",
+  "command": "cat /opt/deploy/config.env",
+  "returncode": 0,
+  "stdout": "DB_HOST=10.0.0.4\nDB_USER=app_user\n",
+  "cowrie_command_inputs": [
+    "cat /opt/deploy/config.env"
+  ]
+}

@@ -1,5 +1,7 @@
 """Capture isolated loopback lab observations before choosing demo policy rules."""
 import json
+import argparse
+import hashlib
 import sqlite3
 import subprocess
 import sys
@@ -27,15 +29,21 @@ class CaptureClient:
 
 
 def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--proof', action='store_true')
+    parser.add_argument('--default', action='store_true')
+    args = parser.parse_args()
     root = Path(__file__).resolve().parents[1]
     result = {'provenance': 'LAB: captured events and stored decisions; replay vectors explicitly labelled',
               'date': datetime.now(timezone.utc).isoformat(),
               'commit': subprocess.check_output(['git', 'rev-parse', 'HEAD'], text=True).strip(),
               'command': 'python -m gatekeeper.capture_lab_evidence', 'scenarios': []}
+    result['source_sha256'] = {name: hashlib.sha256((root/name).read_bytes()).hexdigest()
+                              for name in ('gatekeeper/decision_api.py','config/policy_lab.yaml','sensor/run_sensor.py')}
     original = subprocess.Popen
 
     def lab_process(command, **kwargs):
-        if 'gatekeeper.decision_api' in command:
+        if 'gatekeeper.decision_api' in command and not args.default:
             command = [*command, '--lab-mode']
         return original(command, **kwargs)
 
@@ -75,13 +83,28 @@ def main():
                         vectors.append({'stage': stage, 'features': extractor.extract_stage_features(stage)})
                 output['sessions'].append({
                     'session': f'session-{i+1}', 'events': [e.get('eventid') for e in subset],
+                    'pty_requested': any(e.get('eventid') == 'cowrie.client.size' for e in subset),
+                    'transfer_events': [e['eventid'] for e in subset if 'file_' in e.get('eventid','')],
+                    'direct_tcpip_events': [e['eventid'] for e in subset if 'direct-tcpip' in e.get('eventid','')],
                     'command_count': commands, 'extractor_replay': vectors,
                     'adapter_replay': client.rows,
-                    'decisions': [{k: r[k] for k in ('stage','score','tier_decided','provenance')}
+                    'decisions': [{k: r.get(k, 'UNKNOWN') for k in ('stage','score','tier_decided','provenance','policy_profile','score_source')}
                                   for r in decisions if r['session_id'] == sid],
-                    'limitations': 'S1 NEWKEYS is a transport hook, not reconstructed from JSON. Score source is not stored in this decision schema.'})
+                    'limitations': 'S1 NEWKEYS inputs are not reconstructed from JSON; S1 decisions are stored. UNKNOWN source denotes absent historical schema fields.'})
             result['scenarios'].append(output)
-    target = root / 'results/exp0/lab_policy_evidence.json'
+    target = root / ('results/exp0/lab_policy_proof.json' if args.proof else 'results/exp0/lab_policy_evidence.json')
+    if args.proof:
+        profile = 'DEFAULT' if args.default else 'LAB_DEMO'
+        result['profile'] = profile
+        combined = json.loads(target.read_text()) if target.exists() else {}
+        combined[profile] = result
+        target.write_text(json.dumps(combined, indent=2)+'\n')
+        for scenario in result['scenarios']:
+            decisions = [d for s in scenario['sessions'] for d in s['decisions']]
+            print(profile, scenario['scenario'], 'sessions', len(scenario['sessions']),
+                  'T2 sessions', sum(any(d['tier_decided']=='T2' for d in s['decisions']) for s in scenario['sessions']),
+                  'stages', ','.join(sorted({d['stage'] for d in decisions})))
+        return
     target.write_text(json.dumps(result, indent=2) + '\n')
     fixture = root / 'harness/demo/fixtures/lab_policy_capture.json'
     fixture.parent.mkdir(parents=True, exist_ok=True)
