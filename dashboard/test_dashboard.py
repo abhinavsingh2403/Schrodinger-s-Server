@@ -103,10 +103,31 @@ def test_dashboard_html_rendering():
         assert "RECORDED" in html
         assert "LAB" in html
         assert "LIVE" in html
+        assert "SYNTHETIC" in html
         assert "Yield per Rupee" in html
         assert "SIMULATED ORACLE (HINDSIGHT UPPER BOUND)" in html
         assert "EVAL H4 NOT YET EVALUATED" in html
         assert "NO DATA" in html
+
+
+def test_dashboard_synthetic_provenance_marking():
+    """Verify AGENTS.md Rules 1 & 2: Scripted/synthetic probe sessions are strictly labeled SYNTHETIC."""
+    with tempfile.TemporaryDirectory() as tmp_dir:
+        db_path = os.path.join(tmp_dir, "synth.db")
+        memory = VisitorMemory(db_path=db_path)
+        engine = DecisionEngine(db_path=db_path, memory=memory)
+
+        # Record a synthetic probe session
+        engine.decide(session_id="sess_synth_bot_01", source_ip="192.0.2.10", stage="S1")
+
+        server = DashboardServer(db_path=db_path, port=0, mode="LAB")
+        decisions_data = server.get_decisions_data()
+        assert decisions_data["status"] == "ok"
+        # Must be detected as SYNTHETIC, never mislabeled as authentic LAB or LIVE
+        assert decisions_data["source"] == "SYNTHETIC"
+
+        stats = server.get_stats_data()
+        assert stats["sensor"]["source"] == "SYNTHETIC"
 
 
 def test_dashboard_custom_db_path():

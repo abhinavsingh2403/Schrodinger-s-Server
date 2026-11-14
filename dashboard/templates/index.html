@@ -110,6 +110,9 @@
           <span class="px-2.5 py-1 rounded-md text-xs font-medium cyber-inner text-purple-400 border border-purple-500/20" id="badgeLive">
             LIVE
           </span>
+          <span class="px-2.5 py-1 rounded-md text-xs font-medium cyber-inner text-amber-400 border border-amber-500/20" id="badgeSynthetic">
+            SYNTHETIC
+          </span>
         </div>
       </div>
     </header>
@@ -571,7 +574,16 @@
         if (decRes.ok) {
           const decData = await decRes.json();
           const badgeEl = document.getElementById('decisionsSourceBadge');
-          if (badgeEl) badgeEl.innerText = decData.source || 'LAB';
+          if (badgeEl) {
+            badgeEl.innerText = decData.source || 'LAB';
+            if (decData.source === 'SYNTHETIC') {
+              badgeEl.className = "px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30";
+            } else if (decData.source === 'LIVE') {
+              badgeEl.className = "px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-purple-500/20 text-purple-300 border border-purple-500/30";
+            } else {
+              badgeEl.className = "px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30";
+            }
+          }
 
           const tbody = document.getElementById('decisionsTableBody');
           if (decData.status === "ok" && decData.decisions && decData.decisions.length > 0) {

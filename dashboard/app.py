@@ -49,7 +49,7 @@ class DashboardServer:
         self.natural_experiment_path = str(natural_experiment_path)
         self.model_path = str(model_path)
         self.exp0_path = str(exp0_path)
-        self.mode = mode.upper() if mode.upper() in ("LIVE", "LAB") else "LAB"
+        self.mode = mode.upper() if mode.upper() in ("LIVE", "LAB", "SYNTHETIC") else "LAB"
         self.host = host
         self.port = port
         self.httpd: Optional[http.server.HTTPServer] = None
@@ -105,15 +105,18 @@ class DashboardServer:
             logger.warning("Error reading %s: %s", self.base_rates_path, e)
             return {"status": "NO DATA", "source": "RECORDED"}
 
-        # Sensor decisions stats (LAB / LIVE)
+        # Sensor decisions stats (LAB / LIVE / SYNTHETIC)
         tier_counts = {"T1": 0, "T2": 0, "T3": 0}
         total_decisions = 0
         latencies: List[float] = []
+        is_synthetic = (self.mode == "SYNTHETIC")
 
         conn = self._get_db_connection()
         if conn:
             try:
-                rows = conn.execute("SELECT tier_decided, latency_ms FROM decision_log").fetchall()
+                rows = conn.execute("SELECT session_id, tier_decided, latency_ms FROM decision_log").fetchall()
+                if rows and all(r["session_id"].startswith("sess_synth_") for r in rows):
+                    is_synthetic = True
                 for r in rows:
                     t = r["tier_decided"]
                     tier_counts[t] = tier_counts.get(t, 0) + 1
@@ -127,8 +130,13 @@ class DashboardServer:
         latencies.sort()
         p95_lat = latencies[int(len(latencies) * 0.95)] if latencies else None
 
-        # LIVE only when mode is LIVE and log is non-empty; otherwise LAB
-        sensor_source = "LIVE" if (self.mode == "LIVE" and total_decisions > 0) else "LAB"
+        # Provenance: SYNTHETIC if configured or synthetic test sessions; LIVE if mode is LIVE; else LAB
+        if is_synthetic:
+            sensor_source = "SYNTHETIC"
+        elif self.mode == "LIVE" and total_decisions > 0:
+            sensor_source = "LIVE"
+        else:
+            sensor_source = "LAB"
 
         sensor_stats = {
             "source": sensor_source,
@@ -185,8 +193,14 @@ class DashboardServer:
             finally:
                 conn.close()
 
-        # LIVE only when mode is LIVE and log is non-empty; otherwise LAB
-        source = "LIVE" if (self.mode == "LIVE" and len(decisions) > 0) else "LAB"
+        # Provenance: SYNTHETIC if configured or synthetic test sessions; LIVE if mode is LIVE; else LAB
+        is_synthetic = (self.mode == "SYNTHETIC") or (len(decisions) > 0 and all(d["session_id"].startswith("sess_synth_") for d in decisions))
+        if is_synthetic:
+            source = "SYNTHETIC"
+        elif self.mode == "LIVE" and len(decisions) > 0:
+            source = "LIVE"
+        else:
+            source = "LAB"
 
         return {
             "status": "ok",
@@ -409,7 +423,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Schrödinger's Server Dashboard")
     parser.add_argument("--host", default="127.0.0.1", help="Host interface")
     parser.add_argument("--port", type=int, default=8080, help="Listen port")
-    parser.add_argument("--mode", default="LAB", choices=["LAB", "LIVE"], help="Operational mode")
+    parser.add_argument("--mode", default="LAB", choices=["LAB", "LIVE", "SYNTHETIC"], help="Operational mode")
     parser.add_argument("--db", default="gatekeeper/gatekeeper.db", help="Path to SQLite decision DB (default: gatekeeper/gatekeeper.db)")
     args = parser.parse_args()
 
