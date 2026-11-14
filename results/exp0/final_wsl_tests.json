@@ -6,7 +6,7 @@
     "-q"
   ],
   "exit_code": 0,
-  "output": "........................................................................ [ 48%]\n........................s............................................... [ 96%]\n.....                                                                    [100%]\n148 passed, 1 skipped in 5.71s\n",
+  "output": "........................................................................ [ 48%]\n.........................s.............................................. [ 96%]\n......                                                                   [100%]\n149 passed, 1 skipped in 5.98s\n",
   "python": "3.14.7",
   "platform": "Linux",
   "source_sha256": {
@@ -36,7 +36,7 @@
     "analysis/exp0_family_comparison.py": "51ecf0e540c9654130370060179e89f4d9520e28744fff5a3818e06f6d5fe286",
     "analysis/render_status.py": "f7d7fa6a90d6dc58c14d499b692c1e808fc095033eb2b4d4a6cf491363b6e3a5",
     "analysis/test_exp0_robustness.py": "aef3acd1e11dbeae8d97c8b99bc465d42f0982b45832c51ce6b0bd34b0a371cf",
-    "analysis/event_prefix_study.py": "d41c58c9700147ddd918efa2175e10d88b6496e1ca978996d7aac720eb8d2424",
+    "analysis/event_prefix_study.py": "0da891f908852bc1968bdcf607b125dc46e7741f080de08b9cae30ecb84b9d37",
     "analysis/exp0_rules.py": "61814bdc435c4e125f8fc008468ed37ead2ae06a02682b330d71fefba11fab88",
     "analysis/s3_event_sample.py": "fd54d8b7e18395c2c793552b55f98feb409f6916658c163af045388a20f693bc",
     "analysis/test_exp0_permutation_null.py": "b0f6751ee4cfe40afbe68a40b641fa35031413dd8c6e69843bdb45ad41eb2f42",
@@ -50,7 +50,7 @@
     "analysis/check_docs.py": "55721bb0a7e56e47fbc763008846c72266cf9ec2d43c01ce6847938948d8a876",
     "analysis/exp0_event_order.py": "357b322b7b2fbfd9533bb59b236a54f721640622a7a9ddbdc9ff4d4e2a2d0dbd",
     "analysis/test_s3_base_rates.py": "a3e361efc56c3bfe8d1110f3b80d48ba96924650c1ae7a351f93a082e2114608",
-    "analysis/test_event_prefix_study.py": "9c300c76686d61db1333852970e4139756147698f5200a6b867cf47565834070",
+    "analysis/test_event_prefix_study.py": "bc3186210484d7d6ff2f85dd05db0660737850333d1912dcfb63c62909a29de1",
     "analysis/test_s3_event_sample.py": "cfc4ea5e8fe2806a00bab43d91ffc03aef4342c8ba3082b3c7dde06ab9b411d9",
     "analysis/test_sensor_launcher.py": "1b932bb198e6a55a93fd1c103f5cec408bd6c173ce1939e7941531446677dd0e",
     "analysis/test_cost_model.py": "264efdae3a5a881e021fdcc1ba2725201298901742aa3f6eedcf4276078872c3",

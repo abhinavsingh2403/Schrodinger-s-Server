@@ -1,0 +1,240 @@
+{
+  "status": "COMPLETE",
+  "selection": "First listed day of each unchanged official fold, fixed before event outcomes",
+  "days": {
+    "2025-07-07": {
+      "events": 3185196,
+      "invalid_key_or_timestamp": 0,
+      "zip_crc32": 2085661569,
+      "sha256": "448ec2987be4d6c2980021b86722a71c1d3be11a24f360745c062591bfdfa832",
+      "complete_sessions": 579047,
+      "stages": {
+        "S3": {
+          "reached": 48838,
+          "prefix_positive_excluded": 102,
+          "eligible": 48736,
+          "future_positive": 15915
+        },
+        "S4": {
+          "reached": 48645,
+          "prefix_positive_excluded": 102,
+          "eligible": 48543,
+          "future_positive": 15915
+        },
+        "S5": {
+          "reached": 6214,
+          "prefix_positive_excluded": 834,
+          "eligible": 5380,
+          "future_positive": 5364
+        }
+      },
+      "event_order": {
+        "cowrie.client.size": {
+          "before_first_command": 38,
+          "same_timestamp": 0,
+          "after_first_command": 18,
+          "sessions_with_both": 41
+        },
+        "cowrie.client.var": {
+          "before_first_command": 17,
+          "same_timestamp": 0,
+          "after_first_command": 0,
+          "sessions_with_both": 16
+        },
+        "cowrie.session.params": {
+          "before_first_command": 48668,
+          "same_timestamp": 0,
+          "after_first_command": 16172,
+          "sessions_with_both": 48645
+        }
+      },
+      "s3_availability": {
+        "complete_command_sessions": 48645,
+        "whole_vector_strictly_before": 46449,
+        "sessions_with_counter_at_or_after_command": 2196,
+        "sessions_without_any_setup_event": 0
+      },
+      "total_sessions": 584319,
+      "aggregate_approximation_stages": {
+        "S3": {
+          "reached": 48838,
+          "prefix_positive_excluded": 102,
+          "eligible": 48736,
+          "future_positive": 15915
+        },
+        "S4": {
+          "reached": 48645,
+          "prefix_positive_excluded": 102,
+          "eligible": 48543,
+          "future_positive": 15915
+        },
+        "S5": {
+          "reached": 6214,
+          "prefix_positive_excluded": 834,
+          "eligible": 5380,
+          "future_positive": 5364
+        }
+      },
+      "command_events_missing_input": 0
+    },
+    "2025-08-03": {
+      "events": 4644354,
+      "invalid_key_or_timestamp": 0,
+      "zip_crc32": 582446677,
+      "sha256": "f3730276f4857bc9c3b9f693523e853d6683a3e98308be63b27a971bb59ae407",
+      "complete_sessions": 831806,
+      "stages": {
+        "S3": {
+          "reached": 50610,
+          "prefix_positive_excluded": 97,
+          "eligible": 50513,
+          "future_positive": 17663
+        },
+        "S4": {
+          "reached": 50608,
+          "prefix_positive_excluded": 97,
+          "eligible": 50511,
+          "future_positive": 17663
+        },
+        "S5": {
+          "reached": 6112,
+          "prefix_positive_excluded": 4340,
+          "eligible": 1772,
+          "future_positive": 1527
+        }
+      },
+      "event_order": {
+        "cowrie.client.size": {
+          "before_first_command": 335,
+          "same_timestamp": 0,
+          "after_first_command": 21,
+          "sessions_with_both": 338
+        },
+        "cowrie.client.var": {
+          "before_first_command": 328,
+          "same_timestamp": 0,
+          "after_first_command": 0,
+          "sessions_with_both": 91
+        },
+        "cowrie.session.params": {
+          "before_first_command": 50690,
+          "same_timestamp": 0,
+          "after_first_command": 85008,
+          "sessions_with_both": 50608
+        }
+      },
+      "s3_availability": {
+        "complete_command_sessions": 50608,
+        "whole_vector_strictly_before": 35371,
+        "sessions_with_counter_at_or_after_command": 15237,
+        "sessions_without_any_setup_event": 0
+      },
+      "total_sessions": 841952,
+      "aggregate_approximation_stages": {
+        "S3": {
+          "reached": 50610,
+          "prefix_positive_excluded": 97,
+          "eligible": 50513,
+          "future_positive": 17663
+        },
+        "S4": {
+          "reached": 50608,
+          "prefix_positive_excluded": 97,
+          "eligible": 50511,
+          "future_positive": 17663
+        },
+        "S5": {
+          "reached": 6112,
+          "prefix_positive_excluded": 4340,
+          "eligible": 1772,
+          "future_positive": 1527
+        }
+      },
+      "command_events_missing_input": 0
+    },
+    "2025-08-09": {
+      "events": 4551395,
+      "invalid_key_or_timestamp": 0,
+      "zip_crc32": 3313575299,
+      "sha256": "f255024001024dd42b99c1efcd2865e2d47a61f00e70de8ac09ad352c3013a99",
+      "complete_sessions": 816671,
+      "stages": {
+        "S3": {
+          "reached": 85133,
+          "prefix_positive_excluded": 93,
+          "eligible": 85040,
+          "future_positive": 15371
+        },
+        "S4": {
+          "reached": 85130,
+          "prefix_positive_excluded": 93,
+          "eligible": 85037,
+          "future_positive": 15371
+        },
+        "S5": {
+          "reached": 4834,
+          "prefix_positive_excluded": 3390,
+          "eligible": 1444,
+          "future_positive": 1397
+        }
+      },
+      "event_order": {
+        "cowrie.client.size": {
+          "before_first_command": 67,
+          "same_timestamp": 0,
+          "after_first_command": 33,
+          "sessions_with_both": 72
+        },
+        "cowrie.client.var": {
+          "before_first_command": 7,
+          "same_timestamp": 0,
+          "after_first_command": 0,
+          "sessions_with_both": 7
+        },
+        "cowrie.session.params": {
+          "before_first_command": 85185,
+          "same_timestamp": 0,
+          "after_first_command": 68214,
+          "sessions_with_both": 85130
+        }
+      },
+      "s3_availability": {
+        "complete_command_sessions": 85130,
+        "whole_vector_strictly_before": 72067,
+        "sessions_with_counter_at_or_after_command": 13063,
+        "sessions_without_any_setup_event": 0
+      },
+      "total_sessions": 825117,
+      "aggregate_approximation_stages": {
+        "S3": {
+          "reached": 85133,
+          "prefix_positive_excluded": 93,
+          "eligible": 85040,
+          "future_positive": 15373
+        },
+        "S4": {
+          "reached": 85130,
+          "prefix_positive_excluded": 93,
+          "eligible": 85037,
+          "future_positive": 15373
+        },
+        "S5": {
+          "reached": 4834,
+          "prefix_positive_excluded": 3390,
+          "eligible": 1444,
+          "future_positive": 1399
+        }
+      },
+      "command_events_missing_input": 0
+    }
+  },
+  "limitations": [
+    "Reporting-only feasibility study; no model performance or new Gate 0 verdict.",
+    "S3 anchor is first session.params before first command, a diagnostic proxy requiring runtime mapping review.",
+    "Only sessions with connect and close in the same sampled day are included; boundary censoring remains.",
+    "Same-timestamp ordering is ambiguous; prefixes conservatively include all events at the anchor timestamp.",
+    "No cross-day train/test model is fitted; source-group leakage evaluation remains required before fitting."
+  ],
+  "primary_label": "At least five distinct command inputs OR transfer OR direct-tcpip; EVAL.md 2.1",
+  "approximation_label": "At least five command-input events OR transfer OR direct-tcpip; separate aggregate approximation"
+}
