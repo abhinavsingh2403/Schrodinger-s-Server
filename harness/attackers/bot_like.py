@@ -19,6 +19,7 @@ if str(PROJECT_ROOT) not in sys.path:
 from harness.attackers.common import (
     assert_lab_target_allowlisted,
     execute_ssh_command,
+    validate_source_ip,
     ScenarioResult,
 )
 
@@ -29,9 +30,12 @@ def run_bot_like(
     dry_run: bool = False,
     username: str = "root",
     password: str = "password",
+    source_ip: str | None = None,
 ) -> ScenarioResult:
     """Executes the bot-like attacker scenario. Returns ScenarioResult."""
     assert_lab_target_allowlisted(host)
+    if source_ip is not None:
+        validate_source_ip(source_ip)
     actions: List[str] = []
     ok = True
     returncode = 0
@@ -66,13 +70,13 @@ def run_bot_like(
     for u, p in failed_attempts:
         action_msg = f"[FAILED_LOGIN_ATTEMPT] user={u} pass=*** host={host}:{port}"
         actions.append(action_msg)
-        res = execute_ssh_command(host, port, u, password=p, command="exit")
+        res = execute_ssh_command(host, port, u, source_ip=source_ip, password=p, command="exit")
         # In failed attempts, exit code 255 or 1 is normal auth rejection
 
     # 2. Successful login attempt (Cowrie userdb.example accepts root:password)
     succ_msg = f"[LOGIN_SUCCESS] user={username} host={host}:{port}"
     actions.append(succ_msg)
-    res = execute_ssh_command(host, port, username, password=password, command="exit")
+    res = execute_ssh_command(host, port, username, source_ip=source_ip, password=password, command="exit")
     if res.returncode == 255:
         ok = False
         returncode = 255
@@ -85,7 +89,7 @@ def run_bot_like(
     for c in bot_commands:
         cmd_msg = f"[EXEC_COMMAND] {c}"
         actions.append(cmd_msg)
-        res = execute_ssh_command(host, port, username, password=password, command=c)
+        res = execute_ssh_command(host, port, username, source_ip=source_ip, password=password, command=c)
         if res.returncode == 255:
             ok = False
             returncode = 255
@@ -107,6 +111,7 @@ def main() -> None:
     parser.add_argument("--username", default="root", help="Honeypot login username")
     parser.add_argument("--password", default="password", help="Honeypot login password")
     parser.add_argument("--dry-run", action="store_true", help="Print actions without sending network traffic")
+    parser.add_argument("--source-ip", type=validate_source_ip, default=None, help="IPv4 loopback source address")
     args = parser.parse_args()
 
     result = run_bot_like(
@@ -115,6 +120,7 @@ def main() -> None:
         dry_run=args.dry_run,
         username=args.username,
         password=args.password,
+        source_ip=args.source_ip,
     )
     print(result.to_json_line())
     sys.exit(0 if result["ok"] else 1)

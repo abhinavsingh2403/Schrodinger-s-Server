@@ -48,12 +48,24 @@ def assert_lab_url_allowlisted(url: str) -> None:
         )
 
 
+def validate_source_ip(value: str) -> str:
+    """Accept only numeric IPv4 loopback sources; never resolve hostnames."""
+    try:
+        address = ipaddress.IPv4Address(value)
+    except ipaddress.AddressValueError as exc:
+        raise argparse.ArgumentTypeError('source-ip must be numeric IPv4 within 127.0.0.0/8') from exc
+    if not address.is_loopback:
+        raise argparse.ArgumentTypeError('source-ip must be within 127.0.0.0/8')
+    return str(address)
+
+
 def build_ssh_command(
     host: str,
     port: int,
     username: str,
     command: Optional[str] = None,
     allocate_pty: bool = False,
+    source_ip: Optional[str] = None,
 ) -> List[str]:
     """Constructs a non-interactive ssh command using standard OpenSSH client flags."""
     cmd = [
@@ -69,6 +81,8 @@ def build_ssh_command(
     else:
         cmd.append("-T")
 
+    if source_ip is not None:
+        cmd.extend(["-b", validate_source_ip(source_ip)])
     cmd.append(f"{username}@{host}")
     if command:
         cmd.append(command)
@@ -82,6 +96,7 @@ def execute_ssh_command(
     password: str,
     command: Optional[str] = None,
     allocate_pty: bool = False,
+    source_ip: Optional[str] = None,
     timeout: float = 10.0,
 ) -> subprocess.CompletedProcess:
     """Executes SSH command securely without leaking password in argv.
@@ -89,7 +104,7 @@ def execute_ssh_command(
     Uses sshpass -e (env variable SSHPASS) if installed, or an ephemeral SSH_ASKPASS script.
     """
     assert_lab_target_allowlisted(host)
-    cmd = build_ssh_command(host, port, username, command=command, allocate_pty=allocate_pty)
+    cmd = build_ssh_command(host, port, username, command=command, allocate_pty=allocate_pty, source_ip=source_ip)
 
     env = os.environ.copy()
     askpass_file: Optional[Path] = None

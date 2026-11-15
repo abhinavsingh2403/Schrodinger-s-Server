@@ -21,6 +21,7 @@ from harness.attackers.common import (
     assert_lab_target_allowlisted,
     assert_lab_url_allowlisted,
     execute_ssh_command,
+    validate_source_ip,
     ScenarioResult,
 )
 
@@ -32,9 +33,12 @@ def run_transfer_like(
     dry_run: bool = False,
     username: str = "root",
     password: str = "password",
+    source_ip: str | None = None,
 ) -> ScenarioResult:
     """Executes the tool ingress / transfer scenario. Returns ScenarioResult."""
     assert_lab_target_allowlisted(host)
+    if source_ip is not None:
+        validate_source_ip(source_ip)
     assert_lab_url_allowlisted(url)
 
     actions: List[str] = []
@@ -75,7 +79,7 @@ def run_transfer_like(
     for c in transfer_commands:
         cmd_msg = f"[EXEC_COMMAND] {c}"
         actions.append(cmd_msg)
-        res = execute_ssh_command(host, port, username, password=password, command=c)
+        res = execute_ssh_command(host, port, username, source_ip=source_ip, password=password, command=c)
         if res.returncode == 255:
             ok = False
             returncode = 255
@@ -97,6 +101,7 @@ def main() -> None:
     parser.add_argument("--username", default="root", help="Honeypot login username")
     parser.add_argument("--password", default="password", help="Honeypot login password")
     parser.add_argument("--dry-run", action="store_true", help="Print actions without sending network traffic")
+    parser.add_argument("--source-ip", type=validate_source_ip, default=None, help="IPv4 loopback source address")
     args = parser.parse_args()
 
     result = run_transfer_like(
@@ -106,6 +111,7 @@ def main() -> None:
         dry_run=args.dry_run,
         username=args.username,
         password=args.password,
+        source_ip=args.source_ip,
     )
     print(result.to_json_line())
     sys.exit(0 if result["ok"] else 1)

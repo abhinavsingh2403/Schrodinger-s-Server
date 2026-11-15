@@ -523,3 +523,6 @@ The repository's identity-consistency test requires config/identity.yaml and sen
 
 ### 2026-11-15 — Dashboard policy profile visibility
 Read engine-stored policy_profile independently of traffic provenance. Normalize missing/invalid profiles to UNKNOWN; aggregate distinct profiles as MIXED, including known-plus-unknown rows. Empty data stays UNKNOWN. Preserve legacy rows using a read-only schema fallback; show a separate policy summary badge and per-decision profile. LAB_DEMO is explicitly a mechanism demo, not ML evidence.
+
+### 2026-11-15 — Source binding for distinct lab visitors
+Accept numeric IPv4 loopback source addresses only; use OpenSSH -b and preserve existing password transport. No DNS resolution for source addresses. Fresh lab proof compares masked visitors for two explicitly bound loopback clients.
