@@ -526,3 +526,6 @@ Read engine-stored policy_profile independently of traffic provenance. Normalize
 
 ### 2026-11-15 — Source binding for distinct lab visitors
 Accept numeric IPv4 loopback source addresses only; use OpenSSH -b and preserve existing password transport. No DNS resolution for source addresses. Fresh lab proof compares masked visitors for two explicitly bound loopback clients.
+
+### 2026-11-15 — Declared same-connection S5 demo trigger
+LAB_DEMO only: at S5 a session command count of at least three yields binary escalation, retaining existing PTY-at-S3 demo behaviour and monotone policy. Configure the count in policy_lab.yaml before outcomes. Sensor adapter must supply the actual per-connection command count; default score logic ignores that added field. Slow recon uses no PTY and one SSH process; visibility probes share each command input line, so the measured unit is a Cowrie command-input event. Label scores LAB_DEMO_NOT_ML.

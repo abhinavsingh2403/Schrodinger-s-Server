@@ -94,18 +94,22 @@ def parse_policy_yaml(file_path: Path | str) -> dict[str, Any]:
                 current_section = "budget"
                 current_sub = ""
                 continue
+            elif line.startswith("lab_demo:"):
+                current_section = "lab_demo"
+                cfg["lab_demo"] = {}
+                continue
             elif line.startswith("thresholds:"):
                 current_section = "thresholds"
                 current_sub = ""
                 continue
 
-            if current_section == "budget" and ":" in stripped:
+            if current_section in ("budget", "lab_demo") and ":" in stripped:
                 k, v = [x.strip() for x in stripped.split(":", 1)]
                 v = v.split("#")[0].strip()
                 try:
-                    cfg["budget"][k] = float(v) if "." in v else int(v)
+                    cfg[current_section][k] = float(v) if "." in v else int(v)
                 except ValueError:
-                    cfg["budget"][k] = v
+                    cfg[current_section][k] = v
 
             elif current_section == "thresholds":
                 if stripped.endswith(":") and not stripped.startswith("S"):

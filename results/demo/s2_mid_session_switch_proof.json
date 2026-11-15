@@ -1,0 +1,87 @@
+{
+  "label": "LAB_DEMO_NOT_ML",
+  "command": "python -m harness.demo.prove_switch",
+  "commit": "6fb0cd62c8aa7b9cc6ebbf014e93fbec74817497",
+  "date": "2026-11-15T18:29:42.350795+00:00",
+  "observation": {
+    "label": "LAB_DEMO_NOT_ML",
+    "returncode": 0,
+    "commands": [
+      {
+        "command": "id",
+        "marker_seen": true,
+        "file_visible": false,
+        "output": "The programs included with the Debian GNU/Linux system are free software;\nthe exact distribution terms for each program are described in the\nindividual files in /usr/share/doc/*/copyright.\n\nDebian GNU/Linux comes with ABSOLUTELY NO WARRANTY, to the extent\npermitted by applicable law.\nroot@srv-app-01:~# id; ls /opt/deploy/config.env; echo __DONE_0__\nuid=0(root) gid=0(root) groups=0(root)\nls: cannot access '/opt/deploy/config.env': No such file or directory"
+      },
+      {
+        "command": "uname -a",
+        "marker_seen": true,
+        "file_visible": false,
+        "output": "root@srv-app-01:~# uname -a; ls /opt/deploy/config.env; echo __DONE_1__\nLinux srv-app-01 6.1.0-21-amd64 #1 SMP PREEMPT_DYNAMIC Debian 6.1.90-1 (2024-05-03) x86_64 GNU/Linux\nls: cannot access '/opt/deploy/config.env': No such file or directory"
+      },
+      {
+        "command": "ls /",
+        "marker_seen": true,
+        "file_visible": true,
+        "output": "root@srv-app-01:~# ls /; ls /opt/deploy/config.env; echo __DONE_2__\nbin   boot  dev   etc   home  lib   lib64 media mnt   opt   proc  root  run   \nsbin  srv   sys   tmp   usr   var   \n/opt/deploy/config.env"
+      },
+      {
+        "command": "ls /opt/deploy",
+        "marker_seen": true,
+        "file_visible": true,
+        "output": "root@srv-app-01:~# ls /opt/deploy; ls /opt/deploy/config.env; echo __DONE_3__\nconfig.env \n/opt/deploy/config.env"
+      }
+    ]
+  },
+  "decisions": [
+    {
+      "session": "session-1",
+      "stage": "S1",
+      "tier": "T1",
+      "score_source": "lab_pty_mechanism"
+    },
+    {
+      "session": "session-1",
+      "stage": "S2",
+      "tier": "T1",
+      "score_source": "lab_pty_mechanism"
+    },
+    {
+      "session": "session-1",
+      "stage": "S3",
+      "tier": "T1",
+      "score_source": "lab_pty_mechanism"
+    },
+    {
+      "session": "session-1",
+      "stage": "S4",
+      "tier": "T1",
+      "score_source": "lab_pty_mechanism"
+    },
+    {
+      "session": "session-1",
+      "stage": "S5",
+      "tier": "T1",
+      "score_source": "lab_pty_mechanism"
+    },
+    {
+      "session": "session-1",
+      "stage": "S5",
+      "tier": "T2",
+      "score_source": "LAB_DEMO_NOT_ML_s5_command_count"
+    },
+    {
+      "session": "session-1",
+      "stage": "S5",
+      "tier": "T2",
+      "score_source": "LAB_DEMO_NOT_ML_s5_command_count"
+    },
+    {
+      "session": "session-1",
+      "stage": "S5",
+      "tier": "T2",
+      "score_source": "LAB_DEMO_NOT_ML_s5_command_count"
+    }
+  ],
+  "passed": true
+}

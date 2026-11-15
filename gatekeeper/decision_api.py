@@ -170,6 +170,9 @@ class DecisionEngine:
         Returns (score, score_source, model_name).
         """
         if self.lab_mode:
+            minimum = self.policy.cfg.get('lab_demo', {}).get('s5_min_commands')
+            if stage == 'S5' and minimum is not None and features.get('session_command_count', 0) >= minimum:
+                return 1.0, 'LAB_DEMO_NOT_ML_s5_command_count', 'LAB_DEMO_NOT_ML'
             requested = stage == 'S3' and features.get('s3_has_pty', features.get('has_pty', 0)) > 0
             return float(requested), 'lab_pty_mechanism', 'LAB_DEMO_NOT_ML'
         # 1. Learned ML model (S3 Post-Auth Channel Setup)

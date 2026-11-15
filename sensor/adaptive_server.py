@@ -269,6 +269,7 @@ class AdaptiveSessionAdapter:
 
         stage = "S4" if len(self.commands_history) == 1 else "S5"
         features = {
+            "session_command_count": len(self.commands_history),
             "cmd_length": len(clean_cmd),
             "token_count": len(clean_cmd.split()),
             "chaining_ops_count": clean_cmd.count(";") + clean_cmd.count("&&") + clean_cmd.count("|"),

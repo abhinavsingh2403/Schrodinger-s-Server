@@ -29,3 +29,7 @@ thresholds:
     S3: 0.80
     S4: 0.70
     S5: 0.60
+
+# LAB_DEMO_NOT_ML: S5 escalation on the same connection after command inputs.
+lab_demo:
+  s5_min_commands: 3

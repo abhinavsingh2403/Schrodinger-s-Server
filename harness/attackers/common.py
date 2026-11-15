@@ -17,6 +17,7 @@ import shutil
 import subprocess
 import sys
 import tempfile
+import time
 from typing import Any, List, Optional
 from urllib.parse import urlparse
 
@@ -98,6 +99,8 @@ def execute_ssh_command(
     allocate_pty: bool = False,
     source_ip: Optional[str] = None,
     timeout: float = 10.0,
+    input_lines: Optional[List[str]] = None,
+    line_delay: float = 2.0,
 ) -> subprocess.CompletedProcess:
     """Executes SSH command securely without leaking password in argv.
 
@@ -130,7 +133,20 @@ def execute_ssh_command(
             env["DISPLAY"] = ":lab"
 
     try:
-        return subprocess.run(cmd, env=env, capture_output=True, text=True, timeout=timeout)
+        if input_lines is None:
+            return subprocess.run(cmd, env=env, capture_output=True, text=True, timeout=timeout)
+        process = subprocess.Popen(cmd, env=env, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        try:
+            for line in input_lines:
+                process.stdin.write(line + '\n')
+                process.stdin.flush()
+                time.sleep(line_delay)
+            stdout, stderr = process.communicate(timeout=timeout)
+            return subprocess.CompletedProcess(cmd, process.returncode, stdout, stderr)
+        finally:
+            if process.poll() is None:
+                process.kill()
+                process.communicate()
     finally:
         if askpass_file and askpass_file.exists():
             try:
