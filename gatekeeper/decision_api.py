@@ -537,7 +537,7 @@ def run_server(
         engine = DecisionEngine(db_path=db_path, policy=policy, lab_mode=True)
     else:
         engine = DecisionEngine(db_path=db_path)
-    server = http.server.HTTPServer((host, port), GatekeeperHTTPHandler)
+    server = http.server.ThreadingHTTPServer((host, port), GatekeeperHTTPHandler)
     server.decision_engine = engine  # type: ignore[attr-defined]
     mode_label = "LAB" if lab_mode else "PRODUCTION"
     print(f"Gatekeeper Decision Service [{mode_label}] listening on http://{host}:{port}")
