@@ -17,6 +17,7 @@ import json
 import logging
 import os
 import sqlite3
+import statistics
 import sys
 from pathlib import Path
 from typing import Any, Dict, List, Optional
@@ -214,6 +215,7 @@ class DashboardServer:
             fallback_source = resolve_decision_provenance(self.mode, [])
             return {"status": "NO DATA", "source": fallback_source, "label": fallback_source, "policy_profile": "UNKNOWN", "decisions": []}
 
+        read_ok = True
         decisions: List[Dict[str, Any]] = []
         row_provenances: List[str] = []
         conn = self._get_db_connection()
@@ -221,9 +223,11 @@ class DashboardServer:
         if conn:
             try:
                 profile_column = policy_profile_select(conn)
+                columns = {r[1] for r in conn.execute('PRAGMA table_info(decision_log)')}
+                score_column = 'score_source' if 'score_source' in columns else "'UNKNOWN' AS score_source"
                 rows = conn.execute(
                     f"""
-                    SELECT session_id, visitor_id, stage, score, tier_decided, latency_ms, timestamp, provenance, {profile_column}
+                    SELECT session_id, visitor_id, stage, score, tier_decided, latency_ms, timestamp, provenance, {profile_column}, {score_column}
                     FROM decision_log
                     ORDER BY id DESC LIMIT ?
                     """,
@@ -246,9 +250,10 @@ class DashboardServer:
                         "timestamp": r["timestamp"],
                         "provenance": prov,
                         "policy_profile": normalize_policy_profile(r['policy_profile']),
+                        "score_source": r["score_source"],
                     })
             except Exception:
-                pass
+                read_ok = False
             finally:
                 conn.close()
 
@@ -256,13 +261,41 @@ class DashboardServer:
         source = resolve_decision_provenance(self.mode, row_provenances)
 
         return {
-            "status": "ok",
+            "status": "ok" if read_ok and conn else "NO DATA",
             "source": source,
             "label": source,
             "count": len(decisions),
             "policy_profile": resolve_policy_profile(r['policy_profile'] for r in decisions),
             "decisions": decisions,
         }
+
+    def get_sessions_data(self):
+        """Summarize all stored decisions; returning means an earlier observed session."""
+        payload = self.get_decisions_data(limit=-1)
+        rows = list(reversed(payload['decisions']))
+        sessions, seen = {}, set()
+        for row in rows:
+            sid = row['session_id']
+            if sid not in sessions:
+                sessions[sid] = {'session_id': sid, 'visitor_id': row['visitor_id'],
+                    'returning_visitor': row['visitor_id'] in seen, 'stages': {},
+                    'transitions': [], 'decisions': [], 'reached_t2': False}
+                seen.add(row['visitor_id'])
+            session = sessions[sid]
+            previous = session['decisions'][-1]['tier'] if session['decisions'] else None
+            if previous and previous != row['tier']:
+                session['transitions'].append({'stage': row['stage'], 'from': previous, 'to': row['tier']})
+            session['stages'][row['stage']] = row['tier']
+            session['decisions'].append(row)
+            session['reached_t2'] |= row['tier'] in ('T2', 'T3')
+        count = len(sessions)
+        escalated = sum(s['reached_t2'] for s in sessions.values())
+        return {'status': payload['status'], 'source': payload['source'],
+            'has_lab_demo': any(r['policy_profile'] == 'LAB_DEMO' for r in rows),
+            'sessions': list(sessions.values()),
+            'kpis': {'sessions': count, 'reached_t2': escalated,
+                'escalation_fraction': escalated/count if count else None,
+                'median_compute_ms': statistics.median(r['latency_ms'] for r in rows) if rows else None}}
 
     def get_arms_data(self) -> Dict[str, Any]:
         """Returns comparative intelligence yield per rupee across experimental arms.
@@ -362,6 +395,10 @@ class DashboardServer:
                 "badge": "EVAL H4 NOT YET EVALUATED",
             }
 
+    def render_live_html(self) -> str:
+        """Render the session-first demo view, without research cost panels."""
+        return (Path(__file__).resolve().parent / 'templates/live.html').read_text(encoding='utf-8')
+
     def render_index_html(self) -> str:
         """Renders responsive single page application with embedded charts."""
         template_path = Path(__file__).resolve().parent / "templates" / "index.html"
@@ -406,12 +443,23 @@ def make_dashboard_handler(server_instance: DashboardServer):
             path = parsed.path
 
             if path == "/" or path == "/index.html":
-                html = server_instance.render_index_html()
+                html = server_instance.render_live_html()
                 self.send_response(200)
                 self.send_header("Content-Type", "text/html; charset=utf-8")
                 self.end_headers()
                 self.wfile.write(html.encode("utf-8"))
 
+            elif path == "/research":
+                self.send_response(200)
+                self.send_header("Content-Type", "text/html; charset=utf-8")
+                self.end_headers()
+                self.wfile.write(server_instance.render_index_html().encode("utf-8"))
+            elif path == "/api/sessions":
+                data = server_instance.get_sessions_data()
+                self.send_response(200)
+                self.send_header("Content-Type", "application/json")
+                self.end_headers()
+                self.wfile.write(json.dumps(data).encode("utf-8"))
             elif path == "/api/stats":
                 data = server_instance.get_stats_data()
                 self.send_response(200)
