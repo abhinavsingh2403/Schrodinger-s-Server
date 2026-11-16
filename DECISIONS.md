@@ -529,3 +529,6 @@ Accept numeric IPv4 loopback source addresses only; use OpenSSH -b and preserve 
 
 ### 2026-11-15 — Declared same-connection S5 demo trigger
 LAB_DEMO only: at S5 a session command count of at least three yields binary escalation, retaining existing PTY-at-S3 demo behaviour and monotone policy. Configure the count in policy_lab.yaml before outcomes. Sensor adapter must supply the actual per-connection command count; default score logic ignores that added field. Slow recon uses no PTY and one SSH process; visibility probes share each command input line, so the measured unit is a Cowrie command-input event. Label scores LAB_DEMO_NOT_ML.
+
+### 2026-11-16 — Database-checked showcase and read-only ticker
+Run four loopback scenes against one fresh lab database. Judge scenes from stored decisions and visitor session counts, not narrative attacker output. Mid-session success requires both tiers under one session ID. Ticker reads schema defensively and masks stored identifiers; cleanup belongs to the existing process-owning lab context. Persist only masked scene summaries.

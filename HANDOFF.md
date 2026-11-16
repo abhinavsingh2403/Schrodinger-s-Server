@@ -267,3 +267,9 @@ TODO(verify): historical S1 input and historical unlogged score-source reconstru
 Dashboard stats and recent-decision queries now read policy_profile, with a read-only fallback for databases predating that column. API responses expose normalized row profiles and aggregate DEFAULT/LAB_DEMO/UNKNOWN/MIXED independently of traffic provenance. The stream badge summarizes only displayed rows; sensor stats summarize all rows. Mixed known/unknown stays MIXED, empty data stays UNKNOWN.
 The decision stream shows a separate policy badge and per-row profile below the tier. LAB_DEMO is labelled mechanism demo; tooltip explicitly disclaims ML evidence. Failed or unavailable fetches reset the policy summary to UNKNOWN. Existing provenance labels and filters remain independent.
 Validated full Windows pytest suite and inline JavaScript syntax. Browser visual inspection was not run. This closes the dashboard-owner item in preceding handoffs; sustained-session attacker work remains pending. No push.
+
+### 2026-11-16 — S1/S2/S3 live showcase
+Source binding and same-connection S5 escalation have real generated proofs under results/demo. S3 checks each scene from the database and prints ALL SCENES PASS only when all predicates pass. Labels are LAB_DEMO_NOT_ML. Run the following from an activated WSL repository environment; use the temporary database printed by the runner for the second terminal.
+    bash harness/demo/run_showcase.sh --fast
+    python -m harness.demo.ticker --db <temporary-db-printed-by-runner>
+Runner owns and cleans up its processes/state, including Ctrl+C. Source IPs are separate loopback visitors. Ticker is read-only and emits UNKNOWN for legacy policy columns.
