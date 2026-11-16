@@ -110,7 +110,14 @@ class StickyRouter:
         pipe_forward = asyncio.create_task(self._pipe(client_reader, b_writer))
         pipe_backward = asyncio.create_task(self._pipe(b_reader, client_writer))
 
-        await asyncio.gather(pipe_forward, pipe_backward, return_exceptions=True)
+        done, pending = await asyncio.wait(
+            [pipe_forward, pipe_backward],
+            return_when=asyncio.FIRST_COMPLETED,
+        )
+        for task in pending:
+            task.cancel()
+        if pending:
+            await asyncio.gather(*pending, return_exceptions=True)
 
     async def start(self) -> asyncio.Server:
         """Start listening for connections."""

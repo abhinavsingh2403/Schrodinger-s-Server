@@ -1,0 +1,332 @@
+{
+  "metadata": {
+    "stage": "S3",
+    "evaluated_sessions": 100793,
+    "total_positives": 8619,
+    "total_negatives": 92174,
+    "base_rate": 0.085512,
+    "budgets_evaluated": [
+      "1%",
+      "5%",
+      "10%",
+      "20%"
+    ]
+  },
+  "methods": {
+    "LogisticRegression(C=0.01)": {
+      "type": "ML_model",
+      "pr_auc": 0.25841,
+      "budgets": {
+        "1%": {
+          "budget": 0.01,
+          "selected_sessions": 1008,
+          "precision": 0.84326,
+          "recall": 0.09862,
+          "f1_score": 0.176588,
+          "fpr": 0.001714,
+          "tp": 850.01,
+          "fp": 157.99,
+          "fn": 7768.99,
+          "tn": 92016.01,
+          "confusion_matrix": {
+            "TP": 850.01,
+            "FP": 157.99,
+            "FN": 7768.99,
+            "TN": 92016.01
+          }
+        },
+        "5%": {
+          "budget": 0.05,
+          "selected_sessions": 5040,
+          "precision": 0.426589,
+          "recall": 0.24945,
+          "f1_score": 0.314812,
+          "fpr": 0.031354,
+          "tp": 2150.01,
+          "fp": 2889.99,
+          "fn": 6468.99,
+          "tn": 89284.01,
+          "confusion_matrix": {
+            "TP": 2150.01,
+            "FP": 2889.99,
+            "FN": 6468.99,
+            "TN": 89284.01
+          }
+        },
+        "10%": {
+          "budget": 0.1,
+          "selected_sessions": 10080,
+          "precision": 0.249648,
+          "recall": 0.291966,
+          "f1_score": 0.269154,
+          "fpr": 0.082057,
+          "tp": 2516.45,
+          "fp": 7563.55,
+          "fn": 6102.55,
+          "tn": 84610.45,
+          "confusion_matrix": {
+            "TP": 2516.45,
+            "FP": 7563.55,
+            "FN": 6102.55,
+            "TN": 84610.45
+          }
+        },
+        "20%": {
+          "budget": 0.2,
+          "selected_sessions": 20159,
+          "precision": 0.159648,
+          "recall": 0.3734,
+          "f1_score": 0.223666,
+          "fpr": 0.18379,
+          "tp": 3218.33,
+          "fp": 16940.67,
+          "fn": 5400.67,
+          "tn": 75233.33,
+          "confusion_matrix": {
+            "TP": 3218.33,
+            "FP": 16940.67,
+            "FN": 5400.67,
+            "TN": 75233.33
+          }
+        }
+      }
+    },
+    "R6_failed_logins": {
+      "type": "rule_baseline",
+      "role": "best_validation_rule",
+      "pr_auc": 0.09842,
+      "budgets": {
+        "1%": {
+          "budget": 0.01,
+          "selected_sessions": 1008,
+          "precision": 0.107139,
+          "recall": 0.01253,
+          "f1_score": 0.022436,
+          "fpr": 0.009764,
+          "tp": 108.0,
+          "fp": 900.0,
+          "fn": 8511.0,
+          "tn": 91274.0,
+          "confusion_matrix": {
+            "TP": 108.0,
+            "FP": 900.0,
+            "FN": 8511.0,
+            "TN": 91274.0
+          }
+        },
+        "5%": {
+          "budget": 0.05,
+          "selected_sessions": 5040,
+          "precision": 0.099016,
+          "recall": 0.0579,
+          "f1_score": 0.073071,
+          "fpr": 0.049265,
+          "tp": 499.04,
+          "fp": 4540.96,
+          "fn": 8119.96,
+          "tn": 87633.04,
+          "confusion_matrix": {
+            "TP": 499.04,
+            "FP": 4540.96,
+            "FN": 8119.96,
+            "TN": 87633.04
+          }
+        },
+        "10%": {
+          "budget": 0.1,
+          "selected_sessions": 10080,
+          "precision": 0.095599,
+          "recall": 0.111804,
+          "f1_score": 0.103068,
+          "fpr": 0.098904,
+          "tp": 963.64,
+          "fp": 9116.36,
+          "fn": 7655.36,
+          "tn": 83057.64,
+          "confusion_matrix": {
+            "TP": 963.64,
+            "FP": 9116.36,
+            "FN": 7655.36,
+            "TN": 83057.64
+          }
+        },
+        "20%": {
+          "budget": 0.2,
+          "selected_sessions": 20159,
+          "precision": 0.093407,
+          "recall": 0.21847,
+          "f1_score": 0.130863,
+          "fpr": 0.198277,
+          "tp": 1882.99,
+          "fp": 18276.01,
+          "fn": 6736.01,
+          "tn": 73897.99,
+          "confusion_matrix": {
+            "TP": 1882.99,
+            "FP": 18276.01,
+            "FN": 6736.01,
+            "TN": 73897.99
+          }
+        }
+      }
+    },
+    "R7_decision_tree": {
+      "type": "rule_baseline",
+      "role": "best_test_rule",
+      "pr_auc": 0.10125,
+      "budgets": {
+        "1%": {
+          "budget": 0.01,
+          "selected_sessions": 1008,
+          "precision": 0.128002,
+          "recall": 0.01497,
+          "f1_score": 0.026805,
+          "fpr": 0.009536,
+          "tp": 129.03,
+          "fp": 878.97,
+          "fn": 8489.97,
+          "tn": 91295.03,
+          "confusion_matrix": {
+            "TP": 129.03,
+            "FP": 878.97,
+            "FN": 8489.97,
+            "TN": 91295.03
+          }
+        },
+        "5%": {
+          "budget": 0.05,
+          "selected_sessions": 5040,
+          "precision": 0.104163,
+          "recall": 0.06091,
+          "f1_score": 0.07687,
+          "fpr": 0.048984,
+          "tp": 524.98,
+          "fp": 4515.02,
+          "fn": 8094.02,
+          "tn": 87658.98,
+          "confusion_matrix": {
+            "TP": 524.98,
+            "FP": 4515.02,
+            "FN": 8094.02,
+            "TN": 87658.98
+          }
+        },
+        "10%": {
+          "budget": 0.1,
+          "selected_sessions": 10080,
+          "precision": 0.096428,
+          "recall": 0.112773,
+          "f1_score": 0.103962,
+          "fpr": 0.098813,
+          "tp": 971.99,
+          "fp": 9108.01,
+          "fn": 7647.01,
+          "tn": 83065.99,
+          "confusion_matrix": {
+            "TP": 971.99,
+            "FP": 9108.01,
+            "FN": 7647.01,
+            "TN": 83065.99
+          }
+        },
+        "20%": {
+          "budget": 0.2,
+          "selected_sessions": 20159,
+          "precision": 0.0946,
+          "recall": 0.22126,
+          "f1_score": 0.132535,
+          "fpr": 0.198016,
+          "tp": 1907.04,
+          "fp": 18251.96,
+          "fn": 6711.96,
+          "tn": 73922.04,
+          "confusion_matrix": {
+            "TP": 1907.04,
+            "FP": 18251.96,
+            "FN": 6711.96,
+            "TN": 73922.04
+          }
+        }
+      }
+    },
+    "R0_random": {
+      "type": "rule_baseline",
+      "role": "random_null",
+      "pr_auc": 0.0855118907066959,
+      "budgets": {
+        "1%": {
+          "budget": 0.01,
+          "selected_sessions": 1008,
+          "precision": 0.085506,
+          "recall": 0.01,
+          "f1_score": 0.017906,
+          "fpr": 0.010001,
+          "tp": 86.19,
+          "fp": 921.81,
+          "fn": 8532.81,
+          "tn": 91252.19,
+          "confusion_matrix": {
+            "TP": 86.19,
+            "FP": 921.81,
+            "FN": 8532.81,
+            "TN": 91252.19
+          }
+        },
+        "5%": {
+          "budget": 0.05,
+          "selected_sessions": 5040,
+          "precision": 0.085506,
+          "recall": 0.05,
+          "f1_score": 0.063101,
+          "fpr": 0.050004,
+          "tp": 430.95,
+          "fp": 4609.05,
+          "fn": 8188.05,
+          "tn": 87564.95,
+          "confusion_matrix": {
+            "TP": 430.95,
+            "FP": 4609.05,
+            "FN": 8188.05,
+            "TN": 87564.95
+          }
+        },
+        "10%": {
+          "budget": 0.1,
+          "selected_sessions": 10080,
+          "precision": 0.085506,
+          "recall": 0.1,
+          "f1_score": 0.092187,
+          "fpr": 0.100008,
+          "tp": 861.9,
+          "fp": 9218.1,
+          "fn": 7757.1,
+          "tn": 82955.9,
+          "confusion_matrix": {
+            "TP": 861.9,
+            "FP": 9218.1,
+            "FN": 7757.1,
+            "TN": 82955.9
+          }
+        },
+        "20%": {
+          "budget": 0.2,
+          "selected_sessions": 20159,
+          "precision": 0.08551,
+          "recall": 0.2,
+          "f1_score": 0.1198,
+          "fpr": 0.200004,
+          "tp": 1723.8,
+          "fp": 18435.2,
+          "fn": 6895.2,
+          "tn": 73738.8,
+          "confusion_matrix": {
+            "TP": 1723.8,
+            "FP": 18435.2,
+            "FN": 6895.2,
+            "TN": 73738.8
+          }
+        }
+      }
+    }
+  }
+}
