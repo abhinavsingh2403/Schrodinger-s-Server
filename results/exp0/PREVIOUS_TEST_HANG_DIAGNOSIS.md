@@ -17,7 +17,7 @@ A full-suite pytest run (`python -m pytest -q`) executed previously ran for over
 Both processes exhibited zero CPU progression and static memory utilization, requiring manual termination.
 
 ### 1.2 Root Cause of Process Duplication
-On Windows, virtual environments created with the standard library `venv` install a lightweight launcher stub binary at `.venv\Scripts\python.exe` (PID 21436). When invoked, this launcher queries `pyvenv.cfg` and spawns the base Python runtime `C:\Users\ayush\AppData\Local\Programs\Python\Python313\python.exe` (PID 12184) passing identical command-line arguments. PID 21436 acts merely as a synchronous process monitor awaiting the exit of PID 12184. No application-level multiprocessing or subprocess fork bomb was occurring; this is normal Windows virtual environment invocation mechanics.
+On Windows, virtual environments created with the standard library `venv` install a lightweight launcher stub binary at `.venv\Scripts\python.exe` (PID 21436). When invoked, this launcher queries `pyvenv.cfg` and spawns the base Python runtime `python.exe` (PID 12184) passing identical command-line arguments. PID 21436 acts merely as a synchronous process monitor awaiting the exit of PID 12184. No application-level multiprocessing or subprocess fork bomb was occurring; this is normal Windows virtual environment invocation mechanics.
 
 ### 1.3 Root Cause of the Test Hang
 Through methodical incremental execution of every test file in the repository, the hang was precisely isolated to:

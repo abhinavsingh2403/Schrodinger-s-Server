@@ -76,4 +76,4 @@ Comparison of Stage S3 ML Classifier (`LogisticRegression(C=0.01)`) against pre-
 1. **High Precision at Low Escalation Budgets**: At a tight 1% budget (1,008 sessions), the ML model delivers **84.32% precision** (capturing 850 high-interaction transfers with only 158 false positives), compared to 10.71% for R6 and 12.80% for R7.
 2. **Recall Lead across all Budgets**: ML exceeds the best rule baseline by **+8.61% at 1% budget**, **+18.85% at 5% budget**, **+18.02% at 10% budget**, and **+15.21% at 20% budget**.
 3. **PR-AUC Dominance**: Overall PR-AUC for the ML classifier reaches **0.2584**, exceeding R7 (0.1013), R6 (0.0984), and random chance (0.0855) by more than 2.5x.
-4. **Visual Artifact**: See generated Precision-Recall curve artifact at [`results/exp0/curves.png`](file:///c:/SEM%205/Mini%20Project/Project/Schrodinger-s-Server/results/exp0/curves.png).
+4. **Visual Artifact**: See generated Precision-Recall curve artifact at [`curves.png`](curves.png).

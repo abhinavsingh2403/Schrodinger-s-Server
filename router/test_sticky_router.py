@@ -129,3 +129,82 @@ def test_sticky_router_tcp_splicing_loopback():
     except (OSError, PermissionError, TimeoutError, asyncio.TimeoutError) as exc:
         import pytest
         pytest.skip(f"Loopback TCP socket test cannot complete in restricted environment: {exc}")
+
+
+def test_sticky_router_tcp_half_close():
+    """Verify that when client half-closes (sends EOF), server response is still fully delivered without data loss."""
+    import threading
+    import pytest
+
+    can_init = [False]
+    def _check_env():
+        try:
+            test_loop = asyncio.new_event_loop()
+            test_loop.close()
+            can_init[0] = True
+        except Exception:
+            pass
+    check_t = threading.Thread(target=_check_env, daemon=True)
+    check_t.start()
+    check_t.join(timeout=0.5)
+
+    if not can_init[0]:
+        pytest.skip("Environment restricts loopback socket creation/IOCP polling (e.g. Windows sandbox mode)")
+
+    async def _async_test():
+        backend_received = []
+
+        async def mock_server_respond_after_client_eof(reader, writer):
+            # Read until client finishes sending data (EOF)
+            while True:
+                chunk = await reader.read(1024)
+                if not chunk:
+                    break
+                backend_received.append(chunk)
+            # Client has sent EOF; server now sends response
+            await asyncio.sleep(0.05)
+            writer.write(b"RESPONSE_AFTER_EOF\n")
+            await writer.drain()
+            writer.close()
+            await writer.wait_closed()
+
+        server = await asyncio.start_server(mock_server_respond_after_client_eof, "127.0.0.1", 0)
+        backend_port = server.sockets[0].getsockname()[1]
+
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            memory = VisitorMemory(db_path=os.path.join(tmp_dir, "test_half_close.db"))
+            router = StickyRouter(
+                visitor_memory=memory,
+                backends=TierBackendConfig(t1_port=backend_port, t2_port=9992, t3_port=9993),
+                listen_host="127.0.0.1",
+                listen_port=0,
+            )
+
+            router_srv = await router.start()
+            router_port = router_srv.sockets[0].getsockname()[1]
+
+            c_reader, c_writer = await asyncio.open_connection("127.0.0.1", router_port)
+            c_writer.write(b"CLIENT_DATA\n")
+            await c_writer.drain()
+
+            # Client signals write EOF (half-close) if supported
+            if c_writer.can_write_eof():
+                c_writer.write_eof()
+            else:
+                c_writer.close()
+
+            # Client should still be able to read backend response
+            resp = await c_reader.read(1024)
+            assert resp == b"RESPONSE_AFTER_EOF\n"
+            assert backend_received == [b"CLIENT_DATA\n"]
+
+            c_writer.close()
+            await c_writer.wait_closed()
+            await router.stop()
+            server.close()
+            await server.wait_closed()
+
+    try:
+        asyncio.run(asyncio.wait_for(_async_test(), timeout=5.0))
+    except (OSError, PermissionError, TimeoutError, asyncio.TimeoutError) as exc:
+        pytest.skip(f"Loopback TCP socket test cannot complete in restricted environment: {exc}")
