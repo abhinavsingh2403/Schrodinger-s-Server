@@ -131,14 +131,14 @@ Computed over the complete dataset using DuckDB with zero dropped sessions:
 
 ```mermaid
 flowchart TD
-    subgraph Done["Completed & Verified Components (~60-65%)"]
+    subgraph Done["Completed & Verified Components"]
         S1["S1: Cowrie Persona Mock PoC"]
         S3["S3: 38M Base Rates & Range Checks"]
-        EXP0["Exp 0 Gate 0: 10,000 Cluster Bootstrap (PASS-ML at S3)"]
         GK["Gatekeeper REST HTTP Service + SQLite Memory + Budget Ceiling"]
         ADAPT["Cowrie Conch Adapter Hooks + Persona Filesystem Overlays"]
         DASH["Dashboard Server & Telemetry API"]
     end
+    EXP0["Experiment 0: Exploratory (not validated)"]
 
     subgraph Priorities["Remaining Priorities to Reach 100% Operational Status"]
         P4["4. Live Kali Linux vs Ubuntu Practical Lab Test"]

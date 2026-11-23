@@ -323,3 +323,139 @@ def recall_at_budget(scores: list[float], labels: list[int], budget: float, seed
         bins[score][1] += label
     ordered = [bins[score] for score in sorted(bins, reverse=True)]
     return recall_from_score_bins([b[0] for b in ordered], [b[1] for b in ordered], budget)
+
+
+def metrics_at_budget(scores: list[float], labels: list[int], budget: float) -> dict[str, Any]:
+    """
+    Computes complete classification metrics at a given escalation budget.
+
+    Metrics include: Precision, Recall, F1-score, False Positive Rate (FPR),
+    and Confusion Matrix (TP, FP, FN, TN) using expected uniform random boundary ties.
+    budget is in (0, 1], e.g. 0.01, 0.05, 0.10, 0.20.
+    """
+    if not scores or not labels or len(scores) != len(labels):
+        raise ValueError("Scores and labels must be non-empty and of equal length.")
+    if not 0.0 < budget <= 1.0:
+        raise ValueError("Budget must be in (0, 1].")
+
+    n_samples = len(scores)
+    total_positives = sum(labels)
+    total_negatives = n_samples - total_positives
+    k = min(n_samples, math.ceil(budget * n_samples))
+
+    bins = defaultdict(lambda: [0, 0])
+    for score, label in zip(scores, labels):
+        bins[score][0] += 1
+        bins[score][1] += label
+    ordered = [bins[score] for score in sorted(bins, reverse=True)]
+
+    remaining = k
+    tp = 0.0
+    for count, pos in ordered:
+        if count:
+            take = min(remaining, count)
+            tp += pos * take / count
+            remaining -= take
+        if remaining <= 0:
+            break
+
+    fp = k - tp
+    fn = total_positives - tp
+    tn = total_negatives - fp
+
+    recall = tp / total_positives if total_positives > 0 else 0.0
+    precision = tp / k if k > 0 else 0.0
+    f1 = 2.0 * (precision * recall) / (precision + recall) if (precision + recall) > 0 else 0.0
+    fpr = fp / total_negatives if total_negatives > 0 else 0.0
+
+    return {
+        "budget": budget,
+        "selected_sessions": k,
+        "total_sessions": n_samples,
+        "total_positives": total_positives,
+        "total_negatives": total_negatives,
+        "precision": round(precision, 6),
+        "recall": round(recall, 6),
+        "f1_score": round(f1, 6),
+        "fpr": round(fpr, 6),
+        "tp": round(tp, 4),
+        "fp": round(fp, 4),
+        "fn": round(fn, 4),
+        "tn": round(tn, 4),
+        "confusion_matrix": {
+            "TP": round(tp, 4),
+            "FP": round(fp, 4),
+            "FN": round(fn, 4),
+            "TN": round(tn, 4),
+        },
+    }
+
+
+def pr_auc_score(scores: list[float], labels: list[int]) -> float:
+    """
+    Computes Precision-Recall Area Under the Curve (PR-AUC / Average Precision).
+
+    Evaluated across all unique score thresholds in descending order using
+    standard trapezoidal/step numerical integration: sum_k (R_k - R_{k-1}) * P_k.
+    """
+    if not scores or not labels or len(scores) != len(labels):
+        raise ValueError("Scores and labels must be non-empty and of equal length.")
+
+    total_positives = sum(labels)
+    if total_positives == 0:
+        return 0.0
+    if total_positives == len(labels):
+        return 1.0
+
+    # Group counts and positives by score
+    bins = defaultdict(lambda: [0, 0])
+    for score, label in zip(scores, labels):
+        bins[score][0] += 1
+        bins[score][1] += label
+
+    ordered_scores = sorted(bins.keys(), reverse=True)
+
+    cum_tp = 0
+    cum_total = 0
+    prev_recall = 0.0
+    pr_auc = 0.0
+
+    for score in ordered_scores:
+        count, pos = bins[score]
+        cum_total += count
+        cum_tp += pos
+
+        recall = cum_tp / total_positives
+        precision = cum_tp / cum_total
+
+        # Area contribution under step function
+        delta_recall = recall - prev_recall
+        pr_auc += delta_recall * precision
+        prev_recall = recall
+
+    return min(1.0, max(0.0, round(pr_auc, 6)))
+
+
+def evaluate_escalation_budgets(
+    scores: list[float],
+    labels: list[int],
+    budgets: list[float] | None = None,
+) -> dict[str, Any]:
+    """
+    Evaluates detection performance across multiple escalation budgets
+    (defaults to 1%, 5%, 10%, 20%) alongside PR-AUC.
+    """
+    if budgets is None:
+        budgets = [0.01, 0.05, 0.10, 0.20]
+
+    budget_results = {}
+    for b in budgets:
+        b_key = f"{int(round(b * 100))}%"
+        budget_results[b_key] = metrics_at_budget(scores, labels, b)
+
+    overall_pr_auc = pr_auc_score(scores, labels)
+
+    return {
+        "budgets": budget_results,
+        "pr_auc": overall_pr_auc,
+    }

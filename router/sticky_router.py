@@ -65,7 +65,7 @@ class StickyRouter:
             return "T1", self.backends.t1_port
 
     async def _pipe(self, reader: asyncio.StreamReader, writer: asyncio.StreamWriter) -> None:
-        """Bi-directional raw byte stream pipe."""
+        """Bi-directional raw byte stream pipe supporting TCP half-close."""
         try:
             while not reader.at_eof():
                 data = await reader.read(8192)
@@ -77,15 +77,17 @@ class StickyRouter:
             pass
         finally:
             try:
-                writer.close()
-                await writer.wait_closed()
+                if writer.can_write_eof():
+                    writer.write_eof()
+                else:
+                    writer.close()
             except Exception:
                 pass
 
     async def _handle_connection(
         self, client_reader: asyncio.StreamReader, client_writer: asyncio.StreamWriter
     ) -> None:
-        """Handle incoming TCP connection and splice to backend."""
+        """Handle incoming TCP connection and splice to backend with graceful half-close handling."""
         peer = client_writer.get_extra_info("peername")
         client_ip = peer[0] if peer else "127.0.0.1"
 
@@ -110,7 +112,28 @@ class StickyRouter:
         pipe_forward = asyncio.create_task(self._pipe(client_reader, b_writer))
         pipe_backward = asyncio.create_task(self._pipe(b_reader, client_writer))
 
-        await asyncio.gather(pipe_forward, pipe_backward, return_exceptions=True)
+        # Wait for either pipe to finish (e.g. client EOF or server response complete)
+        done, pending = await asyncio.wait(
+            [pipe_forward, pipe_backward],
+            return_when=asyncio.FIRST_COMPLETED,
+        )
+
+        # Allow grace period for the companion stream to finish (e.g. server response after client half-close)
+        if pending:
+            try:
+                await asyncio.wait_for(asyncio.gather(*pending, return_exceptions=True), timeout=5.0)
+            except (asyncio.TimeoutError, TimeoutError):
+                for task in pending:
+                    task.cancel()
+                await asyncio.gather(*pending, return_exceptions=True)
+
+        # Cleanly close any remaining open writers
+        for w in (client_writer, b_writer):
+            try:
+                w.close()
+                await w.wait_closed()
+            except Exception:
+                pass
 
     async def start(self) -> asyncio.Server:
         """Start listening for connections."""

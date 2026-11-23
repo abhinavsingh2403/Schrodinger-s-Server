@@ -286,3 +286,5 @@ UI polling is serialized with a two-second delay between completed requests; unc
 Validation: full pytest suite passed; original truthfulness/provenance tests unchanged. Added database-backed metric, returning visitor, empty/default/lab render and older-LAB-row warning tests. Inline JavaScript syntax checked. TODO(human): projector/browser visual review at 1280x720; automated render tests do not substitute for a browser screenshot.
 Human live check: in WSL run `python3 dashboard/app.py --host 127.0.0.1 --port 8080 --db /tmp/<the demo db>` then open http://127.0.0.1:8080 while `harness/demo/run_showcase.sh` (Astra) runs. Confirm warning, stage transitions, returning visitor labels, filtering during refresh, and empty/default/LAB_DEMO states. Use a checkout containing the gemini-ui commits.
 No dependencies, tags or push. Integrate gemini-ui separately; do not overwrite another agent's checkout.
+
+Final integration: plotting pin pending approval. WSL system matplotlib is 3.10.9+dfsg1. Windows project venv lacks it.

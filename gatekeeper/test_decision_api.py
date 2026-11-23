@@ -186,6 +186,10 @@ def test_gatekeeper_http_service_and_client_lifecycle(tmp_path: Path) -> None:
             urllib.request.urlopen(req_bad, timeout=2.0)
         assert exc_info.value.code == 400
 
+    except urllib.error.URLError as exc:
+        if "10013" in str(exc) or "forbidden by its access permissions" in str(exc):
+            pytest.skip(f"Ephemeral HTTP loopback restricted by environment sandbox (WinError 10013): {exc}")
+        raise
     finally:
         server.shutdown()
         server.server_close()
