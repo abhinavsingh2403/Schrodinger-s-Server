@@ -309,3 +309,4 @@ Compare: docker compose -p schrodinger-final -f infra/docker-compose.yml exec ga
 Cost NOT RUN. Only after acceptance: python -m analysis.measure_cost --tier T1 --sessions 20 --host 127.0.0.1 --port 2222 --container schrodinger-sensor
 Cleanup: docker compose -p schrodinger-final -f infra/docker-compose.yml down
 Audit and reproduction: python -m analysis.safety_check and python -m analysis.repro_check (fresh clone of f1d2aa6 passed; inspect redacted audit findings).
+Docker operational. WSL interactive SSH uname showed srv-app-01; decision_log and /api/sessions had identical nonempty session sets. Numeric egress: OSError [Errno 101] Network is unreachable. Named egress: socket.gaierror [Errno -3] Temporary failure in name resolution. LAB_DEMO_NOT_ML.

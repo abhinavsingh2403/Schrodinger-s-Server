@@ -32,7 +32,7 @@ services:
     build:
       context: ..
       dockerfile: infra/Dockerfile.dashboard
-    volumes: [gatekeeper-data:/app/data:ro]
+    volumes: [gatekeeper-data:/app/data]
     networks: [internal_honeypot_net]
     cap_drop: [ALL]
 networks:
