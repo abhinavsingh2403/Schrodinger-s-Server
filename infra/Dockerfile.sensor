@@ -1,0 +1,15 @@
+FROM python:3.14-slim@sha256:9aaa474097d094040649f2162a627c0049b408f52138d980916788d80f04802f AS build
+RUN apt-get update && apt-get install -y --no-install-recommends git && git clone https://github.com/cowrie/cowrie.git /src && git -C /src checkout ea9513eda9ea0dac05f6ace7db84ca95e0571501 && pip wheel -w /wheels /src
+FROM python:3.14-slim@sha256:9aaa474097d094040649f2162a627c0049b408f52138d980916788d80f04802f
+COPY --from=build /wheels /wheels
+RUN pip install --no-index --find-links /wheels cowrie && useradd -m sensor && install -d -o sensor /state
+WORKDIR /app
+COPY sensor sensor
+COPY gatekeeper gatekeeper
+COPY analysis analysis
+COPY models models
+COPY config config
+COPY infra/sensor_entrypoint.py infra/
+RUN mkdir -p sensor/personas && chown -R sensor sensor/personas
+USER sensor
+ENTRYPOINT ["python","infra/sensor_entrypoint.py"]

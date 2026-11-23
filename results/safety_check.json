@@ -70,6 +70,7 @@
       "harness/test_detector_runner.py:22:51",
       "harness/test_detector_runner.py:36:35",
       "infra/cowrie.cfg:32:11",
+      "infra/sensor_entrypoint.py:20:58",
       "infra/smoke_test.ps1:7:40",
       "infra/smoke_test.ps1:18:17",
       "infra/smoke_test.ps1:68:29",
@@ -90,6 +91,7 @@
       "results/exp0/q1_tests.json:10:2052",
       "router/sticky_router.py:41:29",
       "sensor/adaptive_server.py:144:38",
+      "sensor/run_sensor.py:88:70",
       "sensor/spike_s1_poc.py:57:34",
       "sensor/spike_s1_poc.py:60:93",
       "sensor/test_run_sensor.py:39:13",
@@ -132,6 +134,12 @@
       "data/README.md:12:76",
       "gatekeeper/test_model_inference_parity.py:80:60",
       "harness/demo/fixtures/lab_policy_capture.json:4:14",
+      "infra/Dockerfile.dashboard:1:30",
+      "infra/Dockerfile.edge:1:30",
+      "infra/Dockerfile.gatekeeper:1:30",
+      "infra/Dockerfile.sensor:1:30",
+      "infra/Dockerfile.sensor:2:149",
+      "infra/Dockerfile.sensor:3:30",
       "infra/cowrie.cfg:3:34",
       "results/MANIFEST.json:4:18",
       "results/MANIFEST.json:228:15",
@@ -1407,9 +1415,10 @@
   "bind_warning": {
     "status": "NOT_APPLICABLE",
     "findings": [
+      "infra/Dockerfile.dashboard:8:53",
       "infra/cowrie.cfg:34:39",
-      "infra/docker-compose.yml:43:69",
-      "infra/docker-compose.yml:66:56"
+      "infra/edge_forward.py:30:103",
+      "infra/gatekeeper_entrypoint.py:7:69"
     ]
   }
 }

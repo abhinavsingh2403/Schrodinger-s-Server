@@ -296,3 +296,16 @@ Cost NOT RUN: `python -m analysis.measure_cost --tier T1 --sessions 20 --host 12
 T1 and T2 are in-process personas. This bot_like scenario measures one container. No T2 measurement or monetary extrapolation.
 Safety and reproducibility scripts deferred by Task 3 prerequisite. After implementation: `python -m analysis.safety_check` and `python -m analysis.repro_check`.
 Showcase snapshot: `python -m harness.demo.showcase --fast --keep-db demo.db`; open with `python -m dashboard.app --db demo.db --mode LAB`.
+
+Docker: NOT operational. Edge startup failed at host port 8080 (occupied by wslrelay). The final retry emitted these three lines:
+ Container schrodinger-final-edge-1 Starting
+ Container schrodinger-final-edge-1 Error response from daemon: ports are not available: exposing port TCP 127.0.0.1:8080 -> 127.0.0.1:0: listen tcp4 127.0.0.1:8080: bind: Only one usage of each socket address (protocol/network address/port) is normally permitted.
+Error response from daemon: ports are not available: exposing port TCP 127.0.0.1:8080 -> 127.0.0.1:0: listen tcp4 127.0.0.1:8080: bind: Only one usage of each socket address (protocol/network address/port) is normally permitted.
+Cowrie reached SSH-ready. Sensor example.com:80 failed in DNS resolution. Direct-IP egress unverified. Only edge joins both networks. Compose down completed.
+After freeing port 8080: docker compose -p schrodinger-final -f infra/docker-compose.yml --env-file infra/.env.example up -d --build
+WSL: python -m harness.attackers.interactive --host 127.0.0.1 --port 2222 --username root --source-ip 127.0.0.3
+Verify hostname: ssh -p 2222 root@127.0.0.1 hostname
+Compare: docker compose -p schrodinger-final -f infra/docker-compose.yml exec gatekeeper python -c "import sqlite3;print(sqlite3.connect('/app/data/gatekeeper.db').execute('select distinct session_id from decision_log').fetchall())" and curl http://127.0.0.1:8080/api/sessions
+Cost NOT RUN. Only after acceptance: python -m analysis.measure_cost --tier T1 --sessions 20 --host 127.0.0.1 --port 2222 --container schrodinger-sensor
+Cleanup: docker compose -p schrodinger-final -f infra/docker-compose.yml down
+Audit and reproduction: python -m analysis.safety_check and python -m analysis.repro_check (fresh clone of f1d2aa6 passed; inspect redacted audit findings).

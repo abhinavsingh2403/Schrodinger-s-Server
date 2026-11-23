@@ -1,0 +1,10 @@
+FROM python:3.12-slim@sha256:5e2bdb1b0d542d5039cffb8181c65930093949194a65c365dfb1b0fe13a4fa5b
+WORKDIR /app
+COPY gatekeeper gatekeeper
+COPY config config
+COPY models models
+COPY analysis/exp0_rules.py analysis/
+COPY infra/gatekeeper_entrypoint.py infra/
+RUN install -d -o 10001 /app/data
+USER 10001:10001
+ENTRYPOINT ["python","infra/gatekeeper_entrypoint.py"]

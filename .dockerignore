@@ -1,0 +1,10 @@
+.git
+**/.venv
+**/__pycache__
+sensor/cowrie-src
+sensor/personas
+**/*.db*
+**/*.sqlite*
+data
+.env
+**/.env

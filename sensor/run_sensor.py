@@ -85,6 +85,7 @@ def make_parser() -> argparse.ArgumentParser:
     parser.add_argument('--state-dir', type=Path, required=True)
     parser.add_argument('--gatekeeper-url', default='http://127.0.0.1:5000')
     parser.add_argument('--port', type=int, default=2222)
+    parser.add_argument('--listen-interface', choices=('127.0.0.1', '0.0.0.0'), default='127.0.0.1')
     parser.add_argument('--provenance', default='LAB', choices=['LAB'],
                         help='Decision provenance label (default: LAB; LIVE reserved for gated VPS trial)')
     return parser
@@ -100,7 +101,7 @@ def main():
     os.chdir(args.state_dir)
     os.environ.update(identity_overrides())
     # Verified EnvironmentConfigParser overrides.
-    os.environ.update(COWRIE_SSH_LISTEN_ENDPOINTS=f'tcp:{args.port}:interface=127.0.0.1',
+    os.environ.update(COWRIE_SSH_LISTEN_ENDPOINTS=f'tcp:{args.port}:interface={args.listen_interface}',
         COWRIE_SSH_FORWARDING='false', COWRIE_TELNET_ENABLED='false',
         COWRIE_HONEYPOT_BACKEND='shell')
     from cowrie.scripts.cowrie import check_initialized, first_time_use, cowrie_init

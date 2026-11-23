@@ -89,5 +89,33 @@ def test_smoke_test_scripts_exist_and_validate():
     out = stdout_buf.getvalue()
     assert "INTERNAL_NETWORK:True" in out
     assert "0.0.0.0" not in out
-    assert "PORT:sensor:127.0.0.1:2222:2222" in out
+    assert "PORT:edge:127.0.0.1:2222:2222" in out
+    assert "PORT:edge:127.0.0.1:8080:8080" in out
+
+
+def test_isolated_topology():
+    import json
+    import shutil
+    import subprocess
+    if not shutil.which("docker"):
+        pytest.skip("Docker Compose CLI required to normalize the service definitions")
+    config = json.loads(subprocess.check_output([
+        "docker", "compose", "-f", str(INFRA_DIR / "docker-compose.yml"),
+        "config", "--format", "json"]))
+    assert config["networks"]["internal_honeypot_net"]["internal"]
+    for name, service in config["services"].items():
+        networks = set(service["networks"])
+        if name == "edge":
+            assert networks == {"publish_net", "internal_honeypot_net"}
+            assert {(p["host_ip"], p["published"], p["target"]) for p in service["ports"]} == {
+                ("127.0.0.1", "2222", 2222), ("127.0.0.1", "8080", 8080)}
+        else:
+            assert networks == {"internal_honeypot_net"}
+            assert not service.get("ports")
+    assert "--lab-mode" not in (INFRA_DIR / "docker-compose.yml").read_text()
+
+
+def test_launcher_default_listener():
+    from sensor.run_sensor import make_parser
+    assert make_parser().parse_args(["--state-dir", "."]).listen_interface == "127.0.0.1"
 

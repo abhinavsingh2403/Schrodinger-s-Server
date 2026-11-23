@@ -1,78 +1,45 @@
-# ============================================================================
-# docker-compose.yml: Schrödinger's Server Microservice Stack
-# Pre-registered in SPEC.md Section 5 and SAFETY.md Section 2
-# ============================================================================
-
-version: "3.8"
-
 services:
-  # Cowrie Honeypot Sensor (Pinned Release v3.1.6)
-  sensor:
-    image: cowrie/cowrie:v3.1.6
-    container_name: schrodinger-sensor
-    restart: unless-stopped
+  edge:
+    build:
+      context: ..
+      dockerfile: infra/Dockerfile.edge
     ports:
       - "127.0.0.1:2222:2222"
-    environment:
-      - GATEKEEPER_URL=http://gatekeeper:5000
-    volumes:
-      - ./cowrie.cfg:/cowrie/cowrie-git/etc/cowrie.cfg:ro
-      - ../config/identity.yaml:/cowrie/identity.yaml:ro
-      - ../sensor:/cowrie/cowrie-git/src/cowrie/custom_sensor:ro
-      - sensor-logs:/cowrie/cowrie-git/var/log/cowrie
-    networks:
-      - internal_honeypot_net
-    cap_drop:
-      - ALL
-    cap_add:
-      - NET_BIND_SERVICE
-    read_only: false
-
-  # Gatekeeper Decision Engine Service (REST HTTP API on port 5000)
-  gatekeeper:
-    image: python:3.12-slim
-    container_name: schrodinger-gatekeeper
-    restart: unless-stopped
-    working_dir: /app
-    volumes:
-      - ../gatekeeper:/app/gatekeeper:ro
-      - ../config:/app/config:ro
-      - ../analysis:/app/analysis:ro
-      - ../models:/app/models:ro
-      - gatekeeper-data:/app/data
-    command: ["python", "-m", "gatekeeper.decision_api", "--host", "0.0.0.0", "--port", "5000", "--db", "/app/data/gatekeeper.db", "--lab-mode"]
-    ports:
-      - "127.0.0.1:5000:5000"
-    healthcheck:
-      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:5000/health')"]
-      interval: 10s
-      timeout: 3s
-      retries: 3
-    networks:
-      - internal_honeypot_net
-
-  # Read-Only Intelligence Dashboard
-  dashboard:
-    image: python:3.12-slim
-    container_name: schrodinger-dashboard
-    restart: unless-stopped
-    working_dir: /app
-    ports:
       - "127.0.0.1:8080:8080"
-    volumes:
-      - ../dashboard:/app/dashboard:ro
-      - ../results:/app/results:ro
-      - gatekeeper-data:/app/gatekeeper:ro
-    command: ["python", "dashboard/app.py", "--host", "0.0.0.0", "--port", "8080", "--mode", "LAB", "--db", "/app/gatekeeper/gatekeeper.db"]
-    networks:
-      - internal_honeypot_net
-
+    networks: [internal_honeypot_net, publish_net]
+    user: "10001:10001"
+    read_only: true
+    cap_drop: [ALL]
+  sensor:
+    build:
+      context: ..
+      dockerfile: infra/Dockerfile.sensor
+    container_name: schrodinger-sensor
+    networks: [internal_honeypot_net]
+    volumes: [sensor-state:/state]
+    cap_drop: [ALL]
+    depends_on: [gatekeeper]
+  gatekeeper:
+    build:
+      context: ..
+      dockerfile: infra/Dockerfile.gatekeeper
+    environment:
+      GATEKEEPER_PROFILE: ${GATEKEEPER_PROFILE:-DEFAULT}
+    volumes: [gatekeeper-data:/app/data]
+    networks: [internal_honeypot_net]
+    cap_drop: [ALL]
+  dashboard:
+    build:
+      context: ..
+      dockerfile: infra/Dockerfile.dashboard
+    volumes: [gatekeeper-data:/app/data:ro]
+    networks: [internal_honeypot_net]
+    cap_drop: [ALL]
 networks:
-  # Internal network with strict egress isolation per SAFETY.md
   internal_honeypot_net:
-    driver: bridge
     internal: true
-
+  publish_net:
+    driver: bridge
 volumes:
-  sensor-logs:
   gatekeeper-data:
+  sensor-state:
