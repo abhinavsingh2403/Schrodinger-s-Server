@@ -288,3 +288,11 @@ Human live check: in WSL run `python3 dashboard/app.py --host 127.0.0.1 --port 8
 No dependencies, tags or push. Integrate gemini-ui separately; do not overwrite another agent's checkout.
 
 Final integration: plotting pin pending approval. WSL system matplotlib is 3.10.9+dfsg1. Windows project venv lacks it.
+
+Docker: NOT operational. Docker Desktop Linux engine pipe was unavailable. Automatic review blocked the requested publish_net and container-wide listener. No Docker deployment changes landed.
+REMAINING: implement and review Docker topology before running these commands. Docker alone does not block publish_net egress. Launcher Twisted restrictions and host egress_firewall.sh are separate controls (firewall NOT RUN).
+After implementation: `docker compose -f infra/docker-compose.yml --env-file infra/.env.example up -d --build`; verify login/hostname, DB rows and /api/sessions.
+Cost NOT RUN: `python -m analysis.measure_cost --tier T1 --sessions 20 --host 127.0.0.1 --port 2222 --container schrodinger-sensor`; then `docker compose -f infra/docker-compose.yml down`.
+T1 and T2 are in-process personas. This bot_like scenario measures one container. No T2 measurement or monetary extrapolation.
+Safety and reproducibility scripts deferred by Task 3 prerequisite. After implementation: `python -m analysis.safety_check` and `python -m analysis.repro_check`.
+Showcase snapshot: `python -m harness.demo.showcase --fast --keep-db demo.db`; open with `python -m dashboard.app --db demo.db --mode LAB`.

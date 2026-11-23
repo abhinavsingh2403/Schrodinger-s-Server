@@ -1,5 +1,5 @@
 """Four isolated-source LAB_DEMO_NOT_ML scenes checked using persisted evidence."""
-import argparse,json,sqlite3,subprocess,tempfile,time
+import argparse,json,os,shlex,sqlite3,subprocess,tempfile,time
 from pathlib import Path
 from unittest.mock import patch
 from analysis.live_sensor_proof import independent_lab
@@ -20,8 +20,30 @@ def check_scene(name,rows,prior_seen=0):
     if name=='returning': return prior_seen>0 and any(r['stage']=='S1' and r['tier']=='T2' for r in rows)
     return False
 
+def keep_database(source, destination, force=False):
+    """Publish a consistent SQLite snapshot after the backup completes."""
+    with tempfile.NamedTemporaryFile(dir=destination.parent, delete=False) as temp:
+        snapshot = Path(temp.name)
+    try:
+        from contextlib import closing
+        with closing(sqlite3.connect(source.as_uri() + "?mode=ro", uri=True)) as db:
+            with closing(sqlite3.connect(snapshot)) as copy:
+                db.backup(copy)
+        if force:
+            os.replace(snapshot, destination)
+        else:
+            os.link(snapshot, destination)
+    finally:
+        snapshot.unlink(missing_ok=True)
+
+
 def main():
-    parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('--fast',action='store_true');parser.add_argument('--dry-run',action='store_true');args=parser.parse_args()
+    parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('--fast',action='store_true');parser.add_argument('--dry-run',action='store_true')
+    parser.add_argument('--keep-db', type=Path)
+    parser.add_argument('--force', action='store_true')
+    args=parser.parse_args()
+    if args.keep_db and args.keep_db.exists() and not args.force:
+        parser.error('Destination already exists; use --force to replace it')
     if args.dry_run:
         print('LAB_DEMO_NOT_ML: start fresh loopback services; bot .2; PTY interactive .3; no-PTY slow recon .4; returning .3; DB checks; cleanup');return
     root=Path(__file__).resolve().parents[2];original=subprocess.Popen
@@ -53,6 +75,9 @@ def main():
                     passed=check_scene(name,rows,prior_seen)
                     results.append({'scene':name,'passed':passed,'decisions':rows,'prior_seen_sessions':prior_seen})
                     print(name+': '+('PASS' if passed else 'FAIL'),flush=True)
+                if args.keep_db:
+                    keep_database(Path(db).resolve(), args.keep_db, args.force)
+                    print('python -m dashboard.app --db', shlex.quote(str(args.keep_db)), '--mode LAB')
     except KeyboardInterrupt:
         raise SystemExit(130)
     out=root/'results/demo/s3_showcase.json';out.parent.mkdir(parents=True,exist_ok=True)
