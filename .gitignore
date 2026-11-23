@@ -33,3 +33,7 @@ Thumbs.db
 *.db-wal
 *.db-shm
 sensor/personas/
+
+*.sqlite*
+state/
+sensor/state/

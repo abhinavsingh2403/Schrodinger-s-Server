@@ -1404,13 +1404,8 @@
     "findings": []
   },
   "ignore": {
-    "status": "FAIL",
-    "findings": [
-      "state/etc/config",
-      "sensor/state/etc/config",
-      "local.sqlite",
-      "local.sqlite3"
-    ]
+    "status": "PASS",
+    "findings": []
   },
   "bind_warning": {
     "status": "NOT_APPLICABLE",
