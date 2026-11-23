@@ -315,3 +315,6 @@ Hash-like 32/40/64-hex tokens are counted for information; a hash match alone do
 Private key headers and other long hex candidates remain failing findings. No secrets confirmed by this triage.
 IPv4 literals in test fixtures are allowed, along with the specific declared decoy value in its two files.
 Other unexpected addresses remain individually listed for review.
+
+Docker lab stack operational. Only the edge publishes ports on host loopback. Sensor and gatekeeper use the internal network only. Both direct-IP and named sensor egress failed in the observed check. The edge hides the client source address. Docker visitors share one masked ID, so visitor memory merges them even with --source-ip. Multi-visitor and returning-visitor scenes are demonstrated only in native WSL.
+The original results/cost_model.json is not a clean T1 measurement. Visitor memory was shared and all 400 decisions were T2. CPU samples taken after each run while idle are not meaningful. Only one-container memory may be quoted, without a tier claim: mean 116.84 MB, peak 122.4 MB.
