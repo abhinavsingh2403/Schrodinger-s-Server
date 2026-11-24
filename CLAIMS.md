@@ -96,3 +96,13 @@ Verified by the executed pip index queries recorded in results/exp0/pins_audit.j
 | Pygments 2.21.0 exists | https://pypi.org/simple/pygments/ | [V] observed in package-index output |
 
 Event-log ordering observations are recorded by analysis/exp0_event_order.py against the D1 archive URL above. They describe a partial sample, not verified complete event-prefix availability.
+
+## Integration evidence
+
+| Claim | Repository source | Status |
+|---|---|---|
+| Loopback Docker login, storage and dashboard worked. The edge merges client identities. | [Observed checks](HANDOFF.md) | [V] lab run |
+| During-run container sampling covered mixed tiers. Per-tier costs and savings are unmeasured. | [Cost record](results/cost_model.json) | [V] descriptive only |
+| Constant targets reproduce a high held-out S3 recall. Validated pre-command ML remains open. | [Null controls](results/exp0/NULL_DIAGNOSIS.md) | [V] exploratory |
+| Session budgets and offline/live inference have executable checks. | [Budget](gatekeeper/test_session_budget.py), [parity](gatekeeper/test_real_row_parity.py) | [V] tested scope |
+| Safety findings and fresh-clone results are recorded separately. | [Safety](results/safety_check.json), [reproduction](results/repro_check.txt) | [V] see individual outcomes |
