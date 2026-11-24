@@ -1,5 +1,7 @@
 """Run fresh-volume lab cost workloads and reject a repeat as soon as tier purity fails."""
 import argparse
+from collections import Counter
+from datetime import datetime
 import csv
 import json
 import os
@@ -20,18 +22,41 @@ class MixedTier(Exception):
     """Persist the first disqualifying tier mix without reporting partial costs."""
 
 
+def summarize(rows):
+    tiers = Counter()
+    seconds = Counter()
+    previous = {}
+    t2_stages = Counter()
+    for sid,stage,tier,stamp in rows:
+        now = datetime.fromisoformat(stamp)
+        if sid in previous:
+            last,when = previous[sid]
+            seconds[last] += (now-when).total_seconds()
+        previous[sid] = tier,now
+        tiers[tier] += 1
+        if tier == "T2":
+            t2_stages[stage] += 1
+    def fractions(counts):
+        total = sum(counts.values())
+        return {t: counts[t]/total if total else None for t in ("T1","T2")}
+    return dict(final_tiers=dict(Counter(t for t,_ in previous.values())), decision_counts=dict(tiers),
+                decision_fraction=fractions(tiers), observed_time_fraction=fractions(seconds),
+                t2_decision_stages=dict(t2_stages))
+
+
 def decisions(compose):
-    query = "select tier_decided,count(*) from decision_log group by tier_decided"
-    code = f"import sqlite3,json; print(json.dumps(dict(sqlite3.connect('/app/data/gatekeeper.db').execute({query!r}))))"
-    mix = json.loads(subprocess.check_output(compose+["exec","-T","gatekeeper","python","-c",code]))
-    return mix
+    query = "select session_id,stage,tier_decided,timestamp from decision_log order by rowid"
+    code = f"import sqlite3,json; print(json.dumps(sqlite3.connect('/app/data/gatekeeper.db').execute({query!r}).fetchall()))"
+    return summarize(json.loads(subprocess.check_output(compose+["exec","-T","gatekeeper","python","-c",code])))
 
 
 def run(tier, compose):
     workload = run_bot_like if tier == "T1" else run_interactive
     env = dict(os.environ, GATEKEEPER_PROFILE="DEFAULT" if tier=="T1" else "LAB_DEMO")
     runs = []
-    for repeat in range(3):
+    complete = 0
+    failures = 0
+    while complete < 3 and failures < 2:
         subprocess.run(compose+["down","-v"],check=True)
         try:
             subprocess.run(compose+["up","-d","--build"],env=env,check=True)
@@ -50,7 +75,7 @@ def run(tier, compose):
                     start = time.monotonic()
                     result = workload(**kwargs)
                     mix = decisions(compose)
-                    if set(mix) != {tier}:
+                    if set(mix["final_tiers"]) != {tier}:
                         raise MixedTier(mix)
                     remaining = 20 - (time.monotonic()-start)
                     if remaining < 0:
@@ -65,13 +90,15 @@ def run(tier, compose):
                 mix = decisions(compose)
                 with next(folder.glob("*.csv")).open() as f:
                     samples = sum(1 for _ in csv.DictReader(f))
-                runs.append(dict(repeat=repeat+1,stats=stats,decision_counts=mix,samples=samples))
+                runs.append(dict(repeat=complete+1,stats=stats,summary=mix,samples=samples))
+                complete += 1
+                failures = 0
         except MixedTier as exc:
-            runs.append(dict(repeat=repeat+1,status="BLOCKED: mixed decisions",decision_counts=exc.args[0],samples=0))
-            break
+            runs.append(dict(repeat=complete+1,status="BLOCKED: impure final tiers",summary=exc.args[0],samples=0))
+            failures += 1
         finally:
             subprocess.run(compose+["down","-v"],check=True)
-    payload = dict(target=tier,pure=len(runs)==3 and all(set(r["decision_counts"])=={tier} for r in runs),runs=runs)
+    payload = dict(target=tier,pure=complete==3,runs=runs)
     (OUT/f"cost_{tier}_only.json").write_text(json.dumps(payload,indent=2)+"\n")
 
 

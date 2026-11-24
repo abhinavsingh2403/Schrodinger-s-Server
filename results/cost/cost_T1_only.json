@@ -4,10 +4,57 @@
   "runs": [
     {
       "repeat": 1,
-      "status": "BLOCKED: mixed decisions",
-      "decision_counts": {
-        "T1": 37,
-        "T2": 3
+      "status": "BLOCKED: impure final tiers",
+      "summary": {
+        "final_tiers": {
+          "T1": 9,
+          "T2": 1
+        },
+        "decision_counts": {
+          "T1": 37,
+          "T2": 3
+        },
+        "decision_fraction": {
+          "T1": 0.925,
+          "T2": 0.075
+        },
+        "observed_time_fraction": {
+          "T1": 0.9923741438012316,
+          "T2": 0.007625856198768555
+        },
+        "t2_decision_stages": {
+          "S2": 1,
+          "S3": 1,
+          "S4": 1
+        }
+      },
+      "samples": 0
+    },
+    {
+      "repeat": 1,
+      "status": "BLOCKED: impure final tiers",
+      "summary": {
+        "final_tiers": {
+          "T1": 9,
+          "T2": 1
+        },
+        "decision_counts": {
+          "T1": 37,
+          "T2": 3
+        },
+        "decision_fraction": {
+          "T1": 0.925,
+          "T2": 0.075
+        },
+        "observed_time_fraction": {
+          "T1": 0.9921929006644131,
+          "T2": 0.007807099335586866
+        },
+        "t2_decision_stages": {
+          "S2": 1,
+          "S3": 1,
+          "S4": 1
+        }
       },
       "samples": 0
     }
