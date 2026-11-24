@@ -190,7 +190,7 @@ python -m venv .venv
 ```powershell
 .\.venv\Scripts\python -m pytest -q
 ```
-Observed suite output: `264 passed, 3 skipped in 12.70s`.
+Observed suite output: `264 passed, 3 skipped in 12.70s` (Windows).
 
 ### Live Honeypot Demonstration (Native WSL — Path A)
 Follow the [native demo runbook](docs/DEMO_RUNBOOK.md).
