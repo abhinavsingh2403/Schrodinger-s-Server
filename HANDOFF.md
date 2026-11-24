@@ -318,3 +318,7 @@ Other unexpected addresses remain individually listed for review.
 
 Docker lab stack operational. Only the edge publishes ports on host loopback. Sensor and gatekeeper use the internal network only. Both direct-IP and named sensor egress failed in the observed check. The edge hides the client source address. Docker visitors share one masked ID, so visitor memory merges them even with --source-ip. Multi-visitor and returning-visitor scenes are demonstrated only in native WSL.
 The original results/cost_model.json is not a clean T1 measurement. Visitor memory was shared and all 400 decisions were T2. CPU samples taken after each run while idle are not meaningful. Only one-container memory may be quoted, without a tier claim: mean 116.84 MB, peak 122.4 MB.
+The current cost_model.json samples the mixed DEFAULT bot_like run during activity. Tier counts and interpretation were added from a read-only copy of the stopped volume database.
+results/cost/cost_model_confounded_T2.json preserves the earlier LAB_DEMO run with idle samples and all decisions T2.
+Neither run measures a clean T1-only or T2-only workload. Both personas share one sensor process.
+Quote only descriptive container memory without a tier claim. CPU is timing-sensitive, earlier CPU samples were idle, and neither run supports savings or extrapolation.

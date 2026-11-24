@@ -1,13 +1,19 @@
 {
   "tier": "T1",
+  "sampling": "during_run",
   "N": 20,
-  "wall_time": 168.5762,
-  "mean_cpu_pct": 0.0,
-  "max_cpu_pct": 0.02,
-  "mean_memory_mb": 116.84,
-  "max_memory_mb": 122.4,
+  "wall_time": 157.6092,
+  "mean_cpu_pct": 3.64,
+  "max_cpu_pct": 28.02,
+  "mean_memory_mb": 108.63,
+  "max_memory_mb": 117.8,
   "command_line": "python -m analysis.measure_cost --tier T1 --sessions 20 --host 127.0.0.1 --port 2222 --container schrodinger-sensor",
-  "git_commit": "ac4d6f679251da138191acab3ebdbb19e4ddb391",
-  "timestamp": "2026-11-23T21:37:35.414905+00:00",
-  "tier_field_meaning": "Requested bot_like workload; logged decisions during measurement were T2."
+  "git_commit": "UNKNOWN",
+  "timestamp": "2026-11-23T21:49:06.245131+00:00",
+  "policy_profile": "DEFAULT",
+  "logged_decisions": {
+    "T1": 37,
+    "T2": 363
+  },
+  "interpretation": "Mixed tiers in one sensor container. No clean single-tier measurement."
 }

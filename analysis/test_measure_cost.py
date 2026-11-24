@@ -67,6 +67,7 @@ def test_measure_cost_dry_run_with_fake_stats(tmp_path: Path):
         assert k in payload, f"Missing key '{k}' in payload"
 
     assert payload["tier"] == "T1"
+    assert payload["sampling"] == "during_run"
     assert payload["N"] == 3
     assert payload["mean_cpu_pct"] == 2.4
     assert payload["mean_memory_mb"] == 48.5
@@ -116,3 +117,24 @@ def test_measure_cost_safety_guard_public_ip(tmp_path: Path):
             cost_model_file=cost_json,
         )
     assert not cost_json.exists()
+
+def test_stats_collected_while_bot_active(tmp_path, monkeypatch):
+    from threading import Event
+    from analysis import measure_cost as module
+
+    active, sampled = Event(), Event()
+
+    def bot(**kwargs):
+        active.set()
+        assert sampled.wait(4)
+        return {"ok": True}
+
+    def stats(*args):
+        if active.is_set():
+            sampled.set()
+        return 2.0, 48.0
+
+    monkeypatch.setattr(module, "run_bot_like", bot)
+    monkeypatch.setattr(module, "sample_docker_stats", stats)
+    module.measure_cost(tier="T1", sessions=1, output_dir=tmp_path,
+                        cost_model_file=tmp_path / "model.json")

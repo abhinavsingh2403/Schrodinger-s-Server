@@ -17,6 +17,8 @@ import csv
 import json
 import os
 import re
+from concurrent.futures import ThreadPoolExecutor
+from threading import Event
 import subprocess
 import sys
 import time
@@ -138,19 +140,29 @@ def measure_cost(
     # Verify docker stats works BEFORE running sessions (fails cleanly with no partial JSON)
     sample_docker_stats(container_name, fake_stats_file)
 
-    for i in range(sessions):
-        # 1. Run one scripted bot session
-        run_bot_like(host=host, port=port, dry_run=dry_run)
+    stopped = Event()
+    current_session = 1
 
-        # 2. Sample docker stats
-        cpu_pct, mem_mb = sample_docker_stats(container_name, fake_stats_file)
-        sample_time = datetime.now(timezone.utc).isoformat()
-        samples.append({
-            "timestamp": sample_time,
-            "session_idx": i + 1,
-            "cpu_pct": cpu_pct,
-            "memory_mb": mem_mb,
-        })
+    def sample_until_done():
+        while True:
+            started = time.monotonic()
+            index = current_session
+            cpu_pct, mem_mb = sample_docker_stats(container_name, fake_stats_file)
+            samples.append({"timestamp": datetime.now(timezone.utc).isoformat(),
+                            "session_idx": index, "cpu_pct": cpu_pct, "memory_mb": mem_mb})
+            if stopped.wait(max(0, 1 - (time.monotonic() - started))):
+                return
+
+    with ThreadPoolExecutor(max_workers=1) as pool:
+        sampler = pool.submit(sample_until_done)
+        try:
+            for current_session in range(1, sessions + 1):
+                result = run_bot_like(host=host, port=port, dry_run=dry_run)
+                if not result["ok"]:
+                    raise RuntimeError(f"Bot workload failed at iteration {current_session}")
+        finally:
+            stopped.set()
+        sampler.result()
 
     wall_time = time.perf_counter() - t_start
 
@@ -170,10 +182,11 @@ def measure_cost(
     mean_mem = sum(mem_values) / len(mem_values) if mem_values else 0.0
     max_mem = max(mem_values) if mem_values else 0.0
 
-    cmd_line_str = raw_command_line or " ".join(sys.argv)
+    cmd_line_str = raw_command_line or "python -m analysis.measure_cost " + " ".join(sys.argv[1:])
 
     cost_payload = {
         "tier": tier,
+        "sampling": "during_run",
         "N": sessions,
         "wall_time": round(wall_time, 4),
         "mean_cpu_pct": round(mean_cpu, 2),
