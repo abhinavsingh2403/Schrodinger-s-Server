@@ -1,0 +1,15 @@
+{
+  "target": "T2",
+  "pure": false,
+  "runs": [
+    {
+      "repeat": 1,
+      "status": "BLOCKED: mixed decisions",
+      "decision_counts": {
+        "T1": 2,
+        "T2": 22
+      },
+      "samples": 0
+    }
+  ]
+}

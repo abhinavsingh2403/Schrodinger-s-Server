@@ -109,3 +109,6 @@ Event-log ordering observations are recorded by analysis/exp0_event_order.py aga
 | Converged S3 fits failed to beat the full label-free activity ranking. With volume columns removed, real and shuffled fits tied at the budget. | [Post-hoc evaluation](results/exp0/POSTHOC_ML_EVAL.md) | [V] exploratory frozen-cohort comparison |
 | The audited event archive timestamps commands but does not establish the historical S3 feature cutoff. | [Boundary audit](results/exp0/PRECOMMAND_NOT_VERIFIABLE.md) | [V] sampled days only |
 | Native harness prefix check compares the ordered event counters with each S3 request snapshot. | [Marker consistency](results/study/marker_consistency.json) | Lab, exploratory |
+| DEFAULT bot workload included both tiers. | [T1 purity check](results/cost/cost_T1_only.json) | Lab, exploratory |
+| LAB_DEMO PTY workload included both tiers. | [T2 purity check](results/cost/cost_T2_only.json) | Lab, exploratory |
+| Neither workload supplied a clean per-tier cost estimate. | [Cost comparison](results/cost/COST_PER_TIER.md) | Lab, exploratory |
