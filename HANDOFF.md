@@ -322,3 +322,4 @@ The current cost_model.json samples the mixed DEFAULT bot_like run during activi
 results/cost/cost_model_confounded_T2.json preserves the earlier LAB_DEMO run with idle samples and all decisions T2.
 Neither run measures a clean T1-only or T2-only workload. Both personas share one sensor process.
 Quote only descriptive container memory without a tier claim. CPU is timing-sensitive, earlier CPU samples were idle, and neither run supports savings or extrapolation.
+Null control reproduced from frozen parquets: see results/exp0/NULL_DIAGNOSIS.md. Run python -m analysis.null_diagnosis --splits results/exp0. Exact prefix recall NOT RUN: no verified runtime boundary in archived events.
