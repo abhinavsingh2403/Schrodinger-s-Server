@@ -68,14 +68,32 @@ def evaluate(train,test):
 
 if __name__=="__main__":
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--study-export",type=Path)
     for arg in ("train","test","output"):
-        parser.add_argument("--"+arg,type=Path,required=True)
+        parser.add_argument("--"+arg,type=Path,required=arg=="output")
     parser.add_argument("--human-study",action="store_true")
     args = parser.parse_args()
-    train,test = load(args.train),load(args.test)
+    if args.study_export:
+        import csv
+        from analysis.study_export import FEATURES
+        if args.train or args.test:
+            parser.error("Supply either --study-export or --train and --test")
+        args.human_study = True
+        train,test = {},{}
+        with args.study_export.open() as stream:
+            for row in csv.DictReader(stream):
+                partition = train if int(row["participant_code"][1:]) % 2 else test
+                key = row["session"]
+                if key in train or key in test:
+                    parser.error("Duplicate study session")
+                partition[key] = ([float(row[k]) for k in FEATURES],int(row["label"]))
+    else:
+        if not args.train or not args.test:
+            parser.error("Supply --train and --test")
+        train,test = load(args.train),load(args.test)
     results = evaluate(train,test)
     valid = abs(results["Shuffle"]-results["Random"]) <= .02
-    scope = "Human-provided outcomes (exploratory)." if args.human_study else "SYNTHETIC harness data. Label = script type. Mechanism check only, tiny N."
+    scope = "Human study, exploratory. Label is assigned instruction (A/C versus B)." if args.human_study else "SYNTHETIC harness data. Label = script type. Mechanism check only, tiny N."
     lines = ["# S3 prefix evaluation","",scope,"",f"Train sessions {len(train)}, test sessions {len(test)}. First S3 per session, 10% budget, expected cutoff ties.",
              "Balanced optimizer uses the archived C and caps its step at C*n/2 for small samples.",
              "", "| Scorer | Recall |","|---|---:|"]

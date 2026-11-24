@@ -315,3 +315,4 @@ DONE: opt-in sensor prefix log and native loopback consistency check. WSL in pin
 BLOCKED: persisted decisions mixed tiers in both Docker workloads. Full cost repeats NOT RUN. WSL: python -m analysis.tier_cost_study --tier T1 and python -m analysis.tier_cost_study --tier T2. Each invocation cleans up its volumes.
 DONE: SYNTHETIC prefix mechanism check, shuffle INVALID. Reproduction and human-study NOT RUN commands are in docs/EVENT_LOG.md. Two bot connections lacked S3 markers in the all-session coverage check.
 DONE: fresh WSL python -m analysis.marker_consistency reconciled missing markers with the decision database.
+DONE: docs/STUDY_PROTOCOL.md, masked label join and participant-disjoint evaluation. Human data NOT RUN: python -m analysis.study_export --events events.jsonl --db decisions.db --labels labels.csv then python -m analysis.prefix_s3_eval --study-export results/study/study_sessions.csv --output human-prefix-report.md.
