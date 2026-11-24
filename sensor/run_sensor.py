@@ -21,6 +21,8 @@ class LifecycleBridge:
         self.client = client
         self.personas = personas or PersonaManager()
         self.provenance = provenance
+        from sensor.prefix_log import PrefixLog
+        self.prefix = PrefixLog(os.getenv("SENSOR_PREFIX_LOG"))
         self.sessions = {}
 
     def event(self, event):
@@ -35,6 +37,8 @@ class LifecycleBridge:
         if sid not in self.sessions:
             return
         adapter, extractor = self.sessions[sid]
+        self.prefix.append(sid, event=name, event_time=event.get("timestamp") or event.get("ts"))
+        adapter.prefix_log = self.prefix
         extractor.ingest_event(event)
         if name in ('cowrie.login.success', 'cowrie.login.failed'):
             self.stage(sid, 'S2')

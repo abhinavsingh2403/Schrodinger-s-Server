@@ -177,6 +177,7 @@ class AdaptiveSessionAdapter:
             raise ValueError(f"Invalid provenance {provenance!r}; must be one of ('SYNTHETIC', 'LAB', 'LIVE', 'UNKNOWN')")
         self.visitor_ip = visitor_ip
         self.session_id = session_id
+        self.prefix_log = None
         self.provenance = provenance
         if isinstance(decision_engine, str):
             from gatekeeper.decision_api import GatekeeperClient
@@ -298,6 +299,8 @@ class AdaptiveSessionAdapter:
             return
 
         try:
+            if self.prefix_log is not None:
+                self.prefix_log.append(self.session_id, stage=stage, features=features)
             resp = self.decision_engine.decide(
                 session_id=self.session_id,
                 source_ip=self.visitor_ip,
