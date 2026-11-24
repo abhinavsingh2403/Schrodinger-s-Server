@@ -22,12 +22,24 @@ In Internet-facing SSH honeypots, the overwhelming majority of sessions are one-
 
 | Status | Evidence and limits |
 |---|---|
-| Done | Native launcher, session budget, offline/live parity, decision dashboard and demo runbook. Docker login, decision storage and dashboard were verified. Only the edge publishes on loopback. Direct-IP and named sensor egress both failed in the observed check. |
-| Partial | Docker merges client identities. Multi-visitor scenes use native WSL. The audit ran with outstanding address findings. A fresh-clone check and null-control diagnosis are recorded. Cost sampling describes one mixed-persona container. |
-| Not done | Validated early ML, prefix-valid S4/S5 evaluation and isolated per-tier container costs. |
-| Future | T3 guest, human study and public trial. |
+| Done | S3 aggregate base rates (`results/base_rates.json`), event-schema check (`results/s3_event_schema.json`), T1/T2 personas and native Cowrie integration, offline/live parity, durable session budget, decision dashboard, native demo runbook (`docs/DEMO_RUNBOOK.md`), opt-in sensor prefix logging (`docs/EVENT_LOG.md`), and human study protocol (`docs/STUDY_PROTOCOL.md`) (see `docs/STATUS.md`, `HANDOFF.md`). |
+| Partial | Experiment 0 aggregate S1–S3 with leakage controls (null-control diagnosis recorded; early ML remains unconfirmed), Docker lab (only `edge` publishes on loopback; source address merged at edge; direct-IP and named sensor egress failed), safety check (`ipv4` `FAIL` with 30 findings triaged as benign fixtures, see `results/safety_check.json`), cost study (T2 repeats completed; T1 comparison not run to completion, see `results/cost/COST_PER_TIER.md`), and working reports (final reviewed pack absent) (see `docs/STATUS.md`, `HANDOFF.md`). |
+| Not done | Event-level S4/S5 (`NOT_EVALUABLE` on aggregate data), isolated T1 vs T2 container cost comparison, persona natural experiment, third-party detector evaluation (`EVAL.md` H4), replay of real held-out traces, and human-study execution (see `docs/STATUS.md`). |
+| Future | T3 guest, public trial, human blind study, persona natural experiment, third-party detector evaluation, and held-out trace replay (see `SPEC.md`, `EVAL.md`). |
 
-The [weighted checklist](docs/STATUS.md) retains the original item weights. The [handoff](HANDOFF.md) records verification scope. LAB_DEMO_NOT_ML demonstrates policy mechanisms.
+Weighted checklist completion: **52.5%** (10.5/20) (see `docs/STATUS.md`). The [handoff](HANDOFF.md) records verification scope. `LAB_DEMO_NOT_ML` demonstrates policy mechanisms only.
+
+---
+
+## 2. Verified Evidence Summary
+
+- **Early ML Evaluation (Exploratory — No Confirmed ML Claim)**: Post-hoc exploratory S3 evaluation on frozen splits (`50000` train, `100793` reached test, `8619` positives) shows label-free negative activity on retained columns achieves recall `0.648992` (PR-AUC `0.398257`), whereas the converged trained scorer (`All`, step `5532`) achieves recall `0.306654` (PR-AUC `0.352775`) and its shuffled-label control (`Shuffle`, step `1000`) achieves recall `0.305613` (`INCONCLUSIVE (INVALID shuffle)`) (see `results/exp0/POSTHOC_ML_EVAL.md`). Removing volume features (`Volume removed`, step `5529`) yields recall `0.111804` (`REJECTED`, equal to its shuffled control `0.111804`) (see `results/exp0/POSTHOC_ML_EVAL.md`). Constant-target fallback analysis confirms `session.params` dominates the null cutoff (`0.649042` vs archived real `0.291966`) (see `results/exp0/NULL_ROOT_CAUSE.md`). Pre-command validity is not certifiable on the audited archive (`0` verified historical S3 decision boundaries across `12380945` events and `184383` complete command sessions over `3` sampled days) (see `results/exp0/PRECOMMAND_NOT_VERIFIABLE.md`).
+- **Event-Level Prefix Logging**: Opt-in (`SENSOR_PREFIX_LOG`, off by default) per-process JSONL logging on the native launcher records masked `session`, `event`, `event_time`, `observed_at`, and `seq` (without commands, credentials, or addresses), plus decision-boundary markers with `last_seq` and numeric `features` (see `docs/EVENT_LOG.md`). Consistency checks on lab-generated data only (`scope: LAB`) succeeded across `run_bot_like` (5 sessions, 3 S3 markers, 2 early closes), `run_interactive` (6 sessions, 6 S3 markers), `run_slow_recon` (1 session, 1 S3 marker), and `run_transfer_like` (3 sessions, 3 S3 markers), with `0` `reached_without_marker` and `0` `errors` (see `results/study/marker_consistency.json`).
+- **Cost Measurement**: In-process T1 and T2 personas share one sensor container; in `results/cost/COST_PER_TIER.md`, accepted T2 repeats (3 attempts, 120 final-T2 sessions each) measured `mean_cpu_pct` `2.29` to `2.47` and `mean_memory_mb` `106.81` to `107.32` (max `113.7` to `114.4` MB), while T1 comparison is `NOT RUN` to completion because both attempts mixed tiers (9 final-T1 / 1 final-T2 sessions). Earlier `results/cost_model.json` recorded a mixed-tier run (`N` = `20`, logged decisions T1 `37` / T2 `363`, `mean_cpu_pct` `3.64`, `mean_memory_mb` `108.63`, `max_memory_mb` `117.8`). No single-tier comparison, monetary savings, or extrapolation is established (see `results/cost/COST_PER_TIER.md`, `results/cost_model.json`).
+- **Human Study Kit**: The lab participant protocol (`docs/STUDY_PROTOCOL.md`) and export/evaluation commands (`docs/EVENT_LOG.md`) exist, but the human study is `NOT RUN` (see `docs/EVENT_LOG.md`, `HANDOFF.md`).
+- **Docker Lab Topology**: `infra/docker-compose.yml` defines four services (`edge`, `sensor`, `gatekeeper`, `dashboard`), with only `edge` publishing ports on loopback (`127.0.0.1:2222` and `127.0.0.1:8080`) and the remaining services isolated on `internal_honeypot_net` (`internal: true`); direct-IP and named sensor egress failed in the observed check (see `HANDOFF.md`, `infra/docker-compose.yml`). Because `edge` merges client source addresses, Docker serves as an isolation demonstration only; multi-visitor and returning-visitor scenes are native-WSL only (see `HANDOFF.md`).
+- **Native Demo Runbook**: `docs/DEMO_RUNBOOK.md` and `harness/demo/` (`start_live_demo.sh`, `stop_live_demo.sh`, `run_showcase.sh`, `run_lab_demo.sh`) provide scripted lab demonstrations (`LAB_DEMO_NOT_ML`). The live launcher scripts (`start_live_demo.sh` / `stop_live_demo.sh`) are syntax-checked and dry-run checked, and are not yet run live on real services (see `HANDOFF.md`).
+- **Future Work**: Deferred items from `SPEC.md` and `EVAL.md` are: T3 sandboxed guest (`SPEC.md`), public randomized live trial (`EVAL.md` 5.6), human blind study (`EVAL.md` 5.5), persona-effect natural experiment (`EVAL.md` 5.3), third-party detector evaluation (`EVAL.md` 5.5 / H4), and replay of real held-out traces (`EVAL.md` 5.5).
 
 ## 3. Data Provenance & Ground Truth
 
@@ -178,6 +190,7 @@ python -m venv .venv
 ```powershell
 .\.venv\Scripts\python -m pytest -q
 ```
+Observed suite output: `264 passed, 3 skipped in 12.70s`.
 
 ### Live Honeypot Demonstration (Native WSL — Path A)
 Follow the [native demo runbook](docs/DEMO_RUNBOOK.md).
