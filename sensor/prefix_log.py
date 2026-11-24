@@ -10,7 +10,7 @@ from gatekeeper.visitor_memory import derive_visitor_id
 class PrefixLog:
     def __init__(self, path):
         self.path = path
-        self.salt = os.urandom(32)
+        self.salt = os.environ.get("SENSOR_PREFIX_JOIN_KEY", "").encode() or os.urandom(32)
         self.seq = {}
 
     def append(self, sid, **fields):

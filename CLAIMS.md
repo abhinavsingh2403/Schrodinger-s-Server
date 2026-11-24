@@ -113,3 +113,4 @@ Event-log ordering observations are recorded by analysis/exp0_event_order.py aga
 | LAB_DEMO PTY workload included both tiers. | [T2 purity check](results/cost/cost_T2_only.json) | Lab, exploratory |
 | Neither workload supplied a clean per-tier cost estimate. | [Cost comparison](results/cost/COST_PER_TIER.md) | Lab, exploratory |
 | Harness script labels on independent lab captures failed the shuffled-label diagnostic. | [Prefix evaluation](results/study/PREFIX_S3_EVAL.md) | Lab, exploratory |
+| Early disconnects account for the unmarked bot connections in the fresh joined trace. | [Coverage counts](results/study/marker_consistency.json) | Lab, exploratory |

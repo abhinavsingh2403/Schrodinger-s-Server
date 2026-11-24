@@ -1,12 +1,15 @@
 {
   "scope": "LAB",
-  "passed": false,
+  "passed": true,
   "scenarios": {
     "run_bot_like": {
       "sessions": 5,
       "sessions_with_s3": 3,
       "s3_markers": 3,
       "errors": 0,
+      "never_reached_s3": 2,
+      "reached_without_marker": 0,
+      "other_without_marker": 0,
       "returncode": 0
     },
     "run_interactive": {
@@ -14,6 +17,9 @@
       "sessions_with_s3": 6,
       "s3_markers": 6,
       "errors": 0,
+      "never_reached_s3": 0,
+      "reached_without_marker": 0,
+      "other_without_marker": 0,
       "returncode": 0
     },
     "run_slow_recon": {
@@ -21,6 +27,9 @@
       "sessions_with_s3": 1,
       "s3_markers": 1,
       "errors": 0,
+      "never_reached_s3": 0,
+      "reached_without_marker": 0,
+      "other_without_marker": 0,
       "returncode": 0
     },
     "run_transfer_like": {
@@ -28,6 +37,9 @@
       "sessions_with_s3": 3,
       "s3_markers": 3,
       "errors": 0,
+      "never_reached_s3": 0,
+      "reached_without_marker": 0,
+      "other_without_marker": 0,
       "returncode": 0
     }
   }

@@ -314,3 +314,4 @@ Done: archived S3 boundary audit in results/exp0/PRECOMMAND_NOT_VERIFIABLE.md. S
 DONE: opt-in sensor prefix log and native loopback consistency check. WSL in pinned Cowrie venv: python -m analysis.marker_consistency. See docs/EVENT_LOG.md.
 BLOCKED: persisted decisions mixed tiers in both Docker workloads. Full cost repeats NOT RUN. WSL: python -m analysis.tier_cost_study --tier T1 and python -m analysis.tier_cost_study --tier T2. Each invocation cleans up its volumes.
 DONE: SYNTHETIC prefix mechanism check, shuffle INVALID. Reproduction and human-study NOT RUN commands are in docs/EVENT_LOG.md. Two bot connections lacked S3 markers in the all-session coverage check.
+DONE: fresh WSL python -m analysis.marker_consistency reconciled missing markers with the decision database.
