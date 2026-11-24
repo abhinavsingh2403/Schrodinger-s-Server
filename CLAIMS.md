@@ -106,3 +106,4 @@ Event-log ordering observations are recorded by analysis/exp0_event_order.py aga
 | Constant targets reproduce a high held-out S3 recall. Validated pre-command ML remains open. | [Null controls](results/exp0/NULL_DIAGNOSIS.md) | [V] exploratory |
 | Session budgets and offline/live inference have executable checks. | [Budget](gatekeeper/test_session_budget.py), [parity](gatekeeper/test_real_row_parity.py) | [V] tested scope |
 | Safety findings and fresh-clone results are recorded separately. | [Safety](results/safety_check.json), [reproduction](results/repro_check.txt) | [V] see individual outcomes |
+| Converged S3 fits failed to beat the full label-free activity ranking. With volume columns removed, real and shuffled fits tied at the budget. | [Post-hoc evaluation](results/exp0/POSTHOC_ML_EVAL.md) | [V] exploratory frozen-cohort comparison |
