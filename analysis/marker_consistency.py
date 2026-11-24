@@ -1,5 +1,6 @@
 """Check S3 model counters against each loopback session's ordered prefix."""
 from collections import Counter, defaultdict
+import argparse
 import json
 import os
 from pathlib import Path
@@ -38,6 +39,10 @@ def check(rows):
 
 def main():
     root = Path(__file__).resolve().parents[1]
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--capture",type=Path,help="Write a new labelled prefix trace for the synthetic study")
+    args = parser.parse_args()
+    capture = []
     results = {}
     with tempfile.TemporaryDirectory() as folder:
         path = Path(folder)/"prefix.jsonl"
@@ -47,9 +52,19 @@ def main():
                 outcome = run(port=12222)
                 with path.open("rb") as stream:
                     stream.seek(start)
-                    results[run.__name__] = check([json.loads(line) for line in stream])
+                    rows = [json.loads(line) for line in stream]
+                    results[run.__name__] = check(rows)
+                    if run != run_slow_recon:
+                        capture.extend(dict(row,label=int(run != run_bot_like)) for row in rows)
                 results[run.__name__]["returncode"] = outcome["returncode"]
     passed = all(r["returncode"]==0 and r["sessions"] and r["sessions"]==r["sessions_with_s3"] and not r["errors"] for r in results.values())
+    if args.capture:
+        if any(r["returncode"] or r["errors"] for r in results.values()):
+            raise RuntimeError("Invalid lab capture")
+        with args.capture.open("x") as f:
+            for row in capture:
+                f.write(json.dumps(row)+"\n")
+        return 0
     target = root/"results/study/marker_consistency.json"
     target.parent.mkdir(exist_ok=True)
     target.write_text(json.dumps(dict(scope="LAB",passed=passed,scenarios=results),indent=2)+"\n")

@@ -112,3 +112,4 @@ Event-log ordering observations are recorded by analysis/exp0_event_order.py aga
 | DEFAULT bot workload included both tiers. | [T1 purity check](results/cost/cost_T1_only.json) | Lab, exploratory |
 | LAB_DEMO PTY workload included both tiers. | [T2 purity check](results/cost/cost_T2_only.json) | Lab, exploratory |
 | Neither workload supplied a clean per-tier cost estimate. | [Cost comparison](results/cost/COST_PER_TIER.md) | Lab, exploratory |
+| Harness script labels on independent lab captures failed the shuffled-label diagnostic. | [Prefix evaluation](results/study/PREFIX_S3_EVAL.md) | Lab, exploratory |

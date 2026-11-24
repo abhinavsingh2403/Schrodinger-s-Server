@@ -7,3 +7,7 @@ Event rows contain session (per-process salted HMAC), event (Cowrie event type),
 Example marker shape (placeholders): `{"session":"<masked>","stage":"S3","observed_at":"<UTC>","last_seq":<event sequence>,"features":{<numeric snapshot>}}`.
 
 Audit the recorded model counters at the boundary with `python -m analysis.marker_consistency` in the pinned native WSL lab environment. Discard truncated or incomplete logs.
+
+For a synthetic train/test pair, run `python -m analysis.marker_consistency --capture train.jsonl` then repeat with `--capture test.jsonl` in the native lab. Each command starts fresh services. Script labels are bot (negative) and interactive or transfer (positive). Slow recon is excluded. Multiple SSH connections from one script are related observations.
+Evaluate with `python -m analysis.prefix_s3_eval --train train.jsonl --test test.jsonl --output results/study/PREFIX_S3_EVAL.md`.
+Human-study evaluation is NOT RUN. Supply independent participant-disjoint captures using this schema, adding the independently assigned binary outcome as label on S3 markers. Run `python -m analysis.prefix_s3_eval --human-study --train human-train.jsonl --test human-test.jsonl --output human-prefix-report.md`.

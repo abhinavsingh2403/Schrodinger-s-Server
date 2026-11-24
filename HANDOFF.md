@@ -313,3 +313,4 @@ Done: post-hoc balanced convergence, ablations, shuffle controls and transfer/so
 Done: archived S3 boundary audit in results/exp0/PRECOMMAND_NOT_VERIFIABLE.md. Strict S3 prefix fit and controls NOT RUN. Capture an ordered, session-linked decision marker, implement the verified prefix row and run python -m analysis.posthoc_ml_eval --splits results/exp0 on matching splits.
 DONE: opt-in sensor prefix log and native loopback consistency check. WSL in pinned Cowrie venv: python -m analysis.marker_consistency. See docs/EVENT_LOG.md.
 BLOCKED: persisted decisions mixed tiers in both Docker workloads. Full cost repeats NOT RUN. WSL: python -m analysis.tier_cost_study --tier T1 and python -m analysis.tier_cost_study --tier T2. Each invocation cleans up its volumes.
+DONE: SYNTHETIC prefix mechanism check, shuffle INVALID. Reproduction and human-study NOT RUN commands are in docs/EVENT_LOG.md. Two bot connections lacked S3 markers in the all-session coverage check.
