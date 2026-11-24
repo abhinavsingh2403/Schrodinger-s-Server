@@ -323,3 +323,4 @@ results/cost/cost_model_confounded_T2.json preserves the earlier LAB_DEMO run wi
 Neither run measures a clean T1-only or T2-only workload. Both personas share one sensor process.
 Quote only descriptive container memory without a tier claim. CPU is timing-sensitive, earlier CPU samples were idle, and neither run supports savings or extrapolation.
 Null control reproduced from frozen parquets: see results/exp0/NULL_DIAGNOSIS.md. Run python -m analysis.null_diagnosis --splits results/exp0. Exact prefix recall NOT RUN: no verified runtime boundary in archived events.
+Native demo scripts: bash -n and dry-run checked. Real services NOT RUN: bash harness/demo/start_live_demo.sh then bash harness/demo/stop_live_demo.sh "$DEMO_DIR" with the printed directory. Follow docs/DEMO_RUNBOOK.md.
