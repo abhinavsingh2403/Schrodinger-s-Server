@@ -305,3 +305,4 @@ Quote only descriptive container memory without a tier claim. CPU is timing-sens
 Null control reproduced from frozen parquets: see results/exp0/NULL_DIAGNOSIS.md. Run python -m analysis.null_diagnosis --splits results/exp0. Exact prefix recall NOT RUN: no verified runtime boundary in archived events.
 Native demo scripts: bash -n and dry-run checked. Real services NOT RUN: bash harness/demo/start_live_demo.sh then bash harness/demo/stop_live_demo.sh "$DEMO_DIR" with the printed directory. Follow docs/DEMO_RUNBOOK.md.
 Current accounting preserves the historical weights. See docs/STATUS.md, results/progress.json and the audit findings in results/safety_check.json.
+Done: S3 fallback and label-free ablations in results/exp0/NULL_ROOT_CAUSE.md; weighting sensitivity in POSTHOC_CORRECTED.md. Reproduce with python -m analysis.null_root_cause --splits results/exp0 after restoring frozen parquets. Exact decision-time attribution remains unverified.
