@@ -18,10 +18,31 @@ In Internet-facing SSH honeypots, the overwhelming majority of sessions are one-
 
 ---
 
-## Status
+## Project status
 
-| Status | Evidence and limits |
-|---|---|
+The native demo can switch an SSH session from T1 to T2 while preserving its connection. The three-day offline evaluation found **no validated ML gain**. At S4, training on shuffled labels reproduced the learned scorer's recall. S2 also failed its shuffle control, and S5 had too few held-out positives for a conclusion. [Demo runbook](docs/DEMO_RUNBOOK.md) · [Experiment 1 results](results/exp1/EXPERIMENT1_RESULT.md)
+
+| Area | Completed and verified | Remaining work |
+|---|---|---|
+| Sensor and policy | Native Cowrie integration, same-session persona switching, durable session budgets and offline/live scoring parity. | Run the paired live-demo start/stop scripts end to end. Their recorded checks cover syntax and dry run. [Handoff](HANDOFF.md) |
+| Dashboard and Docker | Decision-backed dashboard, masked identifiers and policy provenance. The Docker lab served SSH and dashboard traffic through loopback ports. | Verify distinct visitor identities through Docker ingress. Use native WSL for the returning-visitor demonstration today. [Handoff](HANDOFF.md) |
+| Offline evaluation | Experiment 0 aggregate analysis and null-control diagnosis. Experiment 1 evaluated first auth, first command and third command with source-disjoint day splits. | Historical S1/S3 boundaries are unavailable. Any follow-up model comparison needs a fresh holdout. Boosting families await dependency approval. [Protocol](docs/EXPERIMENT1.md) |
+| Resource measurements | Matched T1-final and T2-final workloads completed in one sensor process. | Isolated hardware or container costs by tier remain unmeasured. [Cost report](results/cost/COST_PER_TIER.md) |
+| Studies and delivery | Participant protocol, masked export, working reports and demo runbook exist. | Run the human study, persona-effect study, independent detector evaluation and held-out trace replay. Finish the reviewed report, slides and viva pack. T3 and public trials remain future work. [Study protocol](docs/STUDY_PROTOCOL.md) · [Checklist](docs/STATUS.md) |
+
+The official weighted checklist records **52.5% (10.5/20)**. Experiment 1 is reported separately from the original Experiment 0 checklist. [Progress accounting](docs/STATUS.md)
+
+### Known issues to fix or verify
+
+| Issue | Observable effect | Next check |
+|---|---|---|
+| Docker edge hides the client address | Visitor memory merges distinct clients under one masked ID. | Verify that ingress preserves the source and that two loopback clients receive distinct masked IDs. [Handoff](HANDOFF.md) |
+| S5 has different live and offline boundaries | Live dispatch starts on command two. Experiment 1 evaluates command three. | Agree on the intended live boundary and test dispatch on commands two and three before using the offline result for live decisions. [Protocol](docs/EXPERIMENT1.md) |
+| Peak decision latency exceeds the sensor deadline | Threaded HTTP handling improved the measured workload, but some round trips still exceeded 200 ms. | Measure sensor fallback events alongside round-trip latency under concurrent load. [Concurrency probe](results/cost/concurrency_probe.json) |
+| IPv4 audit remains open | The audit reports FAIL with 30 findings previously triaged as benign fixtures. | Reconcile the findings with the audit rules and retain visibility of unexpected addresses. [Safety audit](results/safety_check.json) |
+| Experiment 1 fixture tests require an explicit command | Default pytest discovery skips their filenames. | Run the command below until discovery includes both fixtures. [Test configuration](pytest.ini) |
+
+---|---|
 | Done | S3 aggregate base rates (`results/base_rates.json`), event-schema check (`results/s3_event_schema.json`), T1/T2 personas and native Cowrie integration, offline/live parity, durable session budget, decision dashboard, native demo runbook (`docs/DEMO_RUNBOOK.md`), opt-in sensor prefix logging (`docs/EVENT_LOG.md`), and human study protocol (`docs/STUDY_PROTOCOL.md`) (see `docs/STATUS.md`, `HANDOFF.md`). |
 | Partial | Experiment 0 aggregate S1–S3 with leakage controls (null-control diagnosis recorded; early ML remains unconfirmed), Docker lab (only `edge` publishes on loopback; source address merged at edge; direct-IP and named sensor egress failed), safety check (`ipv4` `FAIL` with 30 findings triaged as benign fixtures, see `results/safety_check.json`), matched final-tier lab workloads (CPU and memory measured in one shared sensor process, see `results/cost/COST_PER_TIER.md`), and working reports (final reviewed pack absent) (see `docs/STATUS.md`, `HANDOFF.md`). |
 | Not done | Isolated T1 vs T2 container cost comparison, persona natural experiment, third-party detector evaluation (`EVAL.md` H4), replay of real held-out traces, and human-study execution (see `docs/STATUS.md`). |
@@ -192,7 +213,13 @@ python -m venv .venv
 ```powershell
 .\.venv\Scripts\python -m pytest -q
 ```
-Observed suite output: `264 passed, 3 skipped in 12.70s` (Windows).
+Recorded Windows suite result: **267 passed, 3 skipped**. Run the two Experiment 1 fixtures explicitly:
+
+```powershell
+python -m pytest -q analysis/experiment1_dataset_test.py analysis/experiment1_eval_test.py
+```
+
+Experiment 1 parquet tables are generated locally and ignored by Git. The protocol and cohort results are tracked. [Reproduction commands](HANDOFF.md) · [Cohort counts](results/exp1/cohorts.json)
 
 ### Live Honeypot Demonstration (Native WSL — Path A)
 Follow the [native demo runbook](docs/DEMO_RUNBOOK.md).
