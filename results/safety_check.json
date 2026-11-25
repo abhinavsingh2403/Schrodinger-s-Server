@@ -33,7 +33,7 @@
       "results/exp0/q1_initial_tests.json:10:2052",
       "results/exp0/q1_tests.json:10:2052",
       "router/sticky_router.py:41:29",
-      "sensor/run_sensor.py:88:70",
+      "sensor/run_sensor.py:92:70",
       "sensor/spike_s1_poc.py:57:34",
       "sensor/spike_s1_poc.py:60:93"
     ]

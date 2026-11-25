@@ -66,7 +66,7 @@ def generate_status_md(
 
     lines.extend([
         "",
-        "Outside the weighted checklist, the native launcher, demo runbook, Docker lab, safety audit, fresh-clone check, mixed-workload cost record and null-control diagnosis are complete. The audit contains open findings. T3 and the human study remain outstanding.",
+        "Outside the weighted checklist, the native launcher, demo runbook, Docker lab, safety audit, fresh-clone check, mixed-workload cost record, matched final-tier workload comparison (results/cost/COST_PER_TIER.md) and null-control diagnosis are complete. The audit contains open findings. T3 and the human study remain outstanding.",
         "",
         "## 2. Summary Accounting",
         "",

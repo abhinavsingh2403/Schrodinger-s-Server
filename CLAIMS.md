@@ -109,8 +109,10 @@ Event-log ordering observations are recorded by analysis/exp0_event_order.py aga
 | Converged S3 fits failed to beat the full label-free activity ranking. With volume columns removed, real and shuffled fits tied at the budget. | [Post-hoc evaluation](results/exp0/POSTHOC_ML_EVAL.md) | [V] exploratory frozen-cohort comparison |
 | The audited event archive timestamps commands but does not establish the historical S3 feature cutoff. | [Boundary audit](results/exp0/PRECOMMAND_NOT_VERIFIABLE.md) | [V] sampled days only |
 | Native harness prefix check compares the ordered event counters with each S3 request snapshot. | [Marker consistency](results/study/marker_consistency.json) | Lab, exploratory |
-| DEFAULT bot workload included sessions ending at both tiers on fresh volumes. | [T1 purity check](results/cost/cost_T1_only.json) | Lab, exploratory |
+| DEFAULT bot workload included sessions ending at both tiers on fresh volumes. | [DEFAULT replay](results/cost/t1_trace.json) | Lab, exploratory |
 | Every session in the completed PTY repeats ended at T2, including sessions with early T1 decisions. | [T2 purity check](results/cost/cost_T2_only.json) | Lab, exploratory |
-| The final-T2 workload produced repeatable container measurements. Failed final-T1 purity prevents a matched tier comparison. | [Cost comparison](results/cost/COST_PER_TIER.md) | Lab, exploratory |
+| The earlier DEFAULT bot and interactive PTY workloads could not provide a matched comparison. | [Cost comparison](results/cost/COST_PER_TIER.md) | Lab, exploratory |
 | Harness script labels on independent lab captures failed the shuffled-label diagnostic. | [Prefix evaluation](results/study/PREFIX_S3_EVAL.md) | Lab, exploratory |
 | Early disconnects account for the unmarked bot connections in the fresh joined trace. | [Coverage counts](results/study/marker_consistency.json) | Lab, exploratory |
+| Matched LAB_DEMO hostname workloads reached their intended final tiers across repeats. Their resource ranges describe these paced workloads in one sensor process. | [Matched results](results/cost/COST_PER_TIER.md) | Lab, exploratory |
+| The audited daily event files support offline first-auth, first-command and third-command prefixes. Historical handshake completion and S3 cutoffs remain unverified. | [Event-level feasibility probe](results/exp0/EXPERIMENT1_FEASIBILITY.md) | Lab, exploratory |
