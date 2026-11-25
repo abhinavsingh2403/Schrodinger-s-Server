@@ -540,3 +540,4 @@ Controlled before-change comparison in results/cost/concurrency_probe_before.jso
 2026-11-24: Read-only dashboard volume returned NO DATA with SQLite WAL. Allow WAL sidecar access on the volume while retaining the application mode=ro URI. Session IDs then matched.
 
 2026-11-25: Compare a single authenticated hostname query under the same LAB_DEMO profile with and without a PTY. The DEFAULT bot sequence combines multiple sessions with an admission budget that changes as the ledger grows. Matching commands, session counts and pacing supports a workload comparison while leaving persona-only cost unresolved.
+2026-11-25: For the offline feasibility probe, use the first authentication outcome and the first and third command events in complete same-day sessions. Exclude a boundary tied with any other event when counting usable prefixes. This avoids inferring an event order from tied timestamps and keeps the established distinct-command outcome.
