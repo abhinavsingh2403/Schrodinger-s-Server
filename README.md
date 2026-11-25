@@ -24,8 +24,10 @@ In Internet-facing SSH honeypots, the overwhelming majority of sessions are one-
 |---|---|
 | Done | S3 aggregate base rates (`results/base_rates.json`), event-schema check (`results/s3_event_schema.json`), T1/T2 personas and native Cowrie integration, offline/live parity, durable session budget, decision dashboard, native demo runbook (`docs/DEMO_RUNBOOK.md`), opt-in sensor prefix logging (`docs/EVENT_LOG.md`), and human study protocol (`docs/STUDY_PROTOCOL.md`) (see `docs/STATUS.md`, `HANDOFF.md`). |
 | Partial | Experiment 0 aggregate S1–S3 with leakage controls (null-control diagnosis recorded; early ML remains unconfirmed), Docker lab (only `edge` publishes on loopback; source address merged at edge; direct-IP and named sensor egress failed), safety check (`ipv4` `FAIL` with 30 findings triaged as benign fixtures, see `results/safety_check.json`), matched final-tier lab workloads (CPU and memory measured in one shared sensor process, see `results/cost/COST_PER_TIER.md`), and working reports (final reviewed pack absent) (see `docs/STATUS.md`, `HANDOFF.md`). |
-| Not done | Event-level S4/S5 model evaluation (the [three-day feasibility probe](results/exp0/EXPERIMENT1_FEASIBILITY.md) identified first-auth, first-command and third-command boundaries), isolated T1 vs T2 container cost comparison, persona natural experiment, third-party detector evaluation (`EVAL.md` H4), replay of real held-out traces, and human-study execution (see `docs/STATUS.md`). |
+| Not done | Isolated T1 vs T2 container cost comparison, persona natural experiment, third-party detector evaluation (`EVAL.md` H4), replay of real held-out traces, and human-study execution (see `docs/STATUS.md`). |
 | Future | T3 guest, public trial, human blind study, persona natural experiment, third-party detector evaluation, and held-out trace replay (see `SPEC.md`, `EVAL.md`). |
+
+Experiment 1 found no validated ML gain on the audited days. S2 and S4 failed the shuffle control, and S5 was underpowered. [Experiment 1 results](results/exp1/EXPERIMENT1_RESULT.md).
 
 Weighted checklist completion: **52.5%** (10.5/20) (see `docs/STATUS.md`). The [handoff](HANDOFF.md) records verification scope. `LAB_DEMO_NOT_ML` demonstrates policy mechanisms only.
 

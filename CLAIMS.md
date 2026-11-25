@@ -116,3 +116,5 @@ Event-log ordering observations are recorded by analysis/exp0_event_order.py aga
 | Early disconnects account for the unmarked bot connections in the fresh joined trace. | [Coverage counts](results/study/marker_consistency.json) | Lab, exploratory |
 | Matched LAB_DEMO hostname workloads reached their intended final tiers across repeats. Their resource ranges describe these paced workloads in one sensor process. | [Matched results](results/cost/COST_PER_TIER.md) | Lab, exploratory |
 | The audited daily event files support offline first-auth, first-command and third-command prefixes. Historical handshake completion and S3 cutoffs remain unverified. | [Event-level feasibility probe](results/exp0/EXPERIMENT1_FEASIBILITY.md) | Lab, exploratory |
+| Offline S2 and S4 fits failed the shuffle control. S5 lacked the required test positives. | [Experiment 1](results/exp1/EXPERIMENT1_RESULT.md) | Lab, exploratory, offline |
+| The event tables exclude overlapping sources and use future-only labels. | [Cohort counts](results/exp1/cohorts.json) | Lab, exploratory, offline |

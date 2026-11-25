@@ -13,3 +13,15 @@ Let delta = 0.05 absolute recall (the smallest improvement we would care about; 
 - **PASS-ML:** there is a stage k in {S1, S2, S3} where Delta_k >= delta and the lower bound of its adjusted CI is above 0, with the minimum-size condition met.
 - **PASS-LATE-ONLY:** no such stage in S1 to S3, but a stage in {S4, S5} meets the same condition.
 - **FAIL:** otherwise.
+
+## Optional families (NOT RUN)
+Dependency approval is required. In an approved disposable environment, run the selected training-only commands. A new evaluation requires a separate holdout.
+
+```sh
+python -m pip install scikit-learn
+python -c "from sklearn.ensemble import HistGradientBoostingClassifier; from analysis.experiment1_eval import OUT,FEATURES,load; [(HistGradientBoostingClassifier(random_state=42).fit(list(map(list,x)),y)) for s in ('S2','S4','S5') for _,y,x in [load(sorted(OUT.glob('*_'+s+'.parquet'))[0],FEATURES[:6] if s=='S2' else FEATURES,True)]]"
+python -m pip install lightgbm
+python -c "from lightgbm import LGBMClassifier; from analysis.experiment1_eval import OUT,FEATURES,load; [(LGBMClassifier(random_state=42).fit(list(map(list,x)),y)) for s in ('S2','S4','S5') for _,y,x in [load(sorted(OUT.glob('*_'+s+'.parquet'))[0],FEATURES[:6] if s=='S2' else FEATURES,True)]]"
+python -m pip install catboost
+python -c "from catboost import CatBoostClassifier; from analysis.experiment1_eval import OUT,FEATURES,load; [(CatBoostClassifier(random_seed=42,verbose=False,allow_writing_files=False).fit(list(map(list,x)),y)) for s in ('S2','S4','S5') for _,y,x in [load(sorted(OUT.glob('*_'+s+'.parquet'))[0],FEATURES[:6] if s=='S2' else FEATURES,True)]]"
+```

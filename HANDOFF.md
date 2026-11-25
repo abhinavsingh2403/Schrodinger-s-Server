@@ -323,3 +323,9 @@ DONE: The DEFAULT trace identified successful authentication at the first availa
 DONE: The matched LAB_DEMO runs passed final-tier purity. See results/cost/COST_PER_TIER.md. WSL: `python -m analysis.tier_cost_study --tier T1 && python -m analysis.tier_cost_study --tier T2 && python -m analysis.render_tier_cost`.
 DONE: The local event probe supports first auth, first command and third command; S1/S3 boundaries remain unavailable. See results/exp0/EXPERIMENT1_FEASIBILITY.md. Run `python -m analysis.experiment1_feasibility --cache data/event_prefix_study`.
 DONE: Fresh clone, disposable environment, install and tests succeeded (`python -m analysis.repro_check`). Safety audit (`python -m analysis.safety_check`): ipv4 FAIL with 30 findings previously triaged as benign fixtures. See results/repro_check.txt and results/safety_check.json.
+
+### Experiment 1
+DONE: Protocol, masked tables and evaluation. See docs/EXPERIMENT1.md and results/exp1/EXPERIMENT1_RESULT.md.
+Reproduce: `python -m analysis.experiment1_dataset --cache data/event_prefix_study` then `python -m analysis.experiment1_eval`.
+Fixtures: `python -m pytest -q analysis/experiment1_dataset_test.py analysis/experiment1_eval_test.py`.
+NOT RUN: S1/S3 lack historical boundaries. Optional boosting families require approval; training commands are in docs/EXPERIMENT1.md.
