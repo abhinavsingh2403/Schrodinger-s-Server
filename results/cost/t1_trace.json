@@ -1,0 +1,402 @@
+[
+  {
+    "invocation": 1,
+    "command": "exit",
+    "pty": false,
+    "rows": [
+      [
+        "51e5bcd4336c",
+        "S1",
+        "T1",
+        "rule_r0_random",
+        "DEFAULT",
+        0.05
+      ],
+      [
+        "51e5bcd4336c",
+        "S2",
+        "T1",
+        "rule_r7_decision_tree",
+        "DEFAULT",
+        0.1
+      ],
+      [
+        "51e5bcd4336c",
+        "S2",
+        "T1",
+        "rule_r7_decision_tree",
+        "DEFAULT",
+        0.1
+      ],
+      [
+        "51e5bcd4336c",
+        "S2",
+        "T1",
+        "rule_r7_decision_tree",
+        "DEFAULT",
+        0.1
+      ]
+    ],
+    "distinct_visitors": 1
+  },
+  {
+    "invocation": 2,
+    "command": "exit",
+    "pty": false,
+    "rows": [
+      [
+        "85ae56f990c3",
+        "S1",
+        "T1",
+        "rule_r0_random",
+        "DEFAULT",
+        0.05
+      ],
+      [
+        "85ae56f990c3",
+        "S2",
+        "T1",
+        "rule_r7_decision_tree",
+        "DEFAULT",
+        0.1
+      ],
+      [
+        "85ae56f990c3",
+        "S2",
+        "T1",
+        "rule_r7_decision_tree",
+        "DEFAULT",
+        0.1
+      ],
+      [
+        "85ae56f990c3",
+        "S2",
+        "T1",
+        "rule_r7_decision_tree",
+        "DEFAULT",
+        0.1
+      ]
+    ],
+    "distinct_visitors": 1
+  },
+  {
+    "invocation": 3,
+    "command": "exit",
+    "pty": false,
+    "rows": [
+      [
+        "7811d97ae117",
+        "S1",
+        "T1",
+        "rule_r0_random",
+        "DEFAULT",
+        0.05
+      ],
+      [
+        "7811d97ae117",
+        "S2",
+        "T1",
+        "rule_r1_login_success",
+        "DEFAULT",
+        0.7
+      ],
+      [
+        "7811d97ae117",
+        "S3",
+        "T1",
+        "ml_model_s3",
+        "DEFAULT",
+        0.04519740586489645
+      ],
+      [
+        "7811d97ae117",
+        "S4",
+        "T1",
+        "heuristic_command_base",
+        "DEFAULT",
+        0.2
+      ]
+    ],
+    "distinct_visitors": 1
+  },
+  {
+    "invocation": 4,
+    "command": "uname -a",
+    "pty": false,
+    "rows": [
+      [
+        "b613032363a0",
+        "S1",
+        "T1",
+        "rule_r0_random",
+        "DEFAULT",
+        0.05
+      ],
+      [
+        "b613032363a0",
+        "S2",
+        "T1",
+        "rule_r1_login_success",
+        "DEFAULT",
+        0.7
+      ],
+      [
+        "b613032363a0",
+        "S3",
+        "T1",
+        "ml_model_s3",
+        "DEFAULT",
+        0.04519740586489645
+      ],
+      [
+        "b613032363a0",
+        "S4",
+        "T1",
+        "heuristic_command_base",
+        "DEFAULT",
+        0.2
+      ]
+    ],
+    "distinct_visitors": 1
+  },
+  {
+    "invocation": 5,
+    "command": "cat /proc/cpuinfo",
+    "pty": false,
+    "rows": [
+      [
+        "e4b067e8b3cb",
+        "S1",
+        "T1",
+        "rule_r0_random",
+        "DEFAULT",
+        0.05
+      ],
+      [
+        "e4b067e8b3cb",
+        "S2",
+        "T1",
+        "rule_r1_login_success",
+        "DEFAULT",
+        0.7
+      ],
+      [
+        "e4b067e8b3cb",
+        "S3",
+        "T1",
+        "ml_model_s3",
+        "DEFAULT",
+        0.04519740586489645
+      ],
+      [
+        "e4b067e8b3cb",
+        "S4",
+        "T1",
+        "heuristic_command_base",
+        "DEFAULT",
+        0.2
+      ]
+    ],
+    "distinct_visitors": 1
+  },
+  {
+    "invocation": 6,
+    "command": "exit",
+    "pty": false,
+    "rows": [
+      [
+        "6e932924f59c",
+        "S1",
+        "T1",
+        "rule_r0_random",
+        "DEFAULT",
+        0.05
+      ],
+      [
+        "6e932924f59c",
+        "S2",
+        "T1",
+        "rule_r7_decision_tree",
+        "DEFAULT",
+        0.1
+      ],
+      [
+        "6e932924f59c",
+        "S2",
+        "T1",
+        "rule_r7_decision_tree",
+        "DEFAULT",
+        0.1
+      ],
+      [
+        "6e932924f59c",
+        "S2",
+        "T1",
+        "rule_r7_decision_tree",
+        "DEFAULT",
+        0.1
+      ]
+    ],
+    "distinct_visitors": 1
+  },
+  {
+    "invocation": 7,
+    "command": "exit",
+    "pty": false,
+    "rows": [
+      [
+        "681963bfb3a6",
+        "S1",
+        "T1",
+        "rule_r0_random",
+        "DEFAULT",
+        0.05
+      ],
+      [
+        "681963bfb3a6",
+        "S2",
+        "T1",
+        "rule_r7_decision_tree",
+        "DEFAULT",
+        0.1
+      ],
+      [
+        "681963bfb3a6",
+        "S2",
+        "T1",
+        "rule_r7_decision_tree",
+        "DEFAULT",
+        0.1
+      ],
+      [
+        "681963bfb3a6",
+        "S2",
+        "T1",
+        "rule_r7_decision_tree",
+        "DEFAULT",
+        0.1
+      ]
+    ],
+    "distinct_visitors": 1
+  },
+  {
+    "invocation": 8,
+    "command": "exit",
+    "pty": false,
+    "rows": [
+      [
+        "71f0ea910d4d",
+        "S1",
+        "T1",
+        "rule_r0_random",
+        "DEFAULT",
+        0.05
+      ],
+      [
+        "71f0ea910d4d",
+        "S2",
+        "T1",
+        "rule_r1_login_success",
+        "DEFAULT",
+        0.7
+      ],
+      [
+        "71f0ea910d4d",
+        "S3",
+        "T1",
+        "ml_model_s3",
+        "DEFAULT",
+        0.04519740586489645
+      ],
+      [
+        "71f0ea910d4d",
+        "S4",
+        "T1",
+        "heuristic_command_base",
+        "DEFAULT",
+        0.2
+      ]
+    ],
+    "distinct_visitors": 1
+  },
+  {
+    "invocation": 9,
+    "command": "uname -a",
+    "pty": false,
+    "rows": [
+      [
+        "d27b36dba8fa",
+        "S1",
+        "T1",
+        "rule_r0_random",
+        "DEFAULT",
+        0.05
+      ],
+      [
+        "d27b36dba8fa",
+        "S2",
+        "T1",
+        "rule_r1_login_success",
+        "DEFAULT",
+        0.7
+      ],
+      [
+        "d27b36dba8fa",
+        "S3",
+        "T1",
+        "ml_model_s3",
+        "DEFAULT",
+        0.04519740586489645
+      ],
+      [
+        "d27b36dba8fa",
+        "S4",
+        "T1",
+        "heuristic_command_base",
+        "DEFAULT",
+        0.2
+      ]
+    ],
+    "distinct_visitors": 1
+  },
+  {
+    "invocation": 10,
+    "command": "cat /proc/cpuinfo",
+    "pty": false,
+    "rows": [
+      [
+        "91d5fe62d792",
+        "S1",
+        "T1",
+        "rule_r0_random",
+        "DEFAULT",
+        0.05
+      ],
+      [
+        "91d5fe62d792",
+        "S2",
+        "T2",
+        "rule_r1_login_success",
+        "DEFAULT",
+        0.7
+      ],
+      [
+        "91d5fe62d792",
+        "S3",
+        "T2",
+        "ml_model_s3",
+        "DEFAULT",
+        0.04519740586489645
+      ],
+      [
+        "91d5fe62d792",
+        "S4",
+        "T2",
+        "heuristic_command_base",
+        "DEFAULT",
+        0.2
+      ]
+    ],
+    "distinct_visitors": 1
+  }
+]

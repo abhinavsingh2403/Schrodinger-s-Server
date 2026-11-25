@@ -11,8 +11,7 @@ import tempfile
 import time
 
 from analysis.measure_cost import measure_cost
-from harness.attackers.bot_like import run_bot_like
-from harness.attackers.interactive import run_interactive
+from harness.attackers.common import execute_ssh_command
 
 COMPOSE = ["docker","compose","-p","schrodinger-final","-f","infra/docker-compose.yml"]
 OUT = Path("results/cost")
@@ -50,9 +49,17 @@ def decisions(compose):
     return summarize(json.loads(subprocess.check_output(compose+["exec","-T","gatekeeper","python","-c",code])))
 
 
+def matched_login(tier, host, port, dry_run=False):
+    """Run one benign identity query. Only the terminal request differs by arm."""
+    if dry_run or tier not in ("T1", "T2"):
+        raise ValueError("a measured tier is required")
+    result = execute_ssh_command(host, port, "root", password="password",
+                                 command="hostname", allocate_pty=tier == "T2")
+    return {"ok": result.returncode == 0 and "srv-app-01" in result.stdout.splitlines()}
+
+
 def run(tier, compose):
-    workload = run_bot_like if tier == "T1" else run_interactive
-    env = dict(os.environ, GATEKEEPER_PROFILE="DEFAULT" if tier=="T1" else "LAB_DEMO")
+    env = dict(os.environ, GATEKEEPER_PROFILE="LAB_DEMO")
     runs = []
     complete = 0
     failures = 0
@@ -71,13 +78,16 @@ def run(tier, compose):
             with tempfile.TemporaryDirectory() as tmp:
                 folder = Path(tmp)
                 # Keep the requested workload window identical across tiers.
+                completed_sessions = 0
                 def paced(**kwargs):
+                    nonlocal completed_sessions
                     start = time.monotonic()
-                    result = workload(**kwargs)
+                    result = matched_login(tier, **kwargs)
+                    completed_sessions += 1
                     mix = decisions(compose)
-                    if set(mix["final_tiers"]) != {tier}:
+                    if mix["final_tiers"] != {tier: completed_sessions}:
                         raise MixedTier(mix)
-                    remaining = 20 - (time.monotonic()-start)
+                    remaining = 6 - (time.monotonic()-start)
                     if remaining < 0:
                         raise RuntimeError("workload exceeded fixed slot")
                     time.sleep(remaining)

@@ -1,62 +1,108 @@
 {
   "target": "T1",
-  "pure": false,
+  "pure": true,
   "runs": [
     {
       "repeat": 1,
-      "status": "BLOCKED: impure final tiers",
+      "stats": {
+        "tier": "T1",
+        "sampling": "during_run",
+        "N": 20,
+        "wall_time": 121.3119,
+        "mean_cpu_pct": 0.08,
+        "max_cpu_pct": 1.93,
+        "mean_memory_mb": 95.94,
+        "max_memory_mb": 110.0,
+        "command_line": "python -m analysis.tier_cost_study --tier T1",
+        "git_commit": "UNKNOWN",
+        "timestamp": "2026-11-25T16:17:04.546287+00:00"
+      },
       "summary": {
         "final_tiers": {
-          "T1": 9,
-          "T2": 1
+          "T1": 20
         },
         "decision_counts": {
-          "T1": 37,
-          "T2": 3
+          "T1": 80
         },
         "decision_fraction": {
-          "T1": 0.925,
-          "T2": 0.075
+          "T1": 1.0,
+          "T2": 0.0
         },
         "observed_time_fraction": {
-          "T1": 0.9923741438012316,
-          "T2": 0.007625856198768555
+          "T1": 1.0,
+          "T2": 0.0
         },
-        "t2_decision_stages": {
-          "S2": 1,
-          "S3": 1,
-          "S4": 1
-        }
+        "t2_decision_stages": {}
       },
-      "samples": 0
+      "samples": 60
     },
     {
-      "repeat": 1,
-      "status": "BLOCKED: impure final tiers",
+      "repeat": 2,
+      "stats": {
+        "tier": "T1",
+        "sampling": "during_run",
+        "N": 20,
+        "wall_time": 121.3071,
+        "mean_cpu_pct": 0.87,
+        "max_cpu_pct": 8.26,
+        "mean_memory_mb": 96.66,
+        "max_memory_mb": 114.0,
+        "command_line": "python -m analysis.tier_cost_study --tier T1",
+        "git_commit": "UNKNOWN",
+        "timestamp": "2026-11-25T16:19:17.132036+00:00"
+      },
       "summary": {
         "final_tiers": {
-          "T1": 9,
-          "T2": 1
+          "T1": 20
         },
         "decision_counts": {
-          "T1": 37,
-          "T2": 3
+          "T1": 80
         },
         "decision_fraction": {
-          "T1": 0.925,
-          "T2": 0.075
+          "T1": 1.0,
+          "T2": 0.0
         },
         "observed_time_fraction": {
-          "T1": 0.9921929006644131,
-          "T2": 0.007807099335586866
+          "T1": 1.0,
+          "T2": 0.0
         },
-        "t2_decision_stages": {
-          "S2": 1,
-          "S3": 1,
-          "S4": 1
-        }
+        "t2_decision_stages": {}
       },
-      "samples": 0
+      "samples": 60
+    },
+    {
+      "repeat": 3,
+      "stats": {
+        "tier": "T1",
+        "sampling": "during_run",
+        "N": 20,
+        "wall_time": 121.3157,
+        "mean_cpu_pct": 1.06,
+        "max_cpu_pct": 11.52,
+        "mean_memory_mb": 96.19,
+        "max_memory_mb": 113.2,
+        "command_line": "python -m analysis.tier_cost_study --tier T1",
+        "git_commit": "UNKNOWN",
+        "timestamp": "2026-11-25T16:21:29.601999+00:00"
+      },
+      "summary": {
+        "final_tiers": {
+          "T1": 20
+        },
+        "decision_counts": {
+          "T1": 80
+        },
+        "decision_fraction": {
+          "T1": 1.0,
+          "T2": 0.0
+        },
+        "observed_time_fraction": {
+          "T1": 1.0,
+          "T2": 0.0
+        },
+        "t2_decision_stages": {}
+      },
+      "samples": 60
     }
   ]
 }

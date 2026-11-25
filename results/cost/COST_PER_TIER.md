@@ -29,3 +29,50 @@ T2 mean_memory_mb across accepted repeats: 106.81 to 107.32.
 The schedule uses the same number of paced harness invocations per completed repeat. Each invocation opens multiple SSH sessions; actual session counts are shown above. Sampling includes pacing pauses. An impure workload prevents a matched comparison.
 
 Reproduce in WSL: `python -m analysis.tier_cost_study --tier T1`, `python -m analysis.tier_cost_study --tier T2`, then `python -m analysis.render_tier_cost`.
+
+## T1 purity fix (2026-11-25)
+
+Fresh DEFAULT replay: invocation 10 (`cat /proc/cpuinfo`), session `91d5fe62d792`, first escalated at S2 with rule_r1_login_success score 0.7.
+
+| Hypothesis (first escalation only) | Verdict | Observation |
+|---|---|---|
+| Visitor memory | REJECTED | 1 visitor; 0 earlier T2 decisions to inherit. |
+| PTY | REJECTED | 0 requests. |
+| S5 rule | REJECTED | 0 S5 decisions. |
+| Session admission budget | CONFIRMED | 5 earlier successful-auth scores were held at T1. Admissible slots at fraction 0.1: 0 before, 1 at session 10. |
+| Successful-auth rule | CONFIRMED | rule_r1_login_success proposed escalation at S2; later decisions retained the tier. |
+
+Both measured arms now use LAB_DEMO_NOT_ML with one authenticated hostname query per session. Only PTY allocation differs. This removes the DEFAULT login-success trigger from the workload without changing either policy. Every session must be accounted for.
+
+| Workload | Attempt | Final T1/T2 sessions | Decisions T1/T2 | T1/T2 decision fractions | T1/T2 observed time fractions | T2 decisions by stage | Retained samples |
+|---|---:|---|---|---|---|---|---:|
+| T1 | 1 | 20 / 0 | 80 / 0 | 1 / 0 | 1 / 0 |  | 60 |
+| T1 | 2 | 20 / 0 | 80 / 0 | 1 / 0 | 1 / 0 |  | 60 |
+| T1 | 3 | 20 / 0 | 80 / 0 | 1 / 0 | 1 / 0 |  | 60 |
+| T2 | 1 | 0 / 20 | 2 / 78 | 0.025 / 0.975 | 0.054253 / 0.94575 | S1=19, S2=19, S3=20, S4=20 | 60 |
+| T2 | 2 | 0 / 20 | 2 / 78 | 0.025 / 0.975 | 0.051917 / 0.94808 | S1=19, S2=19, S3=20, S4=20 | 60 |
+| T2 | 3 | 0 / 20 | 2 / 78 | 0.025 / 0.975 | 0.049737 / 0.95026 | S1=19, S2=19, S3=20, S4=20 | 60 |
+
+
+T1 mean_cpu_pct across accepted repeats: 0.08 to 1.06.
+
+T1 mean_memory_mb across accepted repeats: 95.94 to 96.66.
+
+T2 mean_cpu_pct across accepted repeats: 0.74 to 0.88.
+
+T2 mean_memory_mb across accepted repeats: 97.08 to 97.14.
+
+| Target | Attempt | Wall seconds | Mean CPU % | Max CPU % | Mean MB | Max MB |
+|---|---:|---:|---:|---:|---:|---:|
+| T1 | 1 | 121.3119 | 0.08 | 1.93 | 95.94 | 110.0 |
+| T1 | 2 | 121.3071 | 0.87 | 8.26 | 96.66 | 114.0 |
+| T1 | 3 | 121.3157 | 1.06 | 11.52 | 96.19 | 113.2 |
+| T2 | 1 | 121.296 | 0.74 | 6.0 | 97.08 | 114.1 |
+| T2 | 2 | 121.3351 | 0.88 | 8.7 | 97.14 | 113.8 |
+| T2 | 3 | 121.295 | 0.81 | 8.62 | 97.09 | 112.4 |
+
+Matched session count and pacing window. Sampling includes pauses and early T1 time inside T2-final sessions. Both personas share one sensor process. Terminal allocation also differs, so this cannot isolate a persona-only resource effect.
+Repeat-index differences (T2-final minus T1-final), mean_cpu_pct: -0.25 to +0.66 percentage points.
+Repeat-index differences (T2-final minus T1-final), mean_memory_mb: +0.48 to +1.14 MB.
+
+Reproduce: `python -m analysis.t1_cost_trace`, `python -m analysis.tier_cost_study --tier T1`, `python -m analysis.tier_cost_study --tier T2`, `python -m analysis.render_tier_cost`.

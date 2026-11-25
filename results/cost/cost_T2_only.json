@@ -8,39 +8,39 @@
         "tier": "T2",
         "sampling": "during_run",
         "N": 20,
-        "wall_time": 402.3183,
-        "mean_cpu_pct": 2.29,
-        "max_cpu_pct": 41.07,
-        "mean_memory_mb": 106.91,
-        "max_memory_mb": 113.7,
+        "wall_time": 121.296,
+        "mean_cpu_pct": 0.74,
+        "max_cpu_pct": 6.0,
+        "mean_memory_mb": 97.08,
+        "max_memory_mb": 114.1,
         "command_line": "python -m analysis.tier_cost_study --tier T2",
         "git_commit": "UNKNOWN",
-        "timestamp": "2026-11-24T20:06:21.363493+00:00"
+        "timestamp": "2026-11-25T16:23:41.797612+00:00"
       },
       "summary": {
         "final_tiers": {
-          "T2": 120
+          "T2": 20
         },
         "decision_counts": {
           "T1": 2,
-          "T2": 478
+          "T2": 78
         },
         "decision_fraction": {
-          "T1": 0.004166666666666667,
-          "T2": 0.9958333333333333
+          "T1": 0.025,
+          "T2": 0.975
         },
         "observed_time_fraction": {
-          "T1": 0.008972868031335565,
-          "T2": 0.9910271319686645
+          "T1": 0.05425337388633716,
+          "T2": 0.9457466261136628
         },
         "t2_decision_stages": {
-          "S3": 120,
-          "S4": 120,
-          "S1": 119,
-          "S2": 119
+          "S3": 20,
+          "S4": 20,
+          "S1": 19,
+          "S2": 19
         }
       },
-      "samples": 200
+      "samples": 60
     },
     {
       "repeat": 2,
@@ -48,39 +48,39 @@
         "tier": "T2",
         "sampling": "during_run",
         "N": 20,
-        "wall_time": 402.2897,
-        "mean_cpu_pct": 2.29,
-        "max_cpu_pct": 36.64,
-        "mean_memory_mb": 107.32,
-        "max_memory_mb": 114.4,
+        "wall_time": 121.3351,
+        "mean_cpu_pct": 0.88,
+        "max_cpu_pct": 8.7,
+        "mean_memory_mb": 97.14,
+        "max_memory_mb": 113.8,
         "command_line": "python -m analysis.tier_cost_study --tier T2",
         "git_commit": "UNKNOWN",
-        "timestamp": "2026-11-24T20:13:15.539675+00:00"
+        "timestamp": "2026-11-25T16:25:53.927412+00:00"
       },
       "summary": {
         "final_tiers": {
-          "T2": 120
+          "T2": 20
         },
         "decision_counts": {
           "T1": 2,
-          "T2": 478
+          "T2": 78
         },
         "decision_fraction": {
-          "T1": 0.004166666666666667,
-          "T2": 0.9958333333333333
+          "T1": 0.025,
+          "T2": 0.975
         },
         "observed_time_fraction": {
-          "T1": 0.008154151907156617,
-          "T2": 0.9918458480928435
+          "T1": 0.0519174347323844,
+          "T2": 0.9480825652676157
         },
         "t2_decision_stages": {
-          "S3": 120,
-          "S4": 120,
-          "S1": 119,
-          "S2": 119
+          "S3": 20,
+          "S4": 20,
+          "S1": 19,
+          "S2": 19
         }
       },
-      "samples": 200
+      "samples": 60
     },
     {
       "repeat": 3,
@@ -88,39 +88,39 @@
         "tier": "T2",
         "sampling": "during_run",
         "N": 20,
-        "wall_time": 402.512,
-        "mean_cpu_pct": 2.47,
-        "max_cpu_pct": 42.15,
-        "mean_memory_mb": 106.81,
-        "max_memory_mb": 114.0,
+        "wall_time": 121.295,
+        "mean_cpu_pct": 0.81,
+        "max_cpu_pct": 8.62,
+        "mean_memory_mb": 97.09,
+        "max_memory_mb": 112.4,
         "command_line": "python -m analysis.tier_cost_study --tier T2",
         "git_commit": "UNKNOWN",
-        "timestamp": "2026-11-24T20:20:10.151296+00:00"
+        "timestamp": "2026-11-25T16:28:06.152858+00:00"
       },
       "summary": {
         "final_tiers": {
-          "T2": 120
+          "T2": 20
         },
         "decision_counts": {
           "T1": 2,
-          "T2": 478
+          "T2": 78
         },
         "decision_fraction": {
-          "T1": 0.004166666666666667,
-          "T2": 0.9958333333333333
+          "T1": 0.025,
+          "T2": 0.975
         },
         "observed_time_fraction": {
-          "T1": 0.007805341486470918,
-          "T2": 0.9921946585135291
+          "T1": 0.04973729476153244,
+          "T2": 0.9502627052384676
         },
         "t2_decision_stages": {
-          "S3": 120,
-          "S4": 120,
-          "S1": 119,
-          "S2": 119
+          "S3": 20,
+          "S4": 20,
+          "S1": 19,
+          "S2": 19
         }
       },
-      "samples": 200
+      "samples": 60
     }
   ]
 }
