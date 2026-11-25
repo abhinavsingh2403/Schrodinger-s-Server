@@ -1,0 +1,2246 @@
+{
+  "S2": {
+    "day": "2025-08-09",
+    "baseline": "negative_activity",
+    "validation": {
+      "random": 0.100002,
+      "activity": 0.096065,
+      "negative_activity": 0.100439,
+      "R7": 0.100002
+    },
+    "fits": {
+      "learned": {
+        "steps": 1000,
+        "loss": 0.6931234223888828
+      },
+      "shuffle": {
+        "steps": 1000,
+        "loss": 0.6930797887707046
+      },
+      "constant": {
+        "steps": 1000,
+        "loss": 0.6931471805599458
+      },
+      "ablation": {
+        "steps": 1000,
+        "loss": 0.6931471805599453
+      }
+    },
+    "metrics": {
+      "random": {
+        "pr_auc": 0.006075,
+        "budgets": {
+          "0.01": {
+            "budget": 0.01,
+            "selected_sessions": 3255,
+            "total_sessions": 325456,
+            "total_positives": 1977,
+            "total_negatives": 323479,
+            "precision": 0.006075,
+            "recall": 0.010001,
+            "f1_score": 0.007558,
+            "fpr": 0.010001,
+            "tp": 19.7727,
+            "fp": 3235.2273,
+            "fn": 1957.2273,
+            "tn": 320243.7727,
+            "confusion_matrix": {
+              "TP": 19.7727,
+              "FP": 3235.2273,
+              "FN": 1957.2273,
+              "TN": 320243.7727
+            }
+          },
+          "0.05": {
+            "budget": 0.05,
+            "selected_sessions": 16273,
+            "total_sessions": 325456,
+            "total_positives": 1977,
+            "total_negatives": 323479,
+            "precision": 0.006075,
+            "recall": 0.050001,
+            "f1_score": 0.010833,
+            "fpr": 0.050001,
+            "tp": 98.8512,
+            "fp": 16174.1488,
+            "fn": 1878.1488,
+            "tn": 307304.8512,
+            "confusion_matrix": {
+              "TP": 98.8512,
+              "FP": 16174.1488,
+              "FN": 1878.1488,
+              "TN": 307304.8512
+            }
+          },
+          "0.1": {
+            "budget": 0.1,
+            "selected_sessions": 32546,
+            "total_sessions": 325456,
+            "total_positives": 1977,
+            "total_negatives": 323479,
+            "precision": 0.006075,
+            "recall": 0.100001,
+            "f1_score": 0.011453,
+            "fpr": 0.100001,
+            "tp": 197.7024,
+            "fp": 32348.2976,
+            "fn": 1779.2976,
+            "tn": 291130.7024,
+            "confusion_matrix": {
+              "TP": 197.7024,
+              "FP": 32348.2976,
+              "FN": 1779.2976,
+              "TN": 291130.7024
+            }
+          },
+          "0.2": {
+            "budget": 0.2,
+            "selected_sessions": 65092,
+            "total_sessions": 325456,
+            "total_positives": 1977,
+            "total_negatives": 323479,
+            "precision": 0.006075,
+            "recall": 0.200002,
+            "f1_score": 0.011791,
+            "fpr": 0.200002,
+            "tp": 395.4049,
+            "fp": 64696.5951,
+            "fn": 1581.5951,
+            "tn": 258782.4049,
+            "confusion_matrix": {
+              "TP": 395.4049,
+              "FP": 64696.5951,
+              "FN": 1581.5951,
+              "TN": 258782.4049
+            }
+          }
+        }
+      },
+      "activity": {
+        "pr_auc": 0.006081,
+        "budgets": {
+          "0.01": {
+            "budget": 0.01,
+            "selected_sessions": 3255,
+            "total_sessions": 325456,
+            "total_positives": 1977,
+            "total_negatives": 323479,
+            "precision": 0.006603,
+            "recall": 0.010871,
+            "f1_score": 0.008216,
+            "fpr": 0.009996,
+            "tp": 21.4919,
+            "fp": 3233.5081,
+            "fn": 1955.5081,
+            "tn": 320245.4919,
+            "confusion_matrix": {
+              "TP": 21.4919,
+              "FP": 3233.5081,
+              "FN": 1955.5081,
+              "TN": 320245.4919
+            }
+          },
+          "0.05": {
+            "budget": 0.05,
+            "selected_sessions": 16273,
+            "total_sessions": 325456,
+            "total_positives": 1977,
+            "total_negatives": 323479,
+            "precision": 0.006176,
+            "recall": 0.050835,
+            "f1_score": 0.011014,
+            "fpr": 0.049996,
+            "tp": 100.501,
+            "fp": 16172.499,
+            "fn": 1876.499,
+            "tn": 307306.501,
+            "confusion_matrix": {
+              "TP": 100.501,
+              "FP": 16172.499,
+              "FN": 1876.499,
+              "TN": 307306.501
+            }
+          },
+          "0.1": {
+            "budget": 0.1,
+            "selected_sessions": 32546,
+            "total_sessions": 325456,
+            "total_positives": 1977,
+            "total_negatives": 323479,
+            "precision": 0.006123,
+            "recall": 0.100792,
+            "f1_score": 0.011544,
+            "fpr": 0.099996,
+            "tp": 199.2653,
+            "fp": 32346.7347,
+            "fn": 1777.7347,
+            "tn": 291132.2653,
+            "confusion_matrix": {
+              "TP": 199.2653,
+              "FP": 32346.7347,
+              "FN": 1777.7347,
+              "TN": 291132.2653
+            }
+          },
+          "0.2": {
+            "budget": 0.2,
+            "selected_sessions": 65092,
+            "total_sessions": 325456,
+            "total_positives": 1977,
+            "total_negatives": 323479,
+            "precision": 0.006096,
+            "recall": 0.200705,
+            "f1_score": 0.011832,
+            "fpr": 0.199998,
+            "tp": 396.7941,
+            "fp": 64695.2059,
+            "fn": 1580.2059,
+            "tn": 258783.7941,
+            "confusion_matrix": {
+              "TP": 396.7941,
+              "FP": 64695.2059,
+              "FN": 1580.2059,
+              "TN": 258783.7941
+            }
+          }
+        }
+      },
+      "negative_activity": {
+        "pr_auc": 0.006069,
+        "budgets": {
+          "0.01": {
+            "budget": 0.01,
+            "selected_sessions": 3255,
+            "total_sessions": 325456,
+            "total_positives": 1977,
+            "total_negatives": 323479,
+            "precision": 0.006069,
+            "recall": 0.009993,
+            "f1_score": 0.007552,
+            "fpr": 0.010001,
+            "tp": 19.7553,
+            "fp": 3235.2447,
+            "fn": 1957.2447,
+            "tn": 320243.7553,
+            "confusion_matrix": {
+              "TP": 19.7553,
+              "FP": 3235.2447,
+              "FN": 1957.2447,
+              "TN": 320243.7553
+            }
+          },
+          "0.05": {
+            "budget": 0.05,
+            "selected_sessions": 16273,
+            "total_sessions": 325456,
+            "total_positives": 1977,
+            "total_negatives": 323479,
+            "precision": 0.006069,
+            "recall": 0.049957,
+            "f1_score": 0.010823,
+            "fpr": 0.050001,
+            "tp": 98.7644,
+            "fp": 16174.2356,
+            "fn": 1878.2356,
+            "tn": 307304.7644,
+            "confusion_matrix": {
+              "TP": 98.7644,
+              "FP": 16174.2356,
+              "FN": 1878.2356,
+              "TN": 307304.7644
+            }
+          },
+          "0.1": {
+            "budget": 0.1,
+            "selected_sessions": 32546,
+            "total_sessions": 325456,
+            "total_positives": 1977,
+            "total_negatives": 323479,
+            "precision": 0.006069,
+            "recall": 0.099913,
+            "f1_score": 0.011443,
+            "fpr": 0.100002,
+            "tp": 197.5288,
+            "fp": 32348.4712,
+            "fn": 1779.4712,
+            "tn": 291130.5288,
+            "confusion_matrix": {
+              "TP": 197.5288,
+              "FP": 32348.4712,
+              "FN": 1779.4712,
+              "TN": 291130.5288
+            }
+          },
+          "0.2": {
+            "budget": 0.2,
+            "selected_sessions": 65092,
+            "total_sessions": 325456,
+            "total_positives": 1977,
+            "total_negatives": 323479,
+            "precision": 0.006069,
+            "recall": 0.199827,
+            "f1_score": 0.011781,
+            "fpr": 0.200004,
+            "tp": 395.0575,
+            "fp": 64696.9425,
+            "fn": 1581.9425,
+            "tn": 258782.0575,
+            "confusion_matrix": {
+              "TP": 395.0575,
+              "FP": 64696.9425,
+              "FN": 1581.9425,
+              "TN": 258782.0575
+            }
+          }
+        }
+      },
+      "R7": {
+        "pr_auc": 0.006075,
+        "budgets": {
+          "0.01": {
+            "budget": 0.01,
+            "selected_sessions": 3255,
+            "total_sessions": 325456,
+            "total_positives": 1977,
+            "total_negatives": 323479,
+            "precision": 0.006075,
+            "recall": 0.010001,
+            "f1_score": 0.007558,
+            "fpr": 0.010001,
+            "tp": 19.7727,
+            "fp": 3235.2273,
+            "fn": 1957.2273,
+            "tn": 320243.7727,
+            "confusion_matrix": {
+              "TP": 19.7727,
+              "FP": 3235.2273,
+              "FN": 1957.2273,
+              "TN": 320243.7727
+            }
+          },
+          "0.05": {
+            "budget": 0.05,
+            "selected_sessions": 16273,
+            "total_sessions": 325456,
+            "total_positives": 1977,
+            "total_negatives": 323479,
+            "precision": 0.006075,
+            "recall": 0.050001,
+            "f1_score": 0.010833,
+            "fpr": 0.050001,
+            "tp": 98.8512,
+            "fp": 16174.1488,
+            "fn": 1878.1488,
+            "tn": 307304.8512,
+            "confusion_matrix": {
+              "TP": 98.8512,
+              "FP": 16174.1488,
+              "FN": 1878.1488,
+              "TN": 307304.8512
+            }
+          },
+          "0.1": {
+            "budget": 0.1,
+            "selected_sessions": 32546,
+            "total_sessions": 325456,
+            "total_positives": 1977,
+            "total_negatives": 323479,
+            "precision": 0.006075,
+            "recall": 0.100001,
+            "f1_score": 0.011453,
+            "fpr": 0.100001,
+            "tp": 197.7024,
+            "fp": 32348.2976,
+            "fn": 1779.2976,
+            "tn": 291130.7024,
+            "confusion_matrix": {
+              "TP": 197.7024,
+              "FP": 32348.2976,
+              "FN": 1779.2976,
+              "TN": 291130.7024
+            }
+          },
+          "0.2": {
+            "budget": 0.2,
+            "selected_sessions": 65092,
+            "total_sessions": 325456,
+            "total_positives": 1977,
+            "total_negatives": 323479,
+            "precision": 0.006075,
+            "recall": 0.200002,
+            "f1_score": 0.011791,
+            "fpr": 0.200002,
+            "tp": 395.4049,
+            "fp": 64696.5951,
+            "fn": 1581.5951,
+            "tn": 258782.4049,
+            "confusion_matrix": {
+              "TP": 395.4049,
+              "FP": 64696.5951,
+              "FN": 1581.5951,
+              "TN": 258782.4049
+            }
+          }
+        }
+      },
+      "learned": {
+        "pr_auc": 0.005056,
+        "budgets": {
+          "0.01": {
+            "budget": 0.01,
+            "selected_sessions": 3255,
+            "total_sessions": 325456,
+            "total_positives": 1977,
+            "total_negatives": 323479,
+            "precision": 0.003862,
+            "recall": 0.006359,
+            "f1_score": 0.004806,
+            "fpr": 0.010024,
+            "tp": 12.5719,
+            "fp": 3242.4281,
+            "fn": 1964.4281,
+            "tn": 320236.5719,
+            "confusion_matrix": {
+              "TP": 12.5719,
+              "FP": 3242.4281,
+              "FN": 1964.4281,
+              "TN": 320236.5719
+            }
+          },
+          "0.05": {
+            "budget": 0.05,
+            "selected_sessions": 16273,
+            "total_sessions": 325456,
+            "total_positives": 1977,
+            "total_negatives": 323479,
+            "precision": 0.003862,
+            "recall": 0.031792,
+            "f1_score": 0.006888,
+            "fpr": 0.050112,
+            "tp": 62.8518,
+            "fp": 16210.1482,
+            "fn": 1914.1482,
+            "tn": 307268.8518,
+            "confusion_matrix": {
+              "TP": 62.8518,
+              "FP": 16210.1482,
+              "FN": 1914.1482,
+              "TN": 307268.8518
+            }
+          },
+          "0.1": {
+            "budget": 0.1,
+            "selected_sessions": 32546,
+            "total_sessions": 325456,
+            "total_positives": 1977,
+            "total_negatives": 323479,
+            "precision": 0.003862,
+            "recall": 0.063583,
+            "f1_score": 0.007282,
+            "fpr": 0.100224,
+            "tp": 125.7036,
+            "fp": 32420.2964,
+            "fn": 1851.2964,
+            "tn": 291058.7036,
+            "confusion_matrix": {
+              "TP": 125.7036,
+              "FP": 32420.2964,
+              "FN": 1851.2964,
+              "TN": 291058.7036
+            }
+          },
+          "0.2": {
+            "budget": 0.2,
+            "selected_sessions": 65092,
+            "total_sessions": 325456,
+            "total_positives": 1977,
+            "total_negatives": 323479,
+            "precision": 0.003862,
+            "recall": 0.127166,
+            "f1_score": 0.007497,
+            "fpr": 0.200448,
+            "tp": 251.4073,
+            "fp": 64840.5927,
+            "fn": 1725.5927,
+            "tn": 258638.4073,
+            "confusion_matrix": {
+              "TP": 251.4073,
+              "FP": 64840.5927,
+              "FN": 1725.5927,
+              "TN": 258638.4073
+            }
+          }
+        }
+      },
+      "shuffle": {
+        "pr_auc": 0.005065,
+        "budgets": {
+          "0.01": {
+            "budget": 0.01,
+            "selected_sessions": 3255,
+            "total_sessions": 325456,
+            "total_positives": 1977,
+            "total_negatives": 323479,
+            "precision": 0.005096,
+            "recall": 0.008389,
+            "f1_score": 0.00634,
+            "fpr": 0.010011,
+            "tp": 16.586,
+            "fp": 3238.414,
+            "fn": 1960.414,
+            "tn": 320240.586,
+            "confusion_matrix": {
+              "TP": 16.586,
+              "FP": 3238.414,
+              "FN": 1960.414,
+              "TN": 320240.586
+            }
+          },
+          "0.05": {
+            "budget": 0.05,
+            "selected_sessions": 16273,
+            "total_sessions": 325456,
+            "total_positives": 1977,
+            "total_negatives": 323479,
+            "precision": 0.004109,
+            "recall": 0.033822,
+            "f1_score": 0.007328,
+            "fpr": 0.050099,
+            "tp": 66.8659,
+            "fp": 16206.1341,
+            "fn": 1910.1341,
+            "tn": 307272.8659,
+            "confusion_matrix": {
+              "TP": 66.8659,
+              "FP": 16206.1341,
+              "FN": 1910.1341,
+              "TN": 307272.8659
+            }
+          },
+          "0.1": {
+            "budget": 0.1,
+            "selected_sessions": 32546,
+            "total_sessions": 325456,
+            "total_positives": 1977,
+            "total_negatives": 323479,
+            "precision": 0.003986,
+            "recall": 0.065613,
+            "f1_score": 0.007515,
+            "fpr": 0.100211,
+            "tp": 129.7177,
+            "fp": 32416.2823,
+            "fn": 1847.2823,
+            "tn": 291062.7177,
+            "confusion_matrix": {
+              "TP": 129.7177,
+              "FP": 32416.2823,
+              "FN": 1847.2823,
+              "TN": 291062.7177
+            }
+          },
+          "0.2": {
+            "budget": 0.2,
+            "selected_sessions": 65092,
+            "total_sessions": 325456,
+            "total_positives": 1977,
+            "total_negatives": 323479,
+            "precision": 0.003924,
+            "recall": 0.129196,
+            "f1_score": 0.007617,
+            "fpr": 0.200435,
+            "tp": 255.4213,
+            "fp": 64836.5787,
+            "fn": 1721.5787,
+            "tn": 258642.4213,
+            "confusion_matrix": {
+              "TP": 255.4213,
+              "FP": 64836.5787,
+              "FN": 1721.5787,
+              "TN": 258642.4213
+            }
+          }
+        }
+      },
+      "constant": {
+        "pr_auc": 0.006075,
+        "budgets": {
+          "0.01": {
+            "budget": 0.01,
+            "selected_sessions": 3255,
+            "total_sessions": 325456,
+            "total_positives": 1977,
+            "total_negatives": 323479,
+            "precision": 0.006075,
+            "recall": 0.010001,
+            "f1_score": 0.007558,
+            "fpr": 0.010001,
+            "tp": 19.7727,
+            "fp": 3235.2273,
+            "fn": 1957.2273,
+            "tn": 320243.7727,
+            "confusion_matrix": {
+              "TP": 19.7727,
+              "FP": 3235.2273,
+              "FN": 1957.2273,
+              "TN": 320243.7727
+            }
+          },
+          "0.05": {
+            "budget": 0.05,
+            "selected_sessions": 16273,
+            "total_sessions": 325456,
+            "total_positives": 1977,
+            "total_negatives": 323479,
+            "precision": 0.006075,
+            "recall": 0.050001,
+            "f1_score": 0.010833,
+            "fpr": 0.050001,
+            "tp": 98.8512,
+            "fp": 16174.1488,
+            "fn": 1878.1488,
+            "tn": 307304.8512,
+            "confusion_matrix": {
+              "TP": 98.8512,
+              "FP": 16174.1488,
+              "FN": 1878.1488,
+              "TN": 307304.8512
+            }
+          },
+          "0.1": {
+            "budget": 0.1,
+            "selected_sessions": 32546,
+            "total_sessions": 325456,
+            "total_positives": 1977,
+            "total_negatives": 323479,
+            "precision": 0.006075,
+            "recall": 0.100001,
+            "f1_score": 0.011453,
+            "fpr": 0.100001,
+            "tp": 197.7024,
+            "fp": 32348.2976,
+            "fn": 1779.2976,
+            "tn": 291130.7024,
+            "confusion_matrix": {
+              "TP": 197.7024,
+              "FP": 32348.2976,
+              "FN": 1779.2976,
+              "TN": 291130.7024
+            }
+          },
+          "0.2": {
+            "budget": 0.2,
+            "selected_sessions": 65092,
+            "total_sessions": 325456,
+            "total_positives": 1977,
+            "total_negatives": 323479,
+            "precision": 0.006075,
+            "recall": 0.200002,
+            "f1_score": 0.011791,
+            "fpr": 0.200002,
+            "tp": 395.4049,
+            "fp": 64696.5951,
+            "fn": 1581.5951,
+            "tn": 258782.4049,
+            "confusion_matrix": {
+              "TP": 395.4049,
+              "FP": 64696.5951,
+              "FN": 1581.5951,
+              "TN": 258782.4049
+            }
+          }
+        }
+      },
+      "ablation": {
+        "pr_auc": 0.006075,
+        "budgets": {
+          "0.01": {
+            "budget": 0.01,
+            "selected_sessions": 3255,
+            "total_sessions": 325456,
+            "total_positives": 1977,
+            "total_negatives": 323479,
+            "precision": 0.006075,
+            "recall": 0.010001,
+            "f1_score": 0.007558,
+            "fpr": 0.010001,
+            "tp": 19.7727,
+            "fp": 3235.2273,
+            "fn": 1957.2273,
+            "tn": 320243.7727,
+            "confusion_matrix": {
+              "TP": 19.7727,
+              "FP": 3235.2273,
+              "FN": 1957.2273,
+              "TN": 320243.7727
+            }
+          },
+          "0.05": {
+            "budget": 0.05,
+            "selected_sessions": 16273,
+            "total_sessions": 325456,
+            "total_positives": 1977,
+            "total_negatives": 323479,
+            "precision": 0.006075,
+            "recall": 0.050001,
+            "f1_score": 0.010833,
+            "fpr": 0.050001,
+            "tp": 98.8512,
+            "fp": 16174.1488,
+            "fn": 1878.1488,
+            "tn": 307304.8512,
+            "confusion_matrix": {
+              "TP": 98.8512,
+              "FP": 16174.1488,
+              "FN": 1878.1488,
+              "TN": 307304.8512
+            }
+          },
+          "0.1": {
+            "budget": 0.1,
+            "selected_sessions": 32546,
+            "total_sessions": 325456,
+            "total_positives": 1977,
+            "total_negatives": 323479,
+            "precision": 0.006075,
+            "recall": 0.100001,
+            "f1_score": 0.011453,
+            "fpr": 0.100001,
+            "tp": 197.7024,
+            "fp": 32348.2976,
+            "fn": 1779.2976,
+            "tn": 291130.7024,
+            "confusion_matrix": {
+              "TP": 197.7024,
+              "FP": 32348.2976,
+              "FN": 1779.2976,
+              "TN": 291130.7024
+            }
+          },
+          "0.2": {
+            "budget": 0.2,
+            "selected_sessions": 65092,
+            "total_sessions": 325456,
+            "total_positives": 1977,
+            "total_negatives": 323479,
+            "precision": 0.006075,
+            "recall": 0.200002,
+            "f1_score": 0.011791,
+            "fpr": 0.200002,
+            "tp": 395.4049,
+            "fp": 64696.5951,
+            "fn": 1581.5951,
+            "tn": 258782.4049,
+            "confusion_matrix": {
+              "TP": 395.4049,
+              "FP": 64696.5951,
+              "FN": 1581.5951,
+              "TN": 258782.4049
+            }
+          }
+        }
+      }
+    },
+    "delta": -0.0363,
+    "interval": [
+      -0.0496,
+      -0.0155
+    ],
+    "verdict": "INVALID"
+  },
+  "S4": {
+    "day": "2025-08-09",
+    "baseline": "R7",
+    "validation": {
+      "random": 0.100003,
+      "activity": 0.103742,
+      "negative_activity": 0.099587,
+      "R7": 0.110546
+    },
+    "fits": {
+      "learned": {
+        "steps": 1000,
+        "loss": 0.6927219073297199
+      },
+      "shuffle": {
+        "steps": 1000,
+        "loss": 0.6931379644996898
+      },
+      "constant": {
+        "steps": 1000,
+        "loss": 0.6931471805599458
+      },
+      "ablation": {
+        "steps": 1000,
+        "loss": 0.6930125177210988
+      }
+    },
+    "metrics": {
+      "random": {
+        "pr_auc": 0.026857,
+        "budgets": {
+          "0.01": {
+            "budget": 0.01,
+            "selected_sessions": 628,
+            "total_sessions": 62778,
+            "total_positives": 1686,
+            "total_negatives": 61092,
+            "precision": 0.026857,
+            "recall": 0.010004,
+            "f1_score": 0.014577,
+            "fpr": 0.010004,
+            "tp": 16.8659,
+            "fp": 611.1341,
+            "fn": 1669.1341,
+            "tn": 60480.8659,
+            "confusion_matrix": {
+              "TP": 16.8659,
+              "FP": 611.1341,
+              "FN": 1669.1341,
+              "TN": 60480.8659
+            }
+          },
+          "0.05": {
+            "budget": 0.05,
+            "selected_sessions": 3139,
+            "total_sessions": 62778,
+            "total_positives": 1686,
+            "total_negatives": 61092,
+            "precision": 0.026857,
+            "recall": 0.050002,
+            "f1_score": 0.034944,
+            "fpr": 0.050002,
+            "tp": 84.3027,
+            "fp": 3054.6973,
+            "fn": 1601.6973,
+            "tn": 58037.3027,
+            "confusion_matrix": {
+              "TP": 84.3027,
+              "FP": 3054.6973,
+              "FN": 1601.6973,
+              "TN": 58037.3027
+            }
+          },
+          "0.1": {
+            "budget": 0.1,
+            "selected_sessions": 6278,
+            "total_sessions": 62778,
+            "total_positives": 1686,
+            "total_negatives": 61092,
+            "precision": 0.026857,
+            "recall": 0.100003,
+            "f1_score": 0.042342,
+            "fpr": 0.100003,
+            "tp": 168.6054,
+            "fp": 6109.3946,
+            "fn": 1517.3946,
+            "tn": 54982.6054,
+            "confusion_matrix": {
+              "TP": 168.6054,
+              "FP": 6109.3946,
+              "FN": 1517.3946,
+              "TN": 54982.6054
+            }
+          },
+          "0.2": {
+            "budget": 0.2,
+            "selected_sessions": 12556,
+            "total_sessions": 62778,
+            "total_positives": 1686,
+            "total_negatives": 61092,
+            "precision": 0.026857,
+            "recall": 0.200006,
+            "f1_score": 0.047354,
+            "fpr": 0.200006,
+            "tp": 337.2107,
+            "fp": 12218.7893,
+            "fn": 1348.7893,
+            "tn": 48873.2107,
+            "confusion_matrix": {
+              "TP": 337.2107,
+              "FP": 12218.7893,
+              "FN": 1348.7893,
+              "TN": 48873.2107
+            }
+          }
+        }
+      },
+      "activity": {
+        "pr_auc": 0.057224,
+        "budgets": {
+          "0.01": {
+            "budget": 0.01,
+            "selected_sessions": 628,
+            "total_sessions": 62778,
+            "total_positives": 1686,
+            "total_negatives": 61092,
+            "precision": 0.158735,
+            "recall": 0.059125,
+            "f1_score": 0.086159,
+            "fpr": 0.008648,
+            "tp": 99.6854,
+            "fp": 528.3146,
+            "fn": 1586.3146,
+            "tn": 60563.6854,
+            "confusion_matrix": {
+              "TP": 99.6854,
+              "FP": 528.3146,
+              "FN": 1586.3146,
+              "TN": 60563.6854
+            }
+          },
+          "0.05": {
+            "budget": 0.05,
+            "selected_sessions": 3139,
+            "total_sessions": 62778,
+            "total_positives": 1686,
+            "total_negatives": 61092,
+            "precision": 0.052175,
+            "recall": 0.097139,
+            "f1_score": 0.067886,
+            "fpr": 0.048701,
+            "tp": 163.7761,
+            "fp": 2975.2239,
+            "fn": 1522.2239,
+            "tn": 58116.7761,
+            "confusion_matrix": {
+              "TP": 163.7761,
+              "FP": 2975.2239,
+              "FN": 1522.2239,
+              "TN": 58116.7761
+            }
+          },
+          "0.1": {
+            "budget": 0.1,
+            "selected_sessions": 6278,
+            "total_sessions": 62778,
+            "total_positives": 1686,
+            "total_negatives": 61092,
+            "precision": 0.038849,
+            "recall": 0.144659,
+            "f1_score": 0.06125,
+            "fpr": 0.098771,
+            "tp": 243.8958,
+            "fp": 6034.1042,
+            "fn": 1442.1042,
+            "tn": 55057.8958,
+            "confusion_matrix": {
+              "TP": 243.8958,
+              "FP": 6034.1042,
+              "FN": 1442.1042,
+              "TN": 55057.8958
+            }
+          },
+          "0.2": {
+            "budget": 0.2,
+            "selected_sessions": 12556,
+            "total_sessions": 62778,
+            "total_positives": 1686,
+            "total_negatives": 61092,
+            "precision": 0.032187,
+            "recall": 0.239701,
+            "f1_score": 0.056753,
+            "fpr": 0.198911,
+            "tp": 404.1353,
+            "fp": 12151.8647,
+            "fn": 1281.8647,
+            "tn": 48940.1353,
+            "confusion_matrix": {
+              "TP": 404.1353,
+              "FP": 12151.8647,
+              "FN": 1281.8647,
+              "TN": 48940.1353
+            }
+          }
+        }
+      },
+      "negative_activity": {
+        "pr_auc": 0.025568,
+        "budgets": {
+          "0.01": {
+            "budget": 0.01,
+            "selected_sessions": 628,
+            "total_sessions": 62778,
+            "total_positives": 1686,
+            "total_negatives": 61092,
+            "precision": 0.025524,
+            "recall": 0.009507,
+            "f1_score": 0.013854,
+            "fpr": 0.010017,
+            "tp": 16.0291,
+            "fp": 611.9709,
+            "fn": 1669.9709,
+            "tn": 60480.0291,
+            "confusion_matrix": {
+              "TP": 16.0291,
+              "FP": 611.9709,
+              "FN": 1669.9709,
+              "TN": 60480.0291
+            }
+          },
+          "0.05": {
+            "budget": 0.05,
+            "selected_sessions": 3139,
+            "total_sessions": 62778,
+            "total_positives": 1686,
+            "total_negatives": 61092,
+            "precision": 0.025524,
+            "recall": 0.047521,
+            "f1_score": 0.03321,
+            "fpr": 0.05007,
+            "tp": 80.1197,
+            "fp": 3058.8803,
+            "fn": 1605.8803,
+            "tn": 58033.1197,
+            "confusion_matrix": {
+              "TP": 80.1197,
+              "FP": 3058.8803,
+              "FN": 1605.8803,
+              "TN": 58033.1197
+            }
+          },
+          "0.1": {
+            "budget": 0.1,
+            "selected_sessions": 6278,
+            "total_sessions": 62778,
+            "total_positives": 1686,
+            "total_negatives": 61092,
+            "precision": 0.025524,
+            "recall": 0.095041,
+            "f1_score": 0.040241,
+            "fpr": 0.10014,
+            "tp": 160.2395,
+            "fp": 6117.7605,
+            "fn": 1525.7605,
+            "tn": 54974.2395,
+            "confusion_matrix": {
+              "TP": 160.2395,
+              "FP": 6117.7605,
+              "FN": 1525.7605,
+              "TN": 54974.2395
+            }
+          },
+          "0.2": {
+            "budget": 0.2,
+            "selected_sessions": 12556,
+            "total_sessions": 62778,
+            "total_positives": 1686,
+            "total_negatives": 61092,
+            "precision": 0.025524,
+            "recall": 0.190082,
+            "f1_score": 0.045005,
+            "fpr": 0.20028,
+            "tp": 320.4789,
+            "fp": 12235.5211,
+            "fn": 1365.5211,
+            "tn": 48856.4789,
+            "confusion_matrix": {
+              "TP": 320.4789,
+              "FP": 12235.5211,
+              "FN": 1365.5211,
+              "TN": 48856.4789
+            }
+          }
+        }
+      },
+      "R7": {
+        "pr_auc": 0.062384,
+        "budgets": {
+          "0.01": {
+            "budget": 0.01,
+            "selected_sessions": 628,
+            "total_sessions": 62778,
+            "total_positives": 1686,
+            "total_negatives": 61092,
+            "precision": 0.15043,
+            "recall": 0.056032,
+            "f1_score": 0.081651,
+            "fpr": 0.008733,
+            "tp": 94.4697,
+            "fp": 533.5303,
+            "fn": 1591.5303,
+            "tn": 60558.4697,
+            "confusion_matrix": {
+              "TP": 94.4697,
+              "FP": 533.5303,
+              "FN": 1591.5303,
+              "TN": 60558.4697
+            }
+          },
+          "0.05": {
+            "budget": 0.05,
+            "selected_sessions": 3139,
+            "total_sessions": 62778,
+            "total_positives": 1686,
+            "total_negatives": 61092,
+            "precision": 0.05058,
+            "recall": 0.09417,
+            "f1_score": 0.065812,
+            "fpr": 0.048783,
+            "tp": 158.7712,
+            "fp": 2980.2288,
+            "fn": 1527.2288,
+            "tn": 58111.7712,
+            "confusion_matrix": {
+              "TP": 158.7712,
+              "FP": 2980.2288,
+              "FN": 1527.2288,
+              "TN": 58111.7712
+            }
+          },
+          "0.1": {
+            "budget": 0.1,
+            "selected_sessions": 6278,
+            "total_sessions": 62778,
+            "total_positives": 1686,
+            "total_negatives": 61092,
+            "precision": 0.038094,
+            "recall": 0.141847,
+            "f1_score": 0.060059,
+            "fpr": 0.098848,
+            "tp": 239.1543,
+            "fp": 6038.8457,
+            "fn": 1446.8457,
+            "tn": 55053.1543,
+            "confusion_matrix": {
+              "TP": 239.1543,
+              "FP": 6038.8457,
+              "FN": 1446.8457,
+              "TN": 55053.1543
+            }
+          },
+          "0.2": {
+            "budget": 0.2,
+            "selected_sessions": 12556,
+            "total_sessions": 62778,
+            "total_positives": 1686,
+            "total_negatives": 61092,
+            "precision": 0.031851,
+            "recall": 0.237201,
+            "f1_score": 0.056161,
+            "fpr": 0.19898,
+            "tp": 399.9206,
+            "fp": 12156.0794,
+            "fn": 1286.0794,
+            "tn": 48935.9206,
+            "confusion_matrix": {
+              "TP": 399.9206,
+              "FP": 12156.0794,
+              "FN": 1286.0794,
+              "TN": 48935.9206
+            }
+          }
+        }
+      },
+      "learned": {
+        "pr_auc": 0.088861,
+        "budgets": {
+          "0.01": {
+            "budget": 0.01,
+            "selected_sessions": 628,
+            "total_sessions": 62778,
+            "total_positives": 1686,
+            "total_negatives": 61092,
+            "precision": 0.132166,
+            "recall": 0.049229,
+            "f1_score": 0.071737,
+            "fpr": 0.008921,
+            "tp": 83.0,
+            "fp": 545.0,
+            "fn": 1603.0,
+            "tn": 60547.0,
+            "confusion_matrix": {
+              "TP": 83.0,
+              "FP": 545.0,
+              "FN": 1603.0,
+              "TN": 60547.0
+            }
+          },
+          "0.05": {
+            "budget": 0.05,
+            "selected_sessions": 3139,
+            "total_sessions": 62778,
+            "total_positives": 1686,
+            "total_negatives": 61092,
+            "precision": 0.05663,
+            "recall": 0.105434,
+            "f1_score": 0.073684,
+            "fpr": 0.048472,
+            "tp": 177.7621,
+            "fp": 2961.2379,
+            "fn": 1508.2379,
+            "tn": 58130.7621,
+            "confusion_matrix": {
+              "TP": 177.7621,
+              "FP": 2961.2379,
+              "FN": 1508.2379,
+              "TN": 58130.7621
+            }
+          },
+          "0.1": {
+            "budget": 0.1,
+            "selected_sessions": 6278,
+            "total_sessions": 62778,
+            "total_positives": 1686,
+            "total_negatives": 61092,
+            "precision": 0.095698,
+            "recall": 0.35634,
+            "f1_score": 0.150876,
+            "fpr": 0.092929,
+            "tp": 600.7895,
+            "fp": 5677.2105,
+            "fn": 1085.2105,
+            "tn": 55414.7895,
+            "confusion_matrix": {
+              "TP": 600.7895,
+              "FP": 5677.2105,
+              "FN": 1085.2105,
+              "TN": 55414.7895
+            }
+          },
+          "0.2": {
+            "budget": 0.2,
+            "selected_sessions": 12556,
+            "total_sessions": 62778,
+            "total_positives": 1686,
+            "total_negatives": 61092,
+            "precision": 0.081966,
+            "recall": 0.610419,
+            "f1_score": 0.144526,
+            "fpr": 0.18868,
+            "tp": 1029.1671,
+            "fp": 11526.8329,
+            "fn": 656.8329,
+            "tn": 49565.1671,
+            "confusion_matrix": {
+              "TP": 1029.1671,
+              "FP": 11526.8329,
+              "FN": 656.8329,
+              "TN": 49565.1671
+            }
+          }
+        }
+      },
+      "shuffle": {
+        "pr_auc": 0.099502,
+        "budgets": {
+          "0.01": {
+            "budget": 0.01,
+            "selected_sessions": 628,
+            "total_sessions": 62778,
+            "total_positives": 1686,
+            "total_negatives": 61092,
+            "precision": 0.140127,
+            "recall": 0.052195,
+            "f1_score": 0.076059,
+            "fpr": 0.008839,
+            "tp": 88.0,
+            "fp": 540.0,
+            "fn": 1598.0,
+            "tn": 60552.0,
+            "confusion_matrix": {
+              "TP": 88.0,
+              "FP": 540.0,
+              "FN": 1598.0,
+              "TN": 60552.0
+            }
+          },
+          "0.05": {
+            "budget": 0.05,
+            "selected_sessions": 3139,
+            "total_sessions": 62778,
+            "total_positives": 1686,
+            "total_negatives": 61092,
+            "precision": 0.05663,
+            "recall": 0.105434,
+            "f1_score": 0.073684,
+            "fpr": 0.048472,
+            "tp": 177.7621,
+            "fp": 2961.2379,
+            "fn": 1508.2379,
+            "tn": 58130.7621,
+            "confusion_matrix": {
+              "TP": 177.7621,
+              "FP": 2961.2379,
+              "FN": 1508.2379,
+              "TN": 58130.7621
+            }
+          },
+          "0.1": {
+            "budget": 0.1,
+            "selected_sessions": 6278,
+            "total_sessions": 62778,
+            "total_positives": 1686,
+            "total_negatives": 61092,
+            "precision": 0.095698,
+            "recall": 0.35634,
+            "f1_score": 0.150876,
+            "fpr": 0.092929,
+            "tp": 600.7895,
+            "fp": 5677.2105,
+            "fn": 1085.2105,
+            "tn": 55414.7895,
+            "confusion_matrix": {
+              "TP": 600.7895,
+              "FP": 5677.2105,
+              "FN": 1085.2105,
+              "TN": 55414.7895
+            }
+          },
+          "0.2": {
+            "budget": 0.2,
+            "selected_sessions": 12556,
+            "total_sessions": 62778,
+            "total_positives": 1686,
+            "total_negatives": 61092,
+            "precision": 0.081966,
+            "recall": 0.610419,
+            "f1_score": 0.144526,
+            "fpr": 0.18868,
+            "tp": 1029.1671,
+            "fp": 11526.8329,
+            "fn": 656.8329,
+            "tn": 49565.1671,
+            "confusion_matrix": {
+              "TP": 1029.1671,
+              "FP": 11526.8329,
+              "FN": 656.8329,
+              "TN": 49565.1671
+            }
+          }
+        }
+      },
+      "constant": {
+        "pr_auc": 0.026857,
+        "budgets": {
+          "0.01": {
+            "budget": 0.01,
+            "selected_sessions": 628,
+            "total_sessions": 62778,
+            "total_positives": 1686,
+            "total_negatives": 61092,
+            "precision": 0.026857,
+            "recall": 0.010004,
+            "f1_score": 0.014577,
+            "fpr": 0.010004,
+            "tp": 16.8659,
+            "fp": 611.1341,
+            "fn": 1669.1341,
+            "tn": 60480.8659,
+            "confusion_matrix": {
+              "TP": 16.8659,
+              "FP": 611.1341,
+              "FN": 1669.1341,
+              "TN": 60480.8659
+            }
+          },
+          "0.05": {
+            "budget": 0.05,
+            "selected_sessions": 3139,
+            "total_sessions": 62778,
+            "total_positives": 1686,
+            "total_negatives": 61092,
+            "precision": 0.026857,
+            "recall": 0.050002,
+            "f1_score": 0.034944,
+            "fpr": 0.050002,
+            "tp": 84.3027,
+            "fp": 3054.6973,
+            "fn": 1601.6973,
+            "tn": 58037.3027,
+            "confusion_matrix": {
+              "TP": 84.3027,
+              "FP": 3054.6973,
+              "FN": 1601.6973,
+              "TN": 58037.3027
+            }
+          },
+          "0.1": {
+            "budget": 0.1,
+            "selected_sessions": 6278,
+            "total_sessions": 62778,
+            "total_positives": 1686,
+            "total_negatives": 61092,
+            "precision": 0.026857,
+            "recall": 0.100003,
+            "f1_score": 0.042342,
+            "fpr": 0.100003,
+            "tp": 168.6054,
+            "fp": 6109.3946,
+            "fn": 1517.3946,
+            "tn": 54982.6054,
+            "confusion_matrix": {
+              "TP": 168.6054,
+              "FP": 6109.3946,
+              "FN": 1517.3946,
+              "TN": 54982.6054
+            }
+          },
+          "0.2": {
+            "budget": 0.2,
+            "selected_sessions": 12556,
+            "total_sessions": 62778,
+            "total_positives": 1686,
+            "total_negatives": 61092,
+            "precision": 0.026857,
+            "recall": 0.200006,
+            "f1_score": 0.047354,
+            "fpr": 0.200006,
+            "tp": 337.2107,
+            "fp": 12218.7893,
+            "fn": 1348.7893,
+            "tn": 48873.2107,
+            "confusion_matrix": {
+              "TP": 337.2107,
+              "FP": 12218.7893,
+              "FN": 1348.7893,
+              "TN": 48873.2107
+            }
+          }
+        }
+      },
+      "ablation": {
+        "pr_auc": 0.061668,
+        "budgets": {
+          "0.01": {
+            "budget": 0.01,
+            "selected_sessions": 628,
+            "total_sessions": 62778,
+            "total_positives": 1686,
+            "total_negatives": 61092,
+            "precision": 0.15043,
+            "recall": 0.056032,
+            "f1_score": 0.081651,
+            "fpr": 0.008733,
+            "tp": 94.4697,
+            "fp": 533.5303,
+            "fn": 1591.5303,
+            "tn": 60558.4697,
+            "confusion_matrix": {
+              "TP": 94.4697,
+              "FP": 533.5303,
+              "FN": 1591.5303,
+              "TN": 60558.4697
+            }
+          },
+          "0.05": {
+            "budget": 0.05,
+            "selected_sessions": 3139,
+            "total_sessions": 62778,
+            "total_positives": 1686,
+            "total_negatives": 61092,
+            "precision": 0.05058,
+            "recall": 0.09417,
+            "f1_score": 0.065812,
+            "fpr": 0.048783,
+            "tp": 158.7712,
+            "fp": 2980.2288,
+            "fn": 1527.2288,
+            "tn": 58111.7712,
+            "confusion_matrix": {
+              "TP": 158.7712,
+              "FP": 2980.2288,
+              "FN": 1527.2288,
+              "TN": 58111.7712
+            }
+          },
+          "0.1": {
+            "budget": 0.1,
+            "selected_sessions": 6278,
+            "total_sessions": 62778,
+            "total_positives": 1686,
+            "total_negatives": 61092,
+            "precision": 0.038094,
+            "recall": 0.141847,
+            "f1_score": 0.060059,
+            "fpr": 0.098848,
+            "tp": 239.1543,
+            "fp": 6038.8457,
+            "fn": 1446.8457,
+            "tn": 55053.1543,
+            "confusion_matrix": {
+              "TP": 239.1543,
+              "FP": 6038.8457,
+              "FN": 1446.8457,
+              "TN": 55053.1543
+            }
+          },
+          "0.2": {
+            "budget": 0.2,
+            "selected_sessions": 12556,
+            "total_sessions": 62778,
+            "total_positives": 1686,
+            "total_negatives": 61092,
+            "precision": 0.031851,
+            "recall": 0.237201,
+            "f1_score": 0.056161,
+            "fpr": 0.19898,
+            "tp": 399.9206,
+            "fp": 12156.0794,
+            "fn": 1286.0794,
+            "tn": 48935.9206,
+            "confusion_matrix": {
+              "TP": 399.9206,
+              "FP": 12156.0794,
+              "FN": 1286.0794,
+              "TN": 48935.9206
+            }
+          }
+        }
+      }
+    },
+    "delta": 0.2145,
+    "interval": [
+      -0.089,
+      0.6594
+    ],
+    "verdict": "INVALID"
+  },
+  "S5": {
+    "day": "2025-08-09",
+    "baseline": "negative_activity",
+    "validation": {
+      "random": 0.100577,
+      "activity": 0.126412,
+      "negative_activity": 0.127749,
+      "R7": 0.105593
+    },
+    "fits": {
+      "learned": {
+        "steps": 1000,
+        "loss": 0.5324253997282715
+      },
+      "shuffle": {
+        "steps": 1000,
+        "loss": 0.6865199365778277
+      },
+      "constant": {
+        "steps": 1000,
+        "loss": 0.6931471805599501
+      },
+      "ablation": {
+        "steps": 1000,
+        "loss": 0.5474207435610685
+      }
+    },
+    "metrics": {
+      "random": {
+        "pr_auc": 0.73913,
+        "budgets": {
+          "0.01": {
+            "budget": 0.01,
+            "selected_sessions": 2,
+            "total_sessions": 115,
+            "total_positives": 85,
+            "total_negatives": 30,
+            "precision": 0.73913,
+            "recall": 0.017391,
+            "f1_score": 0.033983,
+            "fpr": 0.017391,
+            "tp": 1.4783,
+            "fp": 0.5217,
+            "fn": 83.5217,
+            "tn": 29.4783,
+            "confusion_matrix": {
+              "TP": 1.4783,
+              "FP": 0.5217,
+              "FN": 83.5217,
+              "TN": 29.4783
+            }
+          },
+          "0.05": {
+            "budget": 0.05,
+            "selected_sessions": 6,
+            "total_sessions": 115,
+            "total_positives": 85,
+            "total_negatives": 30,
+            "precision": 0.73913,
+            "recall": 0.052174,
+            "f1_score": 0.097468,
+            "fpr": 0.052174,
+            "tp": 4.4348,
+            "fp": 1.5652,
+            "fn": 80.5652,
+            "tn": 28.4348,
+            "confusion_matrix": {
+              "TP": 4.4348,
+              "FP": 1.5652,
+              "FN": 80.5652,
+              "TN": 28.4348
+            }
+          },
+          "0.1": {
+            "budget": 0.1,
+            "selected_sessions": 12,
+            "total_sessions": 115,
+            "total_positives": 85,
+            "total_negatives": 30,
+            "precision": 0.73913,
+            "recall": 0.104348,
+            "f1_score": 0.182878,
+            "fpr": 0.104348,
+            "tp": 8.8696,
+            "fp": 3.1304,
+            "fn": 76.1304,
+            "tn": 26.8696,
+            "confusion_matrix": {
+              "TP": 8.8696,
+              "FP": 3.1304,
+              "FN": 76.1304,
+              "TN": 26.8696
+            }
+          },
+          "0.2": {
+            "budget": 0.2,
+            "selected_sessions": 23,
+            "total_sessions": 115,
+            "total_positives": 85,
+            "total_negatives": 30,
+            "precision": 0.73913,
+            "recall": 0.2,
+            "f1_score": 0.314815,
+            "fpr": 0.2,
+            "tp": 17.0,
+            "fp": 6.0,
+            "fn": 68.0,
+            "tn": 24.0,
+            "confusion_matrix": {
+              "TP": 17.0,
+              "FP": 6.0,
+              "FN": 68.0,
+              "TN": 24.0
+            }
+          }
+        }
+      },
+      "activity": {
+        "pr_auc": 0.961778,
+        "budgets": {
+          "0.01": {
+            "budget": 0.01,
+            "selected_sessions": 2,
+            "total_sessions": 115,
+            "total_positives": 85,
+            "total_negatives": 30,
+            "precision": 1.0,
+            "recall": 0.023529,
+            "f1_score": 0.045977,
+            "fpr": 0.0,
+            "tp": 2.0,
+            "fp": 0.0,
+            "fn": 83.0,
+            "tn": 30.0,
+            "confusion_matrix": {
+              "TP": 2.0,
+              "FP": 0.0,
+              "FN": 83.0,
+              "TN": 30.0
+            }
+          },
+          "0.05": {
+            "budget": 0.05,
+            "selected_sessions": 6,
+            "total_sessions": 115,
+            "total_positives": 85,
+            "total_negatives": 30,
+            "precision": 1.0,
+            "recall": 0.070588,
+            "f1_score": 0.131868,
+            "fpr": 0.0,
+            "tp": 6.0,
+            "fp": 0.0,
+            "fn": 79.0,
+            "tn": 30.0,
+            "confusion_matrix": {
+              "TP": 6.0,
+              "FP": 0.0,
+              "FN": 79.0,
+              "TN": 30.0
+            }
+          },
+          "0.1": {
+            "budget": 0.1,
+            "selected_sessions": 12,
+            "total_sessions": 115,
+            "total_positives": 85,
+            "total_negatives": 30,
+            "precision": 1.0,
+            "recall": 0.141176,
+            "f1_score": 0.247423,
+            "fpr": 0.0,
+            "tp": 12.0,
+            "fp": 0.0,
+            "fn": 73.0,
+            "tn": 30.0,
+            "confusion_matrix": {
+              "TP": 12.0,
+              "FP": 0.0,
+              "FN": 73.0,
+              "TN": 30.0
+            }
+          },
+          "0.2": {
+            "budget": 0.2,
+            "selected_sessions": 23,
+            "total_sessions": 115,
+            "total_positives": 85,
+            "total_negatives": 30,
+            "precision": 1.0,
+            "recall": 0.270588,
+            "f1_score": 0.425926,
+            "fpr": 0.0,
+            "tp": 23.0,
+            "fp": 0.0,
+            "fn": 62.0,
+            "tn": 30.0,
+            "confusion_matrix": {
+              "TP": 23.0,
+              "FP": 0.0,
+              "FN": 62.0,
+              "TN": 30.0
+            }
+          }
+        }
+      },
+      "negative_activity": {
+        "pr_auc": 0.583268,
+        "budgets": {
+          "0.01": {
+            "budget": 0.01,
+            "selected_sessions": 2,
+            "total_sessions": 115,
+            "total_positives": 85,
+            "total_negatives": 30,
+            "precision": 0.347826,
+            "recall": 0.008184,
+            "f1_score": 0.015992,
+            "fpr": 0.043478,
+            "tp": 0.6957,
+            "fp": 1.3043,
+            "fn": 84.3043,
+            "tn": 28.6957,
+            "confusion_matrix": {
+              "TP": 0.6957,
+              "FP": 1.3043,
+              "FN": 84.3043,
+              "TN": 28.6957
+            }
+          },
+          "0.05": {
+            "budget": 0.05,
+            "selected_sessions": 6,
+            "total_sessions": 115,
+            "total_positives": 85,
+            "total_negatives": 30,
+            "precision": 0.347826,
+            "recall": 0.024552,
+            "f1_score": 0.045867,
+            "fpr": 0.130435,
+            "tp": 2.087,
+            "fp": 3.913,
+            "fn": 82.913,
+            "tn": 26.087,
+            "confusion_matrix": {
+              "TP": 2.087,
+              "FP": 3.913,
+              "FN": 82.913,
+              "TN": 26.087
+            }
+          },
+          "0.1": {
+            "budget": 0.1,
+            "selected_sessions": 12,
+            "total_sessions": 115,
+            "total_positives": 85,
+            "total_negatives": 30,
+            "precision": 0.347826,
+            "recall": 0.049105,
+            "f1_score": 0.08606,
+            "fpr": 0.26087,
+            "tp": 4.1739,
+            "fp": 7.8261,
+            "fn": 80.8261,
+            "tn": 22.1739,
+            "confusion_matrix": {
+              "TP": 4.1739,
+              "FP": 7.8261,
+              "FN": 80.8261,
+              "TN": 22.1739
+            }
+          },
+          "0.2": {
+            "budget": 0.2,
+            "selected_sessions": 23,
+            "total_sessions": 115,
+            "total_positives": 85,
+            "total_negatives": 30,
+            "precision": 0.347826,
+            "recall": 0.094118,
+            "f1_score": 0.148148,
+            "fpr": 0.5,
+            "tp": 8.0,
+            "fp": 15.0,
+            "fn": 77.0,
+            "tn": 15.0,
+            "confusion_matrix": {
+              "TP": 8.0,
+              "FP": 15.0,
+              "FN": 77.0,
+              "TN": 15.0
+            }
+          }
+        }
+      },
+      "R7": {
+        "pr_auc": 0.712278,
+        "budgets": {
+          "0.01": {
+            "budget": 0.01,
+            "selected_sessions": 2,
+            "total_sessions": 115,
+            "total_positives": 85,
+            "total_negatives": 30,
+            "precision": 1.0,
+            "recall": 0.023529,
+            "f1_score": 0.045977,
+            "fpr": 0.0,
+            "tp": 2.0,
+            "fp": 0.0,
+            "fn": 83.0,
+            "tn": 30.0,
+            "confusion_matrix": {
+              "TP": 2.0,
+              "FP": 0.0,
+              "FN": 83.0,
+              "TN": 30.0
+            }
+          },
+          "0.05": {
+            "budget": 0.05,
+            "selected_sessions": 6,
+            "total_sessions": 115,
+            "total_positives": 85,
+            "total_negatives": 30,
+            "precision": 1.0,
+            "recall": 0.070588,
+            "f1_score": 0.131868,
+            "fpr": 0.0,
+            "tp": 6.0,
+            "fp": 0.0,
+            "fn": 79.0,
+            "tn": 30.0,
+            "confusion_matrix": {
+              "TP": 6.0,
+              "FP": 0.0,
+              "FN": 79.0,
+              "TN": 30.0
+            }
+          },
+          "0.1": {
+            "budget": 0.1,
+            "selected_sessions": 12,
+            "total_sessions": 115,
+            "total_positives": 85,
+            "total_negatives": 30,
+            "precision": 1.0,
+            "recall": 0.141176,
+            "f1_score": 0.247423,
+            "fpr": 0.0,
+            "tp": 12.0,
+            "fp": 0.0,
+            "fn": 73.0,
+            "tn": 30.0,
+            "confusion_matrix": {
+              "TP": 12.0,
+              "FP": 0.0,
+              "FN": 73.0,
+              "TN": 30.0
+            }
+          },
+          "0.2": {
+            "budget": 0.2,
+            "selected_sessions": 23,
+            "total_sessions": 115,
+            "total_positives": 85,
+            "total_negatives": 30,
+            "precision": 0.676017,
+            "recall": 0.182922,
+            "f1_score": 0.287933,
+            "fpr": 0.248387,
+            "tp": 15.5484,
+            "fp": 7.4516,
+            "fn": 69.4516,
+            "tn": 22.5484,
+            "confusion_matrix": {
+              "TP": 15.5484,
+              "FP": 7.4516,
+              "FN": 69.4516,
+              "TN": 22.5484
+            }
+          }
+        }
+      },
+      "learned": {
+        "pr_auc": 0.548125,
+        "budgets": {
+          "0.01": {
+            "budget": 0.01,
+            "selected_sessions": 2,
+            "total_sessions": 115,
+            "total_positives": 85,
+            "total_negatives": 30,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1_score": 0.0,
+            "fpr": 0.066667,
+            "tp": 0.0,
+            "fp": 2.0,
+            "fn": 85.0,
+            "tn": 28.0,
+            "confusion_matrix": {
+              "TP": 0.0,
+              "FP": 2.0,
+              "FN": 85.0,
+              "TN": 28.0
+            }
+          },
+          "0.05": {
+            "budget": 0.05,
+            "selected_sessions": 6,
+            "total_sessions": 115,
+            "total_positives": 85,
+            "total_negatives": 30,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1_score": 0.0,
+            "fpr": 0.2,
+            "tp": 0.0,
+            "fp": 6.0,
+            "fn": 85.0,
+            "tn": 24.0,
+            "confusion_matrix": {
+              "TP": 0.0,
+              "FP": 6.0,
+              "FN": 85.0,
+              "TN": 24.0
+            }
+          },
+          "0.1": {
+            "budget": 0.1,
+            "selected_sessions": 12,
+            "total_sessions": 115,
+            "total_positives": 85,
+            "total_negatives": 30,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1_score": 0.0,
+            "fpr": 0.4,
+            "tp": 0.0,
+            "fp": 12.0,
+            "fn": 85.0,
+            "tn": 18.0,
+            "confusion_matrix": {
+              "TP": 0.0,
+              "FP": 12.0,
+              "FN": 85.0,
+              "TN": 18.0
+            }
+          },
+          "0.2": {
+            "budget": 0.2,
+            "selected_sessions": 23,
+            "total_sessions": 115,
+            "total_positives": 85,
+            "total_negatives": 30,
+            "precision": 0.173913,
+            "recall": 0.047059,
+            "f1_score": 0.074074,
+            "fpr": 0.633333,
+            "tp": 4.0,
+            "fp": 19.0,
+            "fn": 81.0,
+            "tn": 11.0,
+            "confusion_matrix": {
+              "TP": 4.0,
+              "FP": 19.0,
+              "FN": 81.0,
+              "TN": 11.0
+            }
+          }
+        }
+      },
+      "shuffle": {
+        "pr_auc": 0.598841,
+        "budgets": {
+          "0.01": {
+            "budget": 0.01,
+            "selected_sessions": 2,
+            "total_sessions": 115,
+            "total_positives": 85,
+            "total_negatives": 30,
+            "precision": 1.0,
+            "recall": 0.023529,
+            "f1_score": 0.045977,
+            "fpr": 0.0,
+            "tp": 2.0,
+            "fp": 0.0,
+            "fn": 83.0,
+            "tn": 30.0,
+            "confusion_matrix": {
+              "TP": 2.0,
+              "FP": 0.0,
+              "FN": 83.0,
+              "TN": 30.0
+            }
+          },
+          "0.05": {
+            "budget": 0.05,
+            "selected_sessions": 6,
+            "total_sessions": 115,
+            "total_positives": 85,
+            "total_negatives": 30,
+            "precision": 0.5,
+            "recall": 0.035294,
+            "f1_score": 0.065934,
+            "fpr": 0.1,
+            "tp": 3.0,
+            "fp": 3.0,
+            "fn": 82.0,
+            "tn": 27.0,
+            "confusion_matrix": {
+              "TP": 3.0,
+              "FP": 3.0,
+              "FN": 82.0,
+              "TN": 27.0
+            }
+          },
+          "0.1": {
+            "budget": 0.1,
+            "selected_sessions": 12,
+            "total_sessions": 115,
+            "total_positives": 85,
+            "total_negatives": 30,
+            "precision": 0.583333,
+            "recall": 0.082353,
+            "f1_score": 0.14433,
+            "fpr": 0.166667,
+            "tp": 7.0,
+            "fp": 5.0,
+            "fn": 78.0,
+            "tn": 25.0,
+            "confusion_matrix": {
+              "TP": 7.0,
+              "FP": 5.0,
+              "FN": 78.0,
+              "TN": 25.0
+            }
+          },
+          "0.2": {
+            "budget": 0.2,
+            "selected_sessions": 23,
+            "total_sessions": 115,
+            "total_positives": 85,
+            "total_negatives": 30,
+            "precision": 0.391304,
+            "recall": 0.105882,
+            "f1_score": 0.166667,
+            "fpr": 0.466667,
+            "tp": 9.0,
+            "fp": 14.0,
+            "fn": 76.0,
+            "tn": 16.0,
+            "confusion_matrix": {
+              "TP": 9.0,
+              "FP": 14.0,
+              "FN": 76.0,
+              "TN": 16.0
+            }
+          }
+        }
+      },
+      "constant": {
+        "pr_auc": 0.73913,
+        "budgets": {
+          "0.01": {
+            "budget": 0.01,
+            "selected_sessions": 2,
+            "total_sessions": 115,
+            "total_positives": 85,
+            "total_negatives": 30,
+            "precision": 0.73913,
+            "recall": 0.017391,
+            "f1_score": 0.033983,
+            "fpr": 0.017391,
+            "tp": 1.4783,
+            "fp": 0.5217,
+            "fn": 83.5217,
+            "tn": 29.4783,
+            "confusion_matrix": {
+              "TP": 1.4783,
+              "FP": 0.5217,
+              "FN": 83.5217,
+              "TN": 29.4783
+            }
+          },
+          "0.05": {
+            "budget": 0.05,
+            "selected_sessions": 6,
+            "total_sessions": 115,
+            "total_positives": 85,
+            "total_negatives": 30,
+            "precision": 0.73913,
+            "recall": 0.052174,
+            "f1_score": 0.097468,
+            "fpr": 0.052174,
+            "tp": 4.4348,
+            "fp": 1.5652,
+            "fn": 80.5652,
+            "tn": 28.4348,
+            "confusion_matrix": {
+              "TP": 4.4348,
+              "FP": 1.5652,
+              "FN": 80.5652,
+              "TN": 28.4348
+            }
+          },
+          "0.1": {
+            "budget": 0.1,
+            "selected_sessions": 12,
+            "total_sessions": 115,
+            "total_positives": 85,
+            "total_negatives": 30,
+            "precision": 0.73913,
+            "recall": 0.104348,
+            "f1_score": 0.182878,
+            "fpr": 0.104348,
+            "tp": 8.8696,
+            "fp": 3.1304,
+            "fn": 76.1304,
+            "tn": 26.8696,
+            "confusion_matrix": {
+              "TP": 8.8696,
+              "FP": 3.1304,
+              "FN": 76.1304,
+              "TN": 26.8696
+            }
+          },
+          "0.2": {
+            "budget": 0.2,
+            "selected_sessions": 23,
+            "total_sessions": 115,
+            "total_positives": 85,
+            "total_negatives": 30,
+            "precision": 0.73913,
+            "recall": 0.2,
+            "f1_score": 0.314815,
+            "fpr": 0.2,
+            "tp": 17.0,
+            "fp": 6.0,
+            "fn": 68.0,
+            "tn": 24.0,
+            "confusion_matrix": {
+              "TP": 17.0,
+              "FP": 6.0,
+              "FN": 68.0,
+              "TN": 24.0
+            }
+          }
+        }
+      },
+      "ablation": {
+        "pr_auc": 0.580315,
+        "budgets": {
+          "0.01": {
+            "budget": 0.01,
+            "selected_sessions": 2,
+            "total_sessions": 115,
+            "total_positives": 85,
+            "total_negatives": 30,
+            "precision": 0.5,
+            "recall": 0.011765,
+            "f1_score": 0.022989,
+            "fpr": 0.033333,
+            "tp": 1.0,
+            "fp": 1.0,
+            "fn": 84.0,
+            "tn": 29.0,
+            "confusion_matrix": {
+              "TP": 1.0,
+              "FP": 1.0,
+              "FN": 84.0,
+              "TN": 29.0
+            }
+          },
+          "0.05": {
+            "budget": 0.05,
+            "selected_sessions": 6,
+            "total_sessions": 115,
+            "total_positives": 85,
+            "total_negatives": 30,
+            "precision": 0.166667,
+            "recall": 0.011765,
+            "f1_score": 0.021978,
+            "fpr": 0.166667,
+            "tp": 1.0,
+            "fp": 5.0,
+            "fn": 84.0,
+            "tn": 25.0,
+            "confusion_matrix": {
+              "TP": 1.0,
+              "FP": 5.0,
+              "FN": 84.0,
+              "TN": 25.0
+            }
+          },
+          "0.1": {
+            "budget": 0.1,
+            "selected_sessions": 12,
+            "total_sessions": 115,
+            "total_positives": 85,
+            "total_negatives": 30,
+            "precision": 0.083333,
+            "recall": 0.011765,
+            "f1_score": 0.020619,
+            "fpr": 0.366667,
+            "tp": 1.0,
+            "fp": 11.0,
+            "fn": 84.0,
+            "tn": 19.0,
+            "confusion_matrix": {
+              "TP": 1.0,
+              "FP": 11.0,
+              "FN": 84.0,
+              "TN": 19.0
+            }
+          },
+          "0.2": {
+            "budget": 0.2,
+            "selected_sessions": 23,
+            "total_sessions": 115,
+            "total_positives": 85,
+            "total_negatives": 30,
+            "precision": 0.178261,
+            "recall": 0.048235,
+            "f1_score": 0.075926,
+            "fpr": 0.63,
+            "tp": 4.1,
+            "fp": 18.9,
+            "fn": 80.9,
+            "tn": 11.1,
+            "confusion_matrix": {
+              "TP": 4.1,
+              "FP": 18.9,
+              "FN": 80.9,
+              "TN": 11.1
+            }
+          }
+        }
+      }
+    },
+    "delta": -0.0491,
+    "interval": [
+      -0.068,
+      0.0258
+    ],
+    "verdict": "INCONCLUSIVE"
+  }
+}
