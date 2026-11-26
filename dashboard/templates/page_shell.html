@@ -478,7 +478,7 @@ function setBanner(meta, extraWarnText = '') {
   if (extraWarnText) {
     parts.push(extraWarnText);
     banner.className = 'warn';
-  } else if (meta && (meta.demo_label || meta.status === 'INVALID' || meta.status === 'INCONCLUSIVE')) {
+  } else if (meta && (meta.demo_label || ['badge invalid', 'badge inconclusive'].includes(statusClass(meta.status)))) {
     banner.className = 'warn';
   } else {
     banner.className = '';
@@ -619,7 +619,7 @@ async function initEvidence() {
   tools.appendChild(sortSelect);
 
   // Status filter chips
-  const filterStatuses = ['ALL', 'done', 'exploratory', 'NOT RUN', 'INVALID', 'INCONCLUSIVE'];
+  const filterStatuses = ['ALL', ...new Set(items.map(item => item.status))];
   const statusFilterBtns = [];
   for (const fs of filterStatuses) {
     const btn = el('button', fs === 'ALL' ? 'All Status' : fs, fs === 'ALL' ? 'active-filter' : '');
@@ -776,7 +776,8 @@ async function initMl() {
   const rcRes = getBody(3);
 
   const metricsMeta = metricsRes ? metricsRes.body : null;
-  setBanner(metricsMeta, 'NO VALIDATED ML GAIN');
+  const report = exp1Res?.body?.data?.text || '';
+  setBanner(metricsMeta, report.split(/\r?\n/).find(line => /^NO [A-Z ]+GAIN$/.test(line)) || '');
   if (!metricsRes && !exp1Res && !nullRcRes && !rcRes) {
     setStatus('NO DATA · API unavailable');
     content.replaceChildren(el('div', 'NO DATA · ML evidence endpoints unavailable.', 'card'));
@@ -785,33 +786,6 @@ async function initMl() {
   setStatus('Loaded ML experiment evidence');
 
   const container = el('div');
-
-  // Mandatory prominent outcome banner
-  const callout = el('div', '', 'card warn');
-  callout.appendChild(el('h2', 'Mandatory Scientific Finding: NO VALIDATED ML GAIN'));
-  callout.appendChild(el('p', 'Pre-registered Experiment 1 outcomes across stages S2, S4, and S5 fail to reject the null hypothesis. The candidate machine learning models demonstrated no statistically validated discrimination advantage over non-ML baseline heuristics under group and temporal leakage controls.'));
-  container.appendChild(callout);
-
-  // Validity Inspector Card
-  const validCard = el('section', '', 'card');
-  validCard.appendChild(el('h2', 'Scientific Validity Inspector & Confounding Audit'));
-  const vList = el('div');
-  const addAuditPoint = (title, badgeText, bClass, desc) => {
-    const box = el('div', '', 'card');
-    box.style.background = 'var(--surface-inset)';
-    box.style.marginBottom = '8px';
-    const row = el('div', '', 'tools');
-    row.appendChild(el('strong', title));
-    row.appendChild(el('span', badgeText, `badge ${bClass}`));
-    box.appendChild(row);
-    box.appendChild(el('p', desc, 'muted'));
-    vList.appendChild(box);
-  };
-  addAuditPoint('Stage S2 (Session Initial)', 'INCONCLUSIVE', 'inconclusive', 'Precommand session features yielded zero significant separation above random baseline. No predictive signal detected.');
-  addAuditPoint('Stage S4 (Command Boundary)', 'INVALID', 'invalid', 'Apparent high recall numbers are confounded by label-definition temporal leakage. High raw recall does NOT reflect true model generalization.');
-  addAuditPoint('Stage S5 (Post-Command)', 'INCONCLUSIVE', 'inconclusive', 'Evaluation bounds failed to achieve pre-registered statistical power thresholds under group splits.');
-  validCard.appendChild(vList);
-  container.appendChild(validCard);
 
   // Experiment 1 Stage Verdicts Table
   const verdictCard = el('section', '', 'card');
@@ -824,7 +798,7 @@ async function initMl() {
     const tbl = el('table');
     const thead = el('thead');
     const htr = el('tr');
-    for (const h of ['Stage', 'Day Window', 'Baseline Heuristic', 'Delta vs Baseline', 'Credible Interval', 'Pre-registered Verdict']) {
+    for (const h of ['Stage', 'Day Window', 'Baseline Heuristic', 'Delta vs Baseline', 'Reported Interval', 'Recorded Verdict']) {
       htr.appendChild(el('th', h));
     }
     thead.appendChild(htr);
@@ -846,193 +820,7 @@ async function initMl() {
   }
   container.appendChild(verdictCard);
 
-  // SVG Bar Charts & Budget Ladder
-  if (mData && typeof mData === 'object') {
-    const ladderCard = el('section', '', 'card');
-    ladderCard.appendChild(el('h2', 'Recall by Budget Ladder & Candidate Comparison'));
-    const stageKeys = Object.keys(mData);
-    let activeStage = stageKeys[0] || null;
-    const tools = el('div', '', 'tools');
-    const stageBtns = [];
-    const chartWrap = el('div', '', 'scroll');
-    const tableWrap = el('div', '', 'scroll');
-    tableWrap.style.marginTop = '14px';
-
-    function renderStageVisuals(stageKey) {
-      chartWrap.replaceChildren();
-      tableWrap.replaceChildren();
-      const st = mData[stageKey];
-      if (!st || !st.metrics) {
-        chartWrap.appendChild(el('p', 'NO DATA · No stage metrics available.', 'muted mono'));
-        return;
-      }
-
-      const rankers = Object.entries(st.metrics);
-      const budgetSet = new Set();
-      for (const [, rObj] of rankers) {
-        if (rObj && rObj.budgets) {
-          for (const bk of Object.keys(rObj.budgets)) budgetSet.add(bk);
-        }
-      }
-      const budgets = [...budgetSet].sort((a, b) => parseFloat(a) - parseFloat(b));
-
-      // Draw SVG chart for 10% inspection budget (0.1) or first available
-      const targetBudget = budgets.includes('0.1') ? '0.1' : (budgets[0] || null);
-      if (targetBudget) {
-        const svgCard = el('div');
-        svgCard.appendChild(el('h3', `Recall Comparison at ${Number(targetBudget) * 100}% Inspection Budget (Stage ${stageKey})`));
-        const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-        svg.setAttribute('viewBox', '0 0 620 250');
-        svg.setAttribute('class', 'chart');
-        svg.style.maxHeight = '250px';
-
-        const barColors = {
-          learned: '#E8ABA6',
-          shuffle: '#E7CDA0',
-          constant: '#7C9297',
-          random: '#64748b',
-          negative_activity: '#87C6B9',
-          activity: '#9A9BCF',
-          R7: '#D6B48D',
-          ablation: '#A5B6BA'
-        };
-
-        const chartH = 170;
-        const chartW = 520;
-        const startX = 65;
-        const startY = 25;
-
-        const randomRefRecall = parseFloat(targetBudget);
-        let maxRecall = Math.max(randomRefRecall, 0.4);
-        for (const [, rObj] of rankers) {
-          const rec = rObj && rObj.budgets && rObj.budgets[targetBudget] ? rObj.budgets[targetBudget].recall : 0;
-          if (rec > maxRecall) maxRecall = rec;
-        }
-
-        // Grid lines
-        for (let step = 0; step <= 4; step++) {
-          const yVal = (maxRecall * step) / 4;
-          const yPos = startY + chartH - (yVal / maxRecall) * chartH;
-          const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-          line.setAttribute('x1', String(startX));
-          line.setAttribute('x2', String(startX + chartW));
-          line.setAttribute('y1', String(yPos));
-          line.setAttribute('y2', String(yPos));
-          line.setAttribute('stroke', '#2B4048');
-          svg.appendChild(line);
-
-          const txt = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-          txt.setAttribute('x', String(startX - 8));
-          txt.setAttribute('y', String(yPos + 4));
-          txt.setAttribute('text-anchor', 'end');
-          txt.setAttribute('fill', '#A5B6BA');
-          txt.setAttribute('font-size', '10');
-          txt.setAttribute('font-family', 'ui-monospace');
-          txt.textContent = yVal.toFixed(2);
-          svg.appendChild(txt);
-        }
-
-        // Random baseline reference dashed line & top legend
-        const refY = startY + chartH - (randomRefRecall / maxRecall) * chartH;
-        const refLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-        refLine.setAttribute('x1', String(startX));
-        refLine.setAttribute('x2', String(startX + chartW));
-        refLine.setAttribute('y1', String(refY));
-        refLine.setAttribute('y2', String(refY));
-        refLine.setAttribute('stroke', '#D6B48D');
-        refLine.setAttribute('stroke-dasharray', '4,4');
-
-        const refText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-        refText.setAttribute('x', String(startX + chartW));
-        refText.setAttribute('y', '15');
-        refText.setAttribute('text-anchor', 'end');
-        refText.setAttribute('fill', '#D6B48D');
-        refText.setAttribute('font-size', '10');
-        refText.setAttribute('font-weight', '600');
-        refText.setAttribute('font-family', 'ui-monospace');
-        refText.textContent = `--- Random Baseline (${randomRefRecall.toFixed(2)})`;
-        svg.appendChild(refText);
-
-        // Bars
-        const barW = Math.max(16, Math.floor(chartW / rankers.length) - 12);
-        for (let i = 0; i < rankers.length; i++) {
-          const [rName, rObj] = rankers[i];
-          const rec = rObj && rObj.budgets && rObj.budgets[targetBudget] ? rObj.budgets[targetBudget].recall : 0;
-          const bH = (rec / maxRecall) * chartH;
-          const x = startX + i * (barW + 12) + 6;
-          const y = startY + chartH - bH;
-
-          const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-          rect.setAttribute('x', String(x));
-          rect.setAttribute('y', String(y));
-          rect.setAttribute('width', String(barW));
-          rect.setAttribute('height', String(bH));
-          rect.setAttribute('fill', barColors[rName] || '#87C6B9');
-          rect.setAttribute('rx', '3');
-          rect.setAttribute('class', 'chart-bar');
-
-          const titleTag = document.createElementNS('http://www.w3.org/2000/svg', 'title');
-          titleTag.textContent = `${rName}: recall ${rec}`;
-          rect.appendChild(titleTag);
-          svg.appendChild(rect);
-
-          const lbl = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-          lbl.setAttribute('x', String(x + barW / 2));
-          lbl.setAttribute('y', String(startY + chartH + 16));
-          lbl.setAttribute('text-anchor', 'middle');
-          lbl.setAttribute('fill', '#A5B6BA');
-          lbl.setAttribute('font-size', '9');
-          lbl.setAttribute('font-family', 'ui-monospace');
-          lbl.textContent = rName === 'negative_activity' ? 'neg_act' : (rName === 'constant' ? 'const' : rName.slice(0, 9));
-          svg.appendChild(lbl);
-        }
-
-        // Draw reference line on top of bars
-        svg.appendChild(refLine);
-
-        svgCard.appendChild(svg);
-        chartWrap.appendChild(svgCard);
-      }
-
-      // Detailed ladder table
-      const tbl = el('table');
-      const thead = el('thead');
-      const htr = el('tr');
-      htr.appendChild(el('th', 'Model / Heuristic Ranker'));
-      htr.appendChild(el('th', 'PR-AUC'));
-      for (const b of budgets) htr.appendChild(el('th', `Recall @ ${b}`));
-      thead.appendChild(htr);
-      const tbody = el('tbody');
-      for (const [rName, rObj] of rankers) {
-        const tr = el('tr');
-        tr.appendChild(el('td', rName, 'mono'));
-        tr.appendChild(el('td', rObj && rObj.pr_auc !== undefined ? String(rObj.pr_auc) : 'NO DATA', 'mono'));
-        for (const b of budgets) {
-          const bObj = rObj && rObj.budgets ? rObj.budgets[b] : null;
-          const val = bObj && bObj.recall !== undefined && bObj.recall !== null ? String(bObj.recall) : 'NO DATA';
-          tr.appendChild(el('td', val, 'mono'));
-        }
-        tbody.appendChild(tr);
-      }
-      tbl.append(thead, tbody);
-      tableWrap.appendChild(tbl);
-    }
-
-    for (const sk of stageKeys) {
-      const btn = el('button', `Stage ${sk}`, sk === activeStage ? 'active-filter' : '');
-      btn.type = 'button';
-      btn.addEventListener('click', () => {
-        activeStage = sk;
-        for (const b of stageBtns) b.className = (b === btn) ? 'active-filter' : '';
-        renderStageVisuals(sk);
-      });
-      stageBtns.push(btn);
-      tools.appendChild(btn);
-    }
-    ladderCard.append(tools, chartWrap, tableWrap);
-    if (activeStage) renderStageVisuals(activeStage);
-    container.appendChild(ladderCard);
-  }
+  if (mData) container.appendChild(renderJsonTree(mData));
 
   // Diagnostic Root Cause Reports
   for (const [label, res, idStr] of [
@@ -1248,14 +1036,6 @@ async function initCost() {
   }
   container.appendChild(measCard);
 
-  // Deferred T3 Notice Card
-  const t3Card = el('section', '', 'card');
-  t3Card.appendChild(el('h2', 'Tier 3 (Real VM) Provisioning Status'));
-  const t3Badge = el('span', 'NOT RUN', 'badge inconclusive');
-  t3Card.appendChild(t3Badge);
-  t3Card.appendChild(el('p', 'Full OS virtual machine provisioning (T3) was pre-registered but intentionally deferred at Gate 0 to prevent outbound attack vector exposure and enforce host boundary isolation during lab evaluation.', 'muted'));
-  container.appendChild(t3Card);
-
   content.replaceChildren(container);
 }
 
@@ -1263,16 +1043,8 @@ async function initCost() {
 // 4. Session Forensics (/session) — 3-Level Investigative Architecture
 // =============================================================
 const RULE_EXPLANATIONS = {
-  'rule_r1_login_success': 'Authentication Success Heuristic — Verifies valid SSH login credentials before evaluating command stream activity.',
-  'rule_r2_pty_requested': 'Interactive Terminal Heuristic — Checks whether the SSH transport requested a pseudoterminal (PTY) session, indicating an interactive operator.',
-  'rule_r6_failed_logins': 'Brute-Force Threshold Rule — Evaluates failed authentication frequency prior to connection establishment.',
-  'rule_r7_decision_tree': 'Pre-registered Baseline Decision Tree — Evaluates authentication timing and terminal parameters against historical honeypot splits.',
-  'lab_pty_mechanism': 'Laboratory Demonstration Policy — Deterministic escalation trigger on interactive PTY allocation (S3: T1 → T2) for live defense inspection.',
-  'LAB_DEMO_NOT_ML_s5_command_count': 'Command Count Threshold (Lab) — Triggers escalation after observed benign command threshold in synthetic demonstration.',
-  'heuristic_command_chain': 'Command Chaining Heuristic — Identifies multi-command pipelines or shell scripting operators.',
-  'heuristic_command_base': 'Baseline Single-Command Heuristic — Evaluates individual executable invocation without shell piping.',
-  'fail_cheap_fallback': 'Fail-Cheap Safeguard — Defaults safely to T1 on missing features or evaluation timeouts.',
-  'ml_model_s3': 'Trained Decision Tree Model (Stage S3) — Evaluates extracted feature vector against supervised training split.'
+  'ml_model_s3': 'Logistic regression score.', // models/model_s3.json
+  'rule_r7_decision_tree': 'Constant-score fallback labelled R7.' // gatekeeper/decision_api.py
 };
 
 async function initSession() {
@@ -1372,7 +1144,7 @@ async function initSession() {
     ruleBox.appendChild(sourceTitle);
 
     const explanation = RULE_EXPLANATIONS[sourceName] ||
-      'Recorded decision rule evaluated by the Gatekeeper policy engine.';
+      sourceName;
     const expText = el('p', explanation);
     expText.style.margin = '6px 0 0 0';
     expText.style.fontSize = '13px';
@@ -1609,12 +1381,6 @@ async function initVisitors() {
   setStatus(`Loaded sessions for visitor clustering`);
 
   const container = el('div');
-
-  // Methodological disclaimer box
-  const noticeCard = el('section', '', 'card warn');
-  noticeCard.appendChild(el('h2', 'Docker Network Bridge & Visitor Identity Limitation'));
-  noticeCard.appendChild(el('p', 'All containerized lab honeypot traffic traverses local loopback / virtual bridge network interfaces. Visitor clustering reflects lab session grouping and synthetic or recorded pseudonym masks (vis_...), rather than geographically distinct remote IP addresses. IP-based threat intelligence or geographic mapping does not apply to this local evaluation.'));
-  container.appendChild(noticeCard);
 
   // Group sessions by visitor_id
   const visitorMap = new Map();
@@ -1895,111 +1661,9 @@ async function initDeception() {
   const container = el('div');
 
   // Deception Architecture Pipeline SVG Diagram
-  const diagCard = el('section', '', 'card');
-  diagCard.appendChild(el('h2', 'Adaptive Deception Pipeline & Persona Escalation Flow'));
-  diagCard.appendChild(el('p', 'End-to-end telemetry architecture: inbound SSH traffic is ingested by the Cowrie sensor, evaluated at discrete stage boundaries by Gatekeeper, and escalated dynamically.', 'muted'));
-
-  const svgWrap = el('div', '', 'scroll');
-  const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-  svg.setAttribute('viewBox', '0 0 740 180');
-  svg.setAttribute('class', 'chart');
-  svg.style.maxHeight = '180px';
-
-  const nodes = [
-    { title: 'SSH Client', sub: 'Inbound Session', x: 20, y: 50, w: 110, color: '#1B2D35', border: '#3E5B66' },
-    { title: 'Cowrie Sensor', sub: 'Loopback 127.0.0.1', x: 170, y: 50, w: 120, color: '#1B2D35', border: '#3E5B66' },
-    { title: 'Stage Triggers', sub: 'S1 → S5 Events', x: 330, y: 50, w: 110, color: '#101D25', border: '#87C6B9' },
-    { title: 'Gatekeeper Engine', sub: 'Policy Evaluation', x: 480, y: 50, w: 120, color: '#101D25', border: '#87C6B9' },
-    { title: 'Deception Persona', sub: 'T1 Lite ➔ T2 Hardened', x: 640, y: 50, w: 120, color: '#231b14', border: '#D6B48D' }
-  ];
-
-  for (let i = 0; i < nodes.length; i++) {
-    const n = nodes[i];
-    const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-    rect.setAttribute('x', String(n.x));
-    rect.setAttribute('y', String(n.y));
-    rect.setAttribute('width', String(n.w));
-    rect.setAttribute('height', '70');
-    rect.setAttribute('rx', '8');
-    rect.setAttribute('fill', n.color);
-    rect.setAttribute('stroke', n.border);
-    rect.setAttribute('stroke-width', '2');
-    svg.appendChild(rect);
-
-    const title = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-    title.setAttribute('x', String(n.x + n.w / 2));
-    title.setAttribute('y', String(n.y + 30));
-    title.setAttribute('text-anchor', 'middle');
-    title.setAttribute('fill', '#F0F3EF');
-    title.setAttribute('font-size', '12');
-    title.setAttribute('font-weight', '600');
-    title.textContent = n.title;
-    svg.appendChild(title);
-
-    const sub = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-    sub.setAttribute('x', String(n.x + n.w / 2));
-    sub.setAttribute('y', String(n.y + 50));
-    sub.setAttribute('text-anchor', 'middle');
-    sub.setAttribute('fill', '#A5B6BA');
-    sub.setAttribute('font-size', '10');
-    sub.setAttribute('font-family', 'ui-monospace');
-    sub.textContent = n.sub;
-    svg.appendChild(sub);
-
-    if (i < nodes.length - 1) {
-      const nextN = nodes[i + 1];
-      const arrow = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-      arrow.setAttribute('x1', String(n.x + n.w));
-      arrow.setAttribute('y1', String(n.y + 35));
-      arrow.setAttribute('x2', String(nextN.x));
-      arrow.setAttribute('y2', String(nextN.y + 35));
-      arrow.setAttribute('stroke', '#87C6B9');
-      arrow.setAttribute('stroke-width', '2');
-      arrow.setAttribute('marker-end', 'url(#arrow)');
-      svg.appendChild(arrow);
-    }
-  }
-
-  svgWrap.appendChild(svg);
-  diagCard.appendChild(svgWrap);
-  container.appendChild(diagCard);
-
-  // Persona Comparison Matrix
-  const matrixCard = el('section', '', 'card');
-  matrixCard.appendChild(el('h2', 'Deception Persona Comparison Matrix'));
-  const mTable = el('table');
-  const mThead = el('thead');
-  const mTr = el('tr');
-  for (const h of ['Capability / Trait', 'Tier 1 (Lite Fake Shell)', 'Tier 2 (Enhanced Shell)', 'Tier 3 (Real VM Sandbox)']) {
-    mTr.appendChild(el('th', h));
-  }
-  mThead.appendChild(mTr);
-  const mTbody = el('tbody');
-
-  const rows = [
-    ['Shell Interaction Model', 'Limited fake shell with static command responses', 'Emulated filesystem with full PTY interactive terminal', 'Full Linux OS isolation inside dedicated guest VM'],
-    ['Filesystem Depth', 'Restricted static directory tree', 'Synthetic dynamic directory structure with persistence', 'Native virtual disk image with complete standard tooling'],
-    ['Resource Overhead', 'Shared process footprint (~96 MB mean RAM, 0.08–1.06% CPU)', 'Shared process footprint (~97 MB mean RAM, 0.74–0.88% CPU)', 'Heavy (~1024 MB RAM, full hypervisor process overhead)'],
-    ['Security / Containment', 'High (pure Python in-memory parser)', 'High (isolated Cowrie daemon, no host syscalls)', 'Host boundary risk (requires hypervisor isolation)'],
-    ['Research Evaluation Status', 'VERIFIED (Pre-registered baseline)', 'VERIFIED (Mid-session escalation target)', 'DEFERRED (Pre-registered Gate 0 decision)']
-  ];
-
-  for (const r of rows) {
-    const tr = el('tr');
-    tr.appendChild(el('td', r[0], 'mono'));
-    tr.appendChild(el('td', r[1]));
-    tr.appendChild(el('td', r[2]));
-    tr.appendChild(el('td', r[3], 'muted'));
-    mTbody.appendChild(tr);
-  }
-  mTable.append(mThead, mTbody);
-  matrixCard.appendChild(el('div', '', 'scroll')).appendChild(mTable);
-  container.appendChild(matrixCard);
-
   // Verified Transition Proof Citations
   const proofCard = el('section', '', 'card');
-  proofCard.appendChild(el('h2', 'Verified Mid-Session Transition Proof Citations'));
-  proofCard.appendChild(el('p', 'Empirical laboratory artifacts proving mid-session escalation mechanism in Cowrie.', 'muted'));
+  proofCard.appendChild(el('h2', 'Recorded demonstration evidence'));
 
   for (const [title, res, idStr] of [
     ['Mid-Session Persona Escalation Proof', switchRes, 's2_mid_session_switch_proof'],
@@ -2063,7 +1727,6 @@ async function initLab() {
   // Architecture Topology Card
   const topoCard = el('section', '', 'card');
   topoCard.appendChild(el('h2', 'Laboratory System Topology & Deployment Status'));
-  topoCard.appendChild(el('p', 'Local isolated honeypot environment running on Windows / WSL2 loopback network boundaries.', 'muted'));
 
   const tTable = el('table');
   const tThead = el('thead');
@@ -2080,21 +1743,21 @@ async function initLab() {
     const gkRes = await fetchJson('/api/gatekeeper/health');
     const gkBody = gkRes ? gkRes.body : null;
     if (gkBody && gkBody.status === 'ONLINE') {
-      gkStatus = 'ONLINE (Port 15000 Verified)';
+      gkStatus = 'ONLINE';
       gkBadgeClass = 'badge done';
     } else if (gkBody && gkBody.status === 'UNAVAILABLE') {
-      gkStatus = 'UNAVAILABLE (Port 15000 Unreachable)';
+      gkStatus = 'UNAVAILABLE';
       gkBadgeClass = 'badge invalid';
     } else {
-      gkStatus = 'UNKNOWN (Port 15000)';
+      gkStatus = 'UNKNOWN';
       gkBadgeClass = 'badge';
     }
   } catch (e) {
-    gkStatus = 'UNAVAILABLE (Port 15000 Unreachable)';
+    gkStatus = 'UNAVAILABLE';
     gkBadgeClass = 'badge invalid';
   }
 
-  const dbOk = sessRes && sessRes.status === 200 && sessRes.body;
+  const dbOk = sessRes && sessRes.status === 200 && sessRes.body?.status === 'ok';
   const sessCount = (dbOk && Array.isArray(sessRes.body.sessions)) ? sessRes.body.sessions.length : 0;
   const dbStatus = dbOk ? `ACCESSIBLE (${sessCount} session${sessCount === 1 ? '' : 's'} loaded)` : 'UNAVAILABLE (Store unreachable)';
   const dbBadgeClass = dbOk ? 'badge done' : 'badge invalid';
@@ -2104,10 +1767,10 @@ async function initLab() {
   const dashBadgeClass = dashOk ? 'badge done' : 'badge invalid';
 
   const comps = [
-    ['Cowrie Sensor', 'SSH deception listener & telemetry extractor', 'Port 2222 (Loopback strictly)', 'NOT CHECKED (SSH protocol requires probe)', 'badge'],
-    ['Gatekeeper Policy Engine', 'Decision service (S1–S5 policy evaluation)', 'Port 15000 (Loopback strictly)', gkStatus, gkBadgeClass],
+    ['Cowrie Sensor', 'SSH deception listener & telemetry extractor', 'Local service', 'NOT CHECKED (SSH protocol requires probe)', 'badge'],
+    ['Gatekeeper Policy Engine', 'Decision service (S1–S5 policy evaluation)', 'Local service', gkStatus, gkBadgeClass],
     ['SQLite Audit Store', 'Persistent append-only decision_log schema', 'Local filesystem (gatekeeper.db)', dbStatus, dbBadgeClass],
-    ['Verification Dashboard', 'Offline research artifact inspector & telemetry UI', 'Port 8080 (Loopback strictly)', dashStatus, dashBadgeClass]
+    ['Verification Dashboard', 'Offline research artifact inspector & telemetry UI', 'Local service', dashStatus, dashBadgeClass]
   ];
 
   for (const c of comps) {
@@ -2127,7 +1790,6 @@ async function initLab() {
   // Safety Audit Findings Card (HONEST REPORTING)
   const safeCard = el('section', '', 'card warn');
   safeCard.appendChild(el('h2', 'Safety Audit Evaluation (safety_check.json)'));
-  safeCard.appendChild(el('p', 'Pre-registered safety checks evaluated against SAFETY.md isolation constraints.'));
 
   if (safetyRes && safetyRes.body && safetyRes.body.data) {
     const sData = safetyRes.body.data;
