@@ -26,6 +26,8 @@ from urllib.parse import urlparse
 # Ensure project root is in sys.path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
+from dashboard import evidence
+
 logger = logging.getLogger("dashboard")
 
 
@@ -421,6 +423,8 @@ class DashboardServer:
 
     def start(self) -> None:
         """Run the dashboard HTTP server."""
+        if self.host != "127.0.0.1":
+            raise ValueError("Dashboard requires IPv4 loopback")
         handler_cls = make_dashboard_handler(self)
         self.httpd = http.server.HTTPServer((self.host, self.port), handler_cls)
         logger.info("Serving Schrödinger's Server dashboard at http://%s:%d", self.host, self.port)
@@ -438,9 +442,21 @@ def make_dashboard_handler(server_instance: DashboardServer):
     """Factory creating an HTTP request handler bound to the DashboardServer."""
 
     class DashboardHandler(http.server.BaseHTTPRequestHandler):
+        def end_headers(self):
+            self.send_header("Cache-Control", "no-store")
+            super().end_headers()
+
         def do_GET(self) -> None:
             parsed = urlparse(self.path)
             path = parsed.path
+
+            if path.startswith("/api/evidence/") or path == "/api/progress":
+                code, data = evidence.response(path)
+                self.send_response(code)
+                self.send_header("Content-Type", "application/json")
+                self.end_headers()
+                self.wfile.write(json.dumps(data).encode("utf-8"))
+                return
 
             if path == "/" or path == "/index.html":
                 html = server_instance.render_live_html()
