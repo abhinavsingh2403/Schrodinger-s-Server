@@ -7,11 +7,11 @@ Every response is grounded in code, data, or registered audit findings.
 
 ## Group 1: Problem Definition & Motivation
 
-### Q1: What specific problem in modern honeypot research does SchrÃ¶dinger's Server address?
+### Q1: What specific problem in modern honeypot research does Schrödinger's Server address?
 Can early session evidence guide escalation within a fixed budget? This is the research question. (SPEC.md)
 
 ### Q2: What is the core hypothesis or central thesis of this project?
-The hypothesis is that a lightweight gatekeeper can infer early in an SSH session (handshake, auth, or first command) whether an attacker is likely to yield high-value interactive intelligence, escalating promising sessions while serving cheap emulation to noise [SPEC.md Â§1, README.md].
+The hypothesis is that a lightweight gatekeeper can infer early in an SSH session (handshake, auth, or first command) whether an attacker is likely to yield high-value interactive intelligence, escalating promising sessions while serving cheap emulation to noise [SPEC.md §1, README.md].
 
 ### Q3: Is cost reduction proven?
 Cost reduction remains unproven. CPU ranges overlapped across repeats. The recorded memory difference was small. Both personas ran inside one sensor process, and PTY use differed between workloads. (results/cost/COST_PER_TIER.md)
@@ -46,7 +46,7 @@ Aggregate session counters record whole-session counts rather than timestamped e
 ## Group 3: Gate 0 Evaluation & Statistical Findings
 
 ### Q11: What was the pre-registered Gate 0 evaluation criteria?
-Per EXPERIMENT0.md, a learned model must beat the best pre-declared baseline rule by at least 5% absolute recall at a 10% escalation budget, with a Bonferroni-adjusted confidence interval strictly greater than zero [EXPERIMENT0.md Â§12, results/exp0/AUDIT.md].
+Per EXPERIMENT0.md, a learned model must beat the best pre-declared baseline rule by at least 5% absolute recall at a 10% escalation budget, with a Bonferroni-adjusted confidence interval strictly greater than zero [EXPERIMENT0.md §12, results/exp0/AUDIT.md].
 
 ### Q12: What were the results at Stage S1 (Handshake)?
 The S1 rule captured more labelled positives than the fitted scorer at the registered budget. The label measures observed activity. (results/exp0/table.csv)
@@ -57,8 +57,8 @@ At S2, baseline rule R1 (login success) captured the bulk of positive sessions (
 ### Q14: What was the result at Stage S3 (Session Setup), and what is the mechanical verdict?
 S3 cleared the original mechanical gate. Post-hoc controls leave the learned advantage unconfirmed. (results/exp0/POSTHOC_ML_EVAL.md)
 
-### Q15: Why is the Stage S3 finding classified as exploratory rather than confirmatory?
-Why did ML fail to establish an advantage? A constant-label fit still ranked sessions by an activity counter. In Experiment 1, shuffled labels retained apparent performance at S2 and S4. Learned, shuffled and feature-sum scorers selected the same S4 cutoff decisions (results/exp1/ROOT_CAUSE.md). (results/exp0/NULL_ROOT_CAUSE.md)
+### Q15: Why did the learned scorer fail to establish an advantage?
+A constant-label fit still ranked sessions by an activity counter. In Experiment 1, shuffled labels retained apparent performance at S2 and S4. Learned, shuffled and feature-sum scorers selected the same S4 cutoff decisions (results/exp1/ROOT_CAUSE.md). (results/exp0/NULL_ROOT_CAUSE.md)
 
 ---
 
@@ -73,7 +73,7 @@ Visitor memory derives HMAC-SHA256 identifiers using a supplied salt or VISITOR_
 ### Q18: What is the "fail-cheap" principle in your Gatekeeper design?
 The service provides a fail-cheap decision fallback. Round-trip latency can exceed the sensor deadline (results/cost/concurrency_probe.json). (gatekeeper/decision_api.py)
 
-### Q19: How is identical identity maintained across tiers to prevent fingerprinting?
+### Q19: How is identity configuration shared across tiers?
 T1 and T2 read the shared identity configuration. Launcher tests compare Cowrie overrides with those values. This checks configuration consistency. Detectability remains inconclusive (config/identity.yaml, sensor/run_sensor.py, gatekeeper/test_launcher_identity.py, results/detector/DETECTOR_RESULT.md).
 
 ### Q20: What is the difference between Plan A and Plan B escalation mechanisms?

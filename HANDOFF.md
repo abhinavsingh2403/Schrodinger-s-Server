@@ -349,3 +349,9 @@ Front-end page rendering is pending. Optional event-log API omitted; the timelin
 DONE — Selected viva claims corrected (docs/DOCS_CLAIMS_AUDIT.md). REMAINING — exhaustive statement-by-statement review of all six documents.
 NOT RUN — detector comparison. Port occupied; check `docker version` and `Get-NetTCPConnection -State Listen -LocalPort 8080`. Review isolated CLI with `honeypot-auditor --help`.
 REMAINING — implement per-command byte capture, latency, paired hash comparison and expanded selection. Existing `python -m analysis.lab_trace_replay` checks input receipt only.
+
+### Completed viva documentation follow-up
+DONE — Remaining documentation inventory and scoped descriptions recorded in docs/DOCS_CLAIMS_AUDIT.md.
+DONE — Q15 now answers its heading. UTF-8 and mojibake checks cover the reviewed documents.
+NOT RUN — Detector preflight awaits confirmation that port is free. Then use the isolated environment: `honeypot-auditor --help` (docs/DETECTOR_PROTOCOL.md).
+Verification command: `python -m pytest -q`.

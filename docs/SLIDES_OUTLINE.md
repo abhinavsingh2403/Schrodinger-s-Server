@@ -18,7 +18,7 @@ Every bullet cites its primary supporting source document.
 - T1 and T2 share a configured identity. H4 remains inconclusive. (config/identity.yaml, results/detector/DETECTOR_RESULT.md)
 
 ### Slide 4: Experimental Methodology & Data
-- Evaluated on a 52-day multi-instance Cowrie public dataset partitioned into train, validation, and test splits [DATA.md, results/exp0/AUDIT.md].
+- The aggregate corpus spans the recorded days in results/base_rates.json. Gate 0 used a sampled day split, with source purging and its survivorship limitation (results/exp0/splits.json, results/exp0/AUDIT.md).
 - Strict cross-split source IP purging applied to prevent botnet identity leakage across temporal sets [DATA.md, results/exp0/AUDIT.md].
 
 ### Slide 5: Gate 0 Pre-Registered Protocol

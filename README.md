@@ -70,7 +70,7 @@ All empirical analysis is performed on open-access, peer-reviewed research data.
 - **File Name**: `data/session_aggregation.jsonl.gz` (Gitignored per security rules)
 - **File Size**: `1,328,104,319 bytes` (~1.33 GB compressed)
 - **Expected MD5**: `1f3897650fb420c97c14ff452398c3f8`
-- **Computed MD5**: `1f3897650fb420c97c14ff452398c3f8` (**MATCH**, verified via `analysis/verify_download.py`)
+- **Recorded MD5** (results/MANIFEST.json): `1f3897650fb420c97c14ff452398c3f8` (**MATCH**, verified via `analysis/verify_download.py`)
 
 ### Dataset Ground Truth Findings ([results/base_rates.json](results/base_rates.json))
 The aggregate analysis reports these summaries (analysis/s3_base_rates.py, results/base_rates.json). Activity counters are proxy labels.
@@ -242,6 +242,8 @@ Per [`SAFETY.md`](SAFETY.md):
 ---
 
 ## 10. References & Literature Cited
+
+External reference descriptions retain the verification status in CLAIMS.md. Descriptions marked [S] or [U] there remain UNVERIFIABLE in this review. Links identify sources for human review.
 
 All external datasets, academic papers, and security frameworks are tracked with their verification statuses in [`CLAIMS.md`](CLAIMS.md).
 

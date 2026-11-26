@@ -1,6 +1,6 @@
 # Codebase Architecture & Dependency Graph (Graphify)
 
-Comprehensive architectural blueprint, module dependency graph, and data-flow topology for SchrÃ¶dinger's Server.
+Comprehensive architectural blueprint, module dependency graph, and data-flow topology for Schrödinger's Server.
 Diagrams summarize component roles. The sequence shows an illustrative LAB_DEMO flow, and deferred nodes represent proposed components. Source references describe the implementation checked in this review.
 
 ---
@@ -32,7 +32,7 @@ graph TD
         COWRIE_DAEMON["Cowrie SSH Daemon v3.1.6<br/>[infra/cowrie.cfg]"]
         ID_PROFILE["identity.yaml<br/>(srv-app-01, OpenSSH_9.2p1, Debian 12)"]
         CONCH_ADAPTER["CowrieSSHSessionAdapter<br/>[sensor/adaptive_server.py]<br/>(Status: lab-verified on loopback only;<br/>see results/exp0/ASTRA2_REPORT.md and HANDOFF.md)"]
-        HOOKS["Lifecycle Hooks:<br/>â€¢ ssh_version_received (S1)<br/>â€¢ user_authenticated (S2)<br/>â€¢ pty_requested (S3)<br/>â€¢ command_received (S4/S5)"]
+        HOOKS["Lifecycle Hooks:<br/>• ssh_version_received (S1)<br/>• user_authenticated (S2)<br/>• pty_requested (S3)<br/>• command_received (S4/S5)"]
     end
 
     DOCKER_PORT -->|routes| COWRIE_DAEMON
@@ -65,7 +65,7 @@ graph TD
     subgraph INFERENCE_TIER ["4. ML Inference & Baseline Rules [analysis/, models/]"]
         MODEL_FILE[("models/model_s3.json<br/>(PurePythonLogisticRegression)")]
         LR_MODEL["PurePythonLogisticRegression<br/>[analysis/exp0_rules.py]"]
-        BASELINE_RULES["Baseline Rules (R0-R7)<br/>â€¢ R1: login_success<br/>â€¢ R6: failed_logins<br/>â€¢ R7-labelled constant fallback"]
+        BASELINE_RULES["Baseline Rules (R0-R7)<br/>• R1: login_success<br/>• R6: failed_logins<br/>• R7-labelled constant fallback"]
     end
 
     MODEL_FILE -->|deserialized by _load_model()| ENGINE
@@ -78,7 +78,7 @@ graph TD
     subgraph PERSISTENCE_TIER ["5. Visitor Memory & Audit Log [gatekeeper/]"]
         HMAC_DERIVE["derive_visitor_id()<br/>HMAC-SHA256(salt, raw_ip)"]
         VIS_MEMORY["VisitorMemory<br/>[visitor_memory.py]"]
-        SQLITE_DB[("gatekeeper.db (WAL Mode)<br/>â€¢ visitor_memory table<br/>â€¢ decision_log table")]
+        SQLITE_DB[("gatekeeper.db (WAL Mode)<br/>• visitors table<br/>• decision_log table")]
     end
 
     ENGINE -->|derives masked ID| HMAC_DERIVE
@@ -123,7 +123,7 @@ graph TD
         PREFIX_STUDY["event_prefix_study.py<br/>(Event-order chronology check)"]
         CHECK_DOCS["check_docs.py<br/>(Link, path, & claim validator)"]
         RENDER_STATUS["render_status.py<br/>(Generates docs/STATUS.md)"]
-        RESULTS_JSON[("results/<br/>â€¢ base_rates.json<br/>â€¢ arm_simulation.json<br/>â€¢ exp0/progress.json")]
+        RESULTS_JSON[("results/<br/>• base_rates.json<br/>• arm_simulation.json<br/>• progress.json")]
     end
 
     BASE_RATES -->|writes| RESULTS_JSON

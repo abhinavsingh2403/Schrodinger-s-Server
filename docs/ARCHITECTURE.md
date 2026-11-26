@@ -46,7 +46,7 @@ graph TD
 - **Stage S3 (Session Setup)**: The decision point following channel allocation and pseudo-terminal or subsystem requests [SPEC §3, SPEC §5.1].
 - **Stage S4 (First Command)**: The decision point immediately upon receiving the initial shell command [SPEC §3, SPEC §5.1].
 - **Stage S5 (Command Burst)**: The decision point following the execution of multiple subsequent commands [SPEC §3, SPEC §5.1].
-- **Model V**: The early-stage triage classifier evaluated on aggregate proxy features (results/exp0/POSTHOC_ML_EVAL.md) to predict downstream interactive utility [SPEC §3, SPEC §5.2, README §1].
+- **Model V**: The early-stage triage classifier evaluated on aggregate proxy features (results/exp0/POSTHOC_ML_EVAL.md) for the activity-based target defined in EXPERIMENT0.md [SPEC §3, SPEC §5.2, README §1].
 - **Escalation Budget**: A pre-declared operational ceiling restricting the fraction of sessions escalated to higher tiers as exercised by budget tests (gatekeeper/test_session_budget.py) [SPEC §3, SPEC §5.2, README §3].
 - **Gate 0**: The pre-registered empirical milestone evaluating whether learned statistical models demonstrate recall improvement over simple pre-declared baseline rules [SPEC §0, README §2].
 - **Oracle Arm**: The retrospective hindsight simulation baseline that computes upper-bound yield efficiency assuming full post-hoc knowledge of session activity [SPEC §3, README §3].
