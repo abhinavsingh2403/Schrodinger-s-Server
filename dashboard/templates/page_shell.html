@@ -2077,9 +2077,18 @@ async function initLab() {
   let gkStatus = 'NOT CHECKED';
   let gkBadgeClass = 'badge';
   try {
-    await fetch('http://127.0.0.1:15000/health', { mode: 'no-cors', signal: AbortSignal.timeout(1200) });
-    gkStatus = 'ONLINE (Port 15000 Verified)';
-    gkBadgeClass = 'badge done';
+    const gkRes = await fetchJson('/api/gatekeeper/health');
+    const gkBody = gkRes ? gkRes.body : null;
+    if (gkBody && gkBody.status === 'ONLINE') {
+      gkStatus = 'ONLINE (Port 15000 Verified)';
+      gkBadgeClass = 'badge done';
+    } else if (gkBody && gkBody.status === 'UNAVAILABLE') {
+      gkStatus = 'UNAVAILABLE (Port 15000 Unreachable)';
+      gkBadgeClass = 'badge invalid';
+    } else {
+      gkStatus = 'UNKNOWN (Port 15000)';
+      gkBadgeClass = 'badge';
+    }
   } catch (e) {
     gkStatus = 'UNAVAILABLE (Port 15000 Unreachable)';
     gkBadgeClass = 'badge invalid';

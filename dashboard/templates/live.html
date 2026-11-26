@@ -798,15 +798,28 @@ async function poll() {
       statusDash.style.color = 'var(--text-primary)';
     }
 
-    // Live Gatekeeper loopback check
+    // Live Gatekeeper verified via same-origin probe
     const dotGk = el('dot-gk');
     const statusGk = el('status-gk');
     try {
-      await fetch('http://127.0.0.1:15000/health', { mode: 'no-cors', signal: AbortSignal.timeout(1200) });
-      if (dotGk) dotGk.className = 'status-dot';
-      if (statusGk) {
-        statusGk.textContent = 'Port 15000 (ONLINE · Verified)';
-        statusGk.style.color = 'var(--text-primary)';
+      const gkRes = await fetch('/api/gatekeeper/health');
+      if (gkRes.ok) {
+        const gkData = await gkRes.json();
+        if (gkData.status === 'ONLINE') {
+          if (dotGk) dotGk.className = 'status-dot';
+          if (statusGk) {
+            statusGk.textContent = 'Port 15000 (ONLINE · Verified)';
+            statusGk.style.color = 'var(--text-primary)';
+          }
+        } else {
+          if (dotGk) dotGk.className = 'status-dot invalid';
+          if (statusGk) {
+            statusGk.textContent = `Port 15000 (${gkData.status || 'UNAVAILABLE'})`;
+            statusGk.style.color = 'var(--invalid)';
+          }
+        }
+      } else {
+        throw new Error('Health probe returned ' + gkRes.status);
       }
     } catch (e) {
       if (dotGk) dotGk.className = 'status-dot invalid';

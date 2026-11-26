@@ -19,6 +19,8 @@ import os
 import sqlite3
 import statistics
 import sys
+import urllib.error
+import urllib.request
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 from urllib.parse import urlparse
@@ -460,8 +462,91 @@ LEGACY = {
 }
 
 
+def probe_gatekeeper_health(
+    host: str = "127.0.0.1",
+    port: int = 15000,
+    timeout: float = 1.0,
+) -> Dict[str, Any]:
+    """Securely probes the local Gatekeeper health endpoint on loopback.
+
+    Security constraints:
+    - Strictly restricts target to IPv4 loopback (127.0.0.1).
+    - Prohibits user-supplied or external URLs.
+    - Validates HTTP 200 status and {"status": "ok"} response shape.
+    - Accurately reports ONLINE, UNAVAILABLE, or UNKNOWN.
+    """
+    if host not in ("127.0.0.1", "localhost"):
+        return {
+            "status": "UNKNOWN",
+            "service": "gatekeeper",
+            "error": "Security boundary: probing non-loopback host is forbidden",
+            "port": port,
+        }
+
+    url = f"http://{host}:{port}/health"
+    try:
+        req = urllib.request.Request(
+            url,
+            headers={"User-Agent": "Schrodinger-Dashboard/1.0", "Accept": "application/json"},
+        )
+        with urllib.request.urlopen(req, timeout=timeout) as resp:
+            if resp.status != 200:
+                return {
+                    "status": "UNAVAILABLE",
+                    "service": "gatekeeper",
+                    "error": f"Unexpected HTTP status {resp.status}",
+                    "port": port,
+                }
+            raw = resp.read()
+            data = json.loads(raw.decode("utf-8"))
+            if isinstance(data, dict) and data.get("status") == "ok":
+                return {
+                    "status": "ONLINE",
+                    "service": data.get("service", "gatekeeper"),
+                    "version": data.get("version", "unknown"),
+                    "port": port,
+                    "target": f"{host}:{port}",
+                }
+            return {
+                "status": "UNAVAILABLE",
+                "service": "gatekeeper",
+                "error": "Malformed health payload (missing status='ok')",
+                "port": port,
+            }
+    except urllib.error.HTTPError as e:
+        return {
+            "status": "UNAVAILABLE",
+            "service": "gatekeeper",
+            "error": f"HTTP error {e.code}: {e.reason}",
+            "port": port,
+        }
+    except urllib.error.URLError as e:
+        return {
+            "status": "UNAVAILABLE",
+            "service": "gatekeeper",
+            "error": f"Connection failed: {e.reason}",
+            "port": port,
+        }
+    except TimeoutError:
+        return {
+            "status": "UNAVAILABLE",
+            "service": "gatekeeper",
+            "error": "Connection timed out",
+            "port": port,
+        }
+    except Exception as e:
+        return {
+            "status": "UNAVAILABLE",
+            "service": "gatekeeper",
+            "error": f"Unexpected probe error: {e}",
+            "port": port,
+        }
+
+
 def api_response(server, path):
     """One wire representation for HTTP and offline fixture generation."""
+    if path in ("/api/gatekeeper/health", "/api/health/gatekeeper"):
+        return 200, probe_gatekeeper_health()
     if path.startswith("/api/evidence/") or path == "/api/progress":
         return evidence.response(path)
     if path == "/api/decisions/summary" or path.startswith("/api/session/"):

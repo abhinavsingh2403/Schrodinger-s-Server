@@ -1,11 +1,15 @@
 """Unit and contract tests for UI correctness, health checks, and data reality."""
+import http.server
 from io import BytesIO
 import json
 from pathlib import Path
+import socket
 import sqlite3
 import tempfile
+import threading
+import time
 import pytest
-from dashboard.app import DashboardServer, make_dashboard_handler
+from dashboard.app import DashboardServer, make_dashboard_handler, probe_gatekeeper_health
 
 
 def render_server_route(server: DashboardServer, path: str) -> tuple[int, str]:
@@ -136,3 +140,134 @@ def test_populated_database_and_verified_transition():
     assert d_s3["score_source"] == "lab_pty_mechanism"
     # Stage S3 timestamp must be after Stage S2 timestamp
     assert d_s3["timestamp"] >= d_s2["timestamp"]
+
+
+class _MockHealthHandler(http.server.BaseHTTPRequestHandler):
+    mode = "healthy"
+
+    def do_GET(self):
+        if self.path == "/health":
+            if self.mode == "healthy":
+                self.send_response(200)
+                self.send_header("Content-Type", "application/json")
+                self.end_headers()
+                self.wfile.write(json.dumps({"status": "ok", "service": "gatekeeper", "version": "1.0.0"}).encode())
+            elif self.mode == "malformed":
+                self.send_response(200)
+                self.send_header("Content-Type", "application/json")
+                self.end_headers()
+                self.wfile.write(b'{"status": "corrupt_data"}')
+            elif self.mode == "invalid_json":
+                self.send_response(200)
+                self.send_header("Content-Type", "text/plain")
+                self.end_headers()
+                self.wfile.write(b"NOT_JSON")
+            elif self.mode == "timeout":
+                time.sleep(0.5)
+                self.send_response(200)
+                self.end_headers()
+            elif self.mode == "500":
+                self.send_response(500)
+                self.end_headers()
+        else:
+            self.send_response(404)
+            self.end_headers()
+
+    def log_message(self, *args):
+        pass
+
+
+def test_gatekeeper_health_healthy_scenario():
+    """Requirement 2 & 4: Probing healthy Gatekeeper returns ONLINE."""
+    server = http.server.HTTPServer(("127.0.0.1", 0), _MockHealthHandler)
+    port = server.server_address[1]
+    _MockHealthHandler.mode = "healthy"
+    t = threading.Thread(target=server.serve_forever, daemon=True)
+    t.start()
+    try:
+        res = probe_gatekeeper_health(port=port, timeout=1.0)
+        assert res["status"] == "ONLINE"
+        assert res["service"] == "gatekeeper"
+        assert res["version"] == "1.0.0"
+        assert res["port"] == port
+    finally:
+        server.shutdown()
+        server.server_close()
+
+
+def test_gatekeeper_health_stopped_scenario():
+    """Requirement 4: Probing stopped Gatekeeper service returns UNAVAILABLE."""
+    # Find a free port that is guaranteed not listening
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        s.bind(("127.0.0.1", 0))
+        free_port = s.getsockname()[1]
+    res = probe_gatekeeper_health(port=free_port, timeout=0.2)
+    assert res["status"] == "UNAVAILABLE"
+    assert "Connection failed" in res["error"] or "refused" in res["error"] or "timed out" in res["error"]
+
+
+def test_gatekeeper_health_malformed_scenario():
+    """Requirement 4: Malformed responses or missing status='ok' return UNAVAILABLE."""
+    server = http.server.HTTPServer(("127.0.0.1", 0), _MockHealthHandler)
+    port = server.server_address[1]
+    t = threading.Thread(target=server.serve_forever, daemon=True)
+    t.start()
+    try:
+        # 1. Missing status=ok
+        _MockHealthHandler.mode = "malformed"
+        res1 = probe_gatekeeper_health(port=port, timeout=1.0)
+        assert res1["status"] == "UNAVAILABLE"
+        assert "Malformed" in res1["error"]
+
+        # 2. Invalid non-JSON payload
+        _MockHealthHandler.mode = "invalid_json"
+        res2 = probe_gatekeeper_health(port=port, timeout=1.0)
+        assert res2["status"] == "UNAVAILABLE"
+
+        # 3. HTTP 500 status
+        _MockHealthHandler.mode = "500"
+        res3 = probe_gatekeeper_health(port=port, timeout=1.0)
+        assert res3["status"] == "UNAVAILABLE"
+        assert "500" in res3["error"]
+    finally:
+        server.shutdown()
+        server.server_close()
+
+
+def test_gatekeeper_health_timeout_scenario():
+    """Requirement 4: Slow responding service exceeding timeout returns UNAVAILABLE."""
+    server = http.server.HTTPServer(("127.0.0.1", 0), _MockHealthHandler)
+    port = server.server_address[1]
+    _MockHealthHandler.mode = "timeout"
+    t = threading.Thread(target=server.serve_forever, daemon=True)
+    t.start()
+    try:
+        res = probe_gatekeeper_health(port=port, timeout=0.08)
+        assert res["status"] == "UNAVAILABLE"
+        assert "timed out" in res["error"].lower()
+    finally:
+        server.shutdown()
+        server.server_close()
+
+
+def test_gatekeeper_health_forbidden_external_host():
+    """Requirement 3: Never accept an arbitrary user-supplied health-check URL."""
+    res1 = probe_gatekeeper_health(host="192.168.1.100")
+    assert res1["status"] == "UNKNOWN"
+    assert "forbidden" in res1["error"].lower()
+
+    res2 = probe_gatekeeper_health(host="attacker.com")
+    assert res2["status"] == "UNKNOWN"
+    assert "forbidden" in res2["error"].lower()
+
+
+def test_gatekeeper_health_dashboard_api_endpoint():
+    """Requirement 2: Same-origin dashboard endpoint /api/gatekeeper/health."""
+    server = DashboardServer()
+    for endpoint in ["/api/gatekeeper/health", "/api/health/gatekeeper"]:
+        code, body = render_server_route(server, endpoint)
+        assert code == 200
+        data = json.loads(body)
+        assert "status" in data
+        assert data["status"] in ("ONLINE", "UNAVAILABLE", "UNKNOWN")
+
