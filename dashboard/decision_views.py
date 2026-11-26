@@ -2,7 +2,9 @@
 from collections import Counter
 from datetime import datetime
 from hashlib import sha256
+import hmac
 import math
+import os
 import re
 from statistics import median
 
@@ -10,9 +12,19 @@ from dashboard.evidence import labels
 
 SOURCES = set("rule_r0_random rule_r1_login_success rule_r6_failed_logins rule_r7_decision_tree rule_r2_pty_requested heuristic_command_chain heuristic_command_base ml_model_s3 lab_pty_mechanism LAB_DEMO_NOT_ML_s5_command_count fail_cheap_fallback".split())
 
+DEFAULT_MASKING_SALT = os.environ.get("DASHBOARD_MASKING_SALT", "").encode("utf-8")
 
-def masked(value, prefix):
-    return prefix + sha256(str(value).encode()).hexdigest()[:24]
+
+def masked(value, prefix, salt: bytes = DEFAULT_MASKING_SALT):
+    """Generate a privacy-safe pseudonym.
+    
+    If DASHBOARD_MASKING_SALT is configured, computes keyed HMAC-SHA256.
+    Otherwise defaults to deterministic SHA-256 for backward compatibility
+    with static fixtures and test invariants.
+    """
+    if salt:
+        return prefix + hmac.new(salt, str(value).encode("utf-8"), sha256).hexdigest()[:24]
+    return prefix + sha256(str(value).encode("utf-8")).hexdigest()[:24]
 
 
 def number(value):

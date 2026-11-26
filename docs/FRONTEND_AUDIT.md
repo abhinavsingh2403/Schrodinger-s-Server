@@ -44,11 +44,18 @@ The current system has a solid functional baseline (offline loopback capability,
 - **Action:** Must explicitly label: *"Command-level evidence not available in this view. Recorded decisions reflect Gatekeeper policy engine evaluations only."* Latency must be explicitly labeled *"Engine compute latency (ms), excluding sensor network transmission"*.
 
 ### 3.2 Resource & Concurrency Scaling
-- `results/cost/COST_PER_TIER.md` records:
-  - T1: Mean CPU 0.05%, Peak 1.95%, Memory Mean 49.11 MB, Max 49.33 MB
-  - T2: Mean CPU 0.06%, Peak 2.05%, Memory Mean 49.11 MB, Max 49.38 MB
-  - T3: Deferred (`NOT RUN`)
-- **Action:** Avoid misleading claims that T1 is "cheaper" or "saves cloud infrastructure budget". Both personas run within the same Python process in Cowrie; memory consumption is identical (~49 MB) and CPU variance is sub-0.02%. Use dynamic chart bounds and include the verbatim limitation text from `COST_PER_TIER.md`.
+- `results/cost/COST_PER_TIER.md` records empirical measurements across matched final-tier workloads:
+  - **T1 Final Arm (20 sessions, 80 decisions, ~121.3s wall time)**:
+    - Mean CPU % across accepted repeats: 0.08% to 1.06% (Max CPU: 1.93% to 11.52%)
+    - Mean Memory MB across accepted repeats: 95.94 MB to 96.66 MB (Max Memory: 110.0 MB to 114.0 MB)
+  - **T2 Final Arm (20 sessions, 78 decisions, ~121.3s wall time)**:
+    - Mean CPU % across accepted repeats: 0.74% to 0.88% (Max CPU: 6.00% to 8.70%)
+    - Mean Memory MB across accepted repeats: 97.08 MB to 97.14 MB (Max Memory: 112.4 MB to 114.1 MB)
+  - **Repeat-Index Differences (T2-final minus T1-final)**:
+    - Mean CPU % difference: -0.25 to +0.66 percentage points
+    - Mean Memory MB difference: +0.48 to +1.14 MB
+  - **T3 (Real VM)**: Deferred (`NOT RUN` - pre-registered Gate 0 containment boundary).
+- **Action:** Avoid misleading claims that T1 is "cheaper" or "saves cloud infrastructure budget". Both personas run within the same Python sensor process in Cowrie; memory consumption difference is sub-1.2 MB (~96 MB vs ~97 MB) and CPU difference is within measurement noise (-0.25 to +0.66 percentage points). Terminal allocation (PTY) is the primary mechanical difference. Use dynamic chart bounds and include the verbatim limitation text from `COST_PER_TIER.md`.
 
 ### 3.3 ML Experiments & Negative Result Integrity
 - Pre-registration and Experiment 1 results clearly demonstrate:

@@ -1672,7 +1672,7 @@ async function initDeception() {
   const rows = [
     ['Shell Interaction Model', 'Limited fake shell with static command responses', 'Emulated filesystem with full PTY interactive terminal', 'Full Linux OS isolation inside dedicated guest VM'],
     ['Filesystem Depth', 'Restricted static directory tree', 'Synthetic dynamic directory structure with persistence', 'Native virtual disk image with complete standard tooling'],
-    ['Resource Overhead', 'Minimal (~49.1 MB memory, ~0.05% CPU)', 'Identical process footprint (~49.1 MB memory, ~0.06% CPU)', 'Heavy (~1024 MB RAM, full hypervisor process overhead)'],
+    ['Resource Overhead', 'Shared process footprint (~96 MB mean RAM, 0.08–1.06% CPU)', 'Shared process footprint (~97 MB mean RAM, 0.74–0.88% CPU)', 'Heavy (~1024 MB RAM, full hypervisor process overhead)'],
     ['Security / Containment', 'High (pure Python in-memory parser)', 'High (isolated Cowrie daemon, no host syscalls)', 'Host boundary risk (requires hypervisor isolation)'],
     ['Research Evaluation Status', 'VERIFIED (Pre-registered baseline)', 'VERIFIED (Mid-session escalation target)', 'DEFERRED (Pre-registered Gate 0 decision)']
   ];

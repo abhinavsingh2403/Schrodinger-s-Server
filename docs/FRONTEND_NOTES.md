@@ -52,7 +52,10 @@ To route the new workspaces while preserving backend isolation:
    - Mandatory banner on `/ml`: *"NO VALIDATED ML GAIN · EXPERIMENTAL HYPOTHESIS NOT SUPPORTED"*.
    - Verbatim methodology caveat on `/cost`: Matched session sampling inside shared sensor process cannot isolate persona-only resource impact.
    - Preserved `FAIL` on `/lab` for `0.0.0.0` sensor binding.
-5. **Masked Identifiers Only:** All session IDs (`ses_...`) and visitor IDs (`vis_...`) are salted HMAC hashes; no raw IP addresses or credentials appear anywhere.
+5. **Identifier Privacy & Masking Architecture:**
+   - **Sensor/Gatekeeper Storage Layer (`gatekeeper/visitor_memory.py`)**: Uses keyed HMAC-SHA256 (`HMAC-SHA256(VISITOR_SALT, source_ip)`) to derive and persist visitor pseudonyms in `gatekeeper.db`. Raw source IPs are never stored in the database.
+   - **Dashboard Projection Layer (`dashboard/decision_views.py`)**: By default, applies deterministic 96-bit SHA-256 masking (`ses_...` and `vis_...`) to guarantee 100% backward compatibility with static offline fixtures (`dashboard/fixtures/session.json`). When configured via `DASHBOARD_MASKING_SALT`, it switches dynamically to keyed HMAC-SHA256.
+   - **Identifier Stability**: Identifiers are guaranteed identical between `/api/sessions` and `/api/session/{masked_id}` because both routes execute through the shared `decision_views.public_row()` pipeline. Raw session tokens or IPs are strictly rejected (HTTP 404).
 
 ---
 

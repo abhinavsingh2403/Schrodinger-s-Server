@@ -25,3 +25,20 @@ def test_timelines_and_summary(tmp_path):
     assert [r["stage"] for r in rows] == ["S1","S3","S4"]
     assert rows[0]["latency_ms"] is None
     assert api_response(server, "/api/session/private-session")[0] == 404
+
+
+def test_masked_identifier_privacy():
+    from dashboard.decision_views import masked
+    # 1. Default unsalted SHA-256: deterministic and 24 chars
+    m1 = masked("test-session", "ses_")
+    assert m1.startswith("ses_") and len(m1) == 28
+    assert m1 == masked("test-session", "ses_")
+    
+    # 2. Keyed HMAC produces different pseudonyms when salt is supplied
+    m_keyed1 = masked("test-session", "ses_", salt=b"secret-salt-1")
+    m_keyed2 = masked("test-session", "ses_", salt=b"secret-salt-2")
+    assert m_keyed1.startswith("ses_") and len(m_keyed1) == 28
+    assert m_keyed1 != m1
+    assert m_keyed1 != m_keyed2
+    # Deterministic with same salt
+    assert m_keyed1 == masked("test-session", "ses_", salt=b"secret-salt-1")
