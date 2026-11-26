@@ -10,7 +10,6 @@
       "DECISIONS.md:201:237",
       "DECISIONS.md:203:64",
       "GEMINI_TASKS.md:82:226",
-      "docs/VIVA_QA.md:96:165",
       "gatekeeper/decision_api.py:519:18",
       "gatekeeper/decision_api.py:554:44",
       "gatekeeper/decision_api.py:554:88",
@@ -61,6 +60,6 @@
   },
   "hash_like_info": {
     "status": "INFO",
-    "count": 1336
+    "count": 1413
   }
 }

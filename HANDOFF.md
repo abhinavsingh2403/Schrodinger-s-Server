@@ -344,3 +344,8 @@ Start from repo root: `python -m dashboard.app --db gatekeeper/gatekeeper.db`. P
 Bash: `base=http://127.0.0.1:8080; for p in evidence/index evidence/metrics progress decisions/summary sessions decisions stats arms model exp0 natural_experiment detector; do curl -sS "$base/api/$p"; done`.
 Timeline: `sid=$(curl -sS "$base/api/sessions" | python -c "import json,sys; print(json.load(sys.stdin)['sessions'][0]['session_id'])"); curl -sS "$base/api/session/$sid"` requires a recorded session.
 Front-end page rendering is pending. Optional event-log API omitted; the timeline uses decision rows.
+
+### Viva evidence review
+DONE — Selected viva claims corrected (docs/DOCS_CLAIMS_AUDIT.md). REMAINING — exhaustive statement-by-statement review of all six documents.
+NOT RUN — detector comparison. Port occupied; check `docker version` and `Get-NetTCPConnection -State Listen -LocalPort 8080`. Review isolated CLI with `honeypot-auditor --help`.
+REMAINING — implement per-command byte capture, latency, paired hash comparison and expanded selection. Existing `python -m analysis.lab_trace_replay` checks input receipt only.

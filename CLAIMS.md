@@ -126,3 +126,5 @@ Event-log ordering observations are recorded by analysis/exp0_event_order.py aga
 | Recorded SSH completion and decision-log tiers are paired for each attempted replay. | [Observations](results/replay/observations.json) | Lab, exploratory |
 | Both final-tier arms received the selected inputs in every repeat. | [Replay result](results/replay/REPLAY_RESULT.md) | Lab, exploratory |
 | The lab dashboard serves allowlisted evidence and read-only decision summaries with masked session links. | [Dashboard contract](docs/FRONTEND_CONTRACT.md) | Lab |
+| The viva claims review distinguishes measured results from design assumptions. | [Claims audit](docs/DOCS_CLAIMS_AUDIT.md) | Lab, exploratory |
+| The installed detector exposes separate handshake and deep modes. Controlled persona scores remain unavailable. | [Detector check](results/detector/DETECTOR_RESULT.md) | Lab, exploratory |
