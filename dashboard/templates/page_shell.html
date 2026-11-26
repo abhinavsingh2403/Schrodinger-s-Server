@@ -1,7 +1,337 @@
 <!doctype html>
-<html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{{title}} · Schrödinger's Server</title>
-<style>:root{color-scheme:dark;font-family:system-ui,sans-serif;background:#080e19;color:#edf3ff}body{padding:24px}a{color:#abedff;margin-right:1em}</style>
-<nav aria-label="Dashboard"><a href="/">Overview</a><a href="/evidence">Evidence Vault</a><a href="/cost">Cost</a><a href="/ml">ML Experiments</a><a href="/session">Session Timeline</a></nav>
-<main><h1>{{title}}</h1><p id="banner">Scope UNKNOWN · Policy profile UNKNOWN</p>
-<div id="content" aria-live="polite">NO DATA · No evidence loaded.</div></main></html>
+<style>
+:root{color-scheme:dark;font-family:system-ui,-apple-system,sans-serif;background:#080e19;color:#edf3ff}
+*{box-sizing:border-box}
+body{margin:0;padding:24px;line-height:1.5}
+a{color:#abedff;text-decoration:none}
+a:hover{text-decoration:underline}
+.topnav{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:18px;padding-bottom:12px;border-bottom:1px solid #324863}
+.topnav a{padding:7px 13px;border-radius:8px;border:1px solid #324863;background:#0c1625;font-size:14px;font-weight:600;transition:background .15s,border-color .15s}
+.topnav a:hover{background:#15253c;border-color:#56c7ed;text-decoration:none}
+.topnav a.active{background:#123d55;border-color:#56c7ed;color:#fff}
+header.page-head{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap;margin-bottom:16px}
+h1{font-size:26px;margin:0}
+h2{font-size:20px;margin:0 0 12px 0}
+h3{font-size:16px;margin:0 0 8px 0}
+.muted{color:#b8c7dd;font-size:14px}
+#banner{background:#111e31;border:1px solid #324863;border-radius:10px;padding:10px 14px;margin-bottom:18px;font-size:14px;font-weight:600;display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+#banner.warn{background:#512f08;border:2px solid #ffb84d;color:#fff2cf}
+.grid-2{display:grid;grid-template-columns:1fr 1.25fr;gap:16px;align-items:start}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;margin-bottom:18px}
+.card{background:#111e31;border:1px solid #324863;border-radius:12px;padding:18px;margin-bottom:16px}
+.value{font-size:26px;font-weight:700;margin-top:6px}
+.tools{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px}
+input,select,button{font:inherit;padding:8px 12px;border:1px solid #59708c;border-radius:8px;background:#0c1625;color:#edf3ff;font-size:14px}
+button{cursor:pointer;font-weight:600}
+button:hover{background:#182941;border-color:#56c7ed}
+button.active-filter{background:#123d55;border-color:#56c7ed;color:#fff}
+.badge{display:inline-block;padding:3px 8px;border-radius:6px;margin:2px;font-size:12px;font-weight:600;border:1px solid #596b85;background:#0c1625}
+.badge.done{background:#0f3d2e;color:#baffd8;border-color:#34a87c}
+.badge.exploratory{background:#123d55;color:#abedff;border-color:#56c7ed}
+.badge.invalid,.badge.notrun{background:#541c1c;color:#ffd0d0;border-color:#e06c6c}
+.badge.inconclusive,.badge.warn{background:#54320d;color:#ffdb96;border-color:#f7ae44}
+.scroll{overflow:auto;max-height:520px}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th{position:sticky;top:0;background:#182941;text-align:left;padding:10px;border-bottom:1px solid #324863}
+td{padding:10px;border-bottom:1px solid #263952;vertical-align:top}
+.item-btn{width:100%;text-align:left;background:#0c1625;border:1px solid #2a3e58;border-radius:8px;padding:10px 12px;margin-bottom:8px;display:block}
+.item-btn:hover,.item-btn.selected{border-color:#56c7ed;background:#13253b}
+.mono{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:13px;overflow-wrap:anywhere}
+pre.md-view{background:#0c1625;border:1px solid #2a3e58;border-radius:8px;padding:14px;overflow:auto;max-height:520px;white-space:pre-wrap;word-break:break-word;font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:13px;line-height:1.45;margin:0}
+.tree details{margin-left:14px;margin-top:4px}
+.tree summary{cursor:pointer;font-weight:600;color:#abedff}
+.tree-leaf{margin-left:14px;padding:2px 0;font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:13px}
+.timeline{border-left:2px solid #324863;padding-left:18px;margin-left:8px}
+.timeline-step{position:relative;margin-bottom:14px;background:#0c1625;border:1px solid #2a3e58;border-radius:10px;padding:12px}
+.timeline-step::before{content:'';position:absolute;left:-25px;top:16px;width:10px;height:10px;border-radius:50%;background:#56c7ed;border:2px solid #080e19}
+@media(max-width:900px){.grid-2{grid-template-columns:1fr}body{padding:14px}}
+</style>
+</head>
+<body>
+<nav class="topnav" aria-label="Dashboard">
+  <a href="/">Overview</a>
+  <a href="/evidence">Evidence Vault</a>
+  <a href="/ml">ML Experiments</a>
+  <a href="/cost">Cost</a>
+  <a href="/session">Session Timeline</a>
+</nav>
+<main>
+  <header class="page-head">
+    <h1>{{title}}</h1>
+    <div id="page-status" class="muted" role="status">NO DATA · waiting for API</div>
+  </header>
+  <p id="banner">Scope UNKNOWN · Policy profile UNKNOWN</p>
+  <div id="content" aria-live="polite">NO DATA · No evidence loaded.</div>
+</main>
+<script>
+'use strict';
+
+const el = (tag, textValue = '', cls = '') => {
+  const node = document.createElement(tag);
+  if (textValue !== null && textValue !== undefined && textValue !== '') {
+    node.textContent = String(textValue);
+  }
+  if (cls) node.className = cls;
+  return node;
+};
+
+const statusClass = (s) => {
+  const v = String(s || '').toUpperCase();
+  if (v === 'DONE') return 'badge done';
+  if (v === 'EXPLORATORY') return 'badge exploratory';
+  if (v === 'INVALID') return 'badge invalid';
+  if (v === 'NOT RUN') return 'badge notrun';
+  if (v === 'INCONCLUSIVE') return 'badge inconclusive';
+  return 'badge';
+};
+
+function setBanner(meta, extraWarnText = '') {
+  const banner = document.getElementById('banner');
+  const scope = (meta && meta.scope) ? meta.scope : 'UNKNOWN';
+  const profile = (meta && meta.policy_profile) ? meta.policy_profile : 'UNKNOWN';
+  const parts = [`Scope ${scope}`, `Policy profile ${profile}`];
+  if (meta && meta.demo_label) parts.push(meta.demo_label);
+  if (meta && meta.status) parts.push(`Status ${meta.status}`);
+  if (meta && meta.source_file) parts.push(`Source ${meta.source_file}`);
+  if (extraWarnText) {
+    parts.push(extraWarnText);
+    banner.className = 'warn';
+  } else if (meta && (meta.demo_label || meta.status === 'INVALID' || meta.status === 'INCONCLUSIVE')) {
+    banner.className = 'warn';
+  } else {
+    banner.className = '';
+  }
+  banner.textContent = parts.join(' · ');
+}
+
+function setStatus(msg) {
+  const st = document.getElementById('page-status');
+  if (st) st.textContent = msg;
+}
+
+async function fetchJson(url) {
+  const res = await fetch(url, { cache: 'no-store', signal: AbortSignal.timeout(8000) });
+  const body = await res.json();
+  return { ok: res.ok, status: res.status, body };
+}
+
+function renderJsonTree(value, keyLabel = null) {
+  if (value === null || typeof value !== 'object') {
+    const row = el('div', '', 'tree-leaf');
+    if (keyLabel !== null) {
+      const k = el('span', keyLabel + ': ', 'muted');
+      row.appendChild(k);
+    }
+    row.appendChild(el('span', value === null ? 'null' : String(value)));
+    return row;
+  }
+  const details = document.createElement('details');
+  details.open = keyLabel === null;
+  const isArr = Array.isArray(value);
+  const keys = Object.keys(value);
+  const label = keyLabel !== null
+    ? `${keyLabel} (${isArr ? value.length + ' items' : keys.length + ' keys'})`
+    : (isArr ? `Array (${value.length})` : `Object (${keys.length})`);
+  details.appendChild(el('summary', label));
+  for (const k of keys) {
+    details.appendChild(renderJsonTree(value[k], k));
+  }
+  return details;
+}
+
+function makeBadgeRow(meta) {
+  const wrap = el('div');
+  if (meta.scope) wrap.appendChild(el('span', `Scope: ${meta.scope}`, 'badge'));
+  if (meta.status) wrap.appendChild(el('span', meta.status, statusClass(meta.status)));
+  if (meta.policy_profile) wrap.appendChild(el('span', `Profile: ${meta.policy_profile}`, 'badge'));
+  if (meta.demo_label) wrap.appendChild(el('span', meta.demo_label, 'badge warn'));
+  if (meta.source_file) wrap.appendChild(el('span', meta.source_file, 'badge mono'));
+  return wrap;
+}
+
+async function initEvidence() {
+  const content = document.getElementById('content');
+  content.replaceChildren(el('p', 'Loading evidence index and progress...', 'muted'));
+  let idxRes, progRes;
+  try {
+    [idxRes, progRes] = await Promise.all([
+      fetchJson('/api/evidence/index'),
+      fetchJson('/api/progress')
+    ]);
+  } catch (e) {
+    setStatus('NO DATA · API unavailable');
+    content.replaceChildren(el('div', 'NO DATA · Failed to reach evidence endpoints.', 'card'));
+    return;
+  }
+
+  const idx = idxRes.body;
+  setBanner(idx);
+  setStatus(`Loaded ${idx.items ? idx.items.length : 0} evidence items`);
+
+  const container = el('div');
+
+  // Progress Checklist Card
+  const progCard = el('section', '', 'card');
+  progCard.appendChild(el('h2', 'Project Progress Checklist'));
+  const pData = progRes && progRes.body ? progRes.body.data : null;
+  const pNote = (progRes && progRes.body && progRes.body.note)
+    ? progRes.body.note
+    : 'Weighted checklist of project work, not a performance measure.';
+  progCard.appendChild(el('p', pNote, 'muted'));
+  if (progRes && progRes.body) {
+    progCard.appendChild(makeBadgeRow(progRes.body));
+  }
+  if (!pData || !Array.isArray(pData.items)) {
+    progCard.appendChild(el('p', 'NO DATA · Progress checklist unavailable.', 'muted'));
+  } else {
+    const summaryLine = el('p', `Earned ${pData.earned} / ${pData.total} (${pData.percentage}%)`, 'value');
+    progCard.appendChild(summaryLine);
+    const tblWrap = el('div', '', 'scroll');
+    const tbl = el('table');
+    const thead = el('thead');
+    const htr = el('tr');
+    for (const h of ['Item', 'Weight', 'Status', 'Notes']) htr.appendChild(el('th', h));
+    thead.appendChild(htr);
+    const tbody = el('tbody');
+    for (const row of pData.items) {
+      const tr = el('tr');
+      tr.appendChild(el('td', row[0]));
+      tr.appendChild(el('td', String(row[1])));
+      const stTd = el('td');
+      stTd.appendChild(el('span', row[2], statusClass(row[2] === 'Done' ? 'done' : row[2] === 'Partial' ? 'exploratory' : 'NOT RUN')));
+      tr.appendChild(stTd);
+      tr.appendChild(el('td', row[3], 'muted'));
+      tbody.appendChild(tr);
+    }
+    tbl.append(thead, tbody);
+    tblWrap.appendChild(tbl);
+    progCard.appendChild(tblWrap);
+  }
+  container.appendChild(progCard);
+
+  // Evidence Index + Inspector
+  const grid = el('div', '', 'grid-2');
+  const listCard = el('section', '', 'card');
+  listCard.appendChild(el('h2', 'Allowlisted Evidence Catalog'));
+  const items = (idx && Array.isArray(idx.items)) ? idx.items : [];
+  if (!items.length) {
+    listCard.appendChild(el('p', idx.empty || 'NO DATA · No evidence items indexed.', 'muted'));
+    grid.appendChild(listCard);
+    container.appendChild(grid);
+    content.replaceChildren(container);
+    return;
+  }
+
+  let activeFilter = 'ALL';
+  let searchText = '';
+  let selectedId = null;
+
+  const tools = el('div', '', 'tools');
+  const searchInput = document.createElement('input');
+  searchInput.placeholder = 'Filter by ID, title, or source file...';
+  searchInput.setAttribute('aria-label', 'Filter evidence');
+  tools.appendChild(searchInput);
+
+  const filterStatuses = ['ALL', 'done', 'exploratory', 'NOT RUN', 'INVALID', 'INCONCLUSIVE'];
+  const filterBtns = [];
+  for (const fs of filterStatuses) {
+    const btn = el('button', fs === 'ALL' ? 'All' : fs, fs === 'ALL' ? 'active-filter' : '');
+    btn.type = 'button';
+    btn.addEventListener('click', () => {
+      activeFilter = fs;
+      for (const b of filterBtns) b.className = (b === btn) ? 'active-filter' : '';
+      renderList();
+    });
+    filterBtns.push(btn);
+    tools.appendChild(btn);
+  }
+  listCard.appendChild(tools);
+
+  const listWrap = el('div', '', 'scroll');
+  listCard.appendChild(listWrap);
+
+  const inspectorCard = el('section', '', 'card');
+  inspectorCard.appendChild(el('h2', 'Evidence Inspector'));
+  const inspectorMeta = el('div', '', 'muted');
+  inspectorMeta.appendChild(el('p', 'Select an evidence item from the catalog to inspect its recorded contents.'));
+  const inspectorBody = el('div');
+  inspectorCard.append(inspectorMeta, inspectorBody);
+
+  async function inspectItem(item) {
+    selectedId = item.id;
+    renderList();
+    inspectorMeta.replaceChildren(el('p', `Loading ${item.id}...`, 'muted'));
+    inspectorBody.replaceChildren();
+    try {
+      const res = await fetchJson(`/api/evidence/${encodeURIComponent(item.id)}`);
+      const payload = res.body;
+      inspectorMeta.replaceChildren();
+      inspectorMeta.appendChild(el('h3', payload.title || item.id));
+      inspectorMeta.appendChild(makeBadgeRow(payload));
+      if (!res.ok || payload.data === null || payload.data === undefined) {
+        inspectorBody.replaceChildren(el('p', payload.empty || 'NO DATA · Evidence unavailable.', 'muted'));
+        return;
+      }
+      if (payload.kind === 'markdown') {
+        const pre = el('pre', payload.data.text || '', 'md-view');
+        inspectorBody.replaceChildren(pre);
+      } else {
+        const treeWrap = el('div', '', 'tree scroll');
+        treeWrap.appendChild(renderJsonTree(payload.data));
+        inspectorBody.replaceChildren(treeWrap);
+      }
+    } catch (e) {
+      inspectorMeta.replaceChildren(el('p', 'NO DATA · Failed to load evidence item.', 'muted'));
+      inspectorBody.replaceChildren();
+    }
+  }
+
+  function renderList() {
+    listWrap.replaceChildren();
+    const q = searchText.trim().toLowerCase();
+    const filtered = items.filter((it) => {
+      if (activeFilter !== 'ALL' && String(it.status).toUpperCase() !== activeFilter.toUpperCase()) return false;
+      if (!q) return true;
+      return `${it.id} ${it.title} ${it.source_file}`.toLowerCase().includes(q);
+    });
+    if (!filtered.length) {
+      listWrap.appendChild(el('p', 'No matching evidence items.', 'muted'));
+      return;
+    }
+    for (const it of filtered) {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'item-btn' + (selectedId === it.id ? ' selected' : '');
+      btn.appendChild(el('div', `${it.title || it.id} (${it.kind})`, ''));
+      btn.appendChild(makeBadgeRow(it));
+      btn.addEventListener('click', () => inspectItem(it));
+      listWrap.appendChild(btn);
+    }
+  }
+
+  searchInput.addEventListener('input', () => {
+    searchText = searchInput.value;
+    renderList();
+  });
+
+  renderList();
+  grid.append(listCard, inspectorCard);
+  container.appendChild(grid);
+  content.replaceChildren(container);
+}
+
+(function boot() {
+  const path = window.location.pathname;
+  for (const link of document.querySelectorAll('.topnav a')) {
+    if (link.getAttribute('href') === path) link.classList.add('active');
+  }
+  if (path === '/evidence') initEvidence();
+})();
+</script>
+</body>
+</html>
