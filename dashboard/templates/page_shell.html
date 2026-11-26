@@ -1402,7 +1402,7 @@ async function initSession() {
       : 'NO DATA';
     addRow('Compute Latency', latVal);
     addRow('Provenance', dec.provenance || 'LAB');
-    addRow('Policy Profile', dec.policy_profile || 'LAB_DEMO');
+    addRow('Policy Profile', dec.policy_profile || 'UNKNOWN');
     if (dec.timestamp) addRow('Event Timestamp', dec.timestamp);
 
     fieldsTable.appendChild(fTbody);
@@ -1465,14 +1465,15 @@ async function initSession() {
 
       decisions.forEach((d, idx) => {
         const tier = d.tier_decided || d.tier || 'T1';
-        const isTransition = tier === 'T2' || tier === 'T3';
+        const prevTier = idx > 0 ? (decisions[idx-1].tier_decided || decisions[idx-1].tier || 'T1') : null;
+        const isTransition = prevTier !== null && prevTier !== tier && (tier === 'T2' || tier === 'T3');
         const step = el('div', '', 'timeline-step' + (isTransition ? ' tier-transition' : ''));
 
         const sRow = el('div', '', 'tools');
         sRow.appendChild(el('strong', `Stage ${d.stage}`));
         sRow.appendChild(el('span', tier, `badge ${tier}`));
         if (isTransition) {
-          sRow.appendChild(el('span', 'Escalation Event (T1 → T2)', 'badge warn'));
+          sRow.appendChild(el('span', `Escalation Event (${prevTier} → ${tier})`, 'badge warn'));
         }
         step.appendChild(sRow);
 
@@ -1548,9 +1549,14 @@ async function initSession() {
 
       const stageLine = el('div', '', 'tools');
       stageLine.style.marginTop = '4px';
-      for (const st of ['S1', 'S2', 'S3', 'S4', 'S5']) {
-        const tier = s.stages && s.stages[st];
-        stageLine.appendChild(el('span', `${st}:${tier || '—'}`, `badge ${tier || ''}`));
+      if (s.stages && Object.keys(s.stages).length) {
+        const stageOrder = { 'S1': 1, 'S2': 2, 'S3': 3, 'S4': 4, 'S5': 5 };
+        const observedStages = Object.entries(s.stages).sort((a, b) => (stageOrder[a[0]] || 99) - (stageOrder[b[0]] || 99));
+        for (const [st, tier] of observedStages) {
+          stageLine.appendChild(el('span', `${st}:${tier}`, `badge ${tier}`));
+        }
+      } else {
+        stageLine.appendChild(el('span', 'No stages observed', 'muted mono'));
       }
       btn.appendChild(stageLine);
 
@@ -2068,11 +2074,31 @@ async function initLab() {
   tThead.appendChild(tTr);
   const tTbody = el('tbody');
 
+  let gkStatus = 'NOT CHECKED';
+  let gkBadgeClass = 'badge';
+  try {
+    await fetch('http://127.0.0.1:15000/health', { mode: 'no-cors', signal: AbortSignal.timeout(1200) });
+    gkStatus = 'ONLINE (Port 15000 Verified)';
+    gkBadgeClass = 'badge done';
+  } catch (e) {
+    gkStatus = 'UNAVAILABLE (Port 15000 Unreachable)';
+    gkBadgeClass = 'badge invalid';
+  }
+
+  const dbOk = sessRes && sessRes.status === 200 && sessRes.body;
+  const sessCount = (dbOk && Array.isArray(sessRes.body.sessions)) ? sessRes.body.sessions.length : 0;
+  const dbStatus = dbOk ? `ACCESSIBLE (${sessCount} session${sessCount === 1 ? '' : 's'} loaded)` : 'UNAVAILABLE (Store unreachable)';
+  const dbBadgeClass = dbOk ? 'badge done' : 'badge invalid';
+
+  const dashOk = progRes && progRes.status === 200;
+  const dashStatus = dashOk ? 'ONLINE (Loopback HTTP 200)' : 'UNAVAILABLE';
+  const dashBadgeClass = dashOk ? 'badge done' : 'badge invalid';
+
   const comps = [
-    ['Cowrie Sensor', 'SSH deception listener & telemetry extractor', 'Port 2222 (Loopback strictly)', 'ONLINE / ACTIVE'],
-    ['Gatekeeper Policy Engine', 'Decision service (S1–S5 policy evaluation)', 'Port 15000 (Loopback strictly)', 'ONLINE / ACTIVE'],
-    ['SQLite Audit Store', 'Persistent append-only decision_log schema', 'Local filesystem (gatekeeper.db)', 'ONLINE / ACTIVE'],
-    ['Verification Dashboard', 'Offline research artifact inspector & telemetry UI', 'Port 8080 (Loopback strictly)', 'ONLINE / ACTIVE']
+    ['Cowrie Sensor', 'SSH deception listener & telemetry extractor', 'Port 2222 (Loopback strictly)', 'NOT CHECKED (SSH protocol requires probe)', 'badge'],
+    ['Gatekeeper Policy Engine', 'Decision service (S1–S5 policy evaluation)', 'Port 15000 (Loopback strictly)', gkStatus, gkBadgeClass],
+    ['SQLite Audit Store', 'Persistent append-only decision_log schema', 'Local filesystem (gatekeeper.db)', dbStatus, dbBadgeClass],
+    ['Verification Dashboard', 'Offline research artifact inspector & telemetry UI', 'Port 8080 (Loopback strictly)', dashStatus, dashBadgeClass]
   ];
 
   for (const c of comps) {
@@ -2081,7 +2107,7 @@ async function initLab() {
     tr.appendChild(el('td', c[1]));
     tr.appendChild(el('td', c[2], 'mono'));
     const sTd = el('td');
-    sTd.appendChild(el('span', c[3], 'badge done'));
+    sTd.appendChild(el('span', c[3], c[4]));
     tr.appendChild(sTd);
     tTbody.appendChild(tr);
   }

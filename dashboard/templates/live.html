@@ -178,6 +178,8 @@
       display: inline-block;
     }
     .status-dot.warm { background: var(--soft-brass); }
+    .status-dot.neutral { background: var(--text-tertiary); opacity: 0.7; }
+    .status-dot.invalid { background: var(--invalid); }
 
     /* KPI Cards */
     .kpis {
@@ -424,23 +426,23 @@
 <!-- System Status Indicators Strip -->
 <section class="status-strip" aria-label="System Connectivity Status">
   <div class="status-item">
-    <span class="status-dot"></span>
+    <span id="dot-dash" class="status-dot"></span>
     <span class="muted">Dashboard:</span>
-    <strong class="mono" style="color: var(--text-primary);">127.0.0.1:8080 (Loopback)</strong>
+    <strong class="mono" id="status-dash" style="color: var(--text-primary);">127.0.0.1:8080 (Connecting...)</strong>
   </div>
   <div class="status-item">
-    <span class="status-dot warm"></span>
-    <span class="muted">SSH Sensor:</span>
-    <strong class="mono" style="color: var(--soft-brass);">Port 2222 (Cowrie Listener)</strong>
-  </div>
-  <div class="status-item">
-    <span class="status-dot"></span>
+    <span id="dot-gk" class="status-dot neutral"></span>
     <span class="muted">Decision Engine:</span>
-    <strong class="mono" style="color: var(--text-primary);">Port 15000 (SQLite WAL)</strong>
+    <strong class="mono" id="status-gk" style="color: var(--text-secondary);">Port 15000 (Checking...)</strong>
+  </div>
+  <div class="status-item">
+    <span id="dot-cowrie" class="status-dot neutral"></span>
+    <span class="muted">SSH Sensor:</span>
+    <strong class="mono" id="status-cowrie" style="color: var(--text-secondary);">Port 2222 (Configured · NOT CHECKED)</strong>
   </div>
   <div class="status-item" style="margin-left: auto;">
     <span class="muted">Profile:</span>
-    <span id="policy-profile-badge" class="badge">LAB_DEMO</span>
+    <span id="policy-profile-badge" class="badge">UNKNOWN</span>
   </div>
 </section>
 
@@ -516,11 +518,11 @@
       <option value="no">T1 only (Unescalated)</option>
     </select>
   </div>
-  <p class="muted">S1 → S5: observation trajectory sequence. Light teal denotes T1, warm brass denotes T2. ↑ indicates an escalation transition event. A dash (—) indicates stage was not evaluated.</p>
+  <p class="muted">Observation trajectory sequence across evaluated stages. Light teal denotes T1, warm brass denotes T2. ↑ indicates a mid-session escalation transition event. Unobserved stages remain visually absent.</p>
   <div class="scroll">
     <table>
       <thead>
-        <tr><th>Session / Visitor Identity</th><th>Observation Trajectory (S1–S5)</th><th>Provenance / Policy / Decisions</th></tr>
+        <tr><th>Session / Visitor Identity</th><th>Observation Trajectory</th><th>Provenance / Policy / Decisions</th></tr>
       </thead>
       <tbody id="rows"></tbody>
     </table>
@@ -644,12 +646,16 @@ function renderTrajectoryTrack(session) {
   const container = document.createElement('div');
   container.className = 'trajectory-container';
 
-  const stages = ['S1', 'S2', 'S3', 'S4', 'S5'];
-  let prevActive = false;
+  if (!session.stages || !Object.keys(session.stages).length) {
+    container.appendChild(text('span', 'No stages observed', 'muted mono'));
+    return container;
+  }
 
-  for (let i = 0; i < stages.length; i++) {
-    const st = stages[i];
-    const tier = session.stages && session.stages[st];
+  const stageOrder = { 'S1': 1, 'S2': 2, 'S3': 3, 'S4': 4, 'S5': 5 };
+  const observedEntries = Object.entries(session.stages).sort((a, b) => (stageOrder[a[0]] || 99) - (stageOrder[b[0]] || 99));
+
+  for (let i = 0; i < observedEntries.length; i++) {
+    const [st, tier] = observedEntries[i];
     const changes = (session.transitions || []).filter(t => t.stage === st);
     const hasTransition = changes.length > 0;
 
@@ -662,8 +668,8 @@ function renderTrajectoryTrack(session) {
 
     const step = document.createElement('span');
     step.className = 'traj-step ' + (tier || 'missing') + (hasTransition ? ' escalated' : '');
-    step.textContent = `${st} ${tier || '—'}${hasTransition ? ' ↑' : ''}`;
-    step.title = hasTransition ? changes.map(t => `${t.from} → ${t.to}`).join(', ') : (tier ? `Assigned ${tier}` : 'Stage not observed');
+    step.textContent = `${st} ${tier}${hasTransition ? ' ↑' : ''}`;
+    step.title = hasTransition ? changes.map(t => `${t.from} → ${t.to}`).join(', ') : `Assigned ${tier}`;
     container.appendChild(step);
   }
 
@@ -783,11 +789,55 @@ async function poll() {
     el('source').textContent = meta.scope || 'UNKNOWN';
     el('foot-scope').textContent = `Scope: ${meta.scope || 'UNKNOWN'} · Profile: ${meta.policy_profile || 'UNKNOWN'}`;
 
+    // Live Dashboard verified
+    const dotDash = el('dot-dash');
+    const statusDash = el('status-dash');
+    if (dotDash) dotDash.className = 'status-dot';
+    if (statusDash) {
+      statusDash.textContent = '127.0.0.1:8080 (ONLINE)';
+      statusDash.style.color = 'var(--text-primary)';
+    }
+
+    // Live Gatekeeper loopback check
+    const dotGk = el('dot-gk');
+    const statusGk = el('status-gk');
+    try {
+      await fetch('http://127.0.0.1:15000/health', { mode: 'no-cors', signal: AbortSignal.timeout(1200) });
+      if (dotGk) dotGk.className = 'status-dot';
+      if (statusGk) {
+        statusGk.textContent = 'Port 15000 (ONLINE · Verified)';
+        statusGk.style.color = 'var(--text-primary)';
+      }
+    } catch (e) {
+      if (dotGk) dotGk.className = 'status-dot invalid';
+      if (statusGk) {
+        statusGk.textContent = 'Port 15000 (UNAVAILABLE)';
+        statusGk.style.color = 'var(--invalid)';
+      }
+    }
+
+    // SSH Sensor: Port 2222 raw SSH protocol is not web-verifiable.
+    // Clearly distinguish configured port from verified service:
+    const dotCowrie = el('dot-cowrie');
+    const statusCowrie = el('status-cowrie');
+    if (dotCowrie) dotCowrie.className = 'status-dot neutral';
+    if (statusCowrie) {
+      statusCowrie.textContent = 'Port 2222 (Configured · NOT CHECKED)';
+      statusCowrie.style.color = 'var(--text-secondary)';
+    }
+
     const profBadge = el('policy-profile-badge');
-    if (profBadge) profBadge.textContent = meta.policy_profile || 'LAB_DEMO';
+    if (profBadge) profBadge.textContent = meta.policy_profile || 'UNKNOWN';
 
     render();
   } catch (e) {
+    const dotDash = el('dot-dash');
+    const statusDash = el('status-dash');
+    if (dotDash) dotDash.className = 'status-dot invalid';
+    if (statusDash) {
+      statusDash.textContent = '127.0.0.1:8080 (UNAVAILABLE)';
+      statusDash.style.color = 'var(--invalid)';
+    }
     el('status').textContent = 'API unavailable';
     el('empty').textContent = 'NO DATA · Failed to connect to /api/sessions.';
     el('empty').style.display = 'block';
