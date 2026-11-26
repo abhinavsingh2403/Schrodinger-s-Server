@@ -4,11 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Schrödinger's Server // Cyber Defense Dashboard</title>
-  <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700;800&display=swap');
-
     :root {
+      color-scheme: dark;
       --bg-base: #040711;
       --card-bg: #0B111E;
       --card-border: #1A2639;
@@ -17,14 +15,51 @@
       --subtle-gray: #94A3B8;
     }
 
+    * { box-sizing: border-box; }
     body {
       background-color: var(--bg-base);
       color: #E2E8F0;
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      margin: 0;
+      padding: 16px;
+      line-height: 1.5;
     }
 
-    .font-mono {
-      font-family: 'JetBrains Mono', monospace;
+    .font-mono, code, pre, .mono {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    }
+
+    a { color: var(--neon-cyan); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    .topnav {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--card-border);
+    }
+    .topnav a {
+      padding: 7px 13px;
+      border-radius: 8px;
+      border: 1px solid var(--card-border);
+      background: #060A13;
+      font-size: 13px;
+      font-weight: 600;
+      color: #abedff;
+      text-decoration: none;
+      transition: background .15s, border-color .15s;
+    }
+    .topnav a:hover {
+      background: #15253c;
+      border-color: var(--neon-cyan);
+    }
+    .topnav a.active {
+      background: #123d55;
+      border-color: var(--neon-cyan);
+      color: #fff;
     }
 
     .cyber-card {
@@ -32,30 +67,28 @@
       border: 1px solid var(--card-border);
       border-radius: 12px;
       position: relative;
+      padding: 16px;
+      margin-bottom: 16px;
     }
-
     .cyber-card::before {
       content: '';
       position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
+      top: 0; left: 0; right: 0;
       height: 1px;
       background: linear-gradient(90deg, transparent, rgba(0, 255, 65, 0.2), transparent);
     }
 
     .cyber-inner {
       background: #060A13;
-      border: 1px solid #1A2639;
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
     }
 
     .pulse-cyber {
-      animation: pulseGreen 2.5s infinite;
-    }
-
-    @keyframes pulseGreen {
-      0%, 100% { transform: scale(1); opacity: 0.8; filter: drop-shadow(0 0 0px #00FF41); }
-      50% { transform: scale(1.15); opacity: 0.45; filter: drop-shadow(0 0 1px #00FF41); }
+      display: inline-block;
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: #34d399;
     }
 
     .cyber-grid-bg {
@@ -66,244 +99,258 @@
       background-size: 100% 100%, 36px 36px, 36px 36px;
     }
 
-    ::-webkit-scrollbar { width: 5px; height: 5px; }
-    ::-webkit-scrollbar-track { background: #040711; }
-    ::-webkit-scrollbar-thumb { background: #1A2639; border-radius: 9999px; }
-    ::-webkit-scrollbar-thumb:hover { background: #00FF41; }
+    .kpis-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+
+    .grid-12 {
+      display: grid;
+      grid-template-columns: 7fr 5fr;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+    @media (max-width: 900px) {
+      .grid-12 { grid-template-columns: 1fr; }
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 600;
+      font-family: ui-monospace, monospace;
+      border: 1px solid var(--card-border);
+      background: #060A13;
+    }
+    .badge-recorded { color: #38bdf8; border-color: rgba(56, 189, 248, 0.3); background: rgba(56, 189, 248, 0.1); }
+    .badge-lab { color: #34d399; border-color: rgba(52, 211, 153, 0.3); background: rgba(52, 211, 153, 0.1); }
+    .badge-live { color: #c084fc; border-color: rgba(192, 132, 252, 0.3); background: rgba(192, 132, 252, 0.1); }
+    .badge-synth { color: #fbbf24; border-color: rgba(251, 191, 36, 0.3); background: rgba(251, 191, 36, 0.1); }
+    .badge-warn { color: #fb923c; border-color: rgba(251, 146, 60, 0.3); background: rgba(251, 146, 60, 0.1); }
+
+    .bar-bg {
+      width: 100%;
+      height: 6px;
+      background: #060A13;
+      border: 1px solid var(--card-border);
+      border-radius: 999px;
+      overflow: hidden;
+      margin-top: 8px;
+    }
+    .bar-fill { height: 100%; border-radius: 999px; transition: width .3s ease; }
+
+    table { width: 100%; border-collapse: collapse; font-size: 12px; }
+    th { text-align: left; padding: 10px; border-bottom: 1px solid var(--card-border); color: #94A3B8; font-family: ui-monospace, monospace; }
+    td { padding: 10px; border-bottom: 1px solid rgba(26, 38, 57, 0.6); vertical-align: middle; }
+    tr:hover { background: rgba(26, 38, 57, 0.3); }
+
+    input, select, button {
+      font: inherit;
+      padding: 6px 10px;
+      border: 1px solid var(--card-border);
+      border-radius: 6px;
+      background: #060A13;
+      color: #E2E8F0;
+      font-size: 12px;
+    }
+    button { cursor: pointer; }
+    button:hover { border-color: var(--neon-cyan); }
+
+    .modal-backdrop {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.8);
+      display: flex; align-items: center; justify-content: center; z-index: 50; padding: 16px;
+    }
+    .modal-backdrop[hidden] { display: none; }
   </style>
 </head>
-<body class="cyber-grid-bg antialiased p-3 sm:p-5 min-h-screen text-[#E2E8F0]">
-  <div class="max-w-7xl mx-auto space-y-5">
+<body class="cyber-grid-bg">
+  <div style="max-width: 1280px; margin: 0 auto;">
+
+    <nav class="topnav" aria-label="Dashboard">
+      <a href="/" class="active">Overview</a>
+      <a href="/evidence">Evidence Vault</a>
+      <a href="/ml">ML Experiments</a>
+      <a href="/cost">Cost</a>
+      <a href="/session">Session Timeline</a>
+      <a href="/research">Research Archive</a>
+    </nav>
 
     <!-- Top Status Bar & Header -->
-    <header class="cyber-card p-4 sm:p-5 shadow-2xl">
-      <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+    <header class="cyber-card">
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
         <div>
-          <h1 class="text-xl sm:text-2xl font-black text-white tracking-tight flex items-center gap-2.5">
+          <h1 style="font-size: 22px; font-weight: 800; margin: 0; display: flex; align-items: center; gap: 8px;">
             Schrödinger's Server
-            <span class="text-xs font-mono font-semibold px-2 py-0.5 rounded bg-[#00FF41]/15 text-[#00FF41] border border-[#00FF41]/30">
-              v3.1.6
-            </span>
+            <span class="badge badge-lab">v3.1.6</span>
           </h1>
-          <p class="text-xs sm:text-sm text-[#94A3B8] mt-1.5 flex flex-wrap items-center gap-2">
-            <span>Adaptive SSH Honeypot Early Triage</span>
-            <span class="text-zinc-600">&bull;</span>
-            <span class="text-[#00FF41] font-semibold">Yield per Rupee Optimization</span>
-            <span class="text-zinc-600">&bull;</span>
-            <span class="text-[#38BDF8]">Zero Raw IPs Exposed (Salted HMAC)</span>
+          <p style="font-size: 13px; color: var(--subtle-gray); margin: 6px 0 0 0;">
+            Adaptive SSH Honeypot Early Triage &bull; Resource Economics & Honesty Markers &bull; Zero Raw IPs Exposed (Salted HMAC)
           </p>
         </div>
 
-        <!-- Telemetry Badges & Scientific Provenance Markers -->
-        <div class="flex flex-wrap items-center gap-2 font-mono text-xs">
-          <div class="flex items-center gap-2 px-3 py-1.5 rounded-lg cyber-inner">
-            <span class="w-2 rounded-full h-2 bg-emerald-400 pulse-cyber"></span>
-            <span class="text-xs font-bold text-emerald-400 uppercase tracking-wider" id="headerEngineMode">GATEKEEPER LAB</span>
+        <div style="display: flex; gap: 6px; flex-wrap: wrap; align-items: center;" class="font-mono">
+          <div style="display: flex; align-items: center; gap: 6px; padding: 6px 10px;" class="cyber-inner">
+            <span class="pulse-cyber"></span>
+            <span style="font-size: 11px; font-weight: 700; color: #34d399;" id="headerEngineMode">GATEKEEPER LAB</span>
           </div>
-
-          <span class="px-2.5 py-1 rounded-md text-xs font-medium cyber-inner text-sky-400 border border-sky-500/20" id="badgeRecorded">
-            RECORDED
-          </span>
-          <span class="px-2.5 py-1 rounded-md text-xs font-medium cyber-inner text-emerald-400 border border-emerald-500/20" id="badgeLab">
-            LAB
-          </span>
-          <span class="px-2.5 py-1 rounded-md text-xs font-medium cyber-inner text-purple-400 border border-purple-500/20" id="badgeLive">
-            LIVE
-          </span>
-          <span class="px-2.5 py-1 rounded-md text-xs font-medium cyber-inner text-amber-400 border border-amber-500/20" id="badgeSynthetic">
-            SYNTHETIC
-          </span>
-          <span class="px-2.5 py-1 rounded-md text-xs font-medium cyber-inner text-zinc-400 border border-zinc-500/20" id="badgeUnknown">
-            UNKNOWN
-          </span>
+          <span class="badge badge-recorded" id="badgeRecorded">RECORDED</span>
+          <span class="badge badge-lab" id="badgeLab">LAB</span>
+          <span class="badge badge-live" id="badgeLive">LIVE</span>
+          <span class="badge badge-synth" id="badgeSynthetic">SYNTHETIC</span>
+          <span class="badge" id="badgeUnknown">UNKNOWN</span>
         </div>
       </div>
     </header>
 
     <!-- Top Command KPI Ribbon -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3.5">
-      
+    <div class="kpis-grid">
       <!-- Card 1: Total Recorded -->
-      <div class="cyber-card p-4">
-        <div class="flex justify-between items-center">
-          <div class="text-xs text-[#94A3B8] uppercase tracking-wider font-semibold text-[11px]">
-            Recorded Attacks
-          </div>
-          <span class="px-1.5 py-0.5 rounded text-[10px] font-mono bg-sky-500/15 text-sky-400 border border-sky-500/30">RECORDED</span>
+      <div class="cyber-card">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <span style="font-size: 11px; font-weight: 600; color: var(--subtle-gray); text-transform: uppercase;">Recorded Attacks</span>
+          <span class="badge badge-recorded">RECORDED</span>
         </div>
-        <div class="text-2xl sm:text-3xl font-black text-white font-mono mt-2 tracking-tight" id="kpiTotal">
-          NO DATA
-        </div>
-        <div class="text-xs text-[#94A3B8] mt-1 font-mono" id="kpiTotalSub">NO DATA</div>
-        <div class="w-full bg-[#060A13] h-1.5 rounded-full mt-3 overflow-hidden border border-[#1A2639]">
-          <div id="kpiTotalBar" class="bg-sky-400 h-full rounded-full" style="width: 0%;"></div>
-        </div>
+        <div style="font-size: 24px; font-weight: 800; margin-top: 6px;" class="font-mono" id="kpiTotal">NO DATA</div>
+        <div style="font-size: 11px; color: var(--subtle-gray);" class="font-mono" id="kpiTotalSub">NO DATA</div>
+        <div class="bar-bg"><div id="kpiTotalBar" class="bar-fill" style="width: 0%; background: #38bdf8;"></div></div>
       </div>
 
       <!-- Card 2: Value Base Rate -->
-      <div class="cyber-card p-4">
-        <div class="flex justify-between items-center">
-          <div class="text-xs text-[#94A3B8] uppercase tracking-wider font-semibold text-[11px]">
-            Base Rate (Value=1)
-          </div>
-          <span class="px-1.5 py-0.5 rounded text-[10px] font-mono bg-sky-500/15 text-sky-400 border border-sky-500/30">RECORDED</span>
+      <div class="cyber-card">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <span style="font-size: 11px; font-weight: 600; color: var(--subtle-gray); text-transform: uppercase;">Base Rate (Value=1)</span>
+          <span class="badge badge-recorded">RECORDED</span>
         </div>
-        <div class="text-2xl sm:text-3xl font-black text-emerald-400 font-mono mt-2 tracking-tight" id="kpiBaseRate">
-          NO DATA
-        </div>
-        <div class="text-xs text-[#94A3B8] mt-1 font-mono" id="kpiBaseRateSub">NO DATA</div>
-        <div class="w-full bg-[#060A13] h-1.5 rounded-full mt-3 overflow-hidden border border-[#1A2639]">
-          <div id="kpiBaseRateBar" class="bg-emerald-400 h-full rounded-full" style="width: 0%;"></div>
-        </div>
+        <div style="font-size: 24px; font-weight: 800; margin-top: 6px; color: #34d399;" class="font-mono" id="kpiBaseRate">NO DATA</div>
+        <div style="font-size: 11px; color: var(--subtle-gray);" class="font-mono" id="kpiBaseRateSub">NO DATA</div>
+        <div class="bar-bg"><div id="kpiBaseRateBar" class="bar-fill" style="width: 0%; background: #34d399;"></div></div>
       </div>
 
-      <!-- Card 3: Adaptive ROI Yield -->
-      <div class="cyber-card p-4">
-        <div class="flex justify-between items-center">
-          <div class="text-xs text-[#94A3B8] uppercase tracking-wider font-semibold text-[11px]">
-            Yield per Rupee
-          </div>
-          <span class="px-1.5 py-0.5 rounded text-[10px] font-mono bg-sky-500/15 text-sky-400 border border-sky-500/30">RECORDED</span>
+      <!-- Card 3: Measured Tier Cost -->
+      <div class="cyber-card">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <span style="font-size: 11px; font-weight: 600; color: var(--subtle-gray); text-transform: uppercase;">Hardware Resources</span>
+          <span class="badge badge-recorded">RECORDED</span>
         </div>
-        <div class="text-2xl sm:text-3xl font-black text-cyan-400 font-mono mt-2 tracking-tight" id="kpiYield">
-          NO DATA
-        </div>
-        <div class="text-xs text-cyan-400/80 mt-1 font-semibold font-mono" id="kpiYieldSub">NO DATA</div>
-        <div class="w-full bg-[#060A13] h-1.5 rounded-full mt-3 overflow-hidden border border-[#1A2639]">
-          <div id="kpiYieldBar" class="bg-gradient-to-r from-teal-500 to-cyan-400 h-full rounded-full" style="width: 0%;"></div>
-        </div>
+        <div style="font-size: 24px; font-weight: 800; margin-top: 6px; color: #38bdf8;" class="font-mono" id="kpiYield">NOT MEASURED</div>
+        <div style="font-size: 11px; color: var(--subtle-gray);" class="font-mono" id="kpiYieldSub">Single-tier isolated cost: NOT MEASURED</div>
+        <div class="bar-bg"><div id="kpiYieldBar" class="bar-fill" style="width: 0%; background: #38bdf8;"></div></div>
       </div>
 
       <!-- Card 4: Escalation Ratio -->
-      <div class="cyber-card p-4">
-        <div class="flex justify-between items-center">
-          <div class="text-xs text-[#94A3B8] uppercase tracking-wider font-semibold text-[11px]">
-            Escalation Rate
-          </div>
-          <span class="px-1.5 py-0.5 rounded text-[10px] font-mono bg-emerald-500/15 text-emerald-400 border border-emerald-500/30" id="kpiEscalationBadge">LAB</span>
+      <div class="cyber-card">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <span style="font-size: 11px; font-weight: 600; color: var(--subtle-gray); text-transform: uppercase;">Escalation Rate</span>
+          <span class="badge badge-lab" id="kpiEscalationBadge">LAB</span>
         </div>
-        <div class="text-2xl sm:text-3xl font-black text-amber-400 font-mono mt-2 tracking-tight" id="kpiEscalation">
-          NO DATA
-        </div>
-        <div class="text-xs text-[#94A3B8] mt-1 font-mono" id="kpiEscalationSub">NO DATA</div>
-        <div class="w-full bg-[#060A13] h-1.5 rounded-full mt-3 overflow-hidden border border-[#1A2639]">
-          <div id="kpiEscalationBar" class="bg-amber-400 h-full rounded-full" style="width: 0%;"></div>
-        </div>
+        <div style="font-size: 24px; font-weight: 800; margin-top: 6px; color: #fbbf24;" class="font-mono" id="kpiEscalation">NO DATA</div>
+        <div style="font-size: 11px; color: var(--subtle-gray);" class="font-mono" id="kpiEscalationSub">NO DATA</div>
+        <div class="bar-bg"><div id="kpiEscalationBar" class="bar-fill" style="width: 0%; background: #fbbf24;"></div></div>
       </div>
 
       <!-- Card 5: P95 Decision Latency -->
-      <div class="cyber-card p-4">
-        <div class="flex justify-between items-center">
-          <div class="text-xs text-[#94A3B8] uppercase tracking-wider font-semibold text-[11px]">
-            Gatekeeper Latency
-          </div>
-          <span class="px-1.5 py-0.5 rounded text-[10px] font-mono bg-emerald-500/15 text-emerald-400 border border-emerald-500/30" id="kpiLatencyBadge">LAB</span>
+      <div class="cyber-card">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <span style="font-size: 11px; font-weight: 600; color: var(--subtle-gray); text-transform: uppercase;">Gatekeeper Latency</span>
+          <span class="badge badge-lab" id="kpiLatencyBadge">LAB</span>
         </div>
-        <div class="text-2xl sm:text-3xl font-black text-emerald-400 font-mono mt-2 tracking-tight" id="kpiLatency">
-          NO DATA
-        </div>
-        <div class="text-xs text-[#94A3B8] mt-1 font-mono" id="kpiLatencySub">&lt; 50 ms SLA target (P95)</div>
-        <div class="w-full bg-[#060A13] h-1.5 rounded-full mt-3 overflow-hidden border border-[#1A2639]">
-          <div id="kpiLatencyBar" class="bg-emerald-400 h-full rounded-full" style="width: 0%;"></div>
-        </div>
+        <div style="font-size: 24px; font-weight: 800; margin-top: 6px; color: #34d399;" class="font-mono" id="kpiLatency">NO DATA</div>
+        <div style="font-size: 11px; color: var(--subtle-gray);" class="font-mono" id="kpiLatencySub">&lt; 50 ms engine compute time</div>
+        <div class="bar-bg"><div id="kpiLatencyBar" class="bar-fill" style="width: 0%; background: #34d399;"></div></div>
       </div>
-
     </div>
 
     <!-- Tier 2: Dual Threat Analytics Panels -->
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
-
-      <!-- Panel 1: Intelligence Yield per Rupee & Resource Economics (7 cols) -->
-      <div class="lg:col-span-7 cyber-card p-5 shadow-xl flex flex-col justify-between">
+    <div class="grid-12">
+      <!-- Panel 1: Experimental Arms Simulation (7 cols) -->
+      <div class="cyber-card">
         <div>
-          <div class="pb-3 border-b border-[#1A2639] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 8px; padding-bottom: 12px; border-bottom: 1px solid var(--card-border);">
             <div>
-              <h2 class="text-base font-bold text-white flex items-center gap-2">
-                Experimental Arms Comparison (SPEC §9)
-                <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-sky-500/20 text-sky-300 border border-sky-500/30" id="armsSourceBadge">RECORDED</span>
+              <h2 style="font-size: 15px; font-weight: 700; margin: 0; display: flex; align-items: center; gap: 8px;">
+                Experimental Arms Simulation (SPEC §9)
+                <span class="badge badge-recorded" id="armsSourceBadge">RECORDED</span>
               </h2>
-              <p class="text-xs text-[#94A3B8] mt-0.5">Yield per Rupee = ∑Y / ∑Cost (Theoretical Upper Bound vs Static Baselines)</p>
+              <p style="font-size: 11px; color: var(--subtle-gray); margin: 4px 0 0 0;">
+                Simulated oracle upper bound vs static baseline (financial savings: NOT MEASURED)
+              </p>
             </div>
-            <span class="px-2.5 py-1 rounded text-[11px] font-mono font-bold bg-amber-500/10 text-amber-400 border border-amber-500/30 whitespace-nowrap">
-              SIMULATED ORACLE (HINDSIGHT UPPER BOUND)
-            </span>
+            <span class="badge badge-warn">SIMULATED ORACLE (HINDSIGHT UPPER BOUND)</span>
           </div>
 
-          <div class="mt-4 space-y-3.5" id="armsContainer">
-            <div class="p-6 text-center text-zinc-500 font-mono text-xs">NO DATA</div>
+          <div style="margin-top: 14px;" id="armsContainer">
+            <div style="padding: 24px; text-align: center; color: var(--subtle-gray);" class="font-mono">NO DATA</div>
           </div>
         </div>
 
-        <div class="mt-4 p-3 rounded-lg cyber-inner text-xs text-[#94A3B8] leading-relaxed border border-amber-500/20">
-          <span class="text-amber-400 font-semibold font-mono">METHODOLOGICAL CAVEAT:</span>
+        <div style="margin-top: 14px; padding: 10px; border-radius: 8px; font-size: 11px; color: var(--subtle-gray); line-height: 1.45;" class="cyber-inner">
+          <strong style="color: #fbbf24;" class="font-mono">METHODOLOGICAL CAVEAT:</strong>
           Arm D represents an <em>Oracle Retrospective Upper Bound</em>. In this simulation, yield is held invariant across tiers; under uniform yield, Arm A is mathematically cheapest per yield unit but fails to capture high-interaction payloads in live deployments.
         </div>
       </div>
 
       <!-- Panel 2: Third-Party Detector Evaluation (5 cols) -->
-      <div class="lg:col-span-5 cyber-card p-5 shadow-xl flex flex-col justify-between">
+      <div class="cyber-card">
         <div>
-          <div class="pb-3 border-b border-[#1A2639] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 8px; padding-bottom: 12px; border-bottom: 1px solid var(--card-border);">
             <div>
-              <h2 class="text-base font-bold text-white flex items-center gap-2">
+              <h2 style="font-size: 15px; font-weight: 700; margin: 0; display: flex; align-items: center; gap: 8px;">
                 Detector Evaluation (SPEC §9.1)
-                <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-sky-500/20 text-sky-300 border border-sky-500/30" id="detectorSourceBadge">RECORDED</span>
+                <span class="badge badge-recorded" id="detectorSourceBadge">RECORDED</span>
               </h2>
-              <p class="text-xs text-[#94A3B8] mt-0.5">Third-party detector evaluation status</p>
+              <p style="font-size: 11px; color: var(--subtle-gray); margin: 4px 0 0 0;">Third-party detector evaluation status</p>
             </div>
-            <span class="px-2.5 py-1 rounded text-[11px] font-mono font-bold bg-rose-500/10 text-rose-400 border border-rose-500/30 whitespace-nowrap">
-              EVAL H4 NOT YET EVALUATED
-            </span>
+            <span class="badge badge-warn">EVAL H4 NOT YET EVALUATED</span>
           </div>
 
-          <div class="mt-4 space-y-3" id="detectorContainer">
-            <div class="p-4 rounded-lg cyber-inner border border-rose-500/20">
-              <div class="text-xs font-mono font-bold text-rose-400 mb-1">EVAL H4 NOT YET EVALUATED</div>
-              <p class="text-xs text-[#94A3B8] leading-relaxed">
+          <div style="margin-top: 14px;" id="detectorContainer">
+            <div style="padding: 12px; margin-bottom: 8px; border-radius: 8px;" class="cyber-inner">
+              <div style="font-size: 11px; font-weight: 700; color: #fb7185; margin-bottom: 4px;" class="font-mono">EVAL H4 NOT YET EVALUATED</div>
+              <p style="font-size: 11px; color: var(--subtle-gray); margin: 0; line-height: 1.45;">
                 Third-party detector evaluation is held out for live trial (see HANDOFF.md). Real held-out replay is NOT DONE. Zero synthetic metrics displayed.
               </p>
             </div>
-            <div class="p-4 rounded-lg cyber-inner">
-              <div class="text-xs font-mono text-zinc-400 mb-1">STATUS DETAILS</div>
-              <div class="text-xs font-mono text-zinc-500">harness/detector_runner.py: EVAL H4 NOT YET EVALUATED</div>
+            <div style="padding: 12px; border-radius: 8px;" class="cyber-inner">
+              <div style="font-size: 11px; color: var(--subtle-gray); margin-bottom: 4px;" class="font-mono">STATUS DETAILS</div>
+              <div style="font-size: 11px; color: #64748b;" class="font-mono">harness/detector_runner.py: EVAL H4 NOT YET EVALUATED</div>
             </div>
           </div>
         </div>
 
-        <div class="mt-4 pt-3 border-t border-[#1A2639] text-xs text-[#94A3B8] text-center flex items-center justify-center gap-2 font-mono">
-          <span class="w-2 h-2 rounded-full bg-amber-400"></span>
-          <span>EVAL H4: Held out for live deployment trial</span>
+        <div style="margin-top: 14px; padding-top: 10px; border-top: 1px solid var(--card-border); font-size: 11px; color: var(--subtle-gray); text-align: center;" class="font-mono">
+          EVAL H4: Held out for live deployment trial
         </div>
       </div>
-
     </div>
 
-    <!-- Tier 3: SOC Live Decision Triage Stream Table -->
-    <div class="cyber-card p-5 shadow-2xl">
-      <div class="flex flex-col md:flex-row md:items-center md:justify-between pb-4 border-b border-[#1A2639] gap-3">
+    <!-- Tier 3: Decision Stream Table -->
+    <div class="cyber-card">
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; padding-bottom: 12px; border-bottom: 1px solid var(--card-border);">
         <div>
-          <h2 class="text-base font-bold text-white flex flex-wrap items-center gap-2">
+          <h2 style="font-size: 15px; font-weight: 700; margin: 0; display: flex; align-items: center; gap: 8px;">
             Gatekeeper Decision Stream
-            <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30" id="decisionsSourceBadge">LAB</span>
-            <span class="px-2 py-0.5 rounded text-[10px] font-mono border border-zinc-600 text-zinc-300" id="decisionsPolicyBadge" aria-live="polite" title="Policy for displayed decisions. LAB_DEMO demonstrates a mechanism, not ML evidence.">Policy: UNKNOWN</span>
+            <span class="badge badge-lab" id="decisionsSourceBadge">LAB</span>
+            <span class="badge" id="decisionsPolicyBadge" aria-live="polite">Policy: UNKNOWN</span>
           </h2>
-          <p class="text-xs text-[#94A3B8] mt-0.5">Real-time session classification, HMAC-SHA256 privacy visitor masking, and tier routing</p>
+          <p style="font-size: 11px; color: var(--subtle-gray); margin: 4px 0 0 0;">
+            Real-time session classification, HMAC-SHA256 privacy visitor masking, and tier routing
+          </p>
         </div>
 
-        <!-- Search & Filter Controls -->
-        <div class="flex flex-wrap items-center gap-2">
+        <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center;">
           <input
             id="searchInput"
             type="text"
-            placeholder="Search visitor ID (vis_...), session, stage..."
-            class="bg-[#060A13] border border-[#1A2639] focus:border-[#00FF41] text-xs text-white px-3 py-1.5 rounded-lg outline-none w-56 sm:w-64 transition font-mono"
-            onkeyup="filterTable()"
+            placeholder="Search visitor ID, session, stage..."
+            class="font-mono"
+            aria-label="Filter decisions"
+            style="min-width: 240px;"
           />
-          <select
-            id="tierFilter"
-            class="bg-[#060A13] border border-[#1A2639] focus:border-[#00FF41] text-xs text-white px-2.5 py-1.5 rounded-lg outline-none transition font-mono cursor-pointer"
-            onchange="filterTable()"
-          >
+          <select id="tierFilter" class="font-mono" aria-label="Filter by tier">
             <option value="ALL">All Tiers</option>
             <option value="T1">T1 Lite</option>
             <option value="T2">T2 Hardened</option>
@@ -312,24 +359,22 @@
         </div>
       </div>
 
-      <!-- Decision Stream Table -->
-      <div class="overflow-x-auto mt-4">
-        <table class="w-full text-left border-collapse text-xs">
+      <div style="overflow-x: auto; margin-top: 12px;">
+        <table>
           <thead>
-            <tr class="border-b border-[#1A2639] text-[#94A3B8] uppercase text-[11px] font-mono">
-              <th class="py-3 px-3 font-semibold">Session ID</th>
-              <th class="py-3 px-3 font-semibold">Masked Visitor ID</th>
-              <th class="py-3 px-3 font-semibold">Stage</th>
-              <th class="py-3 px-3 font-semibold">Value Score</th>
-              <th class="py-3 px-3 font-semibold">Assigned Tier</th>
-              <th class="py-3 px-3 font-semibold">Decision Latency</th>
-              <th class="py-3 px-3 font-semibold">TTP Indicators</th>
-              <th class="py-3 px-3 font-semibold text-center">Audit</th>
+            <tr>
+              <th>Session ID</th>
+              <th>Masked Visitor ID</th>
+              <th>Stage</th>
+              <th>Value Score</th>
+              <th>Assigned Tier</th>
+              <th>Decision Latency</th>
+              <th>Audit</th>
             </tr>
           </thead>
-          <tbody id="decisionsTableBody" class="divide-y divide-[#1A2639]">
+          <tbody id="decisionsTableBody">
             <tr id="noDecisionsRow">
-              <td colspan="8" class="py-6 text-center text-zinc-500 font-mono text-xs">NO DATA</td>
+              <td colspan="7" style="text-align: center; padding: 24px; color: var(--subtle-gray);" class="font-mono">NO DATA</td>
             </tr>
           </tbody>
         </table>
@@ -337,59 +382,49 @@
     </div>
 
     <!-- Inspector Modal -->
-    <div id="inspectorModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-      <div class="cyber-card w-full max-w-lg p-5 border border-[#1A2639] shadow-2xl space-y-4">
-        <div class="flex items-center justify-between pb-3 border-b border-[#1A2639]">
-          <h3 class="text-sm font-bold text-white font-mono" id="modalSessionId">Session Inspector</h3>
-          <button onclick="closeModal()" class="text-zinc-400 hover:text-white font-mono text-xs transition">✕ ESC</button>
+    <div id="inspectorModal" class="modal-backdrop" hidden>
+      <div class="cyber-card" style="width: 100%; max-width: 480px; margin: 0;">
+        <div style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 10px; border-bottom: 1px solid var(--card-border);">
+          <h3 style="font-size: 14px; margin: 0;" class="font-mono" id="modalSessionId">Session Inspector</h3>
+          <button onclick="closeModal()" type="button" class="font-mono">✕ Close</button>
         </div>
 
-        <div class="grid grid-cols-2 gap-3 text-xs font-mono">
-          <div class="p-2.5 rounded-lg cyber-inner">
-            <span class="text-zinc-500 block text-[10px] uppercase">Salted Visitor ID</span>
-            <span class="text-[#00FF41] font-bold" id="modalVisitorId">NO DATA</span>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px; font-size: 11px;" class="font-mono">
+          <div style="padding: 8px;" class="cyber-inner">
+            <span style="color: var(--subtle-gray); display: block;">Salted Visitor ID</span>
+            <span style="color: var(--neon-green); font-weight: 700;" id="modalVisitorId">NO DATA</span>
           </div>
-          <div class="p-2.5 rounded-lg cyber-inner">
-            <span class="text-zinc-500 block text-[10px] uppercase">Decision Tier / Stage</span>
-            <span class="text-[#38BDF8] font-bold" id="modalTierStage">NO DATA</span>
+          <div style="padding: 8px;" class="cyber-inner">
+            <span style="color: var(--subtle-gray); display: block;">Tier / Stage</span>
+            <span style="color: var(--neon-cyan); font-weight: 700;" id="modalTierStage">NO DATA</span>
           </div>
-          <div class="p-2.5 rounded-lg cyber-inner">
-            <span class="text-zinc-500 block text-[10px] uppercase">Calculated Value Score</span>
-            <span class="text-amber-400 font-bold" id="modalScore">NO DATA</span>
+          <div style="padding: 8px;" class="cyber-inner">
+            <span style="color: var(--subtle-gray); display: block;">Value Score</span>
+            <span style="color: #fbbf24; font-weight: 700;" id="modalScore">NO DATA</span>
           </div>
-          <div class="p-2.5 rounded-lg cyber-inner">
-            <span class="text-zinc-500 block text-[10px] uppercase">Gatekeeper Latency</span>
-            <span class="text-emerald-400 font-bold" id="modalLatency">NO DATA</span>
+          <div style="padding: 8px;" class="cyber-inner">
+            <span style="color: var(--subtle-gray); display: block;">Compute Latency</span>
+            <span style="color: #34d399; font-weight: 700;" id="modalLatency">NO DATA</span>
           </div>
         </div>
 
-        <div>
-          <span class="text-zinc-500 block text-[10px] font-mono uppercase mb-1">TTP / Behavioral Telemetry</span>
-          <div class="p-3 rounded-lg cyber-inner font-mono text-xs text-zinc-300" id="modalTTPs">NO DATA</div>
-        </div>
-
-        <div class="pt-3.5 border-t border-[#1A2639] flex justify-end">
-          <button onclick="closeModal()" class="px-4 py-1.5 rounded-lg bg-[#060A13] hover:bg-[#00FF41]/20 text-[#00FF41] border border-[#00FF41]/30 text-xs font-bold font-mono transition active:scale-[0.97]">
-            Close Inspector
-          </button>
+        <div style="margin-top: 12px; text-align: right;">
+          <button onclick="closeModal()" type="button" class="font-mono">Close</button>
         </div>
       </div>
     </div>
 
     <!-- Footer -->
-    <footer class="pt-4 pb-8 border-t border-[#1A2639] flex flex-col sm:flex-row items-center justify-between text-xs text-[#94A3B8] gap-2 font-mono">
-      <div>
-        SCHRÖDINGER'S SERVER &bull; RESEARCH DEFENSE ARTIFACT &bull; COWRIE PINNED V3.1.6
-      </div>
-      <div class="flex items-center gap-3">
-        <span class="text-[#00FF41]">#040711 &bull; #00FF41 &bull; #1A2639 &bull; #38BDF8</span>
-      </div>
+    <footer style="padding: 16px 0; border-top: 1px solid var(--card-border); display: flex; justify-content: space-between; font-size: 11px; color: var(--subtle-gray);" class="font-mono">
+      <div>SCHRÖDINGER'S SERVER &bull; RESEARCH DEFENSE ARTIFACT &bull; COWRIE PINNED V3.1.6</div>
+      <div>RECORDED &bull; LAB &bull; LIVE &bull; SYNTHETIC &bull; UNKNOWN</div>
     </footer>
 
   </div>
 
   <script>
-    // Live Search and Tier Filter
+    'use strict';
+
     function filterTable() {
       const search = (document.getElementById('searchInput')?.value || '').toLowerCase().trim();
       const tierFilter = document.getElementById('tierFilter')?.value || 'ALL';
@@ -397,7 +432,7 @@
 
       rows.forEach(row => {
         if (row.id === 'noDecisionsRow') return;
-        const text = row.innerText.toLowerCase();
+        const text = row.textContent.toLowerCase();
         const matchesSearch = !search || text.includes(search);
         const rowTier = row.dataset.tier || '';
         const matchesTier = tierFilter === 'ALL' || rowTier === tierFilter;
@@ -405,243 +440,244 @@
       });
     }
 
-    // Modal Inspector
-    function inspectSession(sessId, visId, stage, score, tier, lat, ttps) {
-      document.getElementById('modalSessionId').innerText = `Session Inspector // ${sessId}`;
-      document.getElementById('modalVisitorId').innerText = visId;
-      document.getElementById('modalTierStage').innerText = `${tier} @ ${stage}`;
-      document.getElementById('modalScore').innerText = typeof score === 'number' ? score.toFixed(3) : score;
-      document.getElementById('modalLatency').innerText = lat;
-      document.getElementById('modalTTPs').innerText = ttps;
-      document.getElementById('inspectorModal').classList.remove('hidden');
+    document.getElementById('searchInput')?.addEventListener('input', filterTable);
+    document.getElementById('tierFilter')?.addEventListener('change', filterTable);
+
+    function inspectSession(sessId, visId, stage, score, tier, lat) {
+      document.getElementById('modalSessionId').textContent = 'Session Inspector // ' + sessId;
+      document.getElementById('modalVisitorId').textContent = visId;
+      document.getElementById('modalTierStage').textContent = tier + ' @ ' + stage;
+      document.getElementById('modalScore').textContent = typeof score === 'number' ? score.toFixed(3) : String(score);
+      document.getElementById('modalLatency').textContent = lat;
+      document.getElementById('inspectorModal').hidden = false;
     }
 
     function closeModal() {
-      document.getElementById('inspectorModal').classList.add('hidden');
+      document.getElementById('inspectorModal').hidden = true;
     }
 
-    // Connect to local API and render dynamically
     async function syncWithApi() {
       // 1. Stats API
       try {
-        const statsRes = await fetch('/api/stats');
+        const statsRes = await fetch('/api/stats', { cache: 'no-store' });
         if (statsRes.ok) {
           const stats = await statsRes.json();
           if (stats.status === "ok" && stats.dataset) {
             const ds = stats.dataset;
             if (ds.total_sessions !== null && ds.total_sessions !== undefined) {
-              document.getElementById('kpiTotal').innerText = ds.total_sessions.toLocaleString();
-              document.getElementById('kpiTotalSub').innerText = `${ds.days_covered ? ds.days_covered + ' days' : ''} • RECORDED`;
+              document.getElementById('kpiTotal').textContent = Number(ds.total_sessions).toLocaleString();
+              document.getElementById('kpiTotalSub').textContent = (ds.days_covered ? ds.days_covered + ' days • ' : '') + 'RECORDED';
               document.getElementById('kpiTotalBar').style.width = '100%';
             } else {
-              document.getElementById('kpiTotal').innerText = 'NO DATA';
-              document.getElementById('kpiTotalSub').innerText = 'NO DATA';
+              document.getElementById('kpiTotal').textContent = 'NO DATA';
+              document.getElementById('kpiTotalSub').textContent = 'NO DATA';
             }
 
             if (ds.base_rate_pct !== null && ds.base_rate_pct !== undefined) {
-              document.getElementById('kpiBaseRate').innerText = ds.base_rate_pct + '%';
-              document.getElementById('kpiBaseRateSub').innerText = `${ds.positive_sessions !== null ? ds.positive_sessions.toLocaleString() + ' positive' : 'RECORDED'}`;
+              document.getElementById('kpiBaseRate').textContent = ds.base_rate_pct + '%';
+              document.getElementById('kpiBaseRateSub').textContent = (ds.positive_sessions !== null ? Number(ds.positive_sessions).toLocaleString() + ' positive • ' : '') + 'RECORDED';
               document.getElementById('kpiBaseRateBar').style.width = Math.min(100, Math.round(ds.base_rate_pct * 10)) + '%';
             } else {
-              document.getElementById('kpiBaseRate').innerText = 'NO DATA';
-              document.getElementById('kpiBaseRateSub').innerText = 'NO DATA';
+              document.getElementById('kpiBaseRate').textContent = 'NO DATA';
+              document.getElementById('kpiBaseRateSub').textContent = 'NO DATA';
             }
-          } else {
-            document.getElementById('kpiTotal').innerText = 'NO DATA';
-            document.getElementById('kpiTotalSub').innerText = 'NO DATA';
-            document.getElementById('kpiBaseRate').innerText = 'NO DATA';
-            document.getElementById('kpiBaseRateSub').innerText = 'NO DATA';
           }
 
           if (stats.status === "ok" && stats.sensor) {
             const ss = stats.sensor;
             const sBadge = ss.source || 'UNKNOWN';
-            document.getElementById('kpiEscalationBadge').innerText = sBadge;
-            document.getElementById('kpiLatencyBadge').innerText = sBadge;
-            document.getElementById('headerEngineMode').innerText = `GATEKEEPER ${sBadge}`;
+            document.getElementById('kpiEscalationBadge').textContent = sBadge;
+            document.getElementById('kpiLatencyBadge').textContent = sBadge;
+            document.getElementById('headerEngineMode').textContent = 'GATEKEEPER ' + sBadge;
 
             if (ss.total_decisions > 0 && ss.escalation_rate_pct !== null && ss.escalation_rate_pct !== undefined) {
-              document.getElementById('kpiEscalation').innerText = ss.escalation_rate_pct + '%';
-              document.getElementById('kpiEscalationSub').innerText = `${ss.total_decisions} total decisions (${sBadge})`;
+              document.getElementById('kpiEscalation').textContent = ss.escalation_rate_pct + '%';
+              document.getElementById('kpiEscalationSub').textContent = ss.total_decisions + ' total decisions (' + sBadge + ')';
               document.getElementById('kpiEscalationBar').style.width = Math.min(100, Math.round(ss.escalation_rate_pct)) + '%';
             } else {
-              document.getElementById('kpiEscalation').innerText = 'NO DATA';
-              document.getElementById('kpiEscalationSub').innerText = 'NO DATA';
+              document.getElementById('kpiEscalation').textContent = 'NO DATA';
+              document.getElementById('kpiEscalationSub').textContent = 'NO DATA';
             }
 
             if (ss.p95_latency_ms !== null && ss.p95_latency_ms !== undefined) {
-              document.getElementById('kpiLatency').innerText = ss.p95_latency_ms + ' ms';
+              document.getElementById('kpiLatency').textContent = ss.p95_latency_ms + ' ms';
               document.getElementById('kpiLatencyBar').style.width = Math.min(100, Math.round((ss.p95_latency_ms / 50) * 100)) + '%';
             } else {
-              document.getElementById('kpiLatency').innerText = 'NO DATA';
+              document.getElementById('kpiLatency').textContent = 'NO DATA';
             }
-          } else {
-            document.getElementById('kpiEscalation').innerText = 'NO DATA';
-            document.getElementById('kpiEscalationSub').innerText = 'NO DATA';
-            document.getElementById('kpiLatency').innerText = 'NO DATA';
           }
-        } else {
-          document.getElementById('kpiTotal').innerText = 'NO DATA';
-          document.getElementById('kpiBaseRate').innerText = 'NO DATA';
-          document.getElementById('kpiEscalation').innerText = 'NO DATA';
-          document.getElementById('kpiLatency').innerText = 'NO DATA';
         }
       } catch (e) {
-        document.getElementById('kpiTotal').innerText = 'NO DATA';
-        document.getElementById('kpiBaseRate').innerText = 'NO DATA';
-        document.getElementById('kpiEscalation').innerText = 'NO DATA';
-        document.getElementById('kpiLatency').innerText = 'NO DATA';
+        document.getElementById('kpiTotal').textContent = 'NO DATA';
+        document.getElementById('kpiBaseRate').textContent = 'NO DATA';
+        document.getElementById('kpiEscalation').textContent = 'NO DATA';
+        document.getElementById('kpiLatency').textContent = 'NO DATA';
       }
 
-      // 2. Arms API
+      // 2. Arms API (Simulated oracles)
       try {
-        const armsRes = await fetch('/api/arms');
+        const armsRes = await fetch('/api/arms', { cache: 'no-store' });
         if (armsRes.ok) {
           const armsData = await armsRes.json();
           if (armsData.status === "ok") {
             const badgeEl = document.getElementById('armsSourceBadge');
-            if (badgeEl) badgeEl.innerText = armsData.source || 'RECORDED';
+            if (badgeEl) badgeEl.textContent = armsData.source || 'RECORDED';
 
             const container = document.getElementById('armsContainer');
-            container.innerHTML = '';
+            container.replaceChildren();
 
             const armKeys = Object.keys(armsData).filter(k => k.startsWith('Arm '));
             if (armKeys.length > 0) {
-              // Find max yield for relative bar scaling
-              let maxYield = 1.0;
-              for (const k of armKeys) {
-                const y = armsData[k].yield_per_rupee || 0;
-                if (y > maxYield) maxYield = y;
-              }
-
               for (const k of armKeys) {
                 const arm = armsData[k];
                 const isAdaptive = k.includes('Adaptive');
-                const ypr = arm.yield_per_rupee !== undefined ? Number(arm.yield_per_rupee).toFixed(1) : 'NO DATA';
-                const barWidth = arm.yield_per_rupee ? Math.round((arm.yield_per_rupee / maxYield) * 95) : 0;
-
-                if (isAdaptive && arm.yield_per_rupee !== undefined) {
-                  document.getElementById('kpiYield').innerText = `${ypr} Y/₹`;
-                  document.getElementById('kpiYieldSub').innerText = 'Adaptive Honeypot Yield';
-                  document.getElementById('kpiYieldBar').style.width = `${barWidth}%`;
-                }
-
                 const cardDiv = document.createElement('div');
-                cardDiv.className = isAdaptive
-                  ? "p-4 rounded-lg bg-[#060A13] border border-[#00FF41]/40"
-                  : "p-3.5 rounded-lg cyber-inner";
+                cardDiv.className = isAdaptive ? "cyber-inner" : "cyber-inner";
+                cardDiv.style.padding = "12px";
+                cardDiv.style.marginBottom = "8px";
 
-                const colorClass = isAdaptive ? "text-[#00FF41]" : k.includes('T3') ? "text-rose-400" : k.includes('T2') ? "text-[#38BDF8]" : "text-zinc-400";
-                const barColor = isAdaptive
-                  ? "bg-gradient-to-r from-emerald-500 to-[#00FF41]"
-                  : k.includes('T3') ? "bg-rose-500" : k.includes('T2') ? "bg-[#38BDF8]" : "bg-zinc-500";
+                const topRow = document.createElement('div');
+                topRow.style.display = "flex";
+                topRow.style.justifyContent = "space-between";
+                topRow.style.fontSize = "12px";
+                topRow.style.marginBottom = "6px";
 
-                cardDiv.innerHTML = `
-                  <div class="flex justify-between items-center text-xs mb-1.5">
-                    <span class="font-bold ${isAdaptive ? 'text-[#00FF41]' : 'text-[#E2E8F0]'}">${k}</span>
-                    <span class="font-mono ${colorClass} font-semibold">${ypr} Yield / ₹</span>
-                  </div>
-                  <div class="w-full bg-[#1A2639] h-2 rounded-full overflow-hidden">
-                    <div class="${barColor} h-full rounded-full" style="width: ${barWidth}%;"></div>
-                  </div>
-                  <div class="flex justify-between text-xs text-[#94A3B8] mt-1 font-mono">
-                    <span>${arm.policy_description || 'Cost Model Evaluation'}</span>
-                    <span>Cost: ₹${arm.total_cost_rupees ? Number(arm.total_cost_rupees).toFixed(2) : 'NO DATA'}</span>
-                  </div>
-                `;
+                const nameSpan = document.createElement('span');
+                nameSpan.textContent = k;
+                nameSpan.style.fontWeight = "700";
+                if (isAdaptive) nameSpan.style.color = "var(--neon-green)";
+
+                const metricSpan = document.createElement('span');
+                metricSpan.textContent = "Simulated Evaluation";
+                metricSpan.className = "font-mono";
+                metricSpan.style.color = "var(--subtle-gray)";
+
+                topRow.append(nameSpan, metricSpan);
+
+                const descRow = document.createElement('div');
+                descRow.style.fontSize = "11px";
+                descRow.style.color = "var(--subtle-gray)";
+                descRow.className = "font-mono";
+                descRow.textContent = arm.policy_description || 'Cost Model Evaluation';
+
+                cardDiv.append(topRow, descRow);
                 container.appendChild(cardDiv);
               }
             } else {
-              container.innerHTML = '<div class="p-6 text-center text-zinc-500 font-mono text-xs">NO DATA</div>';
-              document.getElementById('kpiYield').innerText = 'NO DATA';
-              document.getElementById('kpiYieldSub').innerText = 'NO DATA';
+              const emptyDiv = document.createElement('div');
+              emptyDiv.textContent = 'NO DATA';
+              emptyDiv.className = 'font-mono';
+              emptyDiv.style.padding = '24px';
+              emptyDiv.style.textAlign = 'center';
+              emptyDiv.style.color = 'var(--subtle-gray)';
+              container.replaceChildren(emptyDiv);
             }
-          } else {
-            document.getElementById('armsContainer').innerHTML = '<div class="p-6 text-center text-zinc-500 font-mono text-xs">NO DATA</div>';
-            document.getElementById('kpiYield').innerText = 'NO DATA';
-            document.getElementById('kpiYieldSub').innerText = 'NO DATA';
           }
-        } else {
-          document.getElementById('armsContainer').innerHTML = '<div class="p-6 text-center text-zinc-500 font-mono text-xs">NO DATA</div>';
-          document.getElementById('kpiYield').innerText = 'NO DATA';
-          document.getElementById('kpiYieldSub').innerText = 'NO DATA';
         }
       } catch (e) {
-        document.getElementById('armsContainer').innerHTML = '<div class="p-6 text-center text-zinc-500 font-mono text-xs">NO DATA</div>';
-        document.getElementById('kpiYield').innerText = 'NO DATA';
-        document.getElementById('kpiYieldSub').innerText = 'NO DATA';
+        const container = document.getElementById('armsContainer');
+        const emptyDiv = document.createElement('div');
+        emptyDiv.textContent = 'NO DATA';
+        emptyDiv.className = 'font-mono';
+        emptyDiv.style.padding = '24px';
+        emptyDiv.style.textAlign = 'center';
+        emptyDiv.style.color = 'var(--subtle-gray)';
+        container.replaceChildren(emptyDiv);
       }
 
       // 3. Decisions API
       const policyBadge = document.getElementById('decisionsPolicyBadge');
-      policyBadge.textContent = 'Policy: UNKNOWN';
+      if (policyBadge) policyBadge.textContent = 'Policy: UNKNOWN';
       try {
-        const decRes = await fetch('/api/decisions');
+        const decRes = await fetch('/api/decisions', { cache: 'no-store' });
         if (decRes.ok) {
           const decData = await decRes.json();
           const profiles = ['DEFAULT', 'LAB_DEMO', 'UNKNOWN', 'MIXED'];
           const profile = profiles.includes(decData.policy_profile) ? decData.policy_profile : 'UNKNOWN';
-          policyBadge.textContent = `Policy: ${profile}${profile === 'LAB_DEMO' ? ' · mechanism demo' : ''}`;
-          const badgeEl = document.getElementById('decisionsSourceBadge');
-          if (badgeEl) {
-            badgeEl.innerText = decData.source || 'UNKNOWN';
-            if (decData.source === 'SYNTHETIC') {
-              badgeEl.className = "px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30";
-            } else if (decData.source === 'LIVE') {
-              badgeEl.className = "px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-purple-500/20 text-purple-300 border border-purple-500/30";
-            } else if (decData.source === 'LAB') {
-              badgeEl.className = "px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30";
-            } else {
-              badgeEl.className = "px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-zinc-500/20 text-zinc-300 border border-zinc-500/30";
-            }
+          if (policyBadge) {
+            policyBadge.textContent = 'Policy: ' + profile + (profile === 'LAB_DEMO' ? ' · mechanism demo' : '');
           }
+          const badgeEl = document.getElementById('decisionsSourceBadge');
+          if (badgeEl) badgeEl.textContent = decData.source || 'UNKNOWN';
 
           const tbody = document.getElementById('decisionsTableBody');
           if (decData.status === "ok" && decData.decisions && decData.decisions.length > 0) {
-            tbody.innerHTML = '';
+            tbody.replaceChildren();
             for (const d of decData.decisions) {
-              const rowProfile = ['DEFAULT', 'LAB_DEMO'].includes(d.policy_profile) ? d.policy_profile : 'UNKNOWN';
               const tr = document.createElement('tr');
               tr.dataset.tier = d.tier || 'T1';
-              const tierBadge = d.tier === 'T3'
-                ? '<span class="px-2.5 py-0.5 rounded-full bg-purple-500/20 text-purple-300 font-bold border border-purple-500/40">T3 REAL VM</span>'
-                : d.tier === 'T2'
-                ? '<span class="px-2.5 py-0.5 rounded-full bg-[#38BDF8]/20 text-[#38BDF8] font-bold border border-[#38BDF8]/40">T2 HARDENED</span>'
-                : '<span class="px-2.5 py-0.5 rounded-full bg-[#060A13] text-zinc-400 font-bold border border-[#1A2639]">T1 LITE</span>';
-              
-              tr.className = "hover:bg-[#1A2639]/40 transition group cursor-pointer";
-              tr.onclick = () => inspectSession(d.session_id, d.visitor_id, d.stage, d.score, d.tier, `${d.latency_ms} ms`, 'Telemetry Recorded');
-              tr.innerHTML = `
-                <td class="py-3 px-3 font-mono text-zinc-300 font-medium">${d.session_id}</td>
-                <td class="py-3 px-3 font-mono font-bold text-[#00FF41]">${d.visitor_id}</td>
-                <td class="py-3 px-3 font-mono"><span class="px-2 py-0.5 rounded bg-purple-500/15 text-purple-300 border border-purple-500/30 font-semibold">${d.stage}</span></td>
-                <td class="py-3 px-3">
-                  <div class="flex items-center gap-2">
-                    <span class="font-mono font-bold ${d.score > 0.8 ? 'text-rose-400' : d.score > 0.5 ? 'text-amber-400' : 'text-zinc-400'}">${typeof d.score === 'number' ? d.score.toFixed(3) : d.score}</span>
-                    <div class="w-12 bg-[#060A13] h-1.5 rounded-full overflow-hidden">
-                      <div class="${d.score > 0.8 ? 'bg-rose-500' : d.score > 0.5 ? 'bg-amber-400' : 'bg-zinc-500'} h-full rounded-full" style="width: ${Math.round((d.score || 0) * 100)}%;"></div>
-                    </div>
-                  </div>
-                </td>
-                <td class="py-3 px-3 font-mono">${tierBadge}<div class="mt-1 text-[10px] text-zinc-400" title="Policy profile, independent of traffic provenance">Policy: ${rowProfile}</div></td>
-                <td class="py-3 px-3 font-mono text-[#00FF41]">${d.latency_ms} ms</td>
-                <td class="py-3 px-3 font-mono text-zinc-400 truncate max-w-xs">${d.timestamp ? d.timestamp.split('T')[1].slice(0, 8) + ' UTC' : (decData.source || 'UNKNOWN') + ' evaluation'}</td>
-                <td class="py-3 px-3 text-center">
-                  <button class="px-2 py-0.5 rounded bg-[#060A13] hover:bg-[#00FF41]/20 text-[#00FF41] border border-[#1A2639] hover:border-[#00FF41]/40 text-xs font-semibold font-mono transition">
-                    INSPECT
-                  </button>
-                </td>
-              `;
+
+              const tdSession = document.createElement('td');
+              tdSession.className = 'font-mono';
+              tdSession.textContent = d.session_id;
+
+              const tdVisitor = document.createElement('td');
+              tdVisitor.className = 'font-mono';
+              tdVisitor.style.fontWeight = '700';
+              tdVisitor.style.color = 'var(--neon-green)';
+              tdVisitor.textContent = d.visitor_id;
+
+              const tdStage = document.createElement('td');
+              tdStage.className = 'font-mono';
+              tdStage.textContent = d.stage;
+
+              const tdScore = document.createElement('td');
+              tdScore.className = 'font-mono';
+              tdScore.textContent = typeof d.score === 'number' ? d.score.toFixed(3) : String(d.score);
+
+              const tdTier = document.createElement('td');
+              tdTier.className = 'font-mono';
+              const tierBadge = document.createElement('span');
+              tierBadge.className = 'badge';
+              tierBadge.textContent = d.tier || 'T1';
+              tdTier.appendChild(tierBadge);
+
+              const tdLat = document.createElement('td');
+              tdLat.className = 'font-mono';
+              tdLat.textContent = (d.latency_ms !== undefined ? d.latency_ms + ' ms' : 'NO DATA');
+
+              const tdAudit = document.createElement('td');
+              tdAudit.style.textAlign = 'center';
+              const inspectBtn = document.createElement('button');
+              inspectBtn.type = 'button';
+              inspectBtn.textContent = 'INSPECT';
+              inspectBtn.className = 'font-mono';
+              inspectBtn.addEventListener('click', () => {
+                inspectSession(d.session_id, d.visitor_id, d.stage, d.score, d.tier, d.latency_ms + ' ms');
+              });
+              tdAudit.appendChild(inspectBtn);
+
+              tr.append(tdSession, tdVisitor, tdStage, tdScore, tdTier, tdLat, tdAudit);
               tbody.appendChild(tr);
             }
-            // Re-apply any active search or tier filter so user selection persists across 5s polls
             filterTable();
           } else {
-            tbody.innerHTML = '<tr id="noDecisionsRow"><td colspan="8" class="py-6 text-center text-zinc-500 font-mono text-xs">NO DATA</td></tr>';
+            const tr = document.createElement('tr');
+            tr.id = 'noDecisionsRow';
+            const td = document.createElement('td');
+            td.colSpan = 7;
+            td.className = 'font-mono';
+            td.style.textAlign = 'center';
+            td.style.padding = '24px';
+            td.style.color = 'var(--subtle-gray)';
+            td.textContent = 'NO DATA';
+            tr.appendChild(td);
+            tbody.replaceChildren(tr);
           }
         }
       } catch (e) {
-        document.getElementById('decisionsTableBody').innerHTML = '<tr id="noDecisionsRow"><td colspan="8" class="py-6 text-center text-zinc-500 font-mono text-xs">NO DATA</td></tr>';
+        const tbody = document.getElementById('decisionsTableBody');
+        const tr = document.createElement('tr');
+        tr.id = 'noDecisionsRow';
+        const td = document.createElement('td');
+        td.colSpan = 7;
+        td.className = 'font-mono';
+        td.style.textAlign = 'center';
+        td.style.padding = '24px';
+        td.style.color = 'var(--subtle-gray)';
+        td.textContent = 'NO DATA';
+        tr.appendChild(td);
+        tbody.replaceChildren(tr);
       }
     }
 

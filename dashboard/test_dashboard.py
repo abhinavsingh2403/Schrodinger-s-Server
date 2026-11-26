@@ -105,7 +105,11 @@ def test_dashboard_html_rendering():
         assert "LIVE" in html
         assert "SYNTHETIC" in html
         assert "UNKNOWN" in html
-        assert "Yield per Rupee" in html
+        assert "NOT MEASURED" in html
+        assert "Yield per Rupee" not in html
+        assert "cdn.tailwindcss.com" not in html
+        assert "fonts.googleapis.com" not in html
+        assert ".innerHTML" not in html
         assert "SIMULATED ORACLE (HINDSIGHT UPPER BOUND)" in html
         assert "EVAL H4 NOT YET EVALUATED" in html
         assert "NO DATA" in html

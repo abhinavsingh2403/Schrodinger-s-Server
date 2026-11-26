@@ -45,7 +45,15 @@ def render_route(path: str) -> tuple[int, str]:
     return status_codes[0], req.wfile.getvalue().decode("utf-8")
 
 
-TARGET_TEMPLATES = ["page_shell.html", "live.html"]
+TARGET_TEMPLATES = ["page_shell.html", "live.html", "index.html"]
+
+EXTERNAL_URL_PATTERNS = [
+    "cdn.tailwindcss.com",
+    "fonts.googleapis.com",
+    "fonts.gstatic.com",
+    "unpkg.com",
+    "cdnjs.cloudflare.com",
+]
 
 
 @pytest.mark.parametrize("route", ROUTES)
@@ -81,4 +89,13 @@ def test_no_inner_html_with_data_in_templates():
     template_dir = Path(__file__).resolve().parent / "templates"
     for name in TARGET_TEMPLATES:
         content = (template_dir / name).read_text(encoding="utf-8")
-        assert ".innerHTML" not in content, f"Disallowed innerHTML assignment found in {name}"
+        for disallowed in [".innerHTML", ".outerHTML", "insertAdjacentHTML", "document.write"]:
+            assert disallowed not in content, f"Disallowed DOM method '{disallowed}' found in {name}"
+
+
+def test_no_external_cdn_or_font_imports():
+    template_dir = Path(__file__).resolve().parent / "templates"
+    for name in TARGET_TEMPLATES:
+        content = (template_dir / name).read_text(encoding="utf-8")
+        for url_pattern in EXTERNAL_URL_PATTERNS:
+            assert url_pattern not in content, f"External resource import '{url_pattern}' found in {name}"
