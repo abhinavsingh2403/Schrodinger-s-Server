@@ -599,6 +599,183 @@ async function initCost() {
   content.replaceChildren(container);
 }
 
+async function initSession() {
+  const content = document.getElementById('content');
+  content.replaceChildren(el('p', 'Loading session list and recorded decisions...', 'muted'));
+
+  let sessionsRes;
+  try {
+    sessionsRes = await fetchJson('/api/sessions');
+  } catch (e) {
+    setStatus('NO DATA · API unavailable');
+    content.replaceChildren(el('div', 'NO DATA · /api/sessions endpoint unavailable.', 'card'));
+    return;
+  }
+
+  const sBody = sessionsRes.body;
+  const sMeta = sBody ? (sBody.metadata || { scope: sBody.source, policy_profile: 'UNKNOWN' }) : null;
+  setBanner(sMeta);
+  setStatus('Loaded sessions');
+
+  const container = el('div');
+  const sessions = (sBody && Array.isArray(sBody.sessions)) ? sBody.sessions : [];
+
+  const grid = el('div', '', 'grid-2');
+  const listCard = el('section', '', 'card');
+  listCard.appendChild(el('h2', 'Recorded Sessions'));
+
+  const tools = el('div', '', 'tools');
+  const searchInput = document.createElement('input');
+  searchInput.placeholder = 'Search masked session or visitor ID...';
+  searchInput.setAttribute('aria-label', 'Search sessions');
+  tools.appendChild(searchInput);
+
+  const filterSelect = document.createElement('select');
+  filterSelect.setAttribute('aria-label', 'Filter sessions by tier');
+  const optAll = document.createElement('option');
+  optAll.value = 'all';
+  optAll.textContent = 'All sessions';
+  const optEsc = document.createElement('option');
+  optEsc.value = 'yes';
+  optEsc.textContent = 'Reached T2+';
+  const optT1 = document.createElement('option');
+  optT1.value = 'no';
+  optT1.textContent = 'T1 only';
+  filterSelect.append(optAll, optEsc, optT1);
+  tools.appendChild(filterSelect);
+  listCard.appendChild(tools);
+
+  const listWrap = el('div', '', 'scroll');
+  listCard.appendChild(listWrap);
+
+  const timelineCard = el('section', '', 'card');
+  timelineCard.appendChild(el('h2', 'Ordered Decision Timeline'));
+  const timelineMeta = el('div', '', 'muted');
+  timelineMeta.appendChild(el('p', 'Select a session to inspect its ordered stage decision sequence.'));
+  const timelineBody = el('div');
+  timelineCard.append(timelineMeta, timelineBody);
+
+  let activeSessionId = null;
+  let queryText = '';
+  let tierFilter = 'all';
+
+  async function loadTimeline(sessionId) {
+    activeSessionId = sessionId;
+    renderSessionList();
+    timelineMeta.replaceChildren(el('p', `Loading session ${sessionId}...`, 'muted'));
+    timelineBody.replaceChildren();
+
+    try {
+      const res = await fetchJson(`/api/session/${encodeURIComponent(sessionId)}`);
+      const payload = res.body;
+      setBanner(payload);
+      timelineMeta.replaceChildren();
+
+      if (!res.ok || !payload || !payload.data || !Array.isArray(payload.data.decisions)) {
+        timelineMeta.appendChild(el('h3', sessionId, 'mono'));
+        if (payload) timelineMeta.appendChild(makeBadgeRow(payload));
+        timelineBody.replaceChildren(el('p', payload.empty || 'NO DATA · Unknown session or no decisions recorded.', 'muted'));
+        return;
+      }
+
+      const dData = payload.data;
+      timelineMeta.appendChild(el('h3', dData.session_id, 'mono'));
+      timelineMeta.appendChild(makeBadgeRow(payload));
+
+      const decisions = dData.decisions;
+      if (!decisions.length) {
+        timelineBody.replaceChildren(el('p', 'NO DATA · No decision rows recorded for this session.', 'muted'));
+        return;
+      }
+
+      const timelineWrap = el('div', '', 'timeline');
+      for (let i = 0; i < decisions.length; i++) {
+        const d = decisions[i];
+        const step = el('div', '', 'timeline-step');
+        const head = el('div', '', 'tools');
+        head.appendChild(el('strong', `Step ${i + 1}: Stage ${d.stage || '—'}`));
+        head.appendChild(el('span', d.tier_decided || '—', `badge ${d.tier_decided || ''}`));
+        if (d.demo_label) head.appendChild(el('span', d.demo_label, 'badge warn'));
+        step.appendChild(head);
+
+        const details = el('div', '', 'muted');
+        const scoreText = d.score !== undefined && d.score !== null ? `score ${d.score}` : 'no score';
+        const sourceText = d.score_source ? `source: ${d.score_source}` : '';
+        const latText = d.latency_ms !== undefined && d.latency_ms !== null
+          ? `${Number(d.latency_ms).toFixed(3)} ms (engine compute time, not end-to-end)`
+          : 'latency unavailable';
+        details.appendChild(el('div', `${scoreText} · ${sourceText}`));
+        details.appendChild(el('div', `Provenance: ${d.provenance || 'UNKNOWN'} · Policy: ${d.policy_profile || 'UNKNOWN'}`));
+        details.appendChild(el('div', latText));
+        if (d.timestamp) details.appendChild(el('div', `Timestamp: ${d.timestamp}`, 'mono'));
+        step.appendChild(details);
+        timelineWrap.appendChild(step);
+      }
+      timelineBody.replaceChildren(timelineWrap);
+    } catch (e) {
+      timelineMeta.replaceChildren(el('p', 'NO DATA · Failed to load session timeline.', 'muted'));
+      timelineBody.replaceChildren();
+    }
+  }
+
+  function renderSessionList() {
+    listWrap.replaceChildren();
+    const q = queryText.trim().toLowerCase();
+    const filtered = sessions.filter((s) => {
+      const matchText = `${s.session_id} ${s.visitor_id}`.toLowerCase().includes(q);
+      const matchTier = tierFilter === 'all' || (tierFilter === 'yes' ? s.reached_t2 : !s.reached_t2);
+      return matchText && matchTier;
+    });
+
+    if (!filtered.length) {
+      listWrap.appendChild(el('p', sessions.length ? 'No matching sessions.' : 'NO DATA · No sessions recorded in database.', 'muted'));
+      return;
+    }
+
+    for (const s of filtered) {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'item-btn' + (activeSessionId === s.session_id ? ' selected' : '');
+
+      const idLine = el('div', s.session_id, 'mono');
+      btn.appendChild(idLine);
+
+      const subLine = el('div', `Visitor: ${s.visitor_id}${s.returning_visitor ? ' (Returning)' : ''}`, 'muted mono');
+      btn.appendChild(subLine);
+
+      const stageLine = el('div', '', 'tools');
+      for (const st of ['S1', 'S2', 'S3', 'S4', 'S5']) {
+        const tier = s.stages && s.stages[st];
+        stageLine.appendChild(el('span', `${st}:${tier || '—'}`, `badge ${tier || ''}`));
+      }
+      btn.appendChild(stageLine);
+
+      btn.addEventListener('click', () => loadTimeline(s.session_id));
+      listWrap.appendChild(btn);
+    }
+  }
+
+  searchInput.addEventListener('input', () => {
+    queryText = searchInput.value;
+    renderSessionList();
+  });
+
+  filterSelect.addEventListener('change', () => {
+    tierFilter = filterSelect.value;
+    renderSessionList();
+  });
+
+  renderSessionList();
+  grid.append(listCard, timelineCard);
+  container.appendChild(grid);
+  content.replaceChildren(container);
+
+  // If sessions exist, auto-select first session
+  if (sessions.length > 0 && !activeSessionId) {
+    loadTimeline(sessions[0].session_id);
+  }
+}
+
 (function boot() {
   const path = window.location.pathname;
   for (const link of document.querySelectorAll('.topnav a')) {
@@ -607,6 +784,7 @@ async function initCost() {
   if (path === '/evidence') initEvidence();
   else if (path === '/ml') initMl();
   else if (path === '/cost') initCost();
+  else if (path === '/session') initSession();
 })();
 </script>
 </body>
