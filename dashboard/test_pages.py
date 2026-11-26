@@ -67,6 +67,16 @@ def test_page_routes_return_200_with_nav_and_banner(route: str):
     assert 'href="/ml"' in html
     assert 'href="/cost"' in html
     assert 'href="/session"' in html
+    assert 'href="/visitors"' in html
+    assert 'href="/deception"' in html
+    assert 'href="/lab"' in html
+
+
+def test_research_archive_route_returns_200():
+    code, html = render_route("/research")
+    assert code == 200
+    assert "<nav" in html
+    assert "<footer" in html
 
 
 def test_no_fixture_data_literals_in_templates():

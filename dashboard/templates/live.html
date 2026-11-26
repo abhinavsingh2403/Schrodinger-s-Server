@@ -3,115 +3,172 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Schrödinger's Server · Sessions</title>
+  <title>Mission Control · Schrödinger's Server</title>
   <style>
     :root {
       color-scheme: dark;
-      --bg-canvas: #040711;
-      --bg-surface: #0b111e;
-      --bg-subtle: #060a13;
-      --border-subtle: #1a2639;
-      --border-strong: #324863;
-      --text-primary: #edf3ff;
-      --text-muted: #94a3b8;
-      --accent-cyan: #38bdf8;
-      --accent-focus: #56c7ed;
-      font-family: ui-sans-serif, system-ui, -apple-system, sans-serif;
-      background: var(--bg-canvas);
+      --canvas: #0B141B;
+      --surface: #14232C;
+      --surface-elevated: #1B2D35;
+      --surface-inset: #101D25;
+      --border-subtle: #2B4048;
+      --border-strong: #3E5B66;
+      --border-focus: #87C6B9;
+      --text-primary: #F0F3EF;
+      --text-secondary: #A5B6BA;
+      --text-tertiary: #7C9297;
+      --accent-seaglass: #87C6B9;
+      --accent-brass: #D6B48D;
+      --accent-coral: #D88D81;
+      --accent-amethyst: #9A9BCF;
+      --t1-surface: #23464A;
+      --t1-text: #BCE8DC;
+      --t1-border: #3B7075;
+      --t2-surface: #4B392E;
+      --t2-text: #E7C7A7;
+      --t2-border: #7A5E4D;
+      --t3-surface: #362C42;
+      --t3-text: #D9CCE8;
+      --t3-border: #5D4D72;
+      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--canvas);
       color: var(--text-primary);
     }
     * { box-sizing: border-box; }
     *:focus-visible {
-      outline: 2px solid var(--accent-focus);
+      outline: 2px solid var(--border-focus);
       outline-offset: 2px;
     }
     body {
       margin: 0;
       padding: 14px;
-      line-height: 1.5;
+      line-height: 1.55;
       min-width: 320px;
     }
     @media (min-width: 768px) { body { padding: 24px; } }
-    a { color: var(--accent-cyan); text-decoration: none; }
+    a { color: var(--accent-seaglass); text-decoration: none; }
     a:hover { text-decoration: underline; }
-    header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 16px;
-      flex-wrap: wrap;
-    }
-    h1 { font-size: 24px; margin: 0; font-weight: 700; }
-    h2 { font-size: 18px; margin: 0; font-weight: 600; }
-    small, .muted { color: var(--text-muted); font-size: 13px; }
     .topnav {
       display: flex;
       gap: 8px;
       flex-wrap: wrap;
       align-items: center;
-      margin-bottom: 18px;
-      padding-bottom: 12px;
+      margin-bottom: 20px;
+      padding-bottom: 14px;
       border-bottom: 1px solid var(--border-subtle);
     }
     .topnav a {
       padding: 7px 13px;
       border-radius: 8px;
       border: 1px solid var(--border-subtle);
-      background: var(--bg-subtle);
+      background: var(--surface-inset);
       font-size: 13px;
       font-weight: 600;
-      color: #abedff;
-      transition: background .15s, border-color .15s;
+      color: var(--text-secondary);
+      transition: background .15s, border-color .15s, color .15s;
     }
     .topnav a:hover {
-      background: #15253c;
-      border-color: var(--accent-focus);
+      background: var(--surface-elevated);
+      border-color: var(--border-focus);
+      color: var(--text-primary);
       text-decoration: none;
     }
     .topnav a.active {
-      background: #123d55;
-      border-color: var(--accent-focus);
-      color: #fff;
+      background: var(--surface-elevated);
+      border-color: var(--border-focus);
+      color: var(--accent-seaglass);
     }
+    .topnav a.nav-archive {
+      margin-left: auto;
+      border-style: dashed;
+      color: var(--text-tertiary);
+    }
+    #banner {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: var(--surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      padding: 10px 14px;
+      margin-bottom: 18px;
+      font-size: 13px;
+      font-weight: 600;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    #banner.warn {
+      background: #3d2812;
+      border: 2px solid #fb923c;
+      color: #fed7aa;
+    }
+    #banner[hidden] { display: none; }
+    header.mission-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 18px;
+    }
+    h1 { font-size: 24px; margin: 0; font-weight: 700; letter-spacing: -0.025em; }
+    h2 { font-size: 17px; margin: 0 0 10px 0; font-weight: 600; }
+    h3 { font-size: 14px; margin: 0 0 8px 0; font-weight: 600; }
+    .muted { color: var(--text-secondary); font-size: 13px; }
+    .mono { font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace; font-size: 12px; }
+    .kpis {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: 10px;
+      padding: 16px;
+    }
+    .kpi-title { font-size: 12px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.04em; }
+    .kpi-value { font-size: 26px; font-weight: 700; margin: 6px 0 4px 0; font-family: ui-monospace, monospace; }
+    .kpi-sub { font-size: 12px; color: var(--text-tertiary); }
     .summary-strip {
       display: flex;
       gap: 16px;
       flex-wrap: wrap;
       align-items: center;
       padding: 12px 16px;
-      background: var(--bg-surface);
+      background: var(--surface-inset);
       border: 1px solid var(--border-subtle);
       border-radius: 10px;
       margin-bottom: 18px;
       font-size: 13px;
     }
-    #banner {
-      position: sticky;
-      top: 0;
-      z-index: 10;
-      background: #3d2812;
-      border: 2px solid #fb923c;
-      color: #fed7aa;
-      padding: 12px 14px;
-      font-weight: 700;
-      margin-bottom: 18px;
-      border-radius: 8px;
-      font-size: 13px;
-    }
-    #banner[hidden] { display: none; }
-    .kpis {
+    .breakdowns {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 12px;
-      margin: 18px 0;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 14px;
+      margin-top: 14px;
     }
-    .card {
-      background: var(--bg-surface);
+    .bar-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 6px;
+      font-size: 12px;
+      font-family: ui-monospace, monospace;
+    }
+    .bar-label { min-width: 75px; color: var(--text-secondary); }
+    .bar-track {
+      flex: 1;
+      height: 8px;
+      background: var(--surface-inset);
       border: 1px solid var(--border-subtle);
-      border-radius: 12px;
-      padding: 16px;
+      border-radius: 4px;
+      overflow: hidden;
     }
-    .value { font-size: 26px; font-weight: 700; margin-top: 6px; }
+    .bar-fill { height: 100%; border-radius: 4px; background: var(--accent-seaglass); }
     .tools {
       display: flex;
       gap: 10px;
@@ -124,7 +181,7 @@
       padding: 8px 12px;
       border: 1px solid var(--border-strong);
       border-radius: 8px;
-      background: var(--bg-subtle);
+      background: var(--surface-inset);
       color: var(--text-primary);
       font-size: 13px;
     }
@@ -132,26 +189,31 @@
     .scroll {
       overflow-x: auto;
       max-width: 100%;
-      max-height: 480px;
+      max-height: 520px;
       margin-top: 14px;
       -webkit-overflow-scrolling: touch;
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
     }
-    table { width: 100%; border-collapse: collapse; font-size: 14px; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
     th {
       position: sticky;
       top: 0;
-      background: #182941;
+      background: var(--surface-elevated);
       text-align: left;
       padding: 10px 12px;
       border-bottom: 1px solid var(--border-strong);
       font-family: ui-monospace, monospace;
+      font-size: 12px;
+      color: var(--text-secondary);
+      z-index: 5;
     }
     td {
       padding: 12px;
-      border-bottom: 1px solid #1e2d42;
+      border-bottom: 1px solid var(--border-subtle);
       vertical-align: top;
     }
-    tr:hover { background: rgba(56, 189, 248, 0.04); }
+    tr:hover { background: rgba(135, 198, 185, 0.05); }
     .chip, .badge {
       display: inline-block;
       padding: 3px 8px;
@@ -161,50 +223,43 @@
       font-weight: 600;
       font-family: ui-monospace, monospace;
       border: 1px solid var(--border-subtle);
-      background: var(--bg-subtle);
+      background: var(--surface-inset);
     }
-    .T1 { background: #123d55; color: #abedff; border-color: #56c7ed; }
-    .T2 { background: #3d2812; color: #fed7aa; border-color: #fb923c; }
-    .T3 { background: #331a47; color: #e9d5ff; border-color: #c084fc; }
-    .missing { color: var(--text-muted); }
-    .transition { outline: 2px solid #fff; font-weight: bold; }
-    .return { color: #baffd8; }
-    .session { font-family: ui-monospace, monospace; overflow-wrap: anywhere; max-width: 220px; font-size: 12px; }
-    #empty { padding: 32px; text-align: center; color: var(--text-muted); }
-    .breakdowns {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 12px;
-      margin-top: 14px;
-    }
-    .bar-row {
+    .chip.T1, .badge.T1 { background: var(--t1-surface); color: var(--t1-text); border-color: var(--t1-border); }
+    .chip.T2, .badge.T2 { background: var(--t2-surface); color: var(--t2-text); border-color: var(--t2-border); }
+    .chip.T3, .badge.T3 { background: var(--t3-surface); color: var(--t3-text); border-color: var(--t3-border); }
+    .chip.missing { color: var(--text-tertiary); }
+    .chip.transition { outline: 2px solid var(--accent-brass); font-weight: bold; }
+    .badge.return { background: rgba(135, 198, 185, 0.15); color: var(--accent-seaglass); border-color: var(--accent-seaglass); }
+    .session-id { font-family: ui-monospace, monospace; font-size: 12px; font-weight: 600; }
+    #empty { padding: 32px; text-align: center; color: var(--text-secondary); }
+    .transitions-feed {
       display: flex;
-      align-items: center;
+      flex-direction: column;
       gap: 8px;
-      margin-bottom: 6px;
+      margin-top: 10px;
+    }
+    .feed-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 12px;
+      background: var(--surface-inset);
+      border: 1px solid var(--border-subtle);
+      border-radius: 6px;
       font-size: 12px;
       font-family: ui-monospace, monospace;
     }
-    .bar-label { min-width: 60px; }
-    .bar-track {
-      flex: 1;
-      height: 8px;
-      background: var(--bg-subtle);
-      border: 1px solid var(--border-subtle);
-      border-radius: 4px;
-      overflow: hidden;
-    }
-    .bar-fill { height: 100%; border-radius: 4px; background: var(--accent-cyan); }
     footer {
       margin-top: 24px;
       padding-top: 16px;
       border-top: 1px solid var(--border-subtle);
-      color: var(--text-muted);
+      color: var(--text-tertiary);
       font-size: 12px;
     }
     details { margin-top: 8px; }
-    summary { cursor: pointer; color: #abedff; }
-    #status { min-height: 20px; }
+    summary { cursor: pointer; color: var(--accent-seaglass); }
+    #status { min-height: 20px; font-weight: 600; }
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after {
         animation-duration: 0.01ms !important;
@@ -222,74 +277,108 @@
 </head>
 <body>
 <nav class="topnav" aria-label="Dashboard">
-  <a href="/" class="active">Overview</a>
+  <a href="/" class="active">Mission Control</a>
+  <a href="/session">Session Forensics</a>
+  <a href="/visitors">Visitor Atlas</a>
+  <a href="/deception">Deception Studio</a>
+  <a href="/ml">Model Observatory</a>
+  <a href="/cost">Resource Observatory</a>
   <a href="/evidence">Evidence Vault</a>
-  <a href="/ml">ML Experiments</a>
-  <a href="/cost">Cost</a>
-  <a href="/session">Session Timeline</a>
-  <a href="/research">Research Archive</a>
+  <a href="/lab">Lab Console</a>
+  <a href="/research" class="nav-archive">Research Archive</a>
 </nav>
-<div id="banner" hidden>LAB_DEMO profile: mechanism demonstration, NOT ML evidence</div>
-<header>
+
+<div id="banner" hidden class="warn">
+  LAB_DEMO_NOT_ML · Synthetic laboratory demonstration profile active. Decisions are scripted for defense demonstration, NOT generated by machine learning.
+</div>
+
+<header class="mission-head">
   <div>
-    <small>ADAPTIVE HONEYPOT · OBSERVED DECISIONS</small>
-    <h1>Schrödinger's Server</h1>
+    <div class="muted mono" style="letter-spacing: 0.05em; font-size: 11px;">ADAPTIVE SSH DECEPTION OBSERVATORY · OPERATIONAL DEFENSE</div>
+    <h1>Mission Control</h1>
   </div>
-  <div>
-    <div id="status" role="status" aria-live="polite">NO DATA · waiting for API</div>
-    <small id="updated">Last updated: NO DATA</small>
+  <div style="text-align: right;">
+    <div id="status" role="status" aria-live="polite" class="mono">NO DATA · waiting for API</div>
+    <div id="updated" class="muted mono">Last updated: NO DATA</div>
   </div>
 </header>
 
 <section class="kpis" aria-label="Database session metrics">
-  <div class="card">Sessions<div class="value" id="sessions">NO DATA</div></div>
-  <div class="card">Sessions reaching T2+<div class="value" id="escalated">NO DATA</div></div>
-  <div class="card">Escalation fraction<div class="value" id="fraction">NO DATA</div><small>Escalated / sessions</small></div>
-  <div class="card">Median engine compute time<div class="value" id="latency">NO DATA</div><small>Engine compute time (not end-to-end)</small></div>
+  <div class="card">
+    <div class="kpi-title">Recorded SSH Sessions</div>
+    <div class="kpi-value" id="sessions">NO DATA</div>
+    <div class="kpi-sub">Total observed sessions in database</div>
+  </div>
+  <div class="card">
+    <div class="kpi-title">Escalated Sessions (Reached T2)</div>
+    <div class="kpi-value" id="escalated" style="color: var(--accent-brass);">NO DATA</div>
+    <div class="kpi-sub">Migrated to enhanced T2 persona</div>
+  </div>
+  <div class="card">
+    <div class="kpi-title">Escalation Ratio</div>
+    <div class="kpi-value" id="fraction">NO DATA</div>
+    <div class="kpi-sub">Escalated / recorded sessions</div>
+  </div>
+  <div class="card">
+    <div class="kpi-title">Median Engine Compute Time</div>
+    <div class="kpi-value" id="latency">NO DATA</div>
+    <div class="kpi-sub">Engine compute time (not end-to-end)</div>
+  </div>
 </section>
 
 <section id="summary-strip" class="summary-strip" aria-label="Decisions summary">
-  <span><strong>Recorded decisions:</strong> <span id="sum-total">NO DATA</span></span>
-  <span><strong>Tiers:</strong> <span id="sum-tiers">NO DATA</span></span>
-  <span><strong>P95 engine compute time:</strong> <span id="sum-p95">NO DATA</span></span>
-  <span><strong>Polling:</strong> <span id="ticker-status">5s ticker active</span></span>
+  <span><strong>Recorded decisions:</strong> <span id="sum-total" class="mono">NO DATA</span></span>
+  <span><strong>Tiers:</strong> <span id="sum-tiers" class="mono">NO DATA</span></span>
+  <span><strong>P95 engine compute time:</strong> <span id="sum-p95" class="mono">NO DATA</span></span>
+  <span style="margin-left: auto;"><strong>Telemetry Polling:</strong> <span id="ticker-status" class="mono" style="color: var(--accent-seaglass);">Live (5s poll)</span></span>
 </section>
 
 <!-- Breakdown Bars Card -->
-<section class="card" id="breakdown-card">
+<section class="card" id="breakdown-card" style="margin-bottom: 18px;">
   <h2>Decisions Distribution Breakdown</h2>
+  <div class="muted">Live distribution of policy engine assignments across stored decision events.</div>
   <div class="breakdowns">
     <div>
       <h3 class="muted">By Assigned Tier</h3>
-      <div id="bars-tier"><div class="muted">NO DATA</div></div>
+      <div id="bars-tier"><div class="muted mono">NO DATA</div></div>
     </div>
     <div>
       <h3 class="muted">By Trigger Stage</h3>
-      <div id="bars-stage"><div class="muted">NO DATA</div></div>
+      <div id="bars-stage"><div class="muted mono">NO DATA</div></div>
     </div>
     <div>
       <h3 class="muted">By Provenance</h3>
-      <div id="bars-provenance"><div class="muted">NO DATA</div></div>
+      <div id="bars-provenance"><div class="muted mono">NO DATA</div></div>
     </div>
   </div>
 </section>
 
-<section class="card" style="margin-top: 16px;">
+<!-- Recent Tier Transitions Feed Card -->
+<section class="card" id="transitions-card" style="margin-bottom: 18px;">
+  <h2>Observed Tier Escalation Transitions</h2>
+  <div class="muted">Real-time record of mid-session persona escalation decisions (T1 Lite → T2 Hardened).</div>
+  <div id="transitions-feed" class="transitions-feed">
+    <div class="muted mono">NO DATA · No transitions recorded.</div>
+  </div>
+</section>
+
+<!-- Real Sessions Stream Card -->
+<section class="card">
   <div class="tools">
-    <h2>Sessions</h2>
+    <h2>Recorded SSH Sessions Activity Stream</h2>
     <span id="source" class="badge">UNKNOWN</span>
-    <input id="search" aria-label="Filter sessions" placeholder="Search session or masked visitor">
+    <input id="search" aria-label="Filter sessions" placeholder="Search session ID or visitor ID...">
     <select id="tier" aria-label="Filter by escalation">
       <option value="all">All sessions</option>
-      <option value="yes">Reached T2+</option>
-      <option value="no">T1 only</option>
+      <option value="yes">Reached T2 (Escalated)</option>
+      <option value="no">T1 only (Unescalated)</option>
     </select>
   </div>
-  <p class="muted">S1 → S5: observed stage decisions. ↑ marks a tier change. A dash means no decision observed.</p>
+  <p class="muted">S1 → S5: observed stage decisions. ↑ marks a tier escalation. A dash (—) indicates stage was not evaluated.</p>
   <div class="scroll">
     <table>
       <thead>
-        <tr><th>Session / visitor</th><th>Stage timeline</th><th>Provenance / policy</th></tr>
+        <tr><th>Session / Visitor Identity</th><th>Stage Timeline (S1–S5)</th><th>Provenance / Policy / Decisions</th></tr>
       </thead>
       <tbody id="rows"></tbody>
     </table>
@@ -298,10 +387,10 @@
 </section>
 
 <footer>
-  Metrics cover all stored decision rows, independent of filters. Returning visitor means the same masked visitor appeared in an earlier observed session. Provenance labels are supplied by the decision log, not independently authenticated.
+  <div>Metrics cover all stored decision rows in local SQLite store, independent of display filters. Returning visitor indicates the masked visitor ID appeared in a preceding recorded session.</div>
   <details>
-    <summary>Research context · RECORDED</summary>
-    SIMULATED ORACLE (HINDSIGHT UPPER BOUND) · EVAL H4 NOT YET EVALUATED. This session view makes no cost or ML-performance claim. Traffic may be SYNTHETIC, LAB, LIVE or UNKNOWN.
+    <summary>Research Defense Context · Verification Guarantee</summary>
+    <p class="muted">SIMULATED ORACLE / RECORDED AUDIT · EVAL H4 NOT YET EVALUATED. This session stream reflects real Gatekeeper decisions. Traffic may be SYNTHETIC, LAB, or RECORDED. Latency values represent isolated Gatekeeper decision calculation duration.</p>
   </details>
   <div style="margin-top: 12px; display: flex; justify-content: space-between; font-family: ui-monospace, monospace; font-size: 11px;">
     <span id="foot-scope">Scope: UNKNOWN · Profile: UNKNOWN</span>
@@ -325,12 +414,17 @@ function renderBars(containerId, countMap, color) {
   const container = el(containerId);
   if (!container) return;
   if (!countMap || !Object.keys(countMap).length) {
-    container.replaceChildren(text('div', 'NO DATA', 'muted'));
+    container.replaceChildren(text('div', 'NO DATA', 'muted mono'));
     return;
   }
   container.replaceChildren();
+  let entries = Object.entries(countMap);
+  if (containerId === 'bars-stage') {
+    const stageOrder = { 'S1': 1, 'S2': 2, 'S3': 3, 'S4': 4, 'S5': 5 };
+    entries.sort((a, b) => (stageOrder[a[0]] || 99) - (stageOrder[b[0]] || 99));
+  }
   const maxVal = Math.max(...Object.values(countMap), 1);
-  for (const [k, v] of Object.entries(countMap)) {
+  for (const [k, v] of entries) {
     const row = document.createElement('div');
     row.className = 'bar-row';
     row.appendChild(text('span', `${k} (${v})`, 'bar-label'));
@@ -348,14 +442,69 @@ function renderBars(containerId, countMap, color) {
   }
 }
 
+function renderTransitions(sessions) {
+  const feed = el('transitions-feed');
+  if (!feed) return;
+  const transitions = [];
+  for (const s of sessions) {
+    if (s.transitions && s.transitions.length) {
+      for (const t of s.transitions) {
+        transitions.push({
+          sessionId: s.session_id,
+          visitorId: s.visitor_id,
+          stage: t.stage,
+          from: t.from,
+          to: t.to
+        });
+      }
+    }
+  }
+
+  if (!transitions.length) {
+    feed.replaceChildren(text('div', 'NO DATA · No tier transitions observed.', 'muted mono'));
+    return;
+  }
+
+  feed.replaceChildren();
+  // Show up to 10 most prominent transitions
+  for (const tr of transitions.slice(0, 10)) {
+    const item = document.createElement('div');
+    item.className = 'feed-item';
+
+    const left = document.createElement('div');
+    left.appendChild(text('strong', tr.sessionId));
+    left.appendChild(text('span', ` (${tr.visitorId}) `, 'muted'));
+    item.appendChild(left);
+
+    const right = document.createElement('div');
+    right.appendChild(text('span', `Stage ${tr.stage}: `, 'muted'));
+    const tBadge = text('span', `${tr.from} → ${tr.to}`, 'chip transition T2');
+    right.appendChild(tBadge);
+
+    const foreLink = document.createElement('a');
+    foreLink.href = `/session?id=${encodeURIComponent(tr.sessionId)}`;
+    foreLink.textContent = ' Investigate →';
+    foreLink.style.marginLeft = '10px';
+    foreLink.style.fontSize = '11px';
+    right.appendChild(foreLink);
+
+    item.appendChild(right);
+    feed.appendChild(item);
+  }
+}
+
 function render() {
   if (!data) return;
-  const query = el('search').value.toLowerCase();
+  const sessions = data.sessions || [];
+  const query = (el('search').value || '').toLowerCase();
   const filter = el('tier').value;
-  const visible = data.sessions.filter(s =>
+  const visible = sessions.filter(s =>
     (s.session_id + ' ' + s.visitor_id).toLowerCase().includes(query) &&
     (filter === 'all' || s.reached_t2 === (filter === 'yes'))
   );
+
+  renderTransitions(sessions);
+
   const stamp = JSON.stringify(visible);
   if (stamp === signature) return;
   signature = stamp;
@@ -375,35 +524,55 @@ function render() {
     row.replaceChildren();
 
     const identity = document.createElement('td');
-    identity.append(text('div', s.session_id, 'session'), text('div', s.visitor_id, 'muted session'));
-    if (s.returning_visitor) identity.append(text('span', 'Returning visitor', 'badge return'));
+    const sIdLink = document.createElement('a');
+    sIdLink.href = `/session?id=${encodeURIComponent(s.session_id)}`;
+    sIdLink.textContent = s.session_id;
+    sIdLink.className = 'session-id';
+    identity.appendChild(sIdLink);
+
+    const vLine = document.createElement('div');
+    const vLink = document.createElement('a');
+    vLink.href = `/visitors?id=${encodeURIComponent(s.visitor_id)}`;
+    vLink.textContent = s.visitor_id;
+    vLink.className = 'muted mono';
+    vLine.appendChild(vLink);
+    identity.appendChild(vLine);
+
+    if (s.returning_visitor) {
+      identity.appendChild(text('span', 'Returning Visitor', 'badge return'));
+    }
 
     const timeline = document.createElement('td');
     for (const stage of ['S1', 'S2', 'S3', 'S4', 'S5']) {
-      const tier = s.stages[stage];
-      const changes = s.transitions.filter(t => t.stage === stage);
+      const tier = s.stages && s.stages[stage];
+      const changes = (s.transitions || []).filter(t => t.stage === stage);
       const chip = text('span', stage + ' ' + (tier || '—') + (changes.length ? ' ↑' : ''), 'chip ' + (tier || 'missing') + (changes.length ? ' transition' : ''));
       chip.title = changes.map(t => t.from + ' → ' + t.to).join(', ') || 'No observed tier change';
-      timeline.append(chip);
+      timeline.appendChild(chip);
     }
 
     const badges = document.createElement('td');
-    for (const p of new Set(s.decisions.map(d => d.provenance))) badges.append(text('span', p, 'badge'));
-    for (const p of new Set(s.decisions.map(d => d.policy_profile))) badges.append(text('span', p, 'badge'));
+    for (const p of new Set((s.decisions || []).map(d => d.provenance))) {
+      badges.appendChild(text('span', p, 'badge'));
+    }
+    for (const p of new Set((s.decisions || []).map(d => d.policy_profile))) {
+      badges.appendChild(text('span', p, 'badge'));
+    }
 
     const details = document.createElement('details');
-    details.append(text('summary', 'Decision details'));
-    for (const d of s.decisions) {
-      details.append(text('div', `${d.stage} · ${d.tier} · ${d.provenance} · ${d.policy_profile} · score ${d.score} · ${d.score_source} · ${d.latency_ms} ms · ${d.timestamp}`, 'muted font-mono'));
+    details.appendChild(text('summary', `${(s.decisions || []).length} Recorded Decisions`));
+    for (const d of (s.decisions || [])) {
+      const latFmt = (d.latency_ms !== null && d.latency_ms !== undefined) ? Number(d.latency_ms).toFixed(2) + ' ms' : 'NO DATA';
+      details.appendChild(text('div', `${d.stage} · ${d.tier} · ${d.provenance} · score ${d.score} · compute ${latFmt} · ${d.timestamp}`, 'muted mono'));
     }
-    badges.append(details);
+    badges.appendChild(details);
 
     row.append(identity, timeline, badges);
   }
 
   for (const r of existing.values()) r.remove();
   el('empty').hidden = visible.length > 0;
-  el('empty').textContent = data.sessions.length ? 'No matching sessions' : 'NO DATA · no decisions recorded';
+  el('empty').textContent = sessions.length ? 'No matching sessions for filter criteria' : 'NO DATA · No decisions recorded in database';
 }
 
 el('search').addEventListener('input', render);
@@ -412,18 +581,21 @@ el('tier').addEventListener('change', render);
 async function refresh() {
   try {
     const response = await fetch('/api/sessions', { cache: 'no-store', signal: AbortSignal.timeout(5000) });
-    if (!response.ok) throw Error();
+    if (!response.ok) throw new Error('API HTTP error');
     const next = await response.json();
-    if (next.status !== 'ok') throw Error();
     data = next;
 
     el('banner').hidden = !data.has_lab_demo;
-    el('source').textContent = data.source;
-    el('sessions').textContent = data.kpis.sessions;
-    el('escalated').textContent = data.kpis.reached_t2;
-    el('fraction').textContent = data.kpis.escalation_fraction === null ? 'NO DATA' : (data.kpis.escalation_fraction * 100).toFixed(1) + '%';
-    el('latency').textContent = data.kpis.median_compute_ms === null ? 'NO DATA' : data.kpis.median_compute_ms.toFixed(2) + ' ms';
-    el('status').textContent = 'Connected · ' + data.source;
+    el('source').textContent = data.source || 'UNKNOWN';
+    el('sessions').textContent = data.kpis ? data.kpis.sessions : 0;
+    el('escalated').textContent = data.kpis ? data.kpis.reached_t2 : 0;
+    el('fraction').textContent = (data.kpis && data.kpis.escalation_fraction !== null)
+      ? (data.kpis.escalation_fraction * 100).toFixed(1) + '%'
+      : 'NO DATA';
+    el('latency').textContent = (data.kpis && data.kpis.median_compute_ms !== null)
+      ? data.kpis.median_compute_ms.toFixed(2) + ' ms'
+      : 'NO DATA';
+    el('status').textContent = 'Connected · ' + (data.source || 'UNKNOWN');
     el('updated').textContent = 'Last updated: ' + new Date().toLocaleTimeString();
     el('ticker-status').textContent = 'Live (5s poll)';
     el('foot-scope').textContent = `Scope: ${data.source || 'UNKNOWN'} · Profile: ${data.metadata ? data.metadata.policy_profile : 'UNKNOWN'}`;
@@ -441,9 +613,9 @@ async function refresh() {
           el('sum-p95').textContent = d.latency_ms && d.latency_ms.p95 !== null && d.latency_ms.p95 !== undefined ? d.latency_ms.p95.toFixed(2) + ' ms' : 'NO DATA';
 
           if (d.counts) {
-            renderBars('bars-tier', d.counts.tier, '#38bdf8');
-            renderBars('bars-stage', d.counts.stage, '#818cf8');
-            renderBars('bars-provenance', d.counts.provenance, '#34d399');
+            renderBars('bars-tier', d.counts.tier, '#87C6B9');
+            renderBars('bars-stage', d.counts.stage, '#9A9BCF');
+            renderBars('bars-provenance', d.counts.provenance, '#D6B48D');
           }
         }
       }

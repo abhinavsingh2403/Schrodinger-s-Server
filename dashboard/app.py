@@ -441,7 +441,15 @@ class DashboardServer:
             self.httpd = None
 
 
-PAGE_TITLES = {"/evidence": "Evidence Vault", "/cost": "Cost", "/ml": "ML Experiments", "/session": "Session Timeline"}
+PAGE_TITLES = {
+    "/evidence": "Evidence Vault",
+    "/cost": "Resource Observatory",
+    "/ml": "Model Observatory",
+    "/session": "Session Forensics",
+    "/visitors": "Visitor Atlas",
+    "/deception": "Deception Studio",
+    "/lab": "Lab Console",
+}
 
 
 LEGACY = {
