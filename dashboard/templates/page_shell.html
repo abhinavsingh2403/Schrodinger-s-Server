@@ -471,6 +471,134 @@ async function initMl() {
   content.replaceChildren(container);
 }
 
+async function initCost() {
+  const content = document.getElementById('content');
+  content.replaceChildren(el('p', 'Loading cost evidence and resource measurements...', 'muted'));
+  const settled = await Promise.allSettled([
+    fetchJson('/api/evidence/COST_PER_TIER'),
+    fetchJson('/api/evidence/cost_T1_only'),
+    fetchJson('/api/evidence/cost_T2_only'),
+    fetchJson('/api/evidence/cost_model'),
+    fetchJson('/api/evidence/concurrency_probe')
+  ]);
+
+  const getBody = (idx) => (settled[idx].status === 'fulfilled' ? settled[idx].value : null);
+  const costTierRes = getBody(0);
+  const t1Res = getBody(1);
+  const t2Res = getBody(2);
+  const modelRes = getBody(3);
+  const probeRes = getBody(4);
+
+  const costMeta = costTierRes ? costTierRes.body : (t1Res ? t1Res.body : null);
+  setBanner(costMeta);
+  if (!costTierRes && !t1Res && !t2Res && !modelRes) {
+    setStatus('NO DATA · API unavailable');
+    content.replaceChildren(el('div', 'NO DATA · Cost endpoints unavailable.', 'card'));
+    return;
+  }
+  setStatus('Loaded cost study and resource measurements');
+
+  const container = el('div');
+
+  // Mandatory limitation callout from COST_PER_TIER
+  const limitCard = el('section', '', 'card warn');
+  limitCard.appendChild(el('h2', 'Cost Study Methodology & Confounding Caveat'));
+  let matchedParagraph = 'Matched session count and pacing window. Sampling includes pauses and early T1 time inside T2-final sessions. Both personas share one sensor process. Terminal allocation also differs, so this cannot isolate a persona-only resource effect.';
+  if (costTierRes && costTierRes.body && costTierRes.body.data && typeof costTierRes.body.data.text === 'string') {
+    const rawText = costTierRes.body.data.text;
+    const parts = rawText.split(/\r?\n\r?\n/);
+    const found = parts.find((p) => p.trim().startsWith('Matched session count'));
+    if (found) matchedParagraph = found.trim();
+  }
+  limitCard.appendChild(el('p', matchedParagraph));
+  if (costTierRes && costTierRes.body) limitCard.appendChild(makeBadgeRow(costTierRes.body));
+  container.appendChild(limitCard);
+
+  // Matched Measurements Table (T1 vs T2)
+  const measCard = el('section', '', 'card');
+  measCard.appendChild(el('h2', 'Matched Hardware Resource Measurements'));
+  measCard.appendChild(el('p', 'Comparative CPU and memory observed across isolated pure runs (Spike S2 protocol).', 'muted'));
+
+  const t1Runs = (t1Res && t1Res.body && t1Res.body.data && Array.isArray(t1Res.body.data.runs)) ? t1Res.body.data.runs : [];
+  const t2Runs = (t2Res && t2Res.body && t2Res.body.data && Array.isArray(t2Res.body.data.runs)) ? t2Res.body.data.runs : [];
+
+  if (!t1Runs.length && !t2Runs.length) {
+    measCard.appendChild(el('p', 'NO DATA · Pure tier measurements unavailable.', 'muted'));
+  } else {
+    const tbl = el('table');
+    const thead = el('thead');
+    const htr = el('tr');
+    for (const h of ['Target Tier', 'Repeat', 'Wall Time (s)', 'Mean CPU %', 'Max CPU %', 'Mean MB', 'Max MB']) {
+      htr.appendChild(el('th', h));
+    }
+    thead.appendChild(htr);
+    const tbody = el('tbody');
+
+    const addRunRows = (target, runs) => {
+      for (const r of runs) {
+        const tr = el('tr');
+        const st = r.stats || {};
+        tr.appendChild(el('td', target, 'mono'));
+        tr.appendChild(el('td', String(r.repeat || '')));
+        tr.appendChild(el('td', st.wall_time !== undefined ? String(st.wall_time) : 'NO DATA', 'mono'));
+        tr.appendChild(el('td', st.mean_cpu_pct !== undefined ? String(st.mean_cpu_pct) : 'NO DATA', 'mono'));
+        tr.appendChild(el('td', st.max_cpu_pct !== undefined ? String(st.max_cpu_pct) : 'NO DATA', 'mono'));
+        tr.appendChild(el('td', st.mean_memory_mb !== undefined ? String(st.mean_memory_mb) : 'NO DATA', 'mono'));
+        tr.appendChild(el('td', st.max_memory_mb !== undefined ? String(st.max_memory_mb) : 'NO DATA', 'mono'));
+        tbody.appendChild(tr);
+      }
+    };
+    addRunRows('T1', t1Runs);
+    addRunRows('T2', t2Runs);
+    tbl.append(thead, tbody);
+    measCard.appendChild(el('div', '', 'scroll')).appendChild(tbl);
+  }
+  container.appendChild(measCard);
+
+  // Mixed Sensor Baseline (cost_model.json)
+  const modelCard = el('section', '', 'card');
+  modelCard.appendChild(el('h2', 'Mixed Container Baseline (cost_model.json)'));
+  if (modelRes && modelRes.body) modelCard.appendChild(makeBadgeRow(modelRes.body));
+  const modelData = modelRes && modelRes.body ? modelRes.body.data : null;
+  if (!modelData) {
+    modelCard.appendChild(el('p', 'NO DATA · cost_model baseline unavailable.', 'muted'));
+  } else {
+    if (modelData.interpretation) {
+      modelCard.appendChild(el('p', modelData.interpretation, 'muted'));
+    }
+    const kpis = el('div', '', 'kpis');
+    const addKpi = (label, val) => {
+      const box = el('div', '', 'card');
+      box.appendChild(el('div', label, 'muted'));
+      box.appendChild(el('div', val !== undefined && val !== null ? String(val) : 'NO DATA', 'value mono'));
+      kpis.appendChild(box);
+    };
+    addKpi('Mean CPU %', modelData.mean_cpu_pct);
+    addKpi('Max CPU %', modelData.max_cpu_pct);
+    addKpi('Mean Memory MB', modelData.mean_memory_mb);
+    addKpi('Max Memory MB', modelData.max_memory_mb);
+    modelCard.appendChild(kpis);
+  }
+  container.appendChild(modelCard);
+
+  // Full COST_PER_TIER.md verbatim view
+  const mdCard = el('section', '', 'card');
+  mdCard.appendChild(el('h2', 'Docker Final-Tier Cost Study Document (COST_PER_TIER.md)'));
+  if (costTierRes && costTierRes.body) {
+    mdCard.appendChild(makeBadgeRow(costTierRes.body));
+    if (costTierRes.body.data && typeof costTierRes.body.data.text === 'string') {
+      mdCard.appendChild(el('pre', costTierRes.body.data.text, 'md-view'));
+    } else {
+      mdCard.appendChild(el('p', costTierRes.body.empty || 'NO DATA', 'muted'));
+    }
+  } else {
+    mdCard.appendChild(el('p', 'NO DATA · Document unavailable.', 'muted'));
+  }
+  container.appendChild(mdCard);
+
+  content.replaceChildren(container);
+}
+
 (function boot() {
   const path = window.location.pathname;
   for (const link of document.querySelectorAll('.topnav a')) {
@@ -478,6 +606,7 @@ async function initMl() {
   }
   if (path === '/evidence') initEvidence();
   else if (path === '/ml') initMl();
+  else if (path === '/cost') initCost();
 })();
 </script>
 </body>
