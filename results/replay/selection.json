@@ -1,0 +1,41 @@
+{
+  "day": "2025-08-09",
+  "counts": {
+    "outside_exact_allowlist": 79049,
+    "length_cap": 4834,
+    "incomplete": 147,
+    "eligible": 1247
+  },
+  "traces": [
+    {
+      "key": "009af43fb12883fffc24129356bd09a1f2abd795f19be0d712d95702c2836e04",
+      "commands": [
+        "28ba533b0f3c4df63d6b4a5ead73860697bdf735bb353e4ca928474889eb8a15"
+      ]
+    },
+    {
+      "key": "0183f1dd93d4acfa423655b27fd2f150296e7d4f7fa91d8eeea75c206ed0a58b",
+      "commands": [
+        "f25297859cf0a70af5c053a5464a5fa647a35ceee1d91397331903846d79ffc1"
+      ]
+    },
+    {
+      "key": "01c4d5a01989adfafbd5e8eef036b7e10675b9fe39089a8779e11350b5b8f8a0",
+      "commands": [
+        "f25297859cf0a70af5c053a5464a5fa647a35ceee1d91397331903846d79ffc1"
+      ]
+    },
+    {
+      "key": "01c979894d1f1ac1e8589eae687a0bae8b964a4b52f04154707687dfec36b37f",
+      "commands": [
+        "28ba533b0f3c4df63d6b4a5ead73860697bdf735bb353e4ca928474889eb8a15"
+      ]
+    },
+    {
+      "key": "033849de4b10d54609d829617f583de814852b67c62b485ad5c681d9da6a314d",
+      "commands": [
+        "7063dece7cccf374d9fa1ee30ff23300fa42477e064e69be7bb6d01c0cfff682"
+      ]
+    }
+  ]
+}

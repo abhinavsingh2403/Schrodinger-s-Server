@@ -120,3 +120,8 @@ Event-log ordering observations are recorded by analysis/exp0_event_order.py aga
 | The event tables exclude overlapping sources and use future-only labels. | [Cohort counts](results/exp1/cohorts.json) | Lab, exploratory, offline |
 | S4 real-label, shuffled-label and unweighted feature-sum scorers assign identical selection probabilities at the registered budget on the exposed test cohort. | [Cutoff diagnosis](results/exp1/ROOT_CAUSE.md) | Lab, exploratory |
 | S4 coefficients and full score rankings differ despite matched cutoff recall; ablation and R7 also differ in their number of score bins. | [Diagnostic details](results/exp1/root_cause_details.json) | Lab, exploratory |
+| Detector installation was isolated from project dependencies. | [Environment](results/detector/environment.txt) | Lab, exploratory |
+| The H4 authenticated tier comparison remains inconclusive. | [Detector status](results/detector/DETECTOR_RESULT.md) | Lab, exploratory |
+| Whole-trace filtering retained a read-only subset of the held-out day. | [Selection](results/replay/selection.json) | Lab, exploratory |
+| Recorded SSH completion and decision-log tiers are paired for each attempted replay. | [Observations](results/replay/observations.json) | Lab, exploratory |
+| Both final-tier arms received the selected inputs in every repeat. | [Replay result](results/replay/REPLAY_RESULT.md) | Lab, exploratory |

@@ -334,3 +334,6 @@ DONE: S4 cutoff diagnosis. Run `python -m analysis.experiment1_root_cause` with 
 NOT RUN: H4 and Docker replay. Docker Desktop Linux engine unavailable. No detector scores, replay metrics or filter counts. T3 unimplemented.
 Retry prerequisite: `docker version` (Server required), then `docker compose -p schrodinger-final -f infra/docker-compose.yml up -d --build`. Detector and replay protocols remain pending.
 Cleanup attempted: `docker compose -p schrodinger-final -f infra/docker-compose.yml down -v`; engine unreachable, no stack started in this task.
+
+DONE: Docker replay completed and volumes removed. Select with `python -m analysis.replay_selection data/event_prefix_study`; run `python -m analysis.lab_trace_replay` in the pinned WSL environment. See results/replay/REPLAY_RESULT.md.
+H4 INCONCLUSIVE: isolated detector environment and installed scoring weights recorded. Deep tier comparison NOT RUN; the detector controls its own probe sessions. T3 unavailable. Inspect installed options with `honeypot-auditor --help`.
