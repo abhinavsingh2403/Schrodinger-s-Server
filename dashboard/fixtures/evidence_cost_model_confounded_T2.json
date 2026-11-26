@@ -1,0 +1,29 @@
+{
+  "generated_by": "dashboard.make_fixtures",
+  "generated_from_commit": "29934d69e88b75d5541ca13a576ebb7a8ba46da6",
+  "method": "GET",
+  "route": "/api/evidence/cost_model_confounded_T2",
+  "http_status": 200,
+  "response": {
+    "scope": "LAB",
+    "status": "INVALID",
+    "source_file": "results/cost/cost_model_confounded_T2.json",
+    "policy_profile": "UNKNOWN",
+    "demo_label": null,
+    "id": "cost_model_confounded_T2",
+    "title": "cost model confounded T2",
+    "kind": "json",
+    "data": {
+      "tier": "T1",
+      "N": 20,
+      "wall_time": 168.5762,
+      "mean_cpu_pct": 0.0,
+      "max_cpu_pct": 0.02,
+      "mean_memory_mb": 116.84,
+      "max_memory_mb": 122.4,
+      "git_commit": "ac4d6f679251da138191acab3ebdbb19e4ddb391",
+      "timestamp": "2026-11-23T21:37:35.414905+00:00",
+      "tier_field_meaning": "Requested bot_like workload; logged decisions during measurement were T2."
+    }
+  }
+}

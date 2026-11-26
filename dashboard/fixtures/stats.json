@@ -1,0 +1,41 @@
+{
+  "generated_by": "dashboard.make_fixtures",
+  "generated_from_commit": "29934d69e88b75d5541ca13a576ebb7a8ba46da6",
+  "method": "GET",
+  "route": "/api/stats",
+  "http_status": 200,
+  "response": {
+    "status": "ok",
+    "source": "RECORDED",
+    "dataset": {
+      "source": "RECORDED",
+      "label": "RECORDED",
+      "total_sessions": 38126048,
+      "positive_sessions": 1232570,
+      "base_rate_pct": 3.23,
+      "days_covered": 52,
+      "source_description": "cnt_command_input counts input events, not distinct commands. Therefore, this aggregate calculation is an approximation of value=1."
+    },
+    "sensor": {
+      "policy_profile": "LAB_DEMO",
+      "source": "LAB",
+      "label": "LAB",
+      "total_decisions": 2,
+      "tier_counts": {
+        "T1": 1,
+        "T2": 1,
+        "T3": 0
+      },
+      "escalated_count": 1,
+      "escalation_rate_pct": 50.0,
+      "p95_latency_ms": 2.6
+    },
+    "metadata": {
+      "scope": "UNKNOWN",
+      "status": "exploratory",
+      "source_file": "results/base_rates.json",
+      "policy_profile": "UNKNOWN",
+      "demo_label": null
+    }
+  }
+}

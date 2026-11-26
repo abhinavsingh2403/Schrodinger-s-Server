@@ -1,0 +1,658 @@
+{
+  "generated_by": "dashboard.make_fixtures",
+  "generated_from_commit": "29934d69e88b75d5541ca13a576ebb7a8ba46da6",
+  "method": "GET",
+  "route": "/api/evidence/s3_showcase",
+  "http_status": 200,
+  "response": {
+    "scope": "LAB",
+    "status": "done",
+    "source_file": "results/demo/s3_showcase.json",
+    "policy_profile": "LAB_DEMO",
+    "demo_label": "LAB_DEMO_NOT_ML",
+    "id": "s3_showcase",
+    "title": "s3 showcase",
+    "kind": "json",
+    "data": {
+      "label": "LAB_DEMO_NOT_ML",
+      "scenes": [
+        {
+          "scene": "bot",
+          "passed": true,
+          "decisions": [
+            {
+              "id": 1,
+              "time": "2026-11-15T18:31:41.162074+00:00",
+              "stage": "S1",
+              "tier": "T1",
+              "policy_profile": "LAB_DEMO",
+              "label": "LAB_DEMO_NOT_ML"
+            },
+            {
+              "id": 2,
+              "time": "2026-11-15T18:31:41.186055+00:00",
+              "stage": "S2",
+              "tier": "T1",
+              "policy_profile": "LAB_DEMO",
+              "label": "LAB_DEMO_NOT_ML"
+            },
+            {
+              "id": 3,
+              "time": "2026-11-15T18:31:42.198308+00:00",
+              "stage": "S2",
+              "tier": "T1",
+              "policy_profile": "LAB_DEMO",
+              "label": "LAB_DEMO_NOT_ML"
+            },
+            {
+              "id": 4,
+              "time": "2026-11-15T18:31:43.211245+00:00",
+              "stage": "S2",
+              "tier": "T1",
+              "policy_profile": "LAB_DEMO",
+              "label": "LAB_DEMO_NOT_ML"
+            },
+            {
+              "id": 5,
+              "time": "2026-11-15T18:31:44.490784+00:00",
+              "stage": "S1",
+              "tier": "T1",
+              "policy_profile": "LAB_DEMO",
+              "label": "LAB_DEMO_NOT_ML"
+            },
+            {
+              "id": 6,
+              "time": "2026-11-15T18:31:44.508013+00:00",
+              "stage": "S2",
+              "tier": "T1",
+              "policy_profile": "LAB_DEMO",
+              "label": "LAB_DEMO_NOT_ML"
+            },
+            {
+              "id": 7,
+              "time": "2026-11-15T18:31:45.519517+00:00",
+              "stage": "S2",
+              "tier": "T1",
+              "policy_profile": "LAB_DEMO",
+              "label": "LAB_DEMO_NOT_ML"
+            },
+            {
+              "id": 8,
+              "time": "2026-11-15T18:31:46.528615+00:00",
+              "stage": "S2",
+              "tier": "T1",
+              "policy_profile": "LAB_DEMO",
+              "label": "LAB_DEMO_NOT_ML"
+            },
+            {
+              "id": 9,
+              "time": "2026-11-15T18:31:47.673122+00:00",
+              "stage": "S1",
+              "tier": "T1",
+              "policy_profile": "LAB_DEMO",
+              "label": "LAB_DEMO_NOT_ML"
+            },
+            {
+              "id": 10,
+              "time": "2026-11-15T18:31:47.681421+00:00",
+              "stage": "S2",
+              "tier": "T1",
+              "policy_profile": "LAB_DEMO",
+              "label": "LAB_DEMO_NOT_ML"
+            },
+            {
+              "id": 11,
+              "time": "2026-11-15T18:31:47.757590+00:00",
+              "stage": "S3",
+              "tier": "T1",
+              "policy_profile": "LAB_DEMO",
+              "label": "LAB_DEMO_NOT_ML"
+            },
+            {
+              "id": 12,
+              "time": "2026-11-15T18:31:47.763446+00:00",
+              "stage": "S4",
+              "tier": "T1",
+              "policy_profile": "LAB_DEMO",
+              "label": "LAB_DEMO_NOT_ML"
+            },
+            {
+              "id": 13,
+              "time": "2026-11-15T18:31:47.934392+00:00",
+              "stage": "S1",
+              "tier": "T1",
+              "policy_profile": "LAB_DEMO",
+              "label": "LAB_DEMO_NOT_ML"
+            },
+            {
+              "id": 14,
+              "time": "2026-11-15T18:31:47.946267+00:00",
+              "stage": "S2",
+              "tier": "T1",
+              "policy_profile": "LAB_DEMO",
+              "label": "LAB_DEMO_NOT_ML"
+            },
+            {
+              "id": 15,
+              "time": "2026-11-15T18:31:48.000104+00:00",
+              "stage": "S3",
+              "tier": "T1",
+              "policy_profile": "LAB_DEMO",
+              "label": "LAB_DEMO_NOT_ML"
+            },
+            {
+              "id": 16,
+              "time": "2026-11-15T18:31:48.008094+00:00",
+              "stage": "S4",
+              "tier": "T1",
+              "policy_profile": "LAB_DEMO",
+              "label": "LAB_DEMO_NOT_ML"
+            },
+            {
+              "id": 17,
+              "time": "2026-11-15T18:31:48.242349+00:00",
+              "stage": "S1",
+              "tier": "T1",
+              "policy_profile": "LAB_DEMO",
+              "label": "LAB_DEMO_NOT_ML"
+            },
+            {
+              "id": 18,
+              "time": "2026-11-15T18:31:48.254756+00:00",
+              "stage": "S2",
+              "tier": "T1",
+              "policy_profile": "LAB_DEMO",
+              "label": "LAB_DEMO_NOT_ML"
+            },
+            {
+              "id": 19,
+              "time": "2026-11-15T18:31:48.345691+00:00",
+              "stage": "S3",
+              "tier": "T1",
+              "policy_profile": "LAB_DEMO",
+              "label": "LAB_DEMO_NOT_ML"
+            },
+            {
+              "id": 20,
+              "time": "2026-11-15T18:31:48.352817+00:00",
+              "stage": "S4",
+              "tier": "T1",
+              "policy_profile": "LAB_DEMO",
+              "label": "LAB_DEMO_NOT_ML"
+            }
+          ],
+          "prior_seen_sessions": 0
+        },
+        {
+          "scene": "interactive",
+          "passed": true,
+          "decisions": [
+            {
+              "id": 21,
+              "time": "2026-11-15T18:31:48.666330+00:00",
+              "stage": "S1",
+              "tier": "T1",
+              "policy_profile": "LAB_DEMO",
+              "label": "LAB_DEMO_NOT_ML"
+            },
+            {
+              "id": 22,
+              "time": "2026-11-15T18:31:48.671899+00:00",
+              "stage": "S2",
+              "tier": "T1",
+              "policy_profile": "LAB_DEMO",
+              "label": "LAB_DEMO_NOT_ML"
+            },
+            {
+              "id": 23,
+              "time": "2026-11-15T18:31:48.716350+00:00",
+              "stage": "S3",
+              "tier": "T2",
+              "policy_profile": "LAB_DEMO",
+              "label": "LAB_DEMO_NOT_ML"
+            },
+            {
+              "id": 24,
+              "time": "2026-11-15T18:31:48.717820+00:00",
+              "stage": "S4",
+              "tier": "T2",
+              "policy_profile": "LAB_DEMO",
+              "label": "LAB_DEMO_NOT_ML"
+            },
+            {
+              "id": 25,
+              "time": "2026-11-15T18:31:48.937164+00:00",
+              "stage": "S1",
+              "tier": "T2",
+              "policy_profile": "LAB_DEMO",
+              "label": "LAB_DEMO_NOT_ML"
+            },
+            {
+              "id": 26,
+              "time": "2026-11-15T18:31:48.947897+00:00",
+              "stage": "S2",
+              "tier": "T2",
+              "policy_profile": "LAB_DEMO",
+              "label": "LAB_DEMO_NOT_ML"
+            },
+            {
+              "id": 27,
+              "time": "2026-11-15T18:31:48.998940+00:00",
+              "stage": "S3",
+              "tier": "T2",
+              "policy_profile": "LAB_DEMO",
+              "label": "LAB_DEMO_NOT_ML"
+            },
+            {
+              "id": 28,
+              "time": "2026-11-15T18:31:49.003364+00:00",
+              "stage": "S4",
+              "tier": "T2",
+              "policy_profile": "LAB_DEMO",
+              "label": "LAB_DEMO_NOT_ML"
+            },
+            {
+              "id": 29,
+              "time": "2026-11-15T18:31:49.306494+00:00",
+              "stage": "S1",
+              "tier": "T2",
+              "policy_profile": "LAB_DEMO",
+              "label": "LAB_DEMO_NOT_ML"
+            },
+            {
+              "id": 30,
+              "time": "2026-11-15T18:31:49.319325+00:00",
+              "stage": "S2",
+              "tier": "T2",
+              "policy_profile": "LAB_DEMO",
+              "label": "LAB_DEMO_NOT_ML"
+            },
+            {
+              "id": 31,
+              "time": "2026-11-15T18:31:49.373085+00:00",
+              "stage": "S3",
+              "tier": "T2",
+              "policy_profile": "LAB_DEMO",
+              "label": "LAB_DEMO_NOT_ML"
+            },
+            {
+              "id": 32,
+              "time": "2026-11-15T18:31:49.381864+00:00",
+              "stage": "S4",
+              "tier": "T2",
+              "policy_profile": "LAB_DEMO",
+              "label": "LAB_DEMO_NOT_ML"
+            },
+            {
+              "id": 33,
+              "time": "2026-11-15T18:31:49.661140+00:00",
+              "stage": "S1",
+              "tier": "T2",
+              "policy_profile": "LAB_DEMO",
+              "label": "LAB_DEMO_NOT_ML"
+            },
+            {
+              "id": 34,
+              "time": "2026-11-15T18:31:49.669637+00:00",
+              "stage": "S2",
+              "tier": "T2",
+              "policy_profile": "LAB_DEMO",
+              "label": "LAB_DEMO_NOT_ML"
+            },
+            {
+              "id": 35,
+              "time": "2026-11-15T18:31:49.782419+00:00",
+              "stage": "S3",
+              "tier": "T2",
+              "policy_profile": "LAB_DEMO",
+              "label": "LAB_DEMO_NOT_ML"
+            },
+            {
+              "id": 36,
+              "time": "2026-11-15T18:31:49.788532+00:00",
+              "stage": "S4",
+              "tier": "T2",
+              "policy_profile": "LAB_DEMO",
+              "label": "LAB_DEMO_NOT_ML"
+            },
+            {
+              "id": 37,
+              "time": "2026-11-15T18:31:50.060953+00:00",
+              "stage": "S1",
+              "tier": "T2",
+              "policy_profile": "LAB_DEMO",
+              "label": "LAB_DEMO_NOT_ML"
+            },
+            {
+              "id": 38,
+              "time": "2026-11-15T18:31:50.068636+00:00",
+              "stage": "S2",
+              "tier": "T2",
+              "policy_profile": "LAB_DEMO",
+              "label": "LAB_DEMO_NOT_ML"
+            },
+            {
+              "id": 39,
+              "time": "2026-11-15T18:31:50.114628+00:00",
+              "stage": "S3",
+              "tier": "T2",
+              "policy_profile": "LAB_DEMO",
+              "label": "LAB_DEMO_NOT_ML"
+            },
+            {
+              "id": 40,
+              "time": "2026-11-15T18:31:50.120934+00:00",
+              "stage": "S4",
+              "tier": "T2",
+              "policy_profile": "LAB_DEMO",
+              "label": "LAB_DEMO_NOT_ML"
+            },
+            {
+              "id": 41,
+              "time": "2026-11-15T18:31:50.422419+00:00",
+              "stage": "S1",
+              "tier": "T2",
+              "policy_profile": "LAB_DEMO",
+              "label": "LAB_DEMO_NOT_ML"
+            },
+            {
+              "id": 42,
+              "time": "2026-11-15T18:31:50.433306+00:00",
+              "stage": "S2",
+              "tier": "T2",
+              "policy_profile": "LAB_DEMO",
+              "label": "LAB_DEMO_NOT_ML"
+            },
+            {
+              "id": 43,
+              "time": "2026-11-15T18:31:50.478801+00:00",
+              "stage": "S3",
+              "tier": "T2",
+              "policy_profile": "LAB_DEMO",
+              "label": "LAB_DEMO_NOT_ML"
+            },
+            {
+              "id": 44,
+              "time": "2026-11-15T18:31:50.485850+00:00",
+              "stage": "S4",
+              "tier": "T2",
+              "policy_profile": "LAB_DEMO",
+              "label": "LAB_DEMO_NOT_ML"
+            }
+          ],
+          "prior_seen_sessions": 0
+        },
+        {
+          "scene": "switch",
+          "passed": true,
+          "decisions": [
+            {
+              "id": 45,
+              "time": "2026-11-15T18:31:50.950428+00:00",
+              "stage": "S1",
+              "tier": "T1",
+              "policy_profile": "LAB_DEMO",
+              "label": "LAB_DEMO_NOT_ML"
+            },
+            {
+              "id": 46,
+              "time": "2026-11-15T18:31:50.958150+00:00",
+              "stage": "S2",
+              "tier": "T1",
+              "policy_profile": "LAB_DEMO",
+              "label": "LAB_DEMO_NOT_ML"
+            },
+            {
+              "id": 47,
+              "time": "2026-11-15T18:31:51.002399+00:00",
+              "stage": "S3",
+              "tier": "T1",
+              "policy_profile": "LAB_DEMO",
+              "label": "LAB_DEMO_NOT_ML"
+            },
+            {
+              "id": 48,
+              "time": "2026-11-15T18:31:51.004480+00:00",
+              "stage": "S4",
+              "tier": "T1",
+              "policy_profile": "LAB_DEMO",
+              "label": "LAB_DEMO_NOT_ML"
+            },
+            {
+              "id": 49,
+              "time": "2026-11-15T18:31:51.102364+00:00",
+              "stage": "S5",
+              "tier": "T1",
+              "policy_profile": "LAB_DEMO",
+              "label": "LAB_DEMO_NOT_ML"
+            },
+            {
+              "id": 50,
+              "time": "2026-11-15T18:31:51.302712+00:00",
+              "stage": "S5",
+              "tier": "T2",
+              "policy_profile": "LAB_DEMO",
+              "label": "LAB_DEMO_NOT_ML"
+            },
+            {
+              "id": 51,
+              "time": "2026-11-15T18:31:51.503245+00:00",
+              "stage": "S5",
+              "tier": "T2",
+              "policy_profile": "LAB_DEMO",
+              "label": "LAB_DEMO_NOT_ML"
+            },
+            {
+              "id": 52,
+              "time": "2026-11-15T18:31:51.702977+00:00",
+              "stage": "S5",
+              "tier": "T2",
+              "policy_profile": "LAB_DEMO",
+              "label": "LAB_DEMO_NOT_ML"
+            }
+          ],
+          "prior_seen_sessions": 0
+        },
+        {
+          "scene": "returning",
+          "passed": true,
+          "decisions": [
+            {
+              "id": 53,
+              "time": "2026-11-15T18:31:52.249040+00:00",
+              "stage": "S1",
+              "tier": "T2",
+              "policy_profile": "LAB_DEMO",
+              "label": "LAB_DEMO_NOT_ML"
+            },
+            {
+              "id": 54,
+              "time": "2026-11-15T18:31:52.252094+00:00",
+              "stage": "S2",
+              "tier": "T2",
+              "policy_profile": "LAB_DEMO",
+              "label": "LAB_DEMO_NOT_ML"
+            },
+            {
+              "id": 55,
+              "time": "2026-11-15T18:31:52.299070+00:00",
+              "stage": "S3",
+              "tier": "T2",
+              "policy_profile": "LAB_DEMO",
+              "label": "LAB_DEMO_NOT_ML"
+            },
+            {
+              "id": 56,
+              "time": "2026-11-15T18:31:52.300443+00:00",
+              "stage": "S4",
+              "tier": "T2",
+              "policy_profile": "LAB_DEMO",
+              "label": "LAB_DEMO_NOT_ML"
+            },
+            {
+              "id": 57,
+              "time": "2026-11-15T18:31:53.546534+00:00",
+              "stage": "S1",
+              "tier": "T2",
+              "policy_profile": "LAB_DEMO",
+              "label": "LAB_DEMO_NOT_ML"
+            },
+            {
+              "id": 58,
+              "time": "2026-11-15T18:31:53.550507+00:00",
+              "stage": "S2",
+              "tier": "T2",
+              "policy_profile": "LAB_DEMO",
+              "label": "LAB_DEMO_NOT_ML"
+            },
+            {
+              "id": 59,
+              "time": "2026-11-15T18:31:53.676825+00:00",
+              "stage": "S3",
+              "tier": "T2",
+              "policy_profile": "LAB_DEMO",
+              "label": "LAB_DEMO_NOT_ML"
+            },
+            {
+              "id": 60,
+              "time": "2026-11-15T18:31:53.678333+00:00",
+              "stage": "S4",
+              "tier": "T2",
+              "policy_profile": "LAB_DEMO",
+              "label": "LAB_DEMO_NOT_ML"
+            },
+            {
+              "id": 61,
+              "time": "2026-11-15T18:31:54.004010+00:00",
+              "stage": "S1",
+              "tier": "T2",
+              "policy_profile": "LAB_DEMO",
+              "label": "LAB_DEMO_NOT_ML"
+            },
+            {
+              "id": 62,
+              "time": "2026-11-15T18:31:54.006910+00:00",
+              "stage": "S2",
+              "tier": "T2",
+              "policy_profile": "LAB_DEMO",
+              "label": "LAB_DEMO_NOT_ML"
+            },
+            {
+              "id": 63,
+              "time": "2026-11-15T18:31:54.049709+00:00",
+              "stage": "S3",
+              "tier": "T2",
+              "policy_profile": "LAB_DEMO",
+              "label": "LAB_DEMO_NOT_ML"
+            },
+            {
+              "id": 64,
+              "time": "2026-11-15T18:31:54.051114+00:00",
+              "stage": "S4",
+              "tier": "T2",
+              "policy_profile": "LAB_DEMO",
+              "label": "LAB_DEMO_NOT_ML"
+            },
+            {
+              "id": 65,
+              "time": "2026-11-15T18:31:54.304204+00:00",
+              "stage": "S1",
+              "tier": "T2",
+              "policy_profile": "LAB_DEMO",
+              "label": "LAB_DEMO_NOT_ML"
+            },
+            {
+              "id": 66,
+              "time": "2026-11-15T18:31:54.308796+00:00",
+              "stage": "S2",
+              "tier": "T2",
+              "policy_profile": "LAB_DEMO",
+              "label": "LAB_DEMO_NOT_ML"
+            },
+            {
+              "id": 67,
+              "time": "2026-11-15T18:31:54.351244+00:00",
+              "stage": "S3",
+              "tier": "T2",
+              "policy_profile": "LAB_DEMO",
+              "label": "LAB_DEMO_NOT_ML"
+            },
+            {
+              "id": 68,
+              "time": "2026-11-15T18:31:54.352673+00:00",
+              "stage": "S4",
+              "tier": "T2",
+              "policy_profile": "LAB_DEMO",
+              "label": "LAB_DEMO_NOT_ML"
+            },
+            {
+              "id": 69,
+              "time": "2026-11-15T18:31:54.571318+00:00",
+              "stage": "S1",
+              "tier": "T2",
+              "policy_profile": "LAB_DEMO",
+              "label": "LAB_DEMO_NOT_ML"
+            },
+            {
+              "id": 70,
+              "time": "2026-11-15T18:31:54.577640+00:00",
+              "stage": "S2",
+              "tier": "T2",
+              "policy_profile": "LAB_DEMO",
+              "label": "LAB_DEMO_NOT_ML"
+            },
+            {
+              "id": 71,
+              "time": "2026-11-15T18:31:54.622554+00:00",
+              "stage": "S3",
+              "tier": "T2",
+              "policy_profile": "LAB_DEMO",
+              "label": "LAB_DEMO_NOT_ML"
+            },
+            {
+              "id": 72,
+              "time": "2026-11-15T18:31:54.623834+00:00",
+              "stage": "S4",
+              "tier": "T2",
+              "policy_profile": "LAB_DEMO",
+              "label": "LAB_DEMO_NOT_ML"
+            },
+            {
+              "id": 73,
+              "time": "2026-11-15T18:31:54.894064+00:00",
+              "stage": "S1",
+              "tier": "T2",
+              "policy_profile": "LAB_DEMO",
+              "label": "LAB_DEMO_NOT_ML"
+            },
+            {
+              "id": 74,
+              "time": "2026-11-15T18:31:54.897102+00:00",
+              "stage": "S2",
+              "tier": "T2",
+              "policy_profile": "LAB_DEMO",
+              "label": "LAB_DEMO_NOT_ML"
+            },
+            {
+              "id": 75,
+              "time": "2026-11-15T18:31:55.004519+00:00",
+              "stage": "S3",
+              "tier": "T2",
+              "policy_profile": "LAB_DEMO",
+              "label": "LAB_DEMO_NOT_ML"
+            },
+            {
+              "id": 76,
+              "time": "2026-11-15T18:31:55.005924+00:00",
+              "stage": "S4",
+              "tier": "T2",
+              "policy_profile": "LAB_DEMO",
+              "label": "LAB_DEMO_NOT_ML"
+            }
+          ],
+          "prior_seen_sessions": 6
+        }
+      ]
+    }
+  }
+}

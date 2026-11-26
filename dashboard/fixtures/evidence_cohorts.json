@@ -1,0 +1,136 @@
+{
+  "generated_by": "dashboard.make_fixtures",
+  "generated_from_commit": "29934d69e88b75d5541ca13a576ebb7a8ba46da6",
+  "method": "GET",
+  "route": "/api/evidence/cohorts",
+  "http_status": 200,
+  "response": {
+    "scope": "UNKNOWN",
+    "status": "exploratory",
+    "source_file": "results/exp1/cohorts.json",
+    "policy_profile": "UNKNOWN",
+    "demo_label": null,
+    "id": "cohorts",
+    "title": "cohorts",
+    "kind": "json",
+    "data": {
+      "2025-07-07": {
+        "S2": {
+          "reached": 529793,
+          "counts": {
+            "eligible": 524569,
+            "incomplete": 5224,
+            "missing": 54526
+          },
+          "positives": 18670,
+          "sources": 6551,
+          "prevalence": 0.03559112337938384
+        },
+        "S4": {
+          "reached": 48648,
+          "counts": {
+            "resolved": 102,
+            "missing": 535671,
+            "eligible": 48543,
+            "incomplete": 3
+          },
+          "positives": 15909,
+          "sources": 1621,
+          "prevalence": 0.3277300537667635
+        },
+        "S5": {
+          "reached": 6215,
+          "counts": {
+            "resolved": 834,
+            "missing": 578104,
+            "eligible": 5380,
+            "incomplete": 1
+          },
+          "positives": 5358,
+          "sources": 109,
+          "prevalence": 0.995910780669145
+        }
+      },
+      "2025-08-03": {
+        "S2": {
+          "reached": 761381,
+          "counts": {
+            "overlap": 207910,
+            "eligible": 543471,
+            "missing": 80571,
+            "incomplete": 10000
+          },
+          "positives": 14939,
+          "sources": 3493,
+          "prevalence": 0.027488127241379945
+        },
+        "S4": {
+          "reached": 50649,
+          "counts": {
+            "overlap": 14192,
+            "resolved": 97,
+            "eligible": 36319,
+            "missing": 791303,
+            "incomplete": 41
+          },
+          "positives": 11679,
+          "sources": 2385,
+          "prevalence": 0.3215672237671742
+        },
+        "S5": {
+          "reached": 6118,
+          "counts": {
+            "resolved": 4340,
+            "overlap": 559,
+            "missing": 835834,
+            "eligible": 1213,
+            "incomplete": 6
+          },
+          "positives": 955,
+          "sources": 102,
+          "prevalence": 0.7873042044517725
+        }
+      },
+      "2025-08-09": {
+        "S2": {
+          "reached": 751059,
+          "counts": {
+            "overlap": 417276,
+            "eligible": 325456,
+            "missing": 74058,
+            "incomplete": 8327
+          },
+          "positives": 1977,
+          "sources": 1219,
+          "prevalence": 0.00607455385674254
+        },
+        "S4": {
+          "reached": 85277,
+          "counts": {
+            "overlap": 22259,
+            "resolved": 93,
+            "missing": 739840,
+            "eligible": 62778,
+            "incomplete": 147
+          },
+          "positives": 1686,
+          "sources": 634,
+          "prevalence": 0.026856542100735927
+        },
+        "S5": {
+          "reached": 4836,
+          "counts": {
+            "resolved": 3390,
+            "overlap": 1329,
+            "missing": 820281,
+            "eligible": 115,
+            "incomplete": 2
+          },
+          "positives": 85,
+          "sources": 60,
+          "prevalence": 0.7391304347826086
+        }
+      }
+    }
+  }
+}

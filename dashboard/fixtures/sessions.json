@@ -1,0 +1,70 @@
+{
+  "generated_by": "dashboard.make_fixtures",
+  "generated_from_commit": "29934d69e88b75d5541ca13a576ebb7a8ba46da6",
+  "method": "GET",
+  "route": "/api/sessions",
+  "http_status": 200,
+  "response": {
+    "status": "ok",
+    "source": "LAB",
+    "has_lab_demo": true,
+    "sessions": [
+      {
+        "session_id": "ses_f16d05ec6b29248d2c61adb1",
+        "visitor_id": "vis_6a0e836c3e3db18a8487a9d4",
+        "returning_visitor": false,
+        "stages": {
+          "S1": "T1",
+          "S3": "T2"
+        },
+        "transitions": [
+          {
+            "stage": "S3",
+            "from": "T1",
+            "to": "T2"
+          }
+        ],
+        "decisions": [
+          {
+            "session_id": "ses_f16d05ec6b29248d2c61adb1",
+            "visitor_id": "vis_6a0e836c3e3db18a8487a9d4",
+            "stage": "S1",
+            "score": 0.0,
+            "tier": "T1",
+            "latency_ms": 2.6044000405818224,
+            "timestamp": "2026-11-26T12:59:06.347950+00:00",
+            "provenance": "LAB",
+            "policy_profile": "LAB_DEMO",
+            "score_source": "lab_pty_mechanism"
+          },
+          {
+            "session_id": "ses_f16d05ec6b29248d2c61adb1",
+            "visitor_id": "vis_6a0e836c3e3db18a8487a9d4",
+            "stage": "S3",
+            "score": 1.0,
+            "tier": "T2",
+            "latency_ms": 2.557000028900802,
+            "timestamp": "2026-11-26T12:59:06.352960+00:00",
+            "provenance": "LAB",
+            "policy_profile": "LAB_DEMO",
+            "score_source": "lab_pty_mechanism"
+          }
+        ],
+        "reached_t2": true
+      }
+    ],
+    "kpis": {
+      "sessions": 1,
+      "reached_t2": 1,
+      "escalation_fraction": 1.0,
+      "median_compute_ms": 2.58
+    },
+    "metadata": {
+      "scope": "LAB",
+      "status": "done",
+      "source_file": "decision_log",
+      "policy_profile": "LAB_DEMO",
+      "demo_label": "LAB_DEMO_NOT_ML"
+    }
+  }
+}

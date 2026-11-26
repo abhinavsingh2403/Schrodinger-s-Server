@@ -1,0 +1,20 @@
+{
+  "generated_by": "dashboard.make_fixtures",
+  "generated_from_commit": "29934d69e88b75d5541ca13a576ebb7a8ba46da6",
+  "method": "GET",
+  "route": "/api/evidence/PRECOMMAND_NOT_VERIFIABLE",
+  "http_status": 200,
+  "response": {
+    "scope": "UNKNOWN",
+    "status": "INCONCLUSIVE",
+    "source_file": "results/exp0/PRECOMMAND_NOT_VERIFIABLE.md",
+    "policy_profile": "UNKNOWN",
+    "demo_label": null,
+    "id": "PRECOMMAND_NOT_VERIFIABLE",
+    "title": "PRECOMMAND NOT VERIFIABLE",
+    "kind": "markdown",
+    "data": {
+      "text": "# S3 pre-command certification\r\nPost-hoc exploratory. Verdict: NO for the audited archive.\r\n| Audit count | Count |\r\n|---|---:|\r\n| Sampled days | 3 |\r\n| Events with usable sensor, session and timestamp | 12380945 |\r\n| Complete sessions with an identifiable first command | 184383 |\r\n| session.params events tied with first command | 0 |\r\n| Verified historical S3 decision boundaries | 0 |\r\n\r\nThe schema includes ts. The loader retains neither a verified per-session sequence nor a decision marker. File order and ts_indexed cannot establish callback order for tied timestamps.\r\nThe launcher requests S3 after ingesting session.params; the adapter also has a PTY hook. First command identifies a later cutoff. Neither proxy identifies the archive's actual S3 feature snapshot.\r\nFor future captures, record a masked session key, event type, event timestamp and monotonic session sequence on every event. At S3 feature capture record the same key, decision timestamp and last included sequence atomically with the feature snapshot.\r\nEvidence: results/s3_event_schema.json and results/exp0/event_prefix_study.json. Model controls NOT RUN. Future evaluation requires a verified prefix ladder row and matching splits, then run `python -m analysis.posthoc_ml_eval --splits results/exp0`.\r\n"
+    }
+  }
+}

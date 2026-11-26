@@ -1,0 +1,32 @@
+{
+  "generated_by": "dashboard.make_fixtures",
+  "generated_from_commit": "29934d69e88b75d5541ca13a576ebb7a8ba46da6",
+  "method": "GET",
+  "route": "/api/evidence/s1_multi_visitor_proof",
+  "http_status": 200,
+  "response": {
+    "scope": "LAB",
+    "status": "done",
+    "source_file": "results/demo/s1_multi_visitor_proof.json",
+    "policy_profile": "LAB_DEMO",
+    "demo_label": "LAB_DEMO_NOT_ML",
+    "id": "s1_multi_visitor_proof",
+    "title": "s1 multi visitor proof",
+    "kind": "json",
+    "data": {
+      "label": "LAB_DEMO_NOT_ML",
+      "commit": "6fb0cd62c8aa7b9cc6ebbf014e93fbec74817497",
+      "date": "2026-11-15T18:26:49.803448+00:00",
+      "attacker_returncodes": [
+        0,
+        0
+      ],
+      "masked_visitor_ids": [
+        "vis_71682d8b",
+        "vis_0bcb6600"
+      ],
+      "visitor_id_count": 2,
+      "passed": true
+    }
+  }
+}

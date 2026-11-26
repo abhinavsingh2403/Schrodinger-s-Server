@@ -1,0 +1,20 @@
+{
+  "generated_by": "dashboard.make_fixtures",
+  "generated_from_commit": "29934d69e88b75d5541ca13a576ebb7a8ba46da6",
+  "method": "GET",
+  "route": "/api/evidence/REPLAY_RESULT",
+  "http_status": 200,
+  "response": {
+    "scope": "LAB",
+    "status": "exploratory",
+    "source_file": "results/replay/REPLAY_RESULT.md",
+    "policy_profile": "UNKNOWN",
+    "demo_label": null,
+    "id": "REPLAY_RESULT",
+    "title": "REPLAY RESULT",
+    "kind": "markdown",
+    "data": {
+      "text": "# Docker replay result\nProposed receipt metric, pending human review. Counts cover the selected test day.\n{'outside_exact_allowlist': 79049, 'length_cap': 4834, 'incomplete': 147, 'eligible': 1247}\n\n| Arm | Repeat | Attempts | Correct final tier | Complete on correct tier |\n|---|---:|---:|---:|---:|\n| T1 | 1 | 5 | 5 | 5 |\n| T1 | 2 | 5 | 5 | 5 |\n| T1 | 3 | 5 | 5 | 5 |\n| T2 | 1 | 5 | 5 | 5 |\n| T2 | 2 | 5 | 5 | 5 |\n| T2 | 3 | 5 | 5 | 5 |\n\nOne archive, exact read-only allowlist, recorded inputs. Receipt alone cannot establish response fidelity or adaptive behavior.\n"
+    }
+  }
+}

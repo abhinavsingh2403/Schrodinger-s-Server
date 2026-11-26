@@ -1,0 +1,69 @@
+{
+  "generated_by": "dashboard.make_fixtures",
+  "generated_from_commit": "29934d69e88b75d5541ca13a576ebb7a8ba46da6",
+  "method": "GET",
+  "route": "/api/evidence/s2_mid_session_switch_proof",
+  "http_status": 200,
+  "response": {
+    "scope": "LAB",
+    "status": "done",
+    "source_file": "results/demo/s2_mid_session_switch_proof.json",
+    "policy_profile": "LAB_DEMO",
+    "demo_label": "LAB_DEMO_NOT_ML",
+    "id": "s2_mid_session_switch_proof",
+    "title": "s2 mid session switch proof",
+    "kind": "json",
+    "data": {
+      "label": "LAB_DEMO_NOT_ML",
+      "commit": "6fb0cd62c8aa7b9cc6ebbf014e93fbec74817497",
+      "date": "2026-11-15T18:29:42.350795+00:00",
+      "observation": {
+        "label": "LAB_DEMO_NOT_ML",
+        "returncode": 0
+      },
+      "decisions": [
+        {
+          "stage": "S1",
+          "tier": "T1",
+          "score_source": "lab_pty_mechanism"
+        },
+        {
+          "stage": "S2",
+          "tier": "T1",
+          "score_source": "lab_pty_mechanism"
+        },
+        {
+          "stage": "S3",
+          "tier": "T1",
+          "score_source": "lab_pty_mechanism"
+        },
+        {
+          "stage": "S4",
+          "tier": "T1",
+          "score_source": "lab_pty_mechanism"
+        },
+        {
+          "stage": "S5",
+          "tier": "T1",
+          "score_source": "lab_pty_mechanism"
+        },
+        {
+          "stage": "S5",
+          "tier": "T2",
+          "score_source": "LAB_DEMO_NOT_ML_s5_command_count"
+        },
+        {
+          "stage": "S5",
+          "tier": "T2",
+          "score_source": "LAB_DEMO_NOT_ML_s5_command_count"
+        },
+        {
+          "stage": "S5",
+          "tier": "T2",
+          "score_source": "LAB_DEMO_NOT_ML_s5_command_count"
+        }
+      ],
+      "passed": true
+    }
+  }
+}

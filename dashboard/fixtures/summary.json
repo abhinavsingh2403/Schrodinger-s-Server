@@ -1,0 +1,43 @@
+{
+  "generated_by": "dashboard.make_fixtures",
+  "generated_from_commit": "29934d69e88b75d5541ca13a576ebb7a8ba46da6",
+  "method": "GET",
+  "route": "/api/decisions/summary",
+  "http_status": 200,
+  "response": {
+    "scope": "LAB",
+    "status": "done",
+    "source_file": "decision_log",
+    "policy_profile": "LAB_DEMO",
+    "demo_label": "LAB_DEMO_NOT_ML",
+    "data": {
+      "counts": {
+        "tier": {
+          "T1": 1,
+          "T2": 1
+        },
+        "stage": {
+          "S1": 1,
+          "S3": 1
+        },
+        "provenance": {
+          "LAB": 2
+        },
+        "policy_profile": {
+          "LAB_DEMO": 2
+        },
+        "score_source": {
+          "lab_pty_mechanism": 2
+        }
+      },
+      "total_sessions": 1,
+      "latency_ms": {
+        "min": 2.557000028900802,
+        "median": 2.5807000347413123,
+        "p95": 2.6044000405818224,
+        "max": 2.6044000405818224
+      },
+      "latency_label": "engine compute time, not end-to-end"
+    }
+  }
+}

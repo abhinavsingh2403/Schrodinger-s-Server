@@ -1,0 +1,83 @@
+{
+  "generated_by": "dashboard.make_fixtures",
+  "generated_from_commit": "29934d69e88b75d5541ca13a576ebb7a8ba46da6",
+  "method": "GET",
+  "route": "/api/evidence/safety_check",
+  "http_status": 200,
+  "response": {
+    "scope": "UNKNOWN",
+    "status": "done",
+    "source_file": "results/safety_check.json",
+    "policy_profile": "UNKNOWN",
+    "demo_label": null,
+    "id": "safety_check",
+    "title": "safety check",
+    "kind": "json",
+    "data": {
+      "ports": {
+        "status": "PASS",
+        "findings": []
+      },
+      "ipv4": {
+        "status": "FAIL",
+        "findings": [
+          "DECISIONS.md:198:63",
+          "DECISIONS.md:201:237",
+          "DECISIONS.md:203:64",
+          "GEMINI_TASKS.md:82:226",
+          "docs/VIVA_QA.md:96:165",
+          "gatekeeper/decision_api.py:519:18",
+          "gatekeeper/decision_api.py:554:44",
+          "gatekeeper/decision_api.py:554:88",
+          "infra/cowrie.cfg:32:11",
+          "infra/sensor_entrypoint.py:20:58",
+          "infra/smoke_test.ps1:7:40",
+          "infra/smoke_test.ps1:18:17",
+          "infra/smoke_test.ps1:68:29",
+          "infra/smoke_test.ps1:69:51",
+          "infra/smoke_test.ps1:72:27",
+          "infra/smoke_test.ps1:74:66",
+          "infra/smoke_test.ps1:80:56",
+          "infra/smoke_test.ps1:86:42",
+          "infra/smoke_test.sh:7:38",
+          "infra/smoke_test.sh:14:17",
+          "infra/smoke_test.sh:58:17",
+          "infra/smoke_test.sh:68:85",
+          "infra/smoke_test.sh:78:43",
+          "infra/smoke_test.sh:79:32",
+          "results/exp0/q1_initial_tests.json:10:2052",
+          "results/exp0/q1_tests.json:10:2052",
+          "router/sticky_router.py:41:29",
+          "sensor/run_sensor.py:92:70",
+          "sensor/spike_s1_poc.py:57:34",
+          "sensor/spike_s1_poc.py:60:93"
+        ]
+      },
+      "secret_candidate": {
+        "status": "PASS",
+        "findings": []
+      },
+      "archives": {
+        "status": "PASS",
+        "findings": []
+      },
+      "ignore": {
+        "status": "PASS",
+        "findings": []
+      },
+      "bind_warning": {
+        "status": "NOT_APPLICABLE",
+        "findings": [
+          "infra/Dockerfile.dashboard:8:53",
+          "infra/cowrie.cfg:34:39",
+          "infra/edge_forward.py:30:103",
+          "infra/gatekeeper_entrypoint.py:7:69"
+        ]
+      },
+      "hash_like_info": {
+        "status": "INFO",
+        "count": 1336
+      }
+    }
+  }
+}

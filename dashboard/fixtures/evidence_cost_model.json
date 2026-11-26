@@ -1,0 +1,35 @@
+{
+  "generated_by": "dashboard.make_fixtures",
+  "generated_from_commit": "29934d69e88b75d5541ca13a576ebb7a8ba46da6",
+  "method": "GET",
+  "route": "/api/evidence/cost_model",
+  "http_status": 200,
+  "response": {
+    "scope": "LAB",
+    "status": "exploratory",
+    "source_file": "results/cost_model.json",
+    "policy_profile": "DEFAULT",
+    "demo_label": null,
+    "id": "cost_model",
+    "title": "cost model",
+    "kind": "json",
+    "data": {
+      "tier": "T1",
+      "sampling": "during_run",
+      "N": 20,
+      "wall_time": 157.6092,
+      "mean_cpu_pct": 3.64,
+      "max_cpu_pct": 28.02,
+      "mean_memory_mb": 108.63,
+      "max_memory_mb": 117.8,
+      "git_commit": "UNKNOWN",
+      "timestamp": "2026-11-23T21:49:06.245131+00:00",
+      "policy_profile": "DEFAULT",
+      "logged_decisions": {
+        "T1": 37,
+        "T2": 363
+      },
+      "interpretation": "Mixed tiers in one sensor container. No clean single-tier measurement."
+    }
+  }
+}

@@ -1,0 +1,69 @@
+{
+  "generated_by": "dashboard.make_fixtures",
+  "generated_from_commit": "29934d69e88b75d5541ca13a576ebb7a8ba46da6",
+  "method": "GET",
+  "route": "/api/evidence/t1_trace",
+  "http_status": 200,
+  "response": {
+    "scope": "LAB",
+    "status": "exploratory",
+    "source_file": "results/cost/t1_trace.json",
+    "policy_profile": "UNKNOWN",
+    "demo_label": null,
+    "id": "t1_trace",
+    "title": "t1 trace",
+    "kind": "json",
+    "data": [
+      {
+        "invocation": 1,
+        "pty": false,
+        "distinct_visitors": 1
+      },
+      {
+        "invocation": 2,
+        "pty": false,
+        "distinct_visitors": 1
+      },
+      {
+        "invocation": 3,
+        "pty": false,
+        "distinct_visitors": 1
+      },
+      {
+        "invocation": 4,
+        "pty": false,
+        "distinct_visitors": 1
+      },
+      {
+        "invocation": 5,
+        "pty": false,
+        "distinct_visitors": 1
+      },
+      {
+        "invocation": 6,
+        "pty": false,
+        "distinct_visitors": 1
+      },
+      {
+        "invocation": 7,
+        "pty": false,
+        "distinct_visitors": 1
+      },
+      {
+        "invocation": 8,
+        "pty": false,
+        "distinct_visitors": 1
+      },
+      {
+        "invocation": 9,
+        "pty": false,
+        "distinct_visitors": 1
+      },
+      {
+        "invocation": 10,
+        "pty": false,
+        "distinct_visitors": 1
+      }
+    ]
+  }
+}

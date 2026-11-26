@@ -1,0 +1,440 @@
+{
+  "generated_by": "dashboard.make_fixtures",
+  "generated_from_commit": "29934d69e88b75d5541ca13a576ebb7a8ba46da6",
+  "method": "GET",
+  "route": "/api/evidence/index",
+  "http_status": 200,
+  "response": {
+    "scope": "UNKNOWN",
+    "status": "done",
+    "source_file": "dashboard/evidence.py",
+    "policy_profile": "UNKNOWN",
+    "demo_label": null,
+    "items": [
+      {
+        "scope": "UNKNOWN",
+        "status": "done",
+        "source_file": "results/progress.json",
+        "policy_profile": "UNKNOWN",
+        "demo_label": null,
+        "id": "progress",
+        "title": "progress",
+        "kind": "json",
+        "summary_fields": [
+          "items",
+          "earned",
+          "total",
+          "percentage"
+        ]
+      },
+      {
+        "scope": "UNKNOWN",
+        "status": "done",
+        "source_file": "results/safety_check.json",
+        "policy_profile": "UNKNOWN",
+        "demo_label": null,
+        "id": "safety_check",
+        "title": "safety check",
+        "kind": "json",
+        "summary_fields": [
+          "ports",
+          "ipv4",
+          "secret_candidate",
+          "archives",
+          "ignore",
+          "bind_warning",
+          "hash_like_info"
+        ]
+      },
+      {
+        "scope": "LAB",
+        "status": "exploratory",
+        "source_file": "results/cost_model.json",
+        "policy_profile": "DEFAULT",
+        "demo_label": null,
+        "id": "cost_model",
+        "title": "cost model",
+        "kind": "json",
+        "summary_fields": [
+          "tier",
+          "sampling",
+          "N",
+          "wall_time",
+          "mean_cpu_pct",
+          "max_cpu_pct",
+          "mean_memory_mb",
+          "max_memory_mb",
+          "git_commit",
+          "timestamp",
+          "policy_profile",
+          "logged_decisions",
+          "interpretation"
+        ]
+      },
+      {
+        "scope": "LAB",
+        "status": "exploratory",
+        "source_file": "results/cost/concurrency_probe.json",
+        "policy_profile": "UNKNOWN",
+        "demo_label": null,
+        "id": "concurrency_probe",
+        "title": "concurrency probe",
+        "kind": "json",
+        "summary_fields": [
+          "label",
+          "commit",
+          "date",
+          "note",
+          "production_after"
+        ]
+      },
+      {
+        "scope": "LAB",
+        "status": "exploratory",
+        "source_file": "results/cost/concurrency_probe_before.json",
+        "policy_profile": "UNKNOWN",
+        "demo_label": null,
+        "id": "concurrency_probe_before",
+        "title": "concurrency probe before",
+        "kind": "json",
+        "summary_fields": [
+          "label",
+          "commit",
+          "date",
+          "note",
+          "serial",
+          "threaded_experiment"
+        ]
+      },
+      {
+        "scope": "LAB",
+        "status": "exploratory",
+        "source_file": "results/cost/cost_T1_only.json",
+        "policy_profile": "UNKNOWN",
+        "demo_label": null,
+        "id": "cost_T1_only",
+        "title": "cost T1 only",
+        "kind": "json",
+        "summary_fields": [
+          "target",
+          "pure",
+          "runs"
+        ]
+      },
+      {
+        "scope": "LAB",
+        "status": "exploratory",
+        "source_file": "results/cost/cost_T2_only.json",
+        "policy_profile": "UNKNOWN",
+        "demo_label": null,
+        "id": "cost_T2_only",
+        "title": "cost T2 only",
+        "kind": "json",
+        "summary_fields": [
+          "target",
+          "pure",
+          "runs"
+        ]
+      },
+      {
+        "scope": "LAB",
+        "status": "exploratory",
+        "source_file": "results/cost/COST_PER_TIER.md",
+        "policy_profile": "UNKNOWN",
+        "demo_label": null,
+        "id": "COST_PER_TIER",
+        "title": "COST PER TIER",
+        "kind": "markdown",
+        "summary_fields": [
+          "text"
+        ]
+      },
+      {
+        "scope": "LAB",
+        "status": "exploratory",
+        "source_file": "results/cost/t1_trace.json",
+        "policy_profile": "UNKNOWN",
+        "demo_label": null,
+        "id": "t1_trace",
+        "title": "t1 trace",
+        "kind": "json",
+        "summary_fields": []
+      },
+      {
+        "scope": "LAB",
+        "status": "INVALID",
+        "source_file": "results/cost/cost_model_confounded_T2.json",
+        "policy_profile": "UNKNOWN",
+        "demo_label": null,
+        "id": "cost_model_confounded_T2",
+        "title": "cost model confounded T2",
+        "kind": "json",
+        "summary_fields": [
+          "tier",
+          "N",
+          "wall_time",
+          "mean_cpu_pct",
+          "max_cpu_pct",
+          "mean_memory_mb",
+          "max_memory_mb",
+          "git_commit",
+          "timestamp",
+          "tier_field_meaning"
+        ]
+      },
+      {
+        "scope": "LAB",
+        "status": "done",
+        "source_file": "results/study/marker_consistency.json",
+        "policy_profile": "UNKNOWN",
+        "demo_label": null,
+        "id": "marker_consistency",
+        "title": "marker consistency",
+        "kind": "json",
+        "summary_fields": [
+          "scope",
+          "passed",
+          "scenarios"
+        ]
+      },
+      {
+        "scope": "UNKNOWN",
+        "status": "exploratory",
+        "source_file": "results/exp1/metrics.json",
+        "policy_profile": "UNKNOWN",
+        "demo_label": null,
+        "id": "metrics",
+        "title": "metrics",
+        "kind": "json",
+        "summary_fields": [
+          "S2",
+          "S4",
+          "S5"
+        ]
+      },
+      {
+        "scope": "UNKNOWN",
+        "status": "exploratory",
+        "source_file": "results/exp1/cohorts.json",
+        "policy_profile": "UNKNOWN",
+        "demo_label": null,
+        "id": "cohorts",
+        "title": "cohorts",
+        "kind": "json",
+        "summary_fields": [
+          "2025-07-07",
+          "2025-08-03",
+          "2025-08-09"
+        ]
+      },
+      {
+        "scope": "UNKNOWN",
+        "status": "exploratory",
+        "source_file": "results/exp1/ROOT_CAUSE.md",
+        "policy_profile": "UNKNOWN",
+        "demo_label": null,
+        "id": "ROOT_CAUSE",
+        "title": "ROOT CAUSE",
+        "kind": "markdown",
+        "summary_fields": [
+          "text"
+        ]
+      },
+      {
+        "scope": "UNKNOWN",
+        "status": "INCONCLUSIVE",
+        "source_file": "results/exp1/EXPERIMENT1_RESULT.md",
+        "policy_profile": "UNKNOWN",
+        "demo_label": null,
+        "id": "EXPERIMENT1_RESULT",
+        "title": "EXPERIMENT1 RESULT",
+        "kind": "markdown",
+        "summary_fields": [
+          "text"
+        ]
+      },
+      {
+        "scope": "UNKNOWN",
+        "status": "exploratory",
+        "source_file": "results/exp0/NULL_ROOT_CAUSE.md",
+        "policy_profile": "UNKNOWN",
+        "demo_label": null,
+        "id": "NULL_ROOT_CAUSE",
+        "title": "NULL ROOT CAUSE",
+        "kind": "markdown",
+        "summary_fields": [
+          "text"
+        ]
+      },
+      {
+        "scope": "UNKNOWN",
+        "status": "exploratory",
+        "source_file": "results/exp0/NULL_DIAGNOSIS.md",
+        "policy_profile": "UNKNOWN",
+        "demo_label": null,
+        "id": "NULL_DIAGNOSIS",
+        "title": "NULL DIAGNOSIS",
+        "kind": "markdown",
+        "summary_fields": [
+          "text"
+        ]
+      },
+      {
+        "scope": "UNKNOWN",
+        "status": "exploratory",
+        "source_file": "results/exp0/POSTHOC_ML_EVAL.md",
+        "policy_profile": "UNKNOWN",
+        "demo_label": null,
+        "id": "POSTHOC_ML_EVAL",
+        "title": "POSTHOC ML EVAL",
+        "kind": "markdown",
+        "summary_fields": [
+          "text"
+        ]
+      },
+      {
+        "scope": "UNKNOWN",
+        "status": "exploratory",
+        "source_file": "results/exp0/EXPERIMENT1_FEASIBILITY.md",
+        "policy_profile": "UNKNOWN",
+        "demo_label": null,
+        "id": "EXPERIMENT1_FEASIBILITY",
+        "title": "EXPERIMENT1 FEASIBILITY",
+        "kind": "markdown",
+        "summary_fields": [
+          "text"
+        ]
+      },
+      {
+        "scope": "UNKNOWN",
+        "status": "INCONCLUSIVE",
+        "source_file": "results/exp0/PRECOMMAND_NOT_VERIFIABLE.md",
+        "policy_profile": "UNKNOWN",
+        "demo_label": null,
+        "id": "PRECOMMAND_NOT_VERIFIABLE",
+        "title": "PRECOMMAND NOT VERIFIABLE",
+        "kind": "markdown",
+        "summary_fields": [
+          "text"
+        ]
+      },
+      {
+        "scope": "LAB",
+        "status": "exploratory",
+        "source_file": "results/replay/selection.json",
+        "policy_profile": "UNKNOWN",
+        "demo_label": null,
+        "id": "selection",
+        "title": "selection",
+        "kind": "json",
+        "summary_fields": [
+          "day",
+          "counts",
+          "traces"
+        ]
+      },
+      {
+        "scope": "LAB",
+        "status": "exploratory",
+        "source_file": "results/replay/observations.json",
+        "policy_profile": "UNKNOWN",
+        "demo_label": null,
+        "id": "observations",
+        "title": "observations",
+        "kind": "json",
+        "summary_fields": []
+      },
+      {
+        "scope": "LAB",
+        "status": "exploratory",
+        "source_file": "results/replay/REPLAY_RESULT.md",
+        "policy_profile": "UNKNOWN",
+        "demo_label": null,
+        "id": "REPLAY_RESULT",
+        "title": "REPLAY RESULT",
+        "kind": "markdown",
+        "summary_fields": [
+          "text"
+        ]
+      },
+      {
+        "scope": "LAB",
+        "status": "INCONCLUSIVE",
+        "source_file": "results/detector/DETECTOR_RESULT.md",
+        "policy_profile": "UNKNOWN",
+        "demo_label": null,
+        "id": "DETECTOR_RESULT",
+        "title": "DETECTOR RESULT",
+        "kind": "markdown",
+        "summary_fields": [
+          "text"
+        ]
+      },
+      {
+        "scope": "LAB",
+        "status": "done",
+        "source_file": "results/demo/s1_multi_visitor_proof.json",
+        "policy_profile": "LAB_DEMO",
+        "demo_label": "LAB_DEMO_NOT_ML",
+        "id": "s1_multi_visitor_proof",
+        "title": "s1 multi visitor proof",
+        "kind": "json",
+        "summary_fields": [
+          "label",
+          "commit",
+          "date",
+          "attacker_returncodes",
+          "masked_visitor_ids",
+          "visitor_id_count",
+          "passed"
+        ]
+      },
+      {
+        "scope": "LAB",
+        "status": "done",
+        "source_file": "results/demo/s2_mid_session_switch_proof.json",
+        "policy_profile": "LAB_DEMO",
+        "demo_label": "LAB_DEMO_NOT_ML",
+        "id": "s2_mid_session_switch_proof",
+        "title": "s2 mid session switch proof",
+        "kind": "json",
+        "summary_fields": [
+          "label",
+          "commit",
+          "date",
+          "observation",
+          "decisions",
+          "passed"
+        ]
+      },
+      {
+        "scope": "LAB",
+        "status": "done",
+        "source_file": "results/demo/s3_showcase.json",
+        "policy_profile": "LAB_DEMO",
+        "demo_label": "LAB_DEMO_NOT_ML",
+        "id": "s3_showcase",
+        "title": "s3 showcase",
+        "kind": "json",
+        "summary_fields": [
+          "label",
+          "scenes"
+        ]
+      },
+      {
+        "scope": "UNKNOWN",
+        "status": "done",
+        "source_file": "docs/STATUS.md",
+        "policy_profile": "UNKNOWN",
+        "demo_label": null,
+        "id": "STATUS",
+        "title": "STATUS",
+        "kind": "markdown",
+        "summary_fields": [
+          "text"
+        ]
+      }
+    ],
+    "empty": null
+  }
+}

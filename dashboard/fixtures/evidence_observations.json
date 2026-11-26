@@ -1,0 +1,259 @@
+{
+  "generated_by": "dashboard.make_fixtures",
+  "generated_from_commit": "29934d69e88b75d5541ca13a576ebb7a8ba46da6",
+  "method": "GET",
+  "route": "/api/evidence/observations",
+  "http_status": 200,
+  "response": {
+    "scope": "LAB",
+    "status": "exploratory",
+    "source_file": "results/replay/observations.json",
+    "policy_profile": "UNKNOWN",
+    "demo_label": null,
+    "id": "observations",
+    "title": "observations",
+    "kind": "json",
+    "data": [
+      {
+        "arm": "T1",
+        "repeat": 1,
+        "trace": "009af43fb12883fffc24129356bd09a1f2abd795f19be0d712d95702c2836e04",
+        "final": "T1",
+        "complete": true,
+        "ssh_exit": 0
+      },
+      {
+        "arm": "T1",
+        "repeat": 1,
+        "trace": "0183f1dd93d4acfa423655b27fd2f150296e7d4f7fa91d8eeea75c206ed0a58b",
+        "final": "T1",
+        "complete": true,
+        "ssh_exit": 0
+      },
+      {
+        "arm": "T1",
+        "repeat": 1,
+        "trace": "01c4d5a01989adfafbd5e8eef036b7e10675b9fe39089a8779e11350b5b8f8a0",
+        "final": "T1",
+        "complete": true,
+        "ssh_exit": 0
+      },
+      {
+        "arm": "T1",
+        "repeat": 1,
+        "trace": "01c979894d1f1ac1e8589eae687a0bae8b964a4b52f04154707687dfec36b37f",
+        "final": "T1",
+        "complete": true,
+        "ssh_exit": 0
+      },
+      {
+        "arm": "T1",
+        "repeat": 1,
+        "trace": "033849de4b10d54609d829617f583de814852b67c62b485ad5c681d9da6a314d",
+        "final": "T1",
+        "complete": true,
+        "ssh_exit": 0
+      },
+      {
+        "arm": "T1",
+        "repeat": 2,
+        "trace": "009af43fb12883fffc24129356bd09a1f2abd795f19be0d712d95702c2836e04",
+        "final": "T1",
+        "complete": true,
+        "ssh_exit": 0
+      },
+      {
+        "arm": "T1",
+        "repeat": 2,
+        "trace": "0183f1dd93d4acfa423655b27fd2f150296e7d4f7fa91d8eeea75c206ed0a58b",
+        "final": "T1",
+        "complete": true,
+        "ssh_exit": 0
+      },
+      {
+        "arm": "T1",
+        "repeat": 2,
+        "trace": "01c4d5a01989adfafbd5e8eef036b7e10675b9fe39089a8779e11350b5b8f8a0",
+        "final": "T1",
+        "complete": true,
+        "ssh_exit": 0
+      },
+      {
+        "arm": "T1",
+        "repeat": 2,
+        "trace": "01c979894d1f1ac1e8589eae687a0bae8b964a4b52f04154707687dfec36b37f",
+        "final": "T1",
+        "complete": true,
+        "ssh_exit": 0
+      },
+      {
+        "arm": "T1",
+        "repeat": 2,
+        "trace": "033849de4b10d54609d829617f583de814852b67c62b485ad5c681d9da6a314d",
+        "final": "T1",
+        "complete": true,
+        "ssh_exit": 0
+      },
+      {
+        "arm": "T1",
+        "repeat": 3,
+        "trace": "009af43fb12883fffc24129356bd09a1f2abd795f19be0d712d95702c2836e04",
+        "final": "T1",
+        "complete": true,
+        "ssh_exit": 0
+      },
+      {
+        "arm": "T1",
+        "repeat": 3,
+        "trace": "0183f1dd93d4acfa423655b27fd2f150296e7d4f7fa91d8eeea75c206ed0a58b",
+        "final": "T1",
+        "complete": true,
+        "ssh_exit": 0
+      },
+      {
+        "arm": "T1",
+        "repeat": 3,
+        "trace": "01c4d5a01989adfafbd5e8eef036b7e10675b9fe39089a8779e11350b5b8f8a0",
+        "final": "T1",
+        "complete": true,
+        "ssh_exit": 0
+      },
+      {
+        "arm": "T1",
+        "repeat": 3,
+        "trace": "01c979894d1f1ac1e8589eae687a0bae8b964a4b52f04154707687dfec36b37f",
+        "final": "T1",
+        "complete": true,
+        "ssh_exit": 0
+      },
+      {
+        "arm": "T1",
+        "repeat": 3,
+        "trace": "033849de4b10d54609d829617f583de814852b67c62b485ad5c681d9da6a314d",
+        "final": "T1",
+        "complete": true,
+        "ssh_exit": 0
+      },
+      {
+        "arm": "T2",
+        "repeat": 1,
+        "trace": "009af43fb12883fffc24129356bd09a1f2abd795f19be0d712d95702c2836e04",
+        "final": "T2",
+        "complete": true,
+        "ssh_exit": 0
+      },
+      {
+        "arm": "T2",
+        "repeat": 1,
+        "trace": "0183f1dd93d4acfa423655b27fd2f150296e7d4f7fa91d8eeea75c206ed0a58b",
+        "final": "T2",
+        "complete": true,
+        "ssh_exit": 0
+      },
+      {
+        "arm": "T2",
+        "repeat": 1,
+        "trace": "01c4d5a01989adfafbd5e8eef036b7e10675b9fe39089a8779e11350b5b8f8a0",
+        "final": "T2",
+        "complete": true,
+        "ssh_exit": 0
+      },
+      {
+        "arm": "T2",
+        "repeat": 1,
+        "trace": "01c979894d1f1ac1e8589eae687a0bae8b964a4b52f04154707687dfec36b37f",
+        "final": "T2",
+        "complete": true,
+        "ssh_exit": 0
+      },
+      {
+        "arm": "T2",
+        "repeat": 1,
+        "trace": "033849de4b10d54609d829617f583de814852b67c62b485ad5c681d9da6a314d",
+        "final": "T2",
+        "complete": true,
+        "ssh_exit": 0
+      },
+      {
+        "arm": "T2",
+        "repeat": 2,
+        "trace": "009af43fb12883fffc24129356bd09a1f2abd795f19be0d712d95702c2836e04",
+        "final": "T2",
+        "complete": true,
+        "ssh_exit": 0
+      },
+      {
+        "arm": "T2",
+        "repeat": 2,
+        "trace": "0183f1dd93d4acfa423655b27fd2f150296e7d4f7fa91d8eeea75c206ed0a58b",
+        "final": "T2",
+        "complete": true,
+        "ssh_exit": 0
+      },
+      {
+        "arm": "T2",
+        "repeat": 2,
+        "trace": "01c4d5a01989adfafbd5e8eef036b7e10675b9fe39089a8779e11350b5b8f8a0",
+        "final": "T2",
+        "complete": true,
+        "ssh_exit": 0
+      },
+      {
+        "arm": "T2",
+        "repeat": 2,
+        "trace": "01c979894d1f1ac1e8589eae687a0bae8b964a4b52f04154707687dfec36b37f",
+        "final": "T2",
+        "complete": true,
+        "ssh_exit": 0
+      },
+      {
+        "arm": "T2",
+        "repeat": 2,
+        "trace": "033849de4b10d54609d829617f583de814852b67c62b485ad5c681d9da6a314d",
+        "final": "T2",
+        "complete": true,
+        "ssh_exit": 0
+      },
+      {
+        "arm": "T2",
+        "repeat": 3,
+        "trace": "009af43fb12883fffc24129356bd09a1f2abd795f19be0d712d95702c2836e04",
+        "final": "T2",
+        "complete": true,
+        "ssh_exit": 0
+      },
+      {
+        "arm": "T2",
+        "repeat": 3,
+        "trace": "0183f1dd93d4acfa423655b27fd2f150296e7d4f7fa91d8eeea75c206ed0a58b",
+        "final": "T2",
+        "complete": true,
+        "ssh_exit": 0
+      },
+      {
+        "arm": "T2",
+        "repeat": 3,
+        "trace": "01c4d5a01989adfafbd5e8eef036b7e10675b9fe39089a8779e11350b5b8f8a0",
+        "final": "T2",
+        "complete": true,
+        "ssh_exit": 0
+      },
+      {
+        "arm": "T2",
+        "repeat": 3,
+        "trace": "01c979894d1f1ac1e8589eae687a0bae8b964a4b52f04154707687dfec36b37f",
+        "final": "T2",
+        "complete": true,
+        "ssh_exit": 0
+      },
+      {
+        "arm": "T2",
+        "repeat": 3,
+        "trace": "033849de4b10d54609d829617f583de814852b67c62b485ad5c681d9da6a314d",
+        "final": "T2",
+        "complete": true,
+        "ssh_exit": 0
+      }
+    ]
+  }
+}

@@ -1,0 +1,108 @@
+{
+  "generated_by": "dashboard.make_fixtures",
+  "generated_from_commit": "29934d69e88b75d5541ca13a576ebb7a8ba46da6",
+  "method": "GET",
+  "route": "/api/exp0",
+  "http_status": 200,
+  "response": {
+    "status": "ok",
+    "counts": {
+      "train_rows": 3867767,
+      "val_rows": 825821,
+      "test_rows": 598647,
+      "val_purged_rows": 879561,
+      "test_purged_rows": 1022940
+    },
+    "gate0": {
+      "gate0_outcome": "PASS-ML",
+      "delta_threshold": 0.05,
+      "passing_early_stages": [
+        "S3"
+      ],
+      "passing_late_stages": [],
+      "interpretation": "Mechanical PASS-ML (Stages: S3); exploratory/inconclusive, not validated pre-command signal."
+    },
+    "stages": {
+      "S1": {
+        "valid_rules": [
+          "R0_random",
+          "R5_rarity"
+        ],
+        "best_rule": "R0_random",
+        "best_val_recall": 0.0975,
+        "best_test_recall": 0.097,
+        "validation_scores": {
+          "R0_random": 0.0975,
+          "R5_rarity": 0.073
+        },
+        "proxy_notice": "R5_rarity: PROXY (aggregate counter, not version string); R3 is not stage-valid; hassh rarity not evaluated"
+      },
+      "S2": {
+        "valid_rules": [
+          "R0_random",
+          "R1_login_success",
+          "R5_rarity",
+          "R6_failed_logins",
+          "R7_decision_tree"
+        ],
+        "best_rule": "R7_decision_tree",
+        "best_val_recall": 0.8383,
+        "best_test_recall": 0.5609,
+        "validation_scores": {
+          "R0_random": 0.0997,
+          "R1_login_success": 0.7815,
+          "R5_rarity": 0.1,
+          "R6_failed_logins": 0.2963,
+          "R7_decision_tree": 0.8383
+        },
+        "proxy_notice": "R5_rarity: PROXY (aggregate counter, not version string); R3 is not stage-valid; hassh rarity not evaluated"
+      },
+      "S3": {
+        "valid_rules": [
+          "R0_random",
+          "R1_login_success",
+          "R2_pty_requested",
+          "R5_rarity",
+          "R6_failed_logins",
+          "R7_decision_tree"
+        ],
+        "best_rule": "R6_failed_logins",
+        "best_val_recall": 0.334,
+        "best_test_recall": 0.1118,
+        "validation_scores": {
+          "R0_random": 0.0976,
+          "R1_login_success": 0.1,
+          "R2_pty_requested": 0.0979,
+          "R5_rarity": 0.1,
+          "R6_failed_logins": 0.334,
+          "R7_decision_tree": 0.3324
+        },
+        "proxy_notice": "R5_rarity: PROXY (aggregate counter, not version string); R3 is not stage-valid; hassh rarity not evaluated"
+      },
+      "S4": {
+        "valid_rules": [],
+        "best_rule": "NOT_EVALUABLE (Requires event-level data_all)",
+        "best_val_recall": "N/A",
+        "best_test_recall": "N/A",
+        "status": "NOT_EVALUABLE_ON_AGGREGATE",
+        "note": "Prefix-determined exclusions and command timings require event-level data_all archive."
+      },
+      "S5": {
+        "valid_rules": [],
+        "best_rule": "NOT_EVALUABLE (Requires event-level data_all)",
+        "best_val_recall": "N/A",
+        "best_test_recall": "N/A",
+        "status": "NOT_EVALUABLE_ON_AGGREGATE",
+        "note": "Prefix-determined exclusions and command timings require event-level data_all archive."
+      }
+    },
+    "source": "RECORDED",
+    "metadata": {
+      "scope": "UNKNOWN",
+      "status": "exploratory",
+      "source_file": "results/exp0/rules_summary.json",
+      "policy_profile": "UNKNOWN",
+      "demo_label": null
+    }
+  }
+}

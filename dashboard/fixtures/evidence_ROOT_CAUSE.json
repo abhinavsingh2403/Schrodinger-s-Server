@@ -1,0 +1,20 @@
+{
+  "generated_by": "dashboard.make_fixtures",
+  "generated_from_commit": "29934d69e88b75d5541ca13a576ebb7a8ba46da6",
+  "method": "GET",
+  "route": "/api/evidence/ROOT_CAUSE",
+  "http_status": 200,
+  "response": {
+    "scope": "UNKNOWN",
+    "status": "exploratory",
+    "source_file": "results/exp1/ROOT_CAUSE.md",
+    "policy_profile": "UNKNOWN",
+    "demo_label": null,
+    "id": "ROOT_CAUSE",
+    "title": "ROOT CAUSE",
+    "kind": "markdown",
+    "data": {
+      "text": "# S4 root-cause diagnosis\r\nPost-hoc exploratory, outside the pre-registered protocol.\r\nIdentical fitted slopes: REJECTED.\r\nIdentical real/shuffle weak order: False.\r\nLabel-free exact ranking reproduction: INCONCLUSIVE; matching rankers [].\r\nAblation/R7 identical weak order: REJECTED.\r\nLabel-free feature sum reproduces recall: CONFIRMED.\r\nElapsed time alone comes close. Both fits give positive weight to elapsed time, activity and auth counts. Removing elapsed time, activity and gap leaves auth counts to distinguish rows; R7 also uses auth counts.\r\nreal versus shuffle: 0 of 62778 selection weights differ at the cutoff; expected true-positive difference 0.\r\nreal versus activity_sum: 0 of 62778 selection weights differ at the cutoff; expected true-positive difference 0.\r\nablation versus R7: 0 of 62778 selection weights differ at the cutoff; expected true-positive difference 0.\r\n\r\n| Ranker | Recall at 10% | Score bins | Same weak order as real |\r\n|---|---:|---:|---|\r\n| real | 0.35634 | 173 | True |\r\n| shuffle | 0.35634 | 173 | False |\r\n| ablation | 0.141847 | 7 | False |\r\n| R7 | 0.141847 | 4 | False |\r\n| elapsed:1 | 0.352005 | 118 | False |\r\n| elapsed:-1 | 0.033659 | 118 | False |\r\n| activity:1 | 0.144659 | 7 | False |\r\n| activity:-1 | 0.095041 | 7 | False |\r\n| attempts:1 | 0.141847 | 7 | False |\r\n| attempts:-1 | 0.095354 | 7 | False |\r\n| failures:1 | 0.141847 | 7 | False |\r\n| failures:-1 | 0.095354 | 7 | False |\r\n| successes:1 | 0.100003 | 1 | False |\r\n| successes:-1 | 0.100003 | 1 | False |\r\n| usernames:1 | 0.099989 | 2 | False |\r\n| usernames:-1 | 0.100005 | 2 | False |\r\n| commands:1 | 0.100003 | 1 | False |\r\n| commands:-1 | 0.100003 | 1 | False |\r\n| length:1 | 0.100003 | 1 | False |\r\n| length:-1 | 0.100003 | 1 | False |\r\n| tokens:1 | 0.100003 | 1 | False |\r\n| tokens:-1 | 0.100003 | 1 | False |\r\n| bucket:1 | 0.100003 | 1 | False |\r\n| bucket:-1 | 0.100003 | 1 | False |\r\n| gap:1 | 0.100003 | 1 | False |\r\n| gap:-1 | 0.100003 | 1 | False |\r\n| activity_sum | 0.35634 | 119 | False |\r\n\r\nExact weights and loss are in root_cause_details.json. Equal recall alone cannot establish equal rankings. This diagnostic reuses the exposed test cohort and supplies no fresh validation.\r\nReproduce with `python -m analysis.experiment1_root_cause`.\r\n"
+    }
+  }
+}

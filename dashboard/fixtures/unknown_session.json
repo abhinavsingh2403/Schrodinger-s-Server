@@ -1,0 +1,16 @@
+{
+  "generated_by": "dashboard.make_fixtures",
+  "generated_from_commit": "29934d69e88b75d5541ca13a576ebb7a8ba46da6",
+  "method": "GET",
+  "route": "/api/session/unknown",
+  "http_status": 404,
+  "response": {
+    "scope": "UNKNOWN",
+    "status": "NOT RUN",
+    "source_file": "decision_log",
+    "policy_profile": "UNKNOWN",
+    "demo_label": null,
+    "data": null,
+    "empty": "NO DATA"
+  }
+}

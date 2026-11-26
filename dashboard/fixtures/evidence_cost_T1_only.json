@@ -1,0 +1,122 @@
+{
+  "generated_by": "dashboard.make_fixtures",
+  "generated_from_commit": "29934d69e88b75d5541ca13a576ebb7a8ba46da6",
+  "method": "GET",
+  "route": "/api/evidence/cost_T1_only",
+  "http_status": 200,
+  "response": {
+    "scope": "LAB",
+    "status": "exploratory",
+    "source_file": "results/cost/cost_T1_only.json",
+    "policy_profile": "UNKNOWN",
+    "demo_label": null,
+    "id": "cost_T1_only",
+    "title": "cost T1 only",
+    "kind": "json",
+    "data": {
+      "target": "T1",
+      "pure": true,
+      "runs": [
+        {
+          "repeat": 1,
+          "stats": {
+            "tier": "T1",
+            "sampling": "during_run",
+            "N": 20,
+            "wall_time": 121.3119,
+            "mean_cpu_pct": 0.08,
+            "max_cpu_pct": 1.93,
+            "mean_memory_mb": 95.94,
+            "max_memory_mb": 110.0,
+            "git_commit": "UNKNOWN",
+            "timestamp": "2026-11-25T16:17:04.546287+00:00"
+          },
+          "summary": {
+            "final_tiers": {
+              "T1": 20
+            },
+            "decision_counts": {
+              "T1": 80
+            },
+            "decision_fraction": {
+              "T1": 1.0,
+              "T2": 0.0
+            },
+            "observed_time_fraction": {
+              "T1": 1.0,
+              "T2": 0.0
+            },
+            "t2_decision_stages": {}
+          },
+          "samples": 60
+        },
+        {
+          "repeat": 2,
+          "stats": {
+            "tier": "T1",
+            "sampling": "during_run",
+            "N": 20,
+            "wall_time": 121.3071,
+            "mean_cpu_pct": 0.87,
+            "max_cpu_pct": 8.26,
+            "mean_memory_mb": 96.66,
+            "max_memory_mb": 114.0,
+            "git_commit": "UNKNOWN",
+            "timestamp": "2026-11-25T16:19:17.132036+00:00"
+          },
+          "summary": {
+            "final_tiers": {
+              "T1": 20
+            },
+            "decision_counts": {
+              "T1": 80
+            },
+            "decision_fraction": {
+              "T1": 1.0,
+              "T2": 0.0
+            },
+            "observed_time_fraction": {
+              "T1": 1.0,
+              "T2": 0.0
+            },
+            "t2_decision_stages": {}
+          },
+          "samples": 60
+        },
+        {
+          "repeat": 3,
+          "stats": {
+            "tier": "T1",
+            "sampling": "during_run",
+            "N": 20,
+            "wall_time": 121.3157,
+            "mean_cpu_pct": 1.06,
+            "max_cpu_pct": 11.52,
+            "mean_memory_mb": 96.19,
+            "max_memory_mb": 113.2,
+            "git_commit": "UNKNOWN",
+            "timestamp": "2026-11-25T16:21:29.601999+00:00"
+          },
+          "summary": {
+            "final_tiers": {
+              "T1": 20
+            },
+            "decision_counts": {
+              "T1": 80
+            },
+            "decision_fraction": {
+              "T1": 1.0,
+              "T2": 0.0
+            },
+            "observed_time_fraction": {
+              "T1": 1.0,
+              "T2": 0.0
+            },
+            "t2_decision_stages": {}
+          },
+          "samples": 60
+        }
+      ]
+    }
+  }
+}
