@@ -26,7 +26,7 @@ from urllib.parse import urlparse
 # Ensure project root is in sys.path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from dashboard import evidence
+from dashboard import decision_views, evidence
 
 logger = logging.getLogger("dashboard")
 
@@ -113,7 +113,7 @@ class DashboardServer:
         if not os.path.exists(self.db_path):
             return None
         try:
-            conn = sqlite3.connect(f"file:{self.db_path}?mode=ro", uri=True, timeout=3.0)
+            conn = sqlite3.connect(Path(self.db_path).resolve().as_uri() + "?mode=ro", uri=True, timeout=3.0)
             conn.row_factory = sqlite3.Row
             return conn
         except Exception:
@@ -211,7 +211,7 @@ class DashboardServer:
             "sensor": sensor_stats,
         }
 
-    def get_decisions_data(self, limit: int = 50) -> Dict[str, Any]:
+    def get_decisions_data(self, limit: int = 50, public: bool = False) -> Dict[str, Any]:
         """Returns the recent decision stream with cryptographically masked visitor IDs."""
         if not os.path.exists(self.db_path):
             fallback_source = resolve_decision_provenance(self.mode, [])
@@ -244,11 +244,11 @@ class DashboardServer:
                     row_provenances.append(prov)
                     decisions.append({
                         "session_id": r["session_id"],
-                        "visitor_id": masked,
+                        "visitor_id": vid if public else masked,
                         "stage": r["stage"],
-                        "score": round(float(r["score"]), 3),
+                        "score": decision_views.number(r["score"]),
                         "tier": r["tier_decided"],
-                        "latency_ms": round(float(r["latency_ms"]), 2),
+                        "latency_ms": decision_views.number(r["latency_ms"]),
                         "timestamp": r["timestamp"],
                         "provenance": prov,
                         "policy_profile": normalize_policy_profile(r['policy_profile']),
@@ -259,6 +259,8 @@ class DashboardServer:
             finally:
                 conn.close()
 
+        if public:
+            decisions = [decision_views.public_row(row) for row in decisions]
         # Shared provenance resolution across stats and decisions
         source = resolve_decision_provenance(self.mode, row_provenances)
 
@@ -271,9 +273,9 @@ class DashboardServer:
             "decisions": decisions,
         }
 
-    def get_sessions_data(self):
+    def get_sessions_data(self, public=False):
         """Summarize all stored decisions; returning means an earlier observed session."""
-        payload = self.get_decisions_data(limit=-1)
+        payload = self.get_decisions_data(limit=-1, public=public)
         rows = list(reversed(payload['decisions']))
         sessions, seen = {}, set()
         for row in rows:
@@ -290,6 +292,7 @@ class DashboardServer:
             session['stages'][row['stage']] = row['tier']
             session['decisions'].append(row)
             session['reached_t2'] |= row['tier'] in ('T2', 'T3')
+        times = [r["latency_ms"] for r in rows if r["latency_ms"] is not None]
         count = len(sessions)
         escalated = sum(s['reached_t2'] for s in sessions.values())
         return {'status': payload['status'], 'source': payload['source'],
@@ -297,7 +300,7 @@ class DashboardServer:
             'sessions': list(sessions.values()),
             'kpis': {'sessions': count, 'reached_t2': escalated,
                 'escalation_fraction': escalated/count if count else None,
-                'median_compute_ms': statistics.median(r['latency_ms'] for r in rows) if rows else None}}
+                'median_compute_ms': statistics.median(round(t, 2) for t in times) if times else None}}
 
     def get_arms_data(self) -> Dict[str, Any]:
         """Returns comparative intelligence yield per rupee across experimental arms.
@@ -438,6 +441,36 @@ class DashboardServer:
             self.httpd = None
 
 
+LEGACY = {
+    "sessions": "decision_log", "decisions": "decision_log", "stats": "results/base_rates.json",
+    "arms": "results/arm_simulation.json", "model": "models/model_s3.json",
+    "exp0": "results/exp0/rules_summary.json", "natural_experiment": "results/natural_experiment.json",
+    "detector": "results/detector_eval.json",
+}
+
+
+def api_response(server, path):
+    """One wire representation for HTTP and offline fixture generation."""
+    if path.startswith("/api/evidence/") or path == "/api/progress":
+        return evidence.response(path)
+    if path == "/api/decisions/summary" or path.startswith("/api/session/"):
+        return decision_views.decision_response(server, path)
+    name = path.removeprefix("/api/")
+    if name not in LEGACY:
+        return 404, {**evidence.labels(), "data": None, "empty": "Unknown endpoint"}
+    getter = getattr(server, f"get_{name}_data")
+    payload = getter(public=True) if name in ("sessions", "decisions") else evidence.clean(getter())
+    rows = payload.get("decisions", []) if name == "decisions" else [
+        r for session in payload.get("sessions", []) for r in session["decisions"]]
+    scope = payload.get("source")
+    status = "exploratory" if payload.get("status") == "ok" else "NOT RUN"
+    if name in ("sessions", "decisions"):
+        status = "done" if rows else "NOT RUN"
+    payload["metadata"] = evidence.labels(LEGACY[name], scope if scope in VALID_PROVENANCES else "UNKNOWN",
+                                          status, decision_views.common(rows, "policy_profile"))
+    return 200, payload
+
+
 def make_dashboard_handler(server_instance: DashboardServer):
     """Factory creating an HTTP request handler bound to the DashboardServer."""
 
@@ -450,8 +483,8 @@ def make_dashboard_handler(server_instance: DashboardServer):
             parsed = urlparse(self.path)
             path = parsed.path
 
-            if path.startswith("/api/evidence/") or path == "/api/progress":
-                code, data = evidence.response(path)
+            if path.startswith("/api/"):
+                code, data = api_response(server_instance, path)
                 self.send_response(code)
                 self.send_header("Content-Type", "application/json")
                 self.end_headers()
@@ -470,61 +503,6 @@ def make_dashboard_handler(server_instance: DashboardServer):
                 self.send_header("Content-Type", "text/html; charset=utf-8")
                 self.end_headers()
                 self.wfile.write(server_instance.render_index_html().encode("utf-8"))
-            elif path == "/api/sessions":
-                data = server_instance.get_sessions_data()
-                self.send_response(200)
-                self.send_header("Content-Type", "application/json")
-                self.end_headers()
-                self.wfile.write(json.dumps(data).encode("utf-8"))
-            elif path == "/api/stats":
-                data = server_instance.get_stats_data()
-                self.send_response(200)
-                self.send_header("Content-Type", "application/json")
-                self.end_headers()
-                self.wfile.write(json.dumps(data).encode("utf-8"))
-
-            elif path == "/api/decisions":
-                data = server_instance.get_decisions_data()
-                self.send_response(200)
-                self.send_header("Content-Type", "application/json")
-                self.end_headers()
-                self.wfile.write(json.dumps(data).encode("utf-8"))
-
-            elif path == "/api/arms":
-                data = server_instance.get_arms_data()
-                self.send_response(200)
-                self.send_header("Content-Type", "application/json")
-                self.end_headers()
-                self.wfile.write(json.dumps(data).encode("utf-8"))
-
-            elif path == "/api/model":
-                data = server_instance.get_model_data()
-                self.send_response(200)
-                self.send_header("Content-Type", "application/json")
-                self.end_headers()
-                self.wfile.write(json.dumps(data).encode("utf-8"))
-
-            elif path == "/api/exp0":
-                data = server_instance.get_exp0_data()
-                self.send_response(200)
-                self.send_header("Content-Type", "application/json")
-                self.end_headers()
-                self.wfile.write(json.dumps(data).encode("utf-8"))
-
-            elif path == "/api/natural_experiment":
-                data = server_instance.get_natural_experiment_data()
-                self.send_response(200)
-                self.send_header("Content-Type", "application/json")
-                self.end_headers()
-                self.wfile.write(json.dumps(data).encode("utf-8"))
-
-            elif path == "/api/detector":
-                data = server_instance.get_detector_data()
-                self.send_response(200)
-                self.send_header("Content-Type", "application/json")
-                self.end_headers()
-                self.wfile.write(json.dumps(data).encode("utf-8"))
-
             else:
                 self.send_response(404)
                 self.end_headers()
@@ -551,3 +529,4 @@ if __name__ == "__main__":
         dash.start()
     except KeyboardInterrupt:
         dash.stop()
+
