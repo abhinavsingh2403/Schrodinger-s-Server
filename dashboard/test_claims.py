@@ -16,3 +16,12 @@ def test_template_claims():
         assert key in engine
     outside = re.sub(r"const statusClass = .*?\n};", "", shell, flags=re.S)
     assert not re.search(r"['\x22](INVALID|INCONCLUSIVE|CONFIRMED|REJECTED)['\x22]", outside)
+
+def test_configured_health_target(monkeypatch):
+    from dashboard import app
+    server = app.DashboardServer(gatekeeper_port=12345)
+    def probe(host, port):
+        assert (host, port) == ("127.0.0.1", 12345)
+        return {"status": "UNAVAILABLE"}
+    monkeypatch.setattr(app, "probe_gatekeeper_health", probe)
+    assert app.api_response(server, "/api/gatekeeper/health")[1]["metadata"]["status"] == "INCONCLUSIVE"

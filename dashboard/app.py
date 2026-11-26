@@ -98,6 +98,8 @@ class DashboardServer:
         mode: str = "LAB",
         host: str = "127.0.0.1",
         port: int = 8080,
+        gatekeeper_host: str = "127.0.0.1",
+        gatekeeper_port: int = 15000,
     ) -> None:
         self.db_path = str(db_path)
         self.base_rates_path = str(base_rates_path)
@@ -107,6 +109,8 @@ class DashboardServer:
         self.exp0_path = str(exp0_path)
         self.mode = mode.upper() if mode.upper() in ("LIVE", "LAB", "SYNTHETIC", "UNKNOWN") else "UNKNOWN"
         self.host = host
+        self.gatekeeper_host = gatekeeper_host
+        self.gatekeeper_port = gatekeeper_port
         self.port = port
         self.httpd: Optional[http.server.HTTPServer] = None
 
@@ -451,6 +455,8 @@ PAGE_TITLES = {
     "/visitors": "Visitor Atlas",
     "/deception": "Deception Studio",
     "/lab": "Lab Console",
+    "/replay": "Replay",
+    "/detector": "Detector",
 }
 
 
@@ -489,7 +495,14 @@ def probe_gatekeeper_health(
             url,
             headers={"User-Agent": "Schrodinger-Dashboard/1.0", "Accept": "application/json"},
         )
-        with urllib.request.urlopen(req, timeout=timeout) as resp:
+        # Connect directly to loopback. HTTPErrorProcessor is the component
+        # that normally dispatches redirects; bypass redirect and proxy handlers.
+        class DirectResponse(urllib.request.HTTPErrorProcessor):
+            def http_response(self, request, response):
+                return response
+
+        opener = urllib.request.build_opener(urllib.request.ProxyHandler({}), DirectResponse())
+        with opener.open(req, timeout=timeout) as resp:
             if resp.status != 200:
                 return {
                     "status": "UNAVAILABLE",
@@ -497,7 +510,9 @@ def probe_gatekeeper_health(
                     "error": f"Unexpected HTTP status {resp.status}",
                     "port": port,
                 }
-            raw = resp.read()
+            raw = resp.read(8193)
+            if len(raw) > 8192:
+                raise ValueError("Oversized health response")
             data = json.loads(raw.decode("utf-8"))
             if isinstance(data, dict) and data.get("status") == "ok":
                 return {
@@ -546,7 +561,9 @@ def probe_gatekeeper_health(
 def api_response(server, path):
     """One wire representation for HTTP and offline fixture generation."""
     if path in ("/api/gatekeeper/health", "/api/health/gatekeeper"):
-        return 200, probe_gatekeeper_health()
+        health = probe_gatekeeper_health(server.gatekeeper_host, server.gatekeeper_port)
+        health["metadata"] = evidence.labels("gatekeeper /health", "LAB", "done" if health["status"] == "ONLINE" else "INCONCLUSIVE")
+        return 200, health
     if path.startswith("/api/evidence/") or path == "/api/progress":
         return evidence.response(path)
     if path == "/api/decisions/summary" or path.startswith("/api/session/"):
@@ -624,9 +641,13 @@ if __name__ == "__main__":
     parser.add_argument("--port", type=int, default=8080, help="Listen port")
     parser.add_argument("--mode", default="LAB", choices=["LAB", "LIVE", "SYNTHETIC", "UNKNOWN"], help="Operational mode")
     parser.add_argument("--db", default="gatekeeper/gatekeeper.db", help="Path to SQLite decision DB (default: gatekeeper/gatekeeper.db)")
+    parser.add_argument("--gatekeeper-host", default="127.0.0.1", choices=("localhost", "127.0.0.1"))
+    parser.add_argument("--gatekeeper-port", default=15000, type=int)
     args = parser.parse_args()
+    if not 1 <= args.gatekeeper_port <= 65535:
+        parser.error("gatekeeper port outside TCP range")
 
-    dash = DashboardServer(db_path=args.db, host=args.host, port=args.port, mode=args.mode)
+    dash = DashboardServer(db_path=args.db, host=args.host, port=args.port, mode=args.mode, gatekeeper_host=args.gatekeeper_host, gatekeeper_port=args.gatekeeper_port)
     print(f"Starting Schrödinger's Server dashboard on http://{args.host}:{args.port} [DB: {args.db}]")
     try:
         dash.start()

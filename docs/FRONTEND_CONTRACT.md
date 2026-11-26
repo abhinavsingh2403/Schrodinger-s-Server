@@ -42,3 +42,6 @@ The frontend MUST NEVER output or display:
 - [x] All figures come directly from an API response; no hardcoded numerical literals.
 - [x] Exercises populated and unavailable responses cleanly.
 - [x] Full keyboard accessibility (`:focus-visible`), responsive scaling down to 360px mobile width, and `@media (prefers-reduced-motion: reduce)` support.
+
+GET /replay and /detector render labelled evidence via the existing item API. Visitors reads session groups, Deception reads demo proof items, and Lab reads progress, safety evidence, session availability and same-origin gatekeeper health. The health aliases accept no request-supplied target. Configure the local target with --gatekeeper-host and --gatekeeper-port. Container loopback refers to the dashboard container; a separate gatekeeper can therefore appear UNAVAILABLE. UNKNOWN denotes a refused or unverified target.
+Default identifier masking uses unsalted SHA-256. The default has no secret and permits matching the same input across runs. DASHBOARD_MASKING_SALT is optional. Static file service is outside this contract.

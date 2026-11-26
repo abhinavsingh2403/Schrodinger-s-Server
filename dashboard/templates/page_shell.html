@@ -418,6 +418,8 @@ footer.page-foot {
   <a href="/cost">Resource Observatory</a>
   <a href="/evidence">Evidence Vault</a>
   <a href="/lab">Lab Console</a>
+  <a href="/replay">Replay</a>
+  <a href="/detector">Detector</a>
   <a href="/research" class="nav-archive">Research Archive</a>
 </nav>
 
@@ -1902,6 +1904,24 @@ async function initLab() {
 // =============================================================
 // Dispatch Bootloader
 // =============================================================
+async function showReports(ids) {
+  const content = document.getElementById('content');
+  content.replaceChildren();
+  for (const id of ids) {
+    const card = el('section', '', 'card');
+    content.appendChild(card);
+    try {
+      const {body} = await fetchJson('/api/evidence/' + id);
+      setBanner(body);
+      card.append(el('h2', body.title || id), makeBadgeRow(body));
+      card.appendChild(body.kind === 'markdown' ? el('pre', body.data.text) : renderJsonTree(body.data));
+    } catch {
+      card.appendChild(el('p', 'NO DATA'));
+    }
+  }
+  setStatus('Evidence request complete');
+}
+
 (function boot() {
   const path = window.location.pathname;
   for (const link of document.querySelectorAll('.topnav a')) {
@@ -1913,6 +1933,8 @@ async function initLab() {
   else if (path === '/session') initSession();
   else if (path === '/visitors') initVisitors();
   else if (path === '/deception') initDeception();
+  else if (path === '/replay') showReports(['REPLAY_RESULT', 'selection', 'observations']);
+  else if (path === '/detector') showReports(['DETECTOR_RESULT']);
   else if (path === '/lab') initLab();
 })();
 </script>
