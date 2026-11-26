@@ -441,6 +441,9 @@ class DashboardServer:
             self.httpd = None
 
 
+PAGE_TITLES = {"/evidence": "Evidence Vault", "/cost": "Cost", "/ml": "ML Experiments", "/session": "Session Timeline"}
+
+
 LEGACY = {
     "sessions": "decision_log", "decisions": "decision_log", "stats": "results/base_rates.json",
     "arms": "results/arm_simulation.json", "model": "models/model_s3.json",
@@ -498,6 +501,13 @@ def make_dashboard_handler(server_instance: DashboardServer):
                 self.end_headers()
                 self.wfile.write(html.encode("utf-8"))
 
+            elif path in PAGE_TITLES:
+                template = Path(__file__).with_name("templates") / "page_shell.html"
+                html = template.read_text(encoding="utf-8-sig").replace("{{title}}", PAGE_TITLES[path])
+                self.send_response(200)
+                self.send_header("Content-Type", "text/html; charset=utf-8")
+                self.end_headers()
+                self.wfile.write(html.encode("utf8"))
             elif path == "/research":
                 self.send_response(200)
                 self.send_header("Content-Type", "text/html; charset=utf-8")

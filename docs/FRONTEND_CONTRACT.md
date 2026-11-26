@@ -51,3 +51,5 @@ Exclude affirmative ML-performance badges, financial savings or rupee figures, l
 - [ ] Handles unavailable, empty and null values explicitly.
 - [ ] All figures come from a response; no fallback measurements.
 - [ ] Exercises populated and unavailable fixture responses.
+
+GET /evidence, /cost, /ml and /session return the [page shell](../dashboard/templates/page_shell.html) with the corresponding title, navigation, visible UNKNOWN scope/profile and NO DATA until a renderer loads evidence. HTML routes return HTTP 404 for unknown pages.

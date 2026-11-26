@@ -337,3 +337,10 @@ Cleanup attempted: `docker compose -p schrodinger-final -f infra/docker-compose.
 
 DONE: Docker replay completed and volumes removed. Select with `python -m analysis.replay_selection data/event_prefix_study`; run `python -m analysis.lab_trace_replay` in the pinned WSL environment. See results/replay/REPLAY_RESULT.md.
 H4 INCONCLUSIVE: isolated detector environment and installed scoring weights recorded. Deep tier comparison NOT RUN; the detector controls its own probe sessions. T3 unavailable. Inspect installed options with `honeypot-auditor --help`.
+
+### Dashboard data contract
+DONE — Read-only evidence, progress, summary and session APIs; examples and page shells in docs/FRONTEND_CONTRACT.md.
+Start from repo root: `python -m dashboard.app --db gatekeeper/gatekeeper.db`. Point --db at the active lab database for decisions.
+Bash: `base=http://127.0.0.1:8080; for p in evidence/index evidence/metrics progress decisions/summary sessions decisions stats arms model exp0 natural_experiment detector; do curl -sS "$base/api/$p"; done`.
+Timeline: `sid=$(curl -sS "$base/api/sessions" | python -c "import json,sys; print(json.load(sys.stdin)['sessions'][0]['session_id'])"); curl -sS "$base/api/session/$sid"` requires a recorded session.
+Front-end page rendering is pending. Optional event-log API omitted; the timeline uses decision rows.

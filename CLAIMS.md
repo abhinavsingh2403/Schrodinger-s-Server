@@ -125,3 +125,4 @@ Event-log ordering observations are recorded by analysis/exp0_event_order.py aga
 | Whole-trace filtering retained a read-only subset of the held-out day. | [Selection](results/replay/selection.json) | Lab, exploratory |
 | Recorded SSH completion and decision-log tiers are paired for each attempted replay. | [Observations](results/replay/observations.json) | Lab, exploratory |
 | Both final-tier arms received the selected inputs in every repeat. | [Replay result](results/replay/REPLAY_RESULT.md) | Lab, exploratory |
+| The lab dashboard serves allowlisted evidence and read-only decision summaries with masked session links. | [Dashboard contract](docs/FRONTEND_CONTRACT.md) | Lab |
