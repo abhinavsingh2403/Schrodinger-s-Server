@@ -329,3 +329,8 @@ DONE: Protocol, masked tables and evaluation. See docs/EXPERIMENT1.md and result
 Reproduce: `python -m analysis.experiment1_dataset --cache data/event_prefix_study` then `python -m analysis.experiment1_eval`.
 Fixtures: `python -m pytest -q analysis/experiment1_dataset_test.py analysis/experiment1_eval_test.py`.
 NOT RUN: S1/S3 lack historical boundaries. Optional boosting families require approval; training commands are in docs/EXPERIMENT1.md.
+
+DONE: S4 cutoff diagnosis. Run `python -m analysis.experiment1_root_cause` with the local Experiment 1 tables.
+NOT RUN: H4 and Docker replay. Docker Desktop Linux engine unavailable. No detector scores, replay metrics or filter counts. T3 unimplemented.
+Retry prerequisite: `docker version` (Server required), then `docker compose -p schrodinger-final -f infra/docker-compose.yml up -d --build`. Detector and replay protocols remain pending.
+Cleanup attempted: `docker compose -p schrodinger-final -f infra/docker-compose.yml down -v`; engine unreachable, no stack started in this task.

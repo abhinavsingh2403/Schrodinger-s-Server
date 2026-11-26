@@ -118,3 +118,5 @@ Event-log ordering observations are recorded by analysis/exp0_event_order.py aga
 | The audited daily event files support offline first-auth, first-command and third-command prefixes. Historical handshake completion and S3 cutoffs remain unverified. | [Event-level feasibility probe](results/exp0/EXPERIMENT1_FEASIBILITY.md) | Lab, exploratory |
 | Offline S2 and S4 fits failed the shuffle control. S5 lacked the required test positives. | [Experiment 1](results/exp1/EXPERIMENT1_RESULT.md) | Lab, exploratory, offline |
 | The event tables exclude overlapping sources and use future-only labels. | [Cohort counts](results/exp1/cohorts.json) | Lab, exploratory, offline |
+| S4 real-label, shuffled-label and unweighted feature-sum scorers assign identical selection probabilities at the registered budget on the exposed test cohort. | [Cutoff diagnosis](results/exp1/ROOT_CAUSE.md) | Lab, exploratory |
+| S4 coefficients and full score rankings differ despite matched cutoff recall; ablation and R7 also differ in their number of score bins. | [Diagnostic details](results/exp1/root_cause_details.json) | Lab, exploratory |

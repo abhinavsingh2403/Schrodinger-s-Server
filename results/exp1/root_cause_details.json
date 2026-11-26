@@ -1,0 +1,183 @@
+{
+  "slopes": {
+    "real": {
+      "weights": {
+        "elapsed": 0.21396783485607193,
+        "activity": 0.10277340398077488,
+        "attempts": 0.10972829570422508,
+        "failures": 0.10972829570422508,
+        "successes": 0.0,
+        "usernames": 0.0,
+        "commands": 0.0,
+        "length": 0.0,
+        "tokens": 0.0,
+        "bucket": 0.0,
+        "gap": 0.0
+      },
+      "intercept": -0.0037352830494089243,
+      "steps": 1000,
+      "loss": 0.6927219073297199
+    },
+    "shuffle": {
+      "weights": {
+        "elapsed": 0.014902205678736447,
+        "activity": 0.02107913884223299,
+        "attempts": 0.023080255829688177,
+        "failures": 0.023080255829688177,
+        "successes": 0.0,
+        "usernames": 0.0,
+        "commands": 0.0,
+        "length": 0.0,
+        "tokens": 0.0,
+        "bucket": 0.0,
+        "gap": 0.0
+      },
+      "intercept": -0.000307275952605163,
+      "steps": 1000,
+      "loss": 0.6931379644996898
+    }
+  },
+  "comparisons": {
+    "real": {
+      "recall": 0.35634,
+      "score_bins": 173,
+      "same_order_as_real": true
+    },
+    "shuffle": {
+      "recall": 0.35634,
+      "score_bins": 173,
+      "same_order_as_real": false
+    },
+    "ablation": {
+      "recall": 0.141847,
+      "score_bins": 7,
+      "same_order_as_real": false
+    },
+    "R7": {
+      "recall": 0.141847,
+      "score_bins": 4,
+      "same_order_as_real": false
+    },
+    "elapsed:1": {
+      "recall": 0.352005,
+      "score_bins": 118,
+      "same_order_as_real": false
+    },
+    "elapsed:-1": {
+      "recall": 0.033659,
+      "score_bins": 118,
+      "same_order_as_real": false
+    },
+    "activity:1": {
+      "recall": 0.144659,
+      "score_bins": 7,
+      "same_order_as_real": false
+    },
+    "activity:-1": {
+      "recall": 0.095041,
+      "score_bins": 7,
+      "same_order_as_real": false
+    },
+    "attempts:1": {
+      "recall": 0.141847,
+      "score_bins": 7,
+      "same_order_as_real": false
+    },
+    "attempts:-1": {
+      "recall": 0.095354,
+      "score_bins": 7,
+      "same_order_as_real": false
+    },
+    "failures:1": {
+      "recall": 0.141847,
+      "score_bins": 7,
+      "same_order_as_real": false
+    },
+    "failures:-1": {
+      "recall": 0.095354,
+      "score_bins": 7,
+      "same_order_as_real": false
+    },
+    "successes:1": {
+      "recall": 0.100003,
+      "score_bins": 1,
+      "same_order_as_real": false
+    },
+    "successes:-1": {
+      "recall": 0.100003,
+      "score_bins": 1,
+      "same_order_as_real": false
+    },
+    "usernames:1": {
+      "recall": 0.099989,
+      "score_bins": 2,
+      "same_order_as_real": false
+    },
+    "usernames:-1": {
+      "recall": 0.100005,
+      "score_bins": 2,
+      "same_order_as_real": false
+    },
+    "commands:1": {
+      "recall": 0.100003,
+      "score_bins": 1,
+      "same_order_as_real": false
+    },
+    "commands:-1": {
+      "recall": 0.100003,
+      "score_bins": 1,
+      "same_order_as_real": false
+    },
+    "length:1": {
+      "recall": 0.100003,
+      "score_bins": 1,
+      "same_order_as_real": false
+    },
+    "length:-1": {
+      "recall": 0.100003,
+      "score_bins": 1,
+      "same_order_as_real": false
+    },
+    "tokens:1": {
+      "recall": 0.100003,
+      "score_bins": 1,
+      "same_order_as_real": false
+    },
+    "tokens:-1": {
+      "recall": 0.100003,
+      "score_bins": 1,
+      "same_order_as_real": false
+    },
+    "bucket:1": {
+      "recall": 0.100003,
+      "score_bins": 1,
+      "same_order_as_real": false
+    },
+    "bucket:-1": {
+      "recall": 0.100003,
+      "score_bins": 1,
+      "same_order_as_real": false
+    },
+    "gap:1": {
+      "recall": 0.100003,
+      "score_bins": 1,
+      "same_order_as_real": false
+    },
+    "gap:-1": {
+      "recall": 0.100003,
+      "score_bins": 1,
+      "same_order_as_real": false
+    },
+    "activity_sum": {
+      "recall": 0.35634,
+      "score_bins": 119,
+      "same_order_as_real": false
+    }
+  },
+  "ablation_order_equals_R7": false,
+  "cutoff_comparisons": [
+    "real versus shuffle: 0 of 62778 selection weights differ at the cutoff; expected true-positive difference 0.",
+    "real versus activity_sum: 0 of 62778 selection weights differ at the cutoff; expected true-positive difference 0.",
+    "ablation versus R7: 0 of 62778 selection weights differ at the cutoff; expected true-positive difference 0."
+  ]
+}

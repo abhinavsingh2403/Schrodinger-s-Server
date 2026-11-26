@@ -20,7 +20,7 @@ In Internet-facing SSH honeypots, the overwhelming majority of sessions are one-
 
 ## Project status
 
-The native demo can switch an SSH session from T1 to T2 while preserving its connection. The three-day offline evaluation found **no validated ML gain**. At S4, training on shuffled labels reproduced the learned scorer's recall. S2 also failed its shuffle control, and S5 had too few held-out positives for a conclusion. [Demo runbook](docs/DEMO_RUNBOOK.md) · [Experiment 1 results](results/exp1/EXPERIMENT1_RESULT.md)
+The native demo can switch an SSH session from T1 to T2 while preserving its connection. The three-day offline evaluation found **no validated ML gain**. At S4, the learned scorer, shuffled-label scorer and unweighted feature sum gave every test session the same selection probability across the three methods at the 10% budget. [Cutoff diagnosis](results/exp1/ROOT_CAUSE.md). S2 also failed its shuffle control, and S5 had too few held-out positives for a conclusion. [Demo runbook](docs/DEMO_RUNBOOK.md) · [Experiment 1 results](results/exp1/EXPERIMENT1_RESULT.md)
 
 | Area | Completed and verified | Remaining work |
 |---|---|---|
