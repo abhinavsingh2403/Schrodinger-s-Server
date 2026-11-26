@@ -99,3 +99,24 @@ def test_no_external_cdn_or_font_imports():
         content = (template_dir / name).read_text(encoding="utf-8")
         for url_pattern in EXTERNAL_URL_PATTERNS:
             assert url_pattern not in content, f"External resource import '{url_pattern}' found in {name}"
+
+
+@pytest.mark.parametrize("route", ROUTES)
+def test_page_routes_have_footer(route: str):
+    code, html = render_route(route)
+    assert code == 200
+    assert "<footer" in html
+
+
+def test_prefers_reduced_motion_present():
+    template_dir = Path(__file__).resolve().parent / "templates"
+    for name in TARGET_TEMPLATES:
+        content = (template_dir / name).read_text(encoding="utf-8")
+        assert "prefers-reduced-motion" in content, f"prefers-reduced-motion missing from {name}"
+
+
+def test_interactive_elements_have_accessible_labels():
+    template_dir = Path(__file__).resolve().parent / "templates"
+    for name in TARGET_TEMPLATES:
+        content = (template_dir / name).read_text(encoding="utf-8")
+        assert "aria-label" in content, f"aria-label accessibility attributes missing from {name}"

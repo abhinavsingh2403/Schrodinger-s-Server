@@ -5,51 +5,293 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{{title}} · Schrödinger's Server</title>
 <style>
-:root{color-scheme:dark;font-family:system-ui,-apple-system,sans-serif;background:#080e19;color:#edf3ff}
-*{box-sizing:border-box}
-body{margin:0;padding:24px;line-height:1.5}
-a{color:#abedff;text-decoration:none}
-a:hover{text-decoration:underline}
-.topnav{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:18px;padding-bottom:12px;border-bottom:1px solid #324863}
-.topnav a{padding:7px 13px;border-radius:8px;border:1px solid #324863;background:#0c1625;font-size:14px;font-weight:600;transition:background .15s,border-color .15s}
-.topnav a:hover{background:#15253c;border-color:#56c7ed;text-decoration:none}
-.topnav a.active{background:#123d55;border-color:#56c7ed;color:#fff}
-header.page-head{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap;margin-bottom:16px}
-h1{font-size:26px;margin:0}
-h2{font-size:20px;margin:0 0 12px 0}
-h3{font-size:16px;margin:0 0 8px 0}
-.muted{color:#b8c7dd;font-size:14px}
-#banner{background:#111e31;border:1px solid #324863;border-radius:10px;padding:10px 14px;margin-bottom:18px;font-size:14px;font-weight:600;display:flex;gap:10px;flex-wrap:wrap;align-items:center}
-#banner.warn{background:#512f08;border:2px solid #ffb84d;color:#fff2cf}
-.grid-2{display:grid;grid-template-columns:1fr 1.25fr;gap:16px;align-items:start}
-.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;margin-bottom:18px}
-.card{background:#111e31;border:1px solid #324863;border-radius:12px;padding:18px;margin-bottom:16px}
-.value{font-size:26px;font-weight:700;margin-top:6px}
-.tools{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px}
-input,select,button{font:inherit;padding:8px 12px;border:1px solid #59708c;border-radius:8px;background:#0c1625;color:#edf3ff;font-size:14px}
-button{cursor:pointer;font-weight:600}
-button:hover{background:#182941;border-color:#56c7ed}
-button.active-filter{background:#123d55;border-color:#56c7ed;color:#fff}
-.badge{display:inline-block;padding:3px 8px;border-radius:6px;margin:2px;font-size:12px;font-weight:600;border:1px solid #596b85;background:#0c1625}
-.badge.done{background:#0f3d2e;color:#baffd8;border-color:#34a87c}
-.badge.exploratory{background:#123d55;color:#abedff;border-color:#56c7ed}
-.badge.invalid,.badge.notrun{background:#541c1c;color:#ffd0d0;border-color:#e06c6c}
-.badge.inconclusive,.badge.warn{background:#54320d;color:#ffdb96;border-color:#f7ae44}
-.scroll{overflow:auto;max-height:520px}
-table{width:100%;border-collapse:collapse;font-size:14px}
-th{position:sticky;top:0;background:#182941;text-align:left;padding:10px;border-bottom:1px solid #324863}
-td{padding:10px;border-bottom:1px solid #263952;vertical-align:top}
-.item-btn{width:100%;text-align:left;background:#0c1625;border:1px solid #2a3e58;border-radius:8px;padding:10px 12px;margin-bottom:8px;display:block}
-.item-btn:hover,.item-btn.selected{border-color:#56c7ed;background:#13253b}
-.mono{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:13px;overflow-wrap:anywhere}
-pre.md-view{background:#0c1625;border:1px solid #2a3e58;border-radius:8px;padding:14px;overflow:auto;max-height:520px;white-space:pre-wrap;word-break:break-word;font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:13px;line-height:1.45;margin:0}
-.tree details{margin-left:14px;margin-top:4px}
-.tree summary{cursor:pointer;font-weight:600;color:#abedff}
-.tree-leaf{margin-left:14px;padding:2px 0;font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:13px}
-.timeline{border-left:2px solid #324863;padding-left:18px;margin-left:8px}
-.timeline-step{position:relative;margin-bottom:14px;background:#0c1625;border:1px solid #2a3e58;border-radius:10px;padding:12px}
-.timeline-step::before{content:'';position:absolute;left:-25px;top:16px;width:10px;height:10px;border-radius:50%;background:#56c7ed;border:2px solid #080e19}
-@media(max-width:900px){.grid-2{grid-template-columns:1fr}body{padding:14px}}
+:root {
+  color-scheme: dark;
+  --bg-canvas: #040711;
+  --bg-surface: #0b111e;
+  --bg-subtle: #060a13;
+  --border-subtle: #1a2639;
+  --border-strong: #324863;
+  --text-primary: #edf3ff;
+  --text-muted: #94a3b8;
+  --accent-cyan: #38bdf8;
+  --accent-focus: #56c7ed;
+  font-family: ui-sans-serif, system-ui, -apple-system, sans-serif;
+  background: var(--bg-canvas);
+  color: var(--text-primary);
+}
+* { box-sizing: border-box; }
+*:focus-visible {
+  outline: 2px solid var(--accent-focus);
+  outline-offset: 2px;
+}
+body {
+  margin: 0;
+  padding: 14px;
+  line-height: 1.5;
+  min-width: 320px;
+}
+@media (min-width: 768px) {
+  body { padding: 24px; }
+}
+a { color: var(--accent-cyan); text-decoration: none; }
+a:hover { text-decoration: underline; }
+.topnav {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-bottom: 18px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+.topnav a {
+  padding: 7px 13px;
+  border-radius: 8px;
+  border: 1px solid var(--border-subtle);
+  background: var(--bg-subtle);
+  font-size: 13px;
+  font-weight: 600;
+  color: #abedff;
+  transition: background .15s, border-color .15s;
+}
+.topnav a:hover {
+  background: #15253c;
+  border-color: var(--accent-focus);
+  text-decoration: none;
+}
+.topnav a.active {
+  background: #123d55;
+  border-color: var(--accent-focus);
+  color: #fff;
+}
+header.page-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+h1 { font-size: 24px; margin: 0; font-weight: 700; }
+h2 { font-size: 18px; margin: 0 0 10px 0; font-weight: 600; }
+h3 { font-size: 15px; margin: 0 0 8px 0; font-weight: 600; }
+.muted { color: var(--text-muted); font-size: 13px; }
+#banner {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: 10px;
+  padding: 10px 14px;
+  margin-bottom: 18px;
+  font-size: 13px;
+  font-weight: 600;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+#banner.warn {
+  background: #3d2812;
+  border: 2px solid #fb923c;
+  color: #fed7aa;
+}
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1.25fr;
+  gap: 16px;
+  align-items: start;
+}
+@media (max-width: 900px) {
+  .grid-2 { grid-template-columns: 1fr; }
+}
+.kpis {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 16px;
+}
+.card.warn {
+  border-color: rgba(251, 146, 60, 0.4);
+  background: #1a140c;
+}
+.value { font-size: 24px; font-weight: 700; margin-top: 6px; }
+.tools {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+input, select, button {
+  font: inherit;
+  padding: 7px 11px;
+  border: 1px solid var(--border-strong);
+  border-radius: 6px;
+  background: var(--bg-subtle);
+  color: var(--text-primary);
+  font-size: 13px;
+}
+button { cursor: pointer; font-weight: 600; }
+button:hover { background: #15253c; border-color: var(--accent-focus); }
+button.active-filter {
+  background: #123d55;
+  border-color: var(--accent-focus);
+  color: #fff;
+}
+.badge {
+  display: inline-block;
+  padding: 3px 8px;
+  border-radius: 6px;
+  margin: 2px;
+  font-size: 11px;
+  font-weight: 600;
+  font-family: ui-monospace, monospace;
+  border: 1px solid var(--border-subtle);
+  background: var(--bg-subtle);
+}
+.badge.done { background: #0f3d2e; color: #baffd8; border-color: #34a87c; }
+.badge.exploratory { background: #123d55; color: #abedff; border-color: #56c7ed; }
+.badge.invalid { background: #3d1a1a; color: #fca5a5; border-color: #f87171; }
+.badge.notrun, .badge.inconclusive, .badge.warn { background: #3d2812; color: #fed7aa; border-color: #fb923c; }
+.badge.T1 { background: #123d55; color: #abedff; border-color: #56c7ed; }
+.badge.T2 { background: #3d2812; color: #fed7aa; border-color: #fb923c; }
+.badge.T3 { background: #331a47; color: #e9d5ff; border-color: #c084fc; }
+
+.scroll {
+  overflow-x: auto;
+  max-width: 100%;
+  -webkit-overflow-scrolling: touch;
+}
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+th {
+  position: sticky;
+  top: 0;
+  background: #182941;
+  text-align: left;
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--border-strong);
+  font-family: ui-monospace, monospace;
+}
+td {
+  padding: 8px 10px;
+  border-bottom: 1px solid #1e2d42;
+  vertical-align: top;
+}
+tr:hover { background: rgba(56, 189, 248, 0.04); }
+
+.item-btn {
+  width: 100%;
+  text-align: left;
+  background: var(--bg-subtle);
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  padding: 10px 12px;
+  margin-bottom: 8px;
+  display: block;
+}
+.item-btn:hover, .item-btn.selected {
+  border-color: var(--accent-focus);
+  background: #13253b;
+}
+.mono {
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}
+pre.md-view {
+  background: var(--bg-subtle);
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  padding: 12px;
+  overflow: auto;
+  max-height: 480px;
+  white-space: pre-wrap;
+  word-break: break-word;
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: 12px;
+  line-height: 1.45;
+  margin: 0;
+}
+.tree details { margin-left: 12px; margin-top: 4px; }
+.tree summary { cursor: pointer; font-weight: 600; color: #abedff; }
+.tree-leaf {
+  margin-left: 12px;
+  padding: 2px 0;
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: 12px;
+}
+.timeline {
+  border-left: 2px solid var(--border-strong);
+  padding-left: 18px;
+  margin-left: 8px;
+}
+.timeline-step {
+  position: relative;
+  margin-bottom: 14px;
+  background: var(--bg-subtle);
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  padding: 12px;
+}
+.timeline-step::before {
+  content: '';
+  position: absolute;
+  left: -25px;
+  top: 16px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--accent-focus);
+  border: 2px solid var(--bg-canvas);
+}
+.timeline-step.tier-transition::before {
+  background: #fb923c;
+  box-shadow: 0 0 6px #fb923c;
+}
+svg.chart {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+.chart-bar {
+  transition: opacity .15s;
+}
+.chart-bar:hover {
+  opacity: 0.8;
+}
+footer.page-foot {
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border-subtle);
+  font-size: 11px;
+  color: var(--text-muted);
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-family: ui-monospace, monospace;
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+@media print {
+  body { background: #fff; color: #000; }
+  .topnav, #banner { display: none; }
+  .card { border: 1px solid #ccc; background: #fff; color: #000; }
+}
 </style>
 </head>
 <body>
@@ -59,15 +301,20 @@ pre.md-view{background:#0c1625;border:1px solid #2a3e58;border-radius:8px;paddin
   <a href="/ml">ML Experiments</a>
   <a href="/cost">Cost</a>
   <a href="/session">Session Timeline</a>
+  <a href="/research">Research Archive</a>
 </nav>
 <main>
   <header class="page-head">
     <h1>{{title}}</h1>
-    <div id="page-status" class="muted" role="status">NO DATA · waiting for API</div>
+    <div id="page-status" class="muted" role="status" aria-live="polite">NO DATA · waiting for API</div>
   </header>
   <p id="banner">Scope UNKNOWN · Policy profile UNKNOWN</p>
   <div id="content" aria-live="polite">NO DATA · No evidence loaded.</div>
 </main>
+<footer class="page-foot">
+  <div id="foot-left">SCHRÖDINGER'S SERVER &bull; RESEARCH DEFENSE ARTIFACT</div>
+  <div id="foot-right">Scope: UNKNOWN &bull; Profile: UNKNOWN &bull; Loopback</div>
+</footer>
 <script>
 'use strict';
 
@@ -82,13 +329,20 @@ const el = (tag, textValue = '', cls = '') => {
 
 const statusClass = (s) => {
   const v = String(s || '').toUpperCase();
-  if (v === 'DONE') return 'badge done';
+  if (v === 'DONE' || v === 'RECORDED') return 'badge done';
   if (v === 'EXPLORATORY') return 'badge exploratory';
   if (v === 'INVALID') return 'badge invalid';
-  if (v === 'NOT RUN') return 'badge notrun';
-  if (v === 'INCONCLUSIVE') return 'badge inconclusive';
+  if (v === 'NOT RUN' || v === 'INCONCLUSIVE') return 'badge inconclusive';
   return 'badge';
 };
+
+function updateFooter(meta) {
+  const right = document.getElementById('foot-right');
+  if (!right) return;
+  const scope = (meta && meta.scope) ? meta.scope : 'UNKNOWN';
+  const profile = (meta && meta.policy_profile) ? meta.policy_profile : 'UNKNOWN';
+  right.textContent = `Scope: ${scope} • Profile: ${profile} • Mode: Loopback`;
+}
 
 function setBanner(meta, extraWarnText = '') {
   const banner = document.getElementById('banner');
@@ -107,6 +361,7 @@ function setBanner(meta, extraWarnText = '') {
     banner.className = '';
   }
   banner.textContent = parts.join(' · ');
+  updateFooter(meta);
 }
 
 function setStatus(msg) {
@@ -154,6 +409,27 @@ function makeBadgeRow(meta) {
   return wrap;
 }
 
+function makeCopyButton(textToCopy, label = 'Copy') {
+  const btn = el('button', label);
+  btn.type = 'button';
+  btn.style.marginLeft = '8px';
+  btn.style.fontSize = '11px';
+  btn.style.padding = '3px 8px';
+  btn.addEventListener('click', async () => {
+    try {
+      await navigator.clipboard.writeText(textToCopy);
+      btn.textContent = 'Copied!';
+      setTimeout(() => { btn.textContent = label; }, 1500);
+    } catch (e) {
+      btn.textContent = 'Failed';
+    }
+  });
+  return btn;
+}
+
+// -------------------------------------------------------------
+// a. Evidence Vault
+// -------------------------------------------------------------
 async function initEvidence() {
   const content = document.getElementById('content');
   content.replaceChildren(el('p', 'Loading evidence index and progress...', 'muted'));
@@ -201,7 +477,7 @@ async function initEvidence() {
     for (const row of pData.items) {
       const tr = el('tr');
       tr.appendChild(el('td', row[0]));
-      tr.appendChild(el('td', String(row[1])));
+      tr.appendChild(el('td', String(row[1]), 'mono'));
       const stTd = el('td');
       stTd.appendChild(el('span', row[2], statusClass(row[2] === 'Done' ? 'done' : row[2] === 'Partial' ? 'exploratory' : 'NOT RUN')));
       tr.appendChild(stTd);
@@ -214,7 +490,7 @@ async function initEvidence() {
   }
   container.appendChild(progCard);
 
-  // Evidence Index + Inspector
+  // Evidence Index + Detail Drawer
   const grid = el('div', '', 'grid-2');
   const listCard = el('section', '', 'card');
   listCard.appendChild(el('h2', 'Allowlisted Evidence Catalog'));
@@ -227,38 +503,52 @@ async function initEvidence() {
     return;
   }
 
-  let activeFilter = 'ALL';
+  let activeStatusFilter = 'ALL';
+  let activeKindFilter = 'ALL';
+  let sortField = 'title';
   let searchText = '';
   let selectedId = null;
 
   const tools = el('div', '', 'tools');
   const searchInput = document.createElement('input');
-  searchInput.placeholder = 'Filter by ID, title, or source file...';
+  searchInput.placeholder = 'Search by ID, title, or source...';
   searchInput.setAttribute('aria-label', 'Filter evidence');
   tools.appendChild(searchInput);
 
+  const sortSelect = document.createElement('select');
+  sortSelect.setAttribute('aria-label', 'Sort evidence items');
+  const sortTitle = el('option', 'Sort by Title'); sortTitle.value = 'title';
+  const sortStatus = el('option', 'Sort by Status'); sortStatus.value = 'status';
+  const sortKind = el('option', 'Sort by Kind'); sortKind.value = 'kind';
+  sortSelect.append(sortTitle, sortStatus, sortKind);
+  sortSelect.addEventListener('change', () => {
+    sortField = sortSelect.value;
+    renderList();
+  });
+  tools.appendChild(sortSelect);
+
   const filterStatuses = ['ALL', 'done', 'exploratory', 'NOT RUN', 'INVALID', 'INCONCLUSIVE'];
-  const filterBtns = [];
+  const statusFilterBtns = [];
   for (const fs of filterStatuses) {
-    const btn = el('button', fs === 'ALL' ? 'All' : fs, fs === 'ALL' ? 'active-filter' : '');
+    const btn = el('button', fs === 'ALL' ? 'All Status' : fs, fs === 'ALL' ? 'active-filter' : '');
     btn.type = 'button';
     btn.addEventListener('click', () => {
-      activeFilter = fs;
-      for (const b of filterBtns) b.className = (b === btn) ? 'active-filter' : '';
+      activeStatusFilter = fs;
+      for (const b of statusFilterBtns) b.className = (b === btn) ? 'active-filter' : '';
       renderList();
     });
-    filterBtns.push(btn);
+    statusFilterBtns.push(btn);
     tools.appendChild(btn);
   }
-  listCard.appendChild(tools);
 
+  listCard.appendChild(tools);
   const listWrap = el('div', '', 'scroll');
   listCard.appendChild(listWrap);
 
   const inspectorCard = el('section', '', 'card');
-  inspectorCard.appendChild(el('h2', 'Evidence Inspector'));
+  inspectorCard.appendChild(el('h2', 'Evidence Detail Drawer'));
   const inspectorMeta = el('div', '', 'muted');
-  inspectorMeta.appendChild(el('p', 'Select an evidence item from the catalog to inspect its recorded contents.'));
+  inspectorMeta.appendChild(el('p', 'Select an evidence item to inspect its recorded contents.'));
   const inspectorBody = el('div');
   inspectorCard.append(inspectorMeta, inspectorBody);
 
@@ -267,23 +557,34 @@ async function initEvidence() {
     renderList();
     inspectorMeta.replaceChildren(el('p', `Loading ${item.id}...`, 'muted'));
     inspectorBody.replaceChildren();
+
     try {
       const res = await fetchJson(`/api/evidence/${encodeURIComponent(item.id)}`);
       const payload = res.body;
       inspectorMeta.replaceChildren();
-      inspectorMeta.appendChild(el('h3', payload.title || item.id));
+      const topTitleRow = el('div', '', 'tools');
+      topTitleRow.appendChild(el('h3', payload.title || item.id));
+      if (payload.source_file) {
+        topTitleRow.appendChild(makeCopyButton(payload.source_file, 'Copy Source Path'));
+      }
+      inspectorMeta.appendChild(topTitleRow);
       inspectorMeta.appendChild(makeBadgeRow(payload));
+
       if (!res.ok || payload.data === null || payload.data === undefined) {
         inspectorBody.replaceChildren(el('p', payload.empty || 'NO DATA · Evidence unavailable.', 'muted'));
         return;
       }
+
       if (payload.kind === 'markdown') {
         const pre = el('pre', payload.data.text || '', 'md-view');
         inspectorBody.replaceChildren(pre);
       } else {
+        const copyJsonBtn = makeCopyButton(JSON.stringify(payload.data, null, 2), 'Copy JSON Payload');
+        inspectorBody.appendChild(copyJsonBtn);
         const treeWrap = el('div', '', 'tree scroll');
+        treeWrap.style.marginTop = '10px';
         treeWrap.appendChild(renderJsonTree(payload.data));
-        inspectorBody.replaceChildren(treeWrap);
+        inspectorBody.appendChild(treeWrap);
       }
     } catch (e) {
       inspectorMeta.replaceChildren(el('p', 'NO DATA · Failed to load evidence item.', 'muted'));
@@ -295,10 +596,17 @@ async function initEvidence() {
     listWrap.replaceChildren();
     const q = searchText.trim().toLowerCase();
     const filtered = items.filter((it) => {
-      if (activeFilter !== 'ALL' && String(it.status).toUpperCase() !== activeFilter.toUpperCase()) return false;
+      if (activeStatusFilter !== 'ALL' && String(it.status).toUpperCase() !== activeStatusFilter.toUpperCase()) return false;
       if (!q) return true;
       return `${it.id} ${it.title} ${it.source_file}`.toLowerCase().includes(q);
     });
+
+    filtered.sort((a, b) => {
+      if (sortField === 'status') return String(a.status).localeCompare(String(b.status));
+      if (sortField === 'kind') return String(a.kind).localeCompare(String(b.kind));
+      return String(a.title || a.id).localeCompare(String(b.title || b.id));
+    });
+
     if (!filtered.length) {
       listWrap.appendChild(el('p', 'No matching evidence items.', 'muted'));
       return;
@@ -307,8 +615,9 @@ async function initEvidence() {
       const btn = document.createElement('button');
       btn.type = 'button';
       btn.className = 'item-btn' + (selectedId === it.id ? ' selected' : '');
-      btn.appendChild(el('div', `${it.title || it.id} (${it.kind})`, ''));
-      btn.appendChild(makeBadgeRow(it));
+      const headRow = el('div', `${it.title || it.id} (${it.kind})`, 'font-mono');
+      headRow.style.fontWeight = '700';
+      btn.append(headRow, makeBadgeRow(it));
       btn.addEventListener('click', () => inspectItem(it));
       listWrap.appendChild(btn);
     }
@@ -325,6 +634,9 @@ async function initEvidence() {
   content.replaceChildren(container);
 }
 
+// -------------------------------------------------------------
+// b. ML Experiments
+// -------------------------------------------------------------
 async function initMl() {
   const content = document.getElementById('content');
   content.replaceChildren(el('p', 'Loading ML experiment metrics and verdict reports...', 'muted'));
@@ -351,6 +663,12 @@ async function initMl() {
   setStatus('Loaded ML experiment evidence');
 
   const container = el('div');
+
+  // Overall verdict callout banner
+  const callout = el('div', '', 'card warn');
+  callout.appendChild(el('h2', 'Overall Protocol Outcome: No validated ML gain'));
+  callout.appendChild(el('p', 'Post-hoc evaluations across stages S2, S4, and S5 establish no statistically verified predictive advantage over non-ML heuristic baselines under pre-registered leakage controls.', 'muted'));
+  container.appendChild(callout);
 
   // Per-stage Verdicts Card
   const verdictCard = el('section', '', 'card');
@@ -383,23 +701,26 @@ async function initMl() {
   }
   container.appendChild(verdictCard);
 
-  // Budget Recall Ladder Card
+  // SVG Bar Charts & Budget Ladder
   if (mData && typeof mData === 'object') {
     const ladderCard = el('section', '', 'card');
-    ladderCard.appendChild(el('h2', 'Recall by Budget Ladder'));
+    ladderCard.appendChild(el('h2', 'Recall by Budget Ladder & SVG Evaluation Chart'));
     const stageKeys = Object.keys(mData);
     let activeStage = stageKeys[0] || null;
     const tools = el('div', '', 'tools');
     const stageBtns = [];
-    const ladderWrap = el('div', '', 'scroll');
+    const chartWrap = el('div', '', 'scroll');
+    const tableWrap = el('div', '', 'scroll');
 
-    function renderStageTable(stageKey) {
-      ladderWrap.replaceChildren();
+    function renderStageVisuals(stageKey) {
+      chartWrap.replaceChildren();
+      tableWrap.replaceChildren();
       const st = mData[stageKey];
       if (!st || !st.metrics) {
-        ladderWrap.appendChild(el('p', 'NO DATA · No stage metrics.', 'muted'));
+        chartWrap.appendChild(el('p', 'NO DATA · No stage metrics.', 'muted'));
         return;
       }
+
       const rankers = Object.entries(st.metrics);
       const budgetSet = new Set();
       for (const [, rObj] of rankers) {
@@ -408,6 +729,125 @@ async function initMl() {
         }
       }
       const budgets = [...budgetSet].sort((a, b) => parseFloat(a) - parseFloat(b));
+
+      // Draw SVG chart for primary budget (e.g. 0.10 / 10%)
+      const targetBudget = budgets.includes('0.1') ? '0.1' : (budgets[0] || null);
+      if (targetBudget) {
+        const svgCard = el('div');
+        svgCard.appendChild(el('h3', `Recall Comparison at ${Number(targetBudget) * 100}% Budget (Stage ${stageKey})`));
+        const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        svg.setAttribute('viewBox', '0 0 600 240');
+        svg.setAttribute('class', 'chart');
+        svg.style.maxHeight = '240px';
+
+        const barColors = {
+          learned: '#f87171',
+          shuffle: '#fb923c',
+          constant: '#94a3b8',
+          random: '#64748b',
+          negative_activity: '#38bdf8',
+          activity: '#818cf8',
+          R7: '#34d399',
+          ablation: '#cbd5e1'
+        };
+
+        const chartH = 170;
+        const chartW = 520;
+        const startX = 60;
+        const startY = 20;
+
+        // Random recall reference line = budget value
+        const randomRefRecall = parseFloat(targetBudget);
+        let maxRecall = Math.max(randomRefRecall, 0.4);
+        for (const [, rObj] of rankers) {
+          const rec = rObj && rObj.budgets && rObj.budgets[targetBudget] ? rObj.budgets[targetBudget].recall : 0;
+          if (rec > maxRecall) maxRecall = rec;
+        }
+
+        // Grid lines
+        for (let step = 0; step <= 4; step++) {
+          const yVal = (maxRecall * step) / 4;
+          const yPos = startY + chartH - (yVal / maxRecall) * chartH;
+          const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+          line.setAttribute('x1', String(startX));
+          line.setAttribute('x2', String(startX + chartW));
+          line.setAttribute('y1', String(yPos));
+          line.setAttribute('y2', String(yPos));
+          line.setAttribute('stroke', '#1a2639');
+          svg.appendChild(line);
+
+          const txt = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+          txt.setAttribute('x', String(startX - 8));
+          txt.setAttribute('y', String(yPos + 4));
+          txt.setAttribute('text-anchor', 'end');
+          txt.setAttribute('fill', '#94a3b8');
+          txt.setAttribute('font-size', '10');
+          txt.setAttribute('font-family', 'ui-monospace');
+          txt.textContent = yVal.toFixed(2);
+          svg.appendChild(txt);
+        }
+
+        // Random reference dashed line
+        const refY = startY + chartH - (randomRefRecall / maxRecall) * chartH;
+        const refLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        refLine.setAttribute('x1', String(startX));
+        refLine.setAttribute('x2', String(startX + chartW));
+        refLine.setAttribute('y1', String(refY));
+        refLine.setAttribute('y2', String(refY));
+        refLine.setAttribute('stroke', '#fbbf24');
+        refLine.setAttribute('stroke-dasharray', '4,4');
+        svg.appendChild(refLine);
+
+        const refText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        refText.setAttribute('x', String(startX + chartW - 4));
+        refText.setAttribute('y', String(refY - 6));
+        refText.setAttribute('text-anchor', 'end');
+        refText.setAttribute('fill', '#fbbf24');
+        refText.setAttribute('font-size', '10');
+        refText.setAttribute('font-family', 'ui-monospace');
+        refText.textContent = `Random Reference (${randomRefRecall.toFixed(2)})`;
+        svg.appendChild(refText);
+
+        // Bars
+        const barW = Math.max(16, Math.floor(chartW / rankers.length) - 10);
+        for (let i = 0; i < rankers.length; i++) {
+          const [rName, rObj] = rankers[i];
+          const rec = rObj && rObj.budgets && rObj.budgets[targetBudget] ? rObj.budgets[targetBudget].recall : 0;
+          const bH = (rec / maxRecall) * chartH;
+          const x = startX + i * (barW + 10) + 6;
+          const y = startY + chartH - bH;
+
+          const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+          rect.setAttribute('x', String(x));
+          rect.setAttribute('y', String(y));
+          rect.setAttribute('width', String(barW));
+          rect.setAttribute('height', String(bH));
+          rect.setAttribute('fill', barColors[rName] || '#38bdf8');
+          rect.setAttribute('rx', '3');
+          rect.setAttribute('class', 'chart-bar');
+
+          // Tooltip on SVG element
+          const titleTag = document.createElementNS('http://www.w3.org/2000/svg', 'title');
+          titleTag.textContent = `${rName}: recall ${rec} (Source: results/exp1/metrics.json)`;
+          rect.appendChild(titleTag);
+          svg.appendChild(rect);
+
+          const lbl = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+          lbl.setAttribute('x', String(x + barW / 2));
+          lbl.setAttribute('y', String(startY + chartH + 16));
+          lbl.setAttribute('text-anchor', 'middle');
+          lbl.setAttribute('fill', '#94a3b8');
+          lbl.setAttribute('font-size', '9');
+          lbl.setAttribute('font-family', 'ui-monospace');
+          lbl.textContent = rName.slice(0, 8);
+          svg.appendChild(lbl);
+        }
+
+        svgCard.appendChild(svg);
+        chartWrap.appendChild(svgCard);
+      }
+
+      // Detailed ladder table
       const tbl = el('table');
       const thead = el('thead');
       const htr = el('tr');
@@ -428,7 +868,7 @@ async function initMl() {
         tbody.appendChild(tr);
       }
       tbl.append(thead, tbody);
-      ladderWrap.appendChild(tbl);
+      tableWrap.appendChild(tbl);
     }
 
     for (const sk of stageKeys) {
@@ -437,24 +877,28 @@ async function initMl() {
       btn.addEventListener('click', () => {
         activeStage = sk;
         for (const b of stageBtns) b.className = (b === btn) ? 'active-filter' : '';
-        renderStageTable(sk);
+        renderStageVisuals(sk);
       });
       stageBtns.push(btn);
       tools.appendChild(btn);
     }
-    ladderCard.append(tools, ladderWrap);
-    if (activeStage) renderStageTable(activeStage);
+    ladderCard.append(tools, chartWrap, tableWrap);
+    if (activeStage) renderStageVisuals(activeStage);
     container.appendChild(ladderCard);
   }
 
-  // Markdown Reports (verbatim text, no numeric extraction)
-  for (const [label, res] of [
-    ['Experiment 1 Verdict Summary', exp1Res],
-    ['Experiment 0 Null Root Cause', nullRcRes],
-    ['Experiment 1 Root Cause', rcRes]
+  // Markdown Reports with copy buttons and links
+  for (const [label, res, idStr] of [
+    ['Experiment 1 Verdict Summary', exp1Res, 'EXPERIMENT1_RESULT'],
+    ['Experiment 0 Null Root Cause', nullRcRes, 'NULL_ROOT_CAUSE'],
+    ['Experiment 1 Root Cause Diagnosis', rcRes, 'ROOT_CAUSE']
   ]) {
     const mdCard = el('section', '', 'card');
-    mdCard.appendChild(el('h2', label));
+    const headRow = el('div', '', 'tools');
+    headRow.appendChild(el('h2', label));
+    headRow.appendChild(el('a', `[Open in Evidence Vault: ${idStr}]`, 'mono muted'));
+    mdCard.appendChild(headRow);
+
     if (!res || !res.body) {
       mdCard.appendChild(el('p', 'NO DATA · Report unavailable.', 'muted'));
     } else {
@@ -462,7 +906,8 @@ async function initMl() {
       if (!res.ok || !res.body.data || typeof res.body.data.text !== 'string') {
         mdCard.appendChild(el('p', res.body.empty || 'NO DATA · Markdown unavailable.', 'muted'));
       } else {
-        mdCard.appendChild(el('pre', res.body.data.text, 'md-view'));
+        const pre = el('pre', res.body.data.text, 'md-view');
+        mdCard.appendChild(pre);
       }
     }
     container.appendChild(mdCard);
@@ -471,6 +916,9 @@ async function initMl() {
   content.replaceChildren(container);
 }
 
+// -------------------------------------------------------------
+// c. Cost
+// -------------------------------------------------------------
 async function initCost() {
   const content = document.getElementById('content');
   content.replaceChildren(el('p', 'Loading cost evidence and resource measurements...', 'muted'));
@@ -514,13 +962,104 @@ async function initCost() {
   if (costTierRes && costTierRes.body) limitCard.appendChild(makeBadgeRow(costTierRes.body));
   container.appendChild(limitCard);
 
+  // Range-Bar Visuals (Min-Max per Repeat, T1 vs T2)
+  const t1Runs = (t1Res && t1Res.body && t1Res.body.data && Array.isArray(t1Res.body.data.runs)) ? t1Res.body.data.runs : [];
+  const t2Runs = (t2Res && t2Res.body && t2Res.body.data && Array.isArray(t2Res.body.data.runs)) ? t2Res.body.data.runs : [];
+
+  if (t1Runs.length || t2Runs.length) {
+    const rangeCard = el('section', '', 'card');
+    rangeCard.appendChild(el('h2', 'Resource Spread by Repeat (Min-Max Range)'));
+    rangeCard.appendChild(el('p', 'Visualizing mean and max CPU percentage across repeated runs, never single points without spread.', 'muted'));
+
+    const rangeWrap = el('div', '', 'scroll');
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svg.setAttribute('viewBox', '0 0 600 200');
+    svg.setAttribute('class', 'chart');
+    svg.style.maxHeight = '200px';
+
+    const maxCpu = 20; // 0-20% scale
+    const chartH = 130;
+    const chartW = 500;
+    const startX = 60;
+    const startY = 20;
+
+    // Grid lines
+    for (let i = 0; i <= 4; i++) {
+      const val = (maxCpu * i) / 4;
+      const y = startY + chartH - (val / maxCpu) * chartH;
+      const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+      line.setAttribute('x1', String(startX));
+      line.setAttribute('x2', String(startX + chartW));
+      line.setAttribute('y1', String(y));
+      line.setAttribute('y2', String(y));
+      line.setAttribute('stroke', '#1a2639');
+      svg.appendChild(line);
+
+      const txt = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+      txt.setAttribute('x', String(startX - 8));
+      txt.setAttribute('y', String(y + 4));
+      txt.setAttribute('text-anchor', 'end');
+      txt.setAttribute('fill', '#94a3b8');
+      txt.setAttribute('font-size', '10');
+      txt.setAttribute('font-family', 'ui-monospace');
+      txt.textContent = `${val.toFixed(0)}%`;
+      svg.appendChild(txt);
+    }
+
+    const allRuns = [
+      ...t1Runs.map((r) => ({ target: 'T1', ...r })),
+      ...t2Runs.map((r) => ({ target: 'T2', ...r }))
+    ];
+
+    const slotW = Math.floor(chartW / (allRuns.length || 1));
+    for (let i = 0; i < allRuns.length; i++) {
+      const r = allRuns[i];
+      const meanCpu = r.stats ? r.stats.mean_cpu_pct || 0 : 0;
+      const maxC = r.stats ? r.stats.max_cpu_pct || 0 : 0;
+      const x = startX + i * slotW + slotW / 2;
+
+      const yMax = startY + chartH - Math.min(chartH, (maxC / maxCpu) * chartH);
+      const yMean = startY + chartH - Math.min(chartH, (meanCpu / maxCpu) * chartH);
+
+      // Whisker line from mean to max
+      const whisker = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+      whisker.setAttribute('x1', String(x));
+      whisker.setAttribute('x2', String(x));
+      whisker.setAttribute('y1', String(yMax));
+      whisker.setAttribute('y2', String(startY + chartH));
+      whisker.setAttribute('stroke', r.target === 'T1' ? '#38bdf8' : '#fb923c');
+      whisker.setAttribute('stroke-width', '2');
+      svg.appendChild(whisker);
+
+      // Mean point
+      const dot = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+      dot.setAttribute('cx', String(x));
+      dot.setAttribute('cy', String(yMean));
+      dot.setAttribute('r', '4');
+      dot.setAttribute('fill', '#fff');
+      svg.appendChild(dot);
+
+      // Label
+      const lbl = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+      lbl.setAttribute('x', String(x));
+      lbl.setAttribute('y', String(startY + chartH + 16));
+      lbl.setAttribute('text-anchor', 'middle');
+      lbl.setAttribute('fill', '#94a3b8');
+      lbl.setAttribute('font-size', '9');
+      lbl.setAttribute('font-family', 'ui-monospace');
+      lbl.textContent = `${r.target}-R${r.repeat}`;
+      svg.appendChild(lbl);
+    }
+
+    rangeWrap.appendChild(svg);
+    rangeCard.appendChild(rangeWrap);
+    container.appendChild(rangeCard);
+  }
+
   // Matched Measurements Table (T1 vs T2)
   const measCard = el('section', '', 'card');
   measCard.appendChild(el('h2', 'Matched Hardware Resource Measurements'));
   measCard.appendChild(el('p', 'Comparative CPU and memory observed across isolated pure runs (Spike S2 protocol).', 'muted'));
-
-  const t1Runs = (t1Res && t1Res.body && t1Res.body.data && Array.isArray(t1Res.body.data.runs)) ? t1Res.body.data.runs : [];
-  const t2Runs = (t2Res && t2Res.body && t2Res.body.data && Array.isArray(t2Res.body.data.runs)) ? t2Res.body.data.runs : [];
 
   if (!t1Runs.length && !t2Runs.length) {
     measCard.appendChild(el('p', 'NO DATA · Pure tier measurements unavailable.', 'muted'));
@@ -539,7 +1078,7 @@ async function initCost() {
         const tr = el('tr');
         const st = r.stats || {};
         tr.appendChild(el('td', target, 'mono'));
-        tr.appendChild(el('td', String(r.repeat || '')));
+        tr.appendChild(el('td', String(r.repeat || ''), 'mono'));
         tr.appendChild(el('td', st.wall_time !== undefined ? String(st.wall_time) : 'NO DATA', 'mono'));
         tr.appendChild(el('td', st.mean_cpu_pct !== undefined ? String(st.mean_cpu_pct) : 'NO DATA', 'mono'));
         tr.appendChild(el('td', st.max_cpu_pct !== undefined ? String(st.max_cpu_pct) : 'NO DATA', 'mono'));
@@ -555,7 +1094,7 @@ async function initCost() {
   }
   container.appendChild(measCard);
 
-  // Mixed Sensor Baseline (cost_model.json)
+  // Mixed Sensor Baseline
   const modelCard = el('section', '', 'card');
   modelCard.appendChild(el('h2', 'Mixed Container Baseline (cost_model.json)'));
   if (modelRes && modelRes.body) modelCard.appendChild(makeBadgeRow(modelRes.body));
@@ -599,6 +1138,9 @@ async function initCost() {
   content.replaceChildren(container);
 }
 
+// -------------------------------------------------------------
+// d. Session Timeline
+// -------------------------------------------------------------
 async function initSession() {
   const content = document.getElementById('content');
   content.replaceChildren(el('p', 'Loading session list and recorded decisions...', 'muted'));
@@ -632,15 +1174,9 @@ async function initSession() {
 
   const filterSelect = document.createElement('select');
   filterSelect.setAttribute('aria-label', 'Filter sessions by tier');
-  const optAll = document.createElement('option');
-  optAll.value = 'all';
-  optAll.textContent = 'All sessions';
-  const optEsc = document.createElement('option');
-  optEsc.value = 'yes';
-  optEsc.textContent = 'Reached T2+';
-  const optT1 = document.createElement('option');
-  optT1.value = 'no';
-  optT1.textContent = 'T1 only';
+  const optAll = el('option', 'All sessions'); optAll.value = 'all';
+  const optEsc = el('option', 'Reached T2+'); optEsc.value = 'yes';
+  const optT1 = el('option', 'T1 only'); optT1.value = 'no';
   filterSelect.append(optAll, optEsc, optT1);
   tools.appendChild(filterSelect);
   listCard.appendChild(tools);
@@ -689,12 +1225,19 @@ async function initSession() {
       }
 
       const timelineWrap = el('div', '', 'timeline');
+      let previousTier = null;
       for (let i = 0; i < decisions.length; i++) {
         const d = decisions[i];
-        const step = el('div', '', 'timeline-step');
+        const isTierChange = previousTier !== null && d.tier_decided && d.tier_decided !== previousTier;
+        previousTier = d.tier_decided || previousTier;
+
+        const step = el('div', '', 'timeline-step' + (isTierChange ? ' tier-transition' : ''));
         const head = el('div', '', 'tools');
         head.appendChild(el('strong', `Step ${i + 1}: Stage ${d.stage || '—'}`));
         head.appendChild(el('span', d.tier_decided || '—', `badge ${d.tier_decided || ''}`));
+        if (isTierChange) {
+          head.appendChild(el('span', 'Tier Changed ↑', 'badge warn'));
+        }
         if (d.demo_label) head.appendChild(el('span', d.demo_label, 'badge warn'));
         step.appendChild(head);
 
@@ -770,7 +1313,6 @@ async function initSession() {
   container.appendChild(grid);
   content.replaceChildren(container);
 
-  // If sessions exist, auto-select first session
   if (sessions.length > 0 && !activeSessionId) {
     loadTimeline(sessions[0].session_id);
   }
