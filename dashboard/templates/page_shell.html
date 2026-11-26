@@ -325,12 +325,159 @@ async function initEvidence() {
   content.replaceChildren(container);
 }
 
+async function initMl() {
+  const content = document.getElementById('content');
+  content.replaceChildren(el('p', 'Loading ML experiment metrics and verdict reports...', 'muted'));
+  const settled = await Promise.allSettled([
+    fetchJson('/api/evidence/metrics'),
+    fetchJson('/api/evidence/EXPERIMENT1_RESULT'),
+    fetchJson('/api/evidence/NULL_ROOT_CAUSE'),
+    fetchJson('/api/evidence/ROOT_CAUSE')
+  ]);
+
+  const getBody = (idx) => (settled[idx].status === 'fulfilled' ? settled[idx].value : null);
+  const metricsRes = getBody(0);
+  const exp1Res = getBody(1);
+  const nullRcRes = getBody(2);
+  const rcRes = getBody(3);
+
+  const metricsMeta = metricsRes ? metricsRes.body : null;
+  setBanner(metricsMeta, 'No validated ML gain');
+  if (!metricsRes && !exp1Res && !nullRcRes && !rcRes) {
+    setStatus('NO DATA · API unavailable');
+    content.replaceChildren(el('div', 'NO DATA · ML evidence endpoints unavailable.', 'card'));
+    return;
+  }
+  setStatus('Loaded ML experiment evidence');
+
+  const container = el('div');
+
+  // Per-stage Verdicts Card
+  const verdictCard = el('section', '', 'card');
+  verdictCard.appendChild(el('h2', 'Experiment 1 Stage Verdicts'));
+  if (metricsMeta) verdictCard.appendChild(makeBadgeRow(metricsMeta));
+  const mData = metricsMeta && metricsMeta.data ? metricsMeta.data : null;
+  if (!mData || typeof mData !== 'object') {
+    verdictCard.appendChild(el('p', (metricsMeta && metricsMeta.empty) || 'NO DATA · metrics.json unavailable.', 'muted'));
+  } else {
+    const tbl = el('table');
+    const thead = el('thead');
+    const htr = el('tr');
+    for (const h of ['Stage', 'Day', 'Baseline', 'Delta', 'Interval', 'Verdict']) htr.appendChild(el('th', h));
+    thead.appendChild(htr);
+    const tbody = el('tbody');
+    for (const [stage, st] of Object.entries(mData)) {
+      const tr = el('tr');
+      tr.appendChild(el('td', stage, 'mono'));
+      tr.appendChild(el('td', st.day || 'UNKNOWN'));
+      tr.appendChild(el('td', st.baseline || 'UNKNOWN'));
+      tr.appendChild(el('td', st.delta !== undefined && st.delta !== null ? String(st.delta) : 'NO DATA', 'mono'));
+      tr.appendChild(el('td', Array.isArray(st.interval) ? `[${st.interval.join(', ')}]` : 'NO DATA', 'mono'));
+      const vTd = el('td');
+      vTd.appendChild(el('span', st.verdict || 'UNKNOWN', statusClass(st.verdict)));
+      tr.appendChild(vTd);
+      tbody.appendChild(tr);
+    }
+    tbl.append(thead, tbody);
+    verdictCard.appendChild(tbl);
+  }
+  container.appendChild(verdictCard);
+
+  // Budget Recall Ladder Card
+  if (mData && typeof mData === 'object') {
+    const ladderCard = el('section', '', 'card');
+    ladderCard.appendChild(el('h2', 'Recall by Budget Ladder'));
+    const stageKeys = Object.keys(mData);
+    let activeStage = stageKeys[0] || null;
+    const tools = el('div', '', 'tools');
+    const stageBtns = [];
+    const ladderWrap = el('div', '', 'scroll');
+
+    function renderStageTable(stageKey) {
+      ladderWrap.replaceChildren();
+      const st = mData[stageKey];
+      if (!st || !st.metrics) {
+        ladderWrap.appendChild(el('p', 'NO DATA · No stage metrics.', 'muted'));
+        return;
+      }
+      const rankers = Object.entries(st.metrics);
+      const budgetSet = new Set();
+      for (const [, rObj] of rankers) {
+        if (rObj && rObj.budgets) {
+          for (const bk of Object.keys(rObj.budgets)) budgetSet.add(bk);
+        }
+      }
+      const budgets = [...budgetSet].sort((a, b) => parseFloat(a) - parseFloat(b));
+      const tbl = el('table');
+      const thead = el('thead');
+      const htr = el('tr');
+      htr.appendChild(el('th', 'Ranker'));
+      htr.appendChild(el('th', 'PR-AUC'));
+      for (const b of budgets) htr.appendChild(el('th', `Recall @ ${b}`));
+      thead.appendChild(htr);
+      const tbody = el('tbody');
+      for (const [rName, rObj] of rankers) {
+        const tr = el('tr');
+        tr.appendChild(el('td', rName, 'mono'));
+        tr.appendChild(el('td', rObj && rObj.pr_auc !== undefined ? String(rObj.pr_auc) : 'NO DATA', 'mono'));
+        for (const b of budgets) {
+          const bObj = rObj && rObj.budgets ? rObj.budgets[b] : null;
+          const val = bObj && bObj.recall !== undefined && bObj.recall !== null ? String(bObj.recall) : 'NO DATA';
+          tr.appendChild(el('td', val, 'mono'));
+        }
+        tbody.appendChild(tr);
+      }
+      tbl.append(thead, tbody);
+      ladderWrap.appendChild(tbl);
+    }
+
+    for (const sk of stageKeys) {
+      const btn = el('button', sk, sk === activeStage ? 'active-filter' : '');
+      btn.type = 'button';
+      btn.addEventListener('click', () => {
+        activeStage = sk;
+        for (const b of stageBtns) b.className = (b === btn) ? 'active-filter' : '';
+        renderStageTable(sk);
+      });
+      stageBtns.push(btn);
+      tools.appendChild(btn);
+    }
+    ladderCard.append(tools, ladderWrap);
+    if (activeStage) renderStageTable(activeStage);
+    container.appendChild(ladderCard);
+  }
+
+  // Markdown Reports (verbatim text, no numeric extraction)
+  for (const [label, res] of [
+    ['Experiment 1 Verdict Summary', exp1Res],
+    ['Experiment 0 Null Root Cause', nullRcRes],
+    ['Experiment 1 Root Cause', rcRes]
+  ]) {
+    const mdCard = el('section', '', 'card');
+    mdCard.appendChild(el('h2', label));
+    if (!res || !res.body) {
+      mdCard.appendChild(el('p', 'NO DATA · Report unavailable.', 'muted'));
+    } else {
+      mdCard.appendChild(makeBadgeRow(res.body));
+      if (!res.ok || !res.body.data || typeof res.body.data.text !== 'string') {
+        mdCard.appendChild(el('p', res.body.empty || 'NO DATA · Markdown unavailable.', 'muted'));
+      } else {
+        mdCard.appendChild(el('pre', res.body.data.text, 'md-view'));
+      }
+    }
+    container.appendChild(mdCard);
+  }
+
+  content.replaceChildren(container);
+}
+
 (function boot() {
   const path = window.location.pathname;
   for (const link of document.querySelectorAll('.topnav a')) {
     if (link.getAttribute('href') === path) link.classList.add('active');
   }
   if (path === '/evidence') initEvidence();
+  else if (path === '/ml') initMl();
 })();
 </script>
 </body>
