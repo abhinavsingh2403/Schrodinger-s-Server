@@ -35,10 +35,10 @@ graph TD
 
 ## 2. Technical Glossary
 
-- **Visitor**: A source identity derived via salted HMAC of the incoming IP address, ensuring privacy preservation with zero raw IP persistence in decision logs [SPEC §3, SPEC §5.2].
+- **Visitor**: A derived HMAC-SHA256 identifier. Salt configuration has a public development fallback. Sensor logs have separate privacy constraints (gatekeeper/visitor_memory.py, DATA.md).
 - **Sensor (Cowrie)**: The pinned SSH honeypot daemon that ingests inbound traffic, enforces a consistent identity profile (Debian 12 bookworm, OpenSSH 9.2p1, kernel 6.1.0-21-amd64), and publishes structured event telemetry via adaptive Conch hooks (Status: lab-verified on loopback only; see results/exp0/ASTRA2_REPORT.md and HANDOFF.md) [SPEC §5.1, README §3].
 - **Gatekeeper**: The centralized decision engine responsible for extracting stage features, computing model scores, enforcing budget constraints, tracking visitor history, and assigning honeypot tiers [SPEC §5.2, README §3].
-- **Tier T1 (Lite)**: Low-interaction baseline emulation shell maintaining a matched identity profile at minimum resource cost [SPEC §3, SPEC §5.1, README §3].
+- **Tier T1 (Lite)**: Low-interaction baseline emulation shell maintaining a matched identity profile with measured resource usage described in results/cost/COST_PER_TIER.md [SPEC §3, SPEC §5.1, README §3].
 - **Tier T2 (Hardened)**: Medium-interaction emulation environment featuring a custom fake filesystem overlay, rich command outputs, and local decoy artifacts [SPEC §3, SPEC §5.1, README §3].
 - **Tier T3 (Real VM - DEFERRED)**: High-interaction environment utilizing a proxy to sandboxed Linux virtual machine guests; explicitly marked as deferred pending hardware virtualization verification and gating [SPEC §0, SPEC §5.1, README §3].
 - **Stage S1 (Handshake)**: The decision point following SSH key exchange and protocol version negotiation [SPEC §3, SPEC §5.1].
@@ -47,7 +47,7 @@ graph TD
 - **Stage S4 (First Command)**: The decision point immediately upon receiving the initial shell command [SPEC §3, SPEC §5.1].
 - **Stage S5 (Command Burst)**: The decision point following the execution of multiple subsequent commands [SPEC §3, SPEC §5.1].
 - **Model V**: The early-stage triage classifier evaluated on aggregate proxy features (results/exp0/POSTHOC_ML_EVAL.md) to predict downstream interactive utility [SPEC §3, SPEC §5.2, README §1].
-- **Escalation Budget**: A pre-declared operational ceiling restricting the fraction of sessions escalated to higher tiers to prevent resource exhaustion [SPEC §3, SPEC §5.2, README §3].
+- **Escalation Budget**: A pre-declared operational ceiling restricting the fraction of sessions escalated to higher tiers as exercised by budget tests (gatekeeper/test_session_budget.py) [SPEC §3, SPEC §5.2, README §3].
 - **Gate 0**: The pre-registered empirical milestone evaluating whether learned statistical models demonstrate recall improvement over simple pre-declared baseline rules [SPEC §0, README §2].
 - **Oracle Arm**: The retrospective hindsight simulation baseline that computes upper-bound yield efficiency assuming full post-hoc knowledge of session activity [SPEC §3, README §3].
 - **Identity Profile**: A uniform system configuration across hostnames (`srv-app-01`), distribution banners (Debian 12 bookworm), OpenSSH version (`SSH-2.0-OpenSSH_9.2p1 Debian-2+deb12u3`), kernel versions (`6.1.0-21-amd64`), and account names shared across tiers for consistent presentation (config/identity.yaml) [SPEC §3, SPEC §5.1, README §3].

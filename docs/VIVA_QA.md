@@ -68,16 +68,16 @@ Why did ML fail to establish an advantage? A constant-label fit still ranked ses
 The HTTP service exposes health, decision and session-recording endpoints. The stored S3 model is PurePythonLogisticRegression (models/model_s3.json). The R7-labelled runtime fallback returns a constant. LAB_DEMO_NOT_ML uses declared demo rules. (gatekeeper/decision_api.py)
 
 ### Q17: How is visitor privacy protected without losing tracking capability?
-Source IPs are cryptographically hashed using salted HMAC-SHA256 upon arrival to generate masked visitor identifiers (vis_xxxx). Raw IP addresses are never stored in the database or exposed on dashboard endpoints [gatekeeper/visitor_memory.py, AGENTS.md Rule 6].
+Visitor memory derives HMAC-SHA256 identifiers using a supplied salt or VISITOR_SALT. Its development fallback is public, so secrecy requires a configured salt. The decision-log insert stores the derived identifier. Dashboard responses apply a separate deterministic SHA-256 mask by default (gatekeeper/visitor_memory.py, gatekeeper/decision_api.py, dashboard/decision_views.py). Sensor logs may contain raw addresses (DATA.md).
 
 ### Q18: What is the "fail-cheap" principle in your Gatekeeper design?
 The service provides a fail-cheap decision fallback. Round-trip latency can exceed the sensor deadline (results/cost/concurrency_probe.json). (gatekeeper/decision_api.py)
 
 ### Q19: How is identical identity maintained across tiers to prevent fingerprinting?
-The system enforces a shared identity profile (srv-app-01, Debian 12 Bookworm, OpenSSH 9.2p1) across both T1 and T2 configurations, ensuring that an escalated session does not reveal contradictory OS banners or kernel strings [config/identity.yaml, infra/cowrie.cfg].
+T1 and T2 read the shared identity configuration. Launcher tests compare Cowrie overrides with those values. This checks configuration consistency. Detectability remains inconclusive (config/identity.yaml, sensor/run_sensor.py, gatekeeper/test_launcher_identity.py, results/detector/DETECTOR_RESULT.md).
 
 ### Q20: What is the difference between Plan A and Plan B escalation mechanisms?
-Plan A uses an in-process Twisted Conch adapter hook inside Cowrie to switch environments dynamically during a session. Plan B is a fallback multi-instance TCP front-end that splices connections across instances between sessions [SPEC.md Â§5.3, sensor/adaptive_server.py].
+Plan A switches the in-process persona through the Cowrie adapter. Plan B is the alternative routing design in the specification. This answer describes the implemented adapter and the proposed alternative (sensor/adaptive_server.py, SPEC.md).
 
 ---
 
@@ -87,32 +87,32 @@ Plan A uses an in-process Twisted Conch adapter hook inside Cowrie to switch env
 Docker demonstrates internal service isolation and edge-only loopback publishing. Direct-IP and named egress attempts failed in the recorded sensor check. The edge merges visitor addresses, so the multi-visitor demonstration uses native WSL. (HANDOFF.md)
 
 ### Q22: How does the repository guard against fabricated numbers in reports and UI?
-Dashboard tests exercise provenance, missing data and database-derived metrics. (dashboard/test_truthfulness.py)
+Tests check for random updates, literal session arrays and selected copied base-rate values, and exercise provenance and unavailable data. These are specific regression checks (dashboard/test_truthfulness.py).
 
 ### Q23: How do the Kali adversary scripts ensure safety during live demonstrations?
-The attacker scripts (bot_like, transfer_like, interactive) incorporate an allowlist safety guard that inspects the destination IP and refuses execution against any host other than 127.0.0.1, localhost, or private RFC 1918 subnets [harness/attackers/common.py, SAFETY.md].
+The shared destination guard delegates to the detector harness allowlist. A separate source-address validator accepts IPv4 loopback bindings. These guardrails are exercised by tests (harness/attackers/common.py, harness/detector_runner.py, harness/attackers/test_source_ip.py).
 
 ### Q24: What is the purpose of the Docker smoke test script?
 Infra tests check network membership and loopback publication on the edge. (infra/test_infra_configs.py)
 
 ### Q25: How is offline/live feature parity verified?
-A dedicated parity test suite feeds identical session features through both the offline training pipeline and the live Gatekeeper engine, verifying that model predictions match within strict floating-point tolerances [gatekeeper/test_model_inference_parity.py].
+The scoring tests compare feature vectors and predictions on fixture inputs. Captured-row parity has separate coverage. This establishes parity for the exercised inputs (gatekeeper/test_model_inference_parity.py, gatekeeper/test_real_row_parity.py).
 
 ---
 
 ## Group 6: Limitations, Threats to Validity & Future Work
 
 ### Q26: What is the current verified progress percentage of the project?
-Use the generated percentage and checklist in docs/STATUS.md. (results/progress.json)
+Read the generated weighted checklist in docs/STATUS.md and results/progress.json. Its percentage accounts for implementation milestones. Predictive evidence is reported separately in the experiment reports (analysis/progress_accounting.py, results/exp1/EXPERIMENT1_RESULT.md).
 
 ### Q27: Why was Tier T3 (Real VM) deferred in the current implementation?
 The T3 guest is deferred. There is no implemented guest tier to evaluate. (SPEC.md)
 
-### Q28: What is the limitation of the Arm D (Adaptive) simulation results?
-Arm D in arm_simulation.json represents a theoretical oracle retrospective hindsight upper bound that assumes complete post-hoc knowledge of session yield, rather than an unconstrained real-world deployment measurement [results/arm_simulation.json, HANDOFF.md].
+### Q28: What can the saved oracle simulation establish?
+The saved arm analysis labels itself a simulated oracle and uses nominal resource assumptions. It cannot establish deployment costs or economic benefit (results/arm_simulation.json, analysis/simulate_arms.py).
 
 ### Q29: What is the status of third-party detector evaluation (EVAL H4)?
 H4 remains INCONCLUSIVE. The recorded handshake observations cannot distinguish authenticated personas. (results/detector/DETECTOR_RESULT.md)
 
-### Q30: What are the three most critical engineering steps needed to achieve a 9+/10 system?
-The prefix logger and study protocol exist. Human participation, T3 and the public trial remain outstanding (HANDOFF.md). Replay verified input receipt only (results/replay/REPLAY_RESULT.md). (docs/EVENT_LOG.md)
+### Q30: Which evaluations and capabilities remain outstanding?
+Human-study execution, the persona-effect study, a T3 guest and the public trial remain outstanding. Replay currently demonstrates input receipt. Further evaluation needs explicit outcomes and controls (docs/EVENT_LOG.md, docs/STUDY_PROTOCOL.md, HANDOFF.md, results/replay/REPLAY_RESULT.md).

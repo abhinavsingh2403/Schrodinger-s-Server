@@ -1,7 +1,7 @@
 # Codebase Architecture & Dependency Graph (Graphify)
 
-Comprehensive architectural blueprint, module dependency graph, and data-flow topology for Schrödinger's Server.
-Every module, class, function, and relationship is mapped directly to actual repository files with zero hallucinations.
+Comprehensive architectural blueprint, module dependency graph, and data-flow topology for SchrÃ¶dinger's Server.
+Diagrams summarize component roles. The sequence shows an illustrative LAB_DEMO flow, and deferred nodes represent proposed components. Source references describe the implementation checked in this review.
 
 ---
 
@@ -13,9 +13,9 @@ graph TD
     %% 1. Ingress & Adversary Lab
     %% ==========================================
     subgraph INGRESS ["1. Ingress & Adversary Lab [harness/attackers/, infra/]"]
-        BOT["bot_like.py<br/>(Brute-force probe, &le;2 cmds)"]
-        TRANS["transfer_like.py<br/>(Ingress tool download)"]
-        INTER["interactive.py<br/>(PTY recon, &ge;6 cmds)"]
+        BOT["bot_like.py<br/>(scripted lab workload)"]
+        TRANS["transfer_like.py<br/>(lab transfer workload)"]
+        INTER["interactive.py<br/>(PTY lab workload)"]
         GUARD{"assert_lab_target_allowlisted()<br/>[common.py]"}
         DOCKER_PORT["Host Binding: 127.0.0.1:2222<br/>[docker-compose.yml]"]
     end
@@ -32,7 +32,7 @@ graph TD
         COWRIE_DAEMON["Cowrie SSH Daemon v3.1.6<br/>[infra/cowrie.cfg]"]
         ID_PROFILE["identity.yaml<br/>(srv-app-01, OpenSSH_9.2p1, Debian 12)"]
         CONCH_ADAPTER["CowrieSSHSessionAdapter<br/>[sensor/adaptive_server.py]<br/>(Status: lab-verified on loopback only;<br/>see results/exp0/ASTRA2_REPORT.md and HANDOFF.md)"]
-        HOOKS["Lifecycle Hooks:<br/>• ssh_version_received (S1)<br/>• user_authenticated (S2)<br/>• pty_requested (S3)<br/>• command_received (S4/S5)"]
+        HOOKS["Lifecycle Hooks:<br/>â€¢ ssh_version_received (S1)<br/>â€¢ user_authenticated (S2)<br/>â€¢ pty_requested (S3)<br/>â€¢ command_received (S4/S5)"]
     end
 
     DOCKER_PORT -->|routes| COWRIE_DAEMON
@@ -53,9 +53,9 @@ graph TD
     end
 
     HOOKS -->|HTTP POST /decide| CLIENT
-    CLIENT -->|REST JSON over loopback| HTTP_HANDLER
-    HTTP_HANDLER -->|delegates| SERVER
-    SERVER -->|calls decide()| ENGINE
+    CLIENT -->|REST JSON, configured lab endpoint| HTTP_HANDLER
+    SERVER -->|uses handler| HTTP_HANDLER
+    HTTP_HANDLER -->|calls decide()| ENGINE
     ENGINE -->|extracts features| EXTRACTOR
     ENGINE -->|evaluates tier| POLICY
 
@@ -65,7 +65,7 @@ graph TD
     subgraph INFERENCE_TIER ["4. ML Inference & Baseline Rules [analysis/, models/]"]
         MODEL_FILE[("models/model_s3.json<br/>(PurePythonLogisticRegression)")]
         LR_MODEL["PurePythonLogisticRegression<br/>[analysis/exp0_rules.py]"]
-        BASELINE_RULES["Baseline Rules (R0-R7)<br/>• R1: login_success<br/>• R6: failed_logins<br/>• R7-labelled constant fallback"]
+        BASELINE_RULES["Baseline Rules (R0-R7)<br/>â€¢ R1: login_success<br/>â€¢ R6: failed_logins<br/>â€¢ R7-labelled constant fallback"]
     end
 
     MODEL_FILE -->|deserialized by _load_model()| ENGINE
@@ -78,11 +78,11 @@ graph TD
     subgraph PERSISTENCE_TIER ["5. Visitor Memory & Audit Log [gatekeeper/]"]
         HMAC_DERIVE["derive_visitor_id()<br/>HMAC-SHA256(salt, raw_ip)"]
         VIS_MEMORY["VisitorMemory<br/>[visitor_memory.py]"]
-        SQLITE_DB[("gatekeeper.db (WAL Mode)<br/>• visitor_memory table<br/>• decision_log table")]
+        SQLITE_DB[("gatekeeper.db (WAL Mode)<br/>â€¢ visitor_memory table<br/>â€¢ decision_log table")]
     end
 
     ENGINE -->|derives masked ID| HMAC_DERIVE
-    HMAC_DERIVE -->|updates state| VIS_MEMORY
+    ENGINE -->|updates state| VIS_MEMORY
     VIS_MEMORY -->|reads/writes| SQLITE_DB
     ENGINE -->|logs decision record| SQLITE_DB
 
@@ -106,7 +106,7 @@ graph TD
     subgraph DASHBOARD_TIER ["7. Provenance Dashboard [dashboard/]"]
         DASH_SERVER["DashboardServer<br/>[dashboard/app.py]"]
         DASH_HANDLER["DashboardHandler :8080<br/>(/api/stats, /api/decisions, /api/arms)"]
-        UI_SPA["index.html SPA<br/>(Tailwind, zero fake data, RECORDED/LAB badges)"]
+        UI_SPA["index.html SPA<br/>(HTML, CSS and provenance labels)"]
     end
 
     SQLITE_DB -->|queries decisions (LAB/LIVE)| DASH_SERVER
@@ -123,7 +123,7 @@ graph TD
         PREFIX_STUDY["event_prefix_study.py<br/>(Event-order chronology check)"]
         CHECK_DOCS["check_docs.py<br/>(Link, path, & claim validator)"]
         RENDER_STATUS["render_status.py<br/>(Generates docs/STATUS.md)"]
-        RESULTS_JSON[("results/<br/>• base_rates.json<br/>• arm_simulation.json<br/>• exp0/progress.json")]
+        RESULTS_JSON[("results/<br/>â€¢ base_rates.json<br/>â€¢ arm_simulation.json<br/>â€¢ exp0/progress.json")]
     end
 
     BASE_RATES -->|writes| RESULTS_JSON
@@ -190,7 +190,7 @@ graph LR
     cost -->|checks host guard| atk_com
 
     %% Dashboard coupling
-    dash_app -->|imports derive_visitor_id| vis
+    %% Dashboard opens decision_log read-only (dashboard/app.py).
 ```
 
 ---
@@ -218,7 +218,7 @@ sequenceDiagram
     Engine->>Policy: decide_tier(current_tier="T1", score, stage="S1")
     Policy-->>Engine: assigned_tier="T1"
     Engine->>Memory: record_decision(session_id, S1, score, T1)
-    Engine-->>Gatekeeper: DecisionResponse(tier="T1", score=0.05)
+    Engine-->>Gatekeeper: DecisionResponse(tier="T1", recorded score)
     Gatekeeper-->>Adapter: 200 OK {"tier": "T1"}
     Adapter-->>Sensor: Retain Tier T1 Emulation Shell
 
@@ -246,10 +246,10 @@ sequenceDiagram
 
 | Layer | Primary Files | Core Invariants Enforced |
 |---|---|---|
-| **Ingress Safety** | `harness/attackers/common.py`<br/>`infra/docker-compose.yml` | Strict allowlist: `127.0.0.1`, `localhost`, and RFC 1918 private subnets only. Public routable IPs raise `SafetyViolationError`. Internal Docker network blocks outbound internet egress. |
+| **Ingress Safety** | `harness/attackers/common.py`<br/>`infra/docker-compose.yml` | The harness applies its configured lab allowlist. Docker publishes only the edge on loopback. Recorded sensor egress attempts failed (harness/detector_runner.py, infra/test_infra_configs.py, HANDOFF.md). |
 | **Sensor & Conch** | `sensor/adaptive_server.py`<br/>`infra/cowrie.cfg`<br/>`config/identity.yaml` | Protocol hooks capture telemetry across stages S1 to S5. Identical identity profile (`srv-app-01`, `OpenSSH_9.2p1`, Debian 12) shared across tiers. Status: lab-verified on loopback only; see results/exp0/ASTRA2_REPORT.md and HANDOFF.md. |
-| **Gatekeeper Decision Engine** | `gatekeeper/decision_api.py`<br/>`gatekeeper/policy.py`<br/>`gatekeeper/feature_extractor.py` | Fail-cheap guarantee: any internal exception or corrupted model defaults to T1 Lite without dropping connections. Upward-only monotone tier transitions (T1 &rarr; T2; never downgrade). Budget ceiling restricts escalations. |
-| **Privacy & Memory** | `gatekeeper/visitor_memory.py` | Zero raw IP storage: visitor identifiers are generated via salted HMAC-SHA256 (`vis_xxxxxxxx`). SQLite database uses Write-Ahead Logging (WAL) for concurrency. |
+| **Gatekeeper Decision Engine** | `gatekeeper/decision_api.py`<br/>`gatekeeper/policy.py`<br/>`gatekeeper/feature_extractor.py` | Tests exercise engine-exception fallback, corrupted-model fallback, monotone session and visitor tiers, and budget enforcement (gatekeeper/test_decision_api.py, gatekeeper/test_model_inference_parity.py, gatekeeper/test_policy.py, gatekeeper/test_session_budget.py). |
+| **Privacy & Memory** | `gatekeeper/visitor_memory.py` | VisitorMemory derives HMAC-SHA256 identifiers with configurable salt and a public development fallback. The visitors table uses derived IDs and WAL (gatekeeper/visitor_memory.py, gatekeeper/test_visitor_memory.py). |
 | **Model Inference** | `models/model_s3.json`<br/>`analysis/exp0_rules.py` | Zero external ML dependencies in production runtime: `PurePythonLogisticRegression` executes standalone matrix multiplication and sigmoid evaluation. |
-| **Observability Dashboard** | `dashboard/app.py`<br/>`dashboard/templates/index.html` | Truthfulness guarantee: zero hard-coded numbers or fake simulated updates. All metrics carry explicit provenance badges (`RECORDED`, `LAB`, `LIVE`). Missing source files return `"NO DATA"`. |
-| **Offline Empirical Audit** | `analysis/exp0_train.py`<br/>`analysis/render_status.py`<br/>`analysis/check_docs.py` | Pre-registered Gate 0 evaluation protocols, 10,000 paired cluster bootstraps with dynamic budget recalculation, link and path hygiene validation, and deterministic progress accounting. |
+| **Observability Dashboard** | `dashboard/app.py`<br/>`dashboard/templates/index.html` | Tests reject random updates, literal session arrays and selected copied base-rate values. They exercise provenance and unavailable-data responses (dashboard/test_truthfulness.py). |
+| **Offline Empirical Audit** | `analysis/exp0_train.py`<br/>`analysis/render_status.py`<br/>`analysis/check_docs.py` | Pre-registered Gate 0 evaluation protocols, paired cluster bootstraps with budget recalculation, link and path hygiene validation, and deterministic progress accounting. |

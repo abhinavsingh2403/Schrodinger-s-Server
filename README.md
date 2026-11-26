@@ -12,7 +12,7 @@
 
 ## 1. Project Overview & Core Thesis
 
-In Internet-facing SSH honeypots, the overwhelming majority of sessions are one-shot automated scans and credential brute-force probes. A published LLM-honeypot deployment recorded **147,752 non-interactive sessions out of 148,850 total (99.26%)**, and only **150 interactive sessions (0.10%)** ([CLAIMS.md](CLAIMS.md) P2). This motivates the budgeted triage question (SPEC.md).
+CLAIMS.md P2 records a reported activity distribution from an external LLM honeypot paper with status [S]. This motivates the budgeted triage question (SPEC.md).
 
 > Research question: can early session evidence guide escalation within a limited budget? Offline controls leave this question open.
 
@@ -73,21 +73,21 @@ All empirical analysis is performed on open-access, peer-reviewed research data.
 - **Computed MD5**: `1f3897650fb420c97c14ff452398c3f8` (**MATCH**, verified via `analysis/verify_download.py`)
 
 ### Dataset Ground Truth Findings ([results/base_rates.json](results/base_rates.json))
-Computed over the complete dataset using DuckDB with zero dropped sessions:
+The aggregate analysis reports these summaries (analysis/s3_base_rates.py, results/base_rates.json). Activity counters are proxy labels.
 - **Total Sessions Analyzed**: `38,126,048`
 - **Temporal Span**: `52 continuous calendar days` (2025-06-27 to 2025-08-17 UTC)
 - **Schema Conformity**: Exact match on all **25 schema fields** listed in `DATA.md`
 - **Login Success Count**: `4,374,446` (11.47% authentication success rate)
 - **Command Input Sessions**: `3,335,870` (8.75%)
-  - Zero commands (pure probe): `34,790,178` (91.25%)
+  - Zero recorded commands: `34,790,178` (91.25%)
   - 1–4 commands: `2,185,616` (5.73%)
   - 5–9 commands: `992,305` (2.60%)
   - 10+ commands: `157,949` (0.41%)
   - Command Quantiles: **p50 = 0, p90 = 0, p99 = 2**
 - **File Transfers**: `755,225` sessions (1.98%)
-- **Direct-TCPIP Requests (Pivoting)**: `467,551` sessions (1.23%)
+- **Direct-TCPIP Requests**: `467,551` sessions (1.23%)
 - **Aggregate Value=1 Base Rate (`N_CMD >= 5 OR file transfer OR pivot`)**: **3.23% (1,232,570 sessions)**
-  - Confirms a realistic, non-degenerate class imbalance well-suited for early stage triage and PR-AUC evaluation.
+  - This is an aggregate activity approximation (EXPERIMENT0.md).
 
 ---
 
@@ -106,11 +106,11 @@ Computed over the complete dataset using DuckDB with zero dropped sessions:
 
 ### 2. Spike S1 Outcome: Plan A (In-Process Hook) Verified
 - **Question**: Can Cowrie choose the persona per session after login without a deep fork?
-- **Finding**: **YES.** Subclassing Twisted Conch's session adapter (`cowrie.shell.session.SSHSessionForCowrieUser`) allows dynamic persona assignment (hostname, custom filesystem overlay) with **0 lines changed in Cowrie core**. Merge-pain risk on upstream updates is near zero.
+- **Finding**: **YES.** Subclassing Twisted Conch's session adapter (`cowrie.shell.session.SSHSessionForCowrieUser`) allows dynamic persona assignment (hostname, custom filesystem overlay) with **0 lines changed in Cowrie core**. Future upstream compatibility requires testing.
 - **Proof-of-Concept**: [`sensor/spike_s1_poc.py`](sensor/spike_s1_poc.py) verified:
   - Session A (odd client port) assigned Persona 1 (`web-srv-01`, Ubuntu 22.04 T2 persona).
   - Session B (even client port) assigned Persona 2 (`generic-srv-02`, Debian 12 T1 persona).
-  - Automated test suite: [`sensor/test_spike_s1_poc.py`](sensor/test_spike_s1_poc.py) passing (`2 passed`).
+  - Automated test suite: [`sensor/test_spike_s1_poc.py`](sensor/test_spike_s1_poc.py) covered by the named tests.
 
 ### 3. Pre-Registration Enforced
 - Git tags applied to lock experimental hypotheses prior to model training:
@@ -236,7 +236,7 @@ Per [`SAFETY.md`](SAFETY.md):
 1. **Offline Phase 0**: All early work uses public datasets and lab mock loops. No network-facing exposure.
 2. **Zero Fabrication**: Every reported metric and table value originates from a script. Never typed by hand.
 3. **No Attacks**: No scanning, probing, or counter-exploitation of third-party systems.
-4. **Data Protection**: Raw attacker IPs are never committed. Analysis uses salted HMAC IDs.
+4. **Data Protection**: Keep raw source addresses outside committed artifacts. Visitor memory uses HMAC IDs with configurable salt (DATA.md, gatekeeper/visitor_memory.py).
 5. **Malware Safety**: Captured files are never executed. `transferred_files.zip` is strictly banned from download.
 
 ---

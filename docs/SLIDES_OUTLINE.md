@@ -15,14 +15,14 @@ Every bullet cites its primary supporting source document.
 
 ### Slide 3: System Architecture
 - Modular stack: Cowrie SSH sensor, in-process Conch lifecycle adapter, and SQLite WAL Gatekeeper [docs/ARCHITECTURE.md, SPEC.md].
-- T1 and T2 share a configured identity. H4 remains inconclusive. (config/identity.yaml)
+- T1 and T2 share a configured identity. H4 remains inconclusive. (config/identity.yaml, results/detector/DETECTOR_RESULT.md)
 
 ### Slide 4: Experimental Methodology & Data
 - Evaluated on a 52-day multi-instance Cowrie public dataset partitioned into train, validation, and test splits [DATA.md, results/exp0/AUDIT.md].
 - Strict cross-split source IP purging applied to prevent botnet identity leakage across temporal sets [DATA.md, results/exp0/AUDIT.md].
 
 ### Slide 5: Gate 0 Pre-Registered Protocol
-- Pre-declared test evaluates whether learned models beat simple rules by 5% recall at a 10% escalation budget [EXPERIMENT0.md, DECISIONS.md].
+- Pre-declared test evaluates whether learned models beat simple rules by absolute recall difference at the declared threshold in EXPERIMENT0.md at a 10% escalation budget [EXPERIMENT0.md, DECISIONS.md].
 - Mandates Bonferroni-adjusted confidence intervals strictly above zero for a conclusive pass [EXPERIMENT0.md, DECISIONS.md].
 
 ### Slide 6: Gate 0 Empirical Results
@@ -39,7 +39,7 @@ Every bullet cites its primary supporting source document.
 
 ### Slide 9: Project Maturity & Verification Status
 - Show the current weighted checklist. (results/progress.json)
-- Core ML loading, REST API, truthfulness tests, and safety allowlists are fully built and tested [docs/STATUS.md, README.md].
+- Tests exercise model loading, API responses, provenance and lab target restrictions (gatekeeper/test_model_inference_parity.py, gatekeeper/test_decision_api.py, dashboard/test_truthfulness.py, harness/attackers/test_source_ip.py).
 
 ### Slide 10: Limitations & Future Milestones
 - High-interaction real VM execution (Tier T3) and live randomized field trials are deferred [SPEC.md, results/exp0/AUDIT.md].
