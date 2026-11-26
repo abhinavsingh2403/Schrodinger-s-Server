@@ -46,8 +46,8 @@ graph TD
 - **Stage S3 (Session Setup)**: The decision point following channel allocation and pseudo-terminal or subsystem requests [SPEC §3, SPEC §5.1].
 - **Stage S4 (First Command)**: The decision point immediately upon receiving the initial shell command [SPEC §3, SPEC §5.1].
 - **Stage S5 (Command Burst)**: The decision point following the execution of multiple subsequent commands [SPEC §3, SPEC §5.1].
-- **Model V**: The early-stage triage classifier evaluated on pre-command features to predict downstream interactive utility [SPEC §3, SPEC §5.2, README §1].
+- **Model V**: The early-stage triage classifier evaluated on aggregate proxy features (results/exp0/POSTHOC_ML_EVAL.md) to predict downstream interactive utility [SPEC §3, SPEC §5.2, README §1].
 - **Escalation Budget**: A pre-declared operational ceiling restricting the fraction of sessions escalated to higher tiers to prevent resource exhaustion [SPEC §3, SPEC §5.2, README §3].
 - **Gate 0**: The pre-registered empirical milestone evaluating whether learned statistical models demonstrate recall improvement over simple pre-declared baseline rules [SPEC §0, README §2].
 - **Oracle Arm**: The retrospective hindsight simulation baseline that computes upper-bound yield efficiency assuming full post-hoc knowledge of session activity [SPEC §3, README §3].
-- **Identity Profile**: A uniform system configuration across hostnames (`srv-app-01`), distribution banners (Debian 12 bookworm), OpenSSH version (`SSH-2.0-OpenSSH_9.2p1 Debian-2+deb12u3`), kernel versions (`6.1.0-21-amd64`), and account names shared across tiers to prevent cross-tier fingerprinting [SPEC §3, SPEC §5.1, README §3].
+- **Identity Profile**: A uniform system configuration across hostnames (`srv-app-01`), distribution banners (Debian 12 bookworm), OpenSSH version (`SSH-2.0-OpenSSH_9.2p1 Debian-2+deb12u3`), kernel versions (`6.1.0-21-amd64`), and account names shared across tiers for consistent presentation (config/identity.yaml) [SPEC §3, SPEC §5.1, README §3].

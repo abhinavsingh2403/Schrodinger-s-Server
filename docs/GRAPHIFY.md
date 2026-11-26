@@ -65,7 +65,7 @@ graph TD
     subgraph INFERENCE_TIER ["4. ML Inference & Baseline Rules [analysis/, models/]"]
         MODEL_FILE[("models/model_s3.json<br/>(PurePythonLogisticRegression)")]
         LR_MODEL["PurePythonLogisticRegression<br/>[analysis/exp0_rules.py]"]
-        BASELINE_RULES["Baseline Rules (R0-R7)<br/>• R1: login_success<br/>• R6: failed_logins<br/>• R7: decision_tree"]
+        BASELINE_RULES["Baseline Rules (R0-R7)<br/>• R1: login_success<br/>• R6: failed_logins<br/>• R7-labelled constant fallback"]
     end
 
     MODEL_FILE -->|deserialized by _load_model()| ENGINE
@@ -231,9 +231,9 @@ sequenceDiagram
     Attacker->>Sensor: PTY / Session Channel Request
     Sensor->>Adapter: pty_requested() (Stage S3)
     Adapter->>Gatekeeper: POST /decide (stage="S3", ip, features)
-    Gatekeeper->>Engine: predict_proba_single(features)
-    Note over Engine: PurePythonLogisticRegression computes probability
-    Engine->>Policy: decide_tier(current_tier="T1", score=0.082 > tau_v2)
+    Gatekeeper->>Engine: Evaluate LAB_DEMO PTY rule
+    Note over Engine: LAB_DEMO_NOT_ML (config/policy_lab.yaml)
+    Engine->>Policy: decide_tier(current_tier="T1", demo rule requests escalation)
     Policy-->>Engine: assigned_tier="T2" (Escalate!)
     Engine->>Memory: record_decision(session_id, S3, score, T2)
     Engine-->>Adapter: 200 OK {"tier": "T2", "escalated": true}
@@ -247,9 +247,9 @@ sequenceDiagram
 | Layer | Primary Files | Core Invariants Enforced |
 |---|---|---|
 | **Ingress Safety** | `harness/attackers/common.py`<br/>`infra/docker-compose.yml` | Strict allowlist: `127.0.0.1`, `localhost`, and RFC 1918 private subnets only. Public routable IPs raise `SafetyViolationError`. Internal Docker network blocks outbound internet egress. |
-| **Sensor & Conch** | `sensor/adaptive_server.py`<br/>`infra/cowrie.cfg`<br/>`config/identity.yaml` | Protocol hooks capture telemetry across stages S1 to S5. Identical identity profile (`srv-app-01`, `OpenSSH_9.2p1`, Debian 12) shared across tiers to prevent cross-tier fingerprinting. Status: lab-verified on loopback only; see results/exp0/ASTRA2_REPORT.md and HANDOFF.md. |
-| **Gatekeeper Decision Engine** | `gatekeeper/decision_api.py`<br/>`gatekeeper/policy.py`<br/>`gatekeeper/feature_extractor.py` | Fail-cheap guarantee: any internal exception or corrupted model defaults to T1 Lite without dropping connections. Upward-only monotone tier transitions (T1 &rarr; T2 &rarr; T3; never downgrade). Budget ceiling restricts escalations. |
+| **Sensor & Conch** | `sensor/adaptive_server.py`<br/>`infra/cowrie.cfg`<br/>`config/identity.yaml` | Protocol hooks capture telemetry across stages S1 to S5. Identical identity profile (`srv-app-01`, `OpenSSH_9.2p1`, Debian 12) shared across tiers. Status: lab-verified on loopback only; see results/exp0/ASTRA2_REPORT.md and HANDOFF.md. |
+| **Gatekeeper Decision Engine** | `gatekeeper/decision_api.py`<br/>`gatekeeper/policy.py`<br/>`gatekeeper/feature_extractor.py` | Fail-cheap guarantee: any internal exception or corrupted model defaults to T1 Lite without dropping connections. Upward-only monotone tier transitions (T1 &rarr; T2; never downgrade). Budget ceiling restricts escalations. |
 | **Privacy & Memory** | `gatekeeper/visitor_memory.py` | Zero raw IP storage: visitor identifiers are generated via salted HMAC-SHA256 (`vis_xxxxxxxx`). SQLite database uses Write-Ahead Logging (WAL) for concurrency. |
-| **Model Inference** | `models/model_s3.json`<br/>`analysis/exp0_rules.py` | Zero external ML dependencies in production runtime: `PurePythonLogisticRegression` executes standalone matrix multiplication and sigmoid evaluation in under 2 microseconds. |
+| **Model Inference** | `models/model_s3.json`<br/>`analysis/exp0_rules.py` | Zero external ML dependencies in production runtime: `PurePythonLogisticRegression` executes standalone matrix multiplication and sigmoid evaluation. |
 | **Observability Dashboard** | `dashboard/app.py`<br/>`dashboard/templates/index.html` | Truthfulness guarantee: zero hard-coded numbers or fake simulated updates. All metrics carry explicit provenance badges (`RECORDED`, `LAB`, `LIVE`). Missing source files return `"NO DATA"`. |
 | **Offline Empirical Audit** | `analysis/exp0_train.py`<br/>`analysis/render_status.py`<br/>`analysis/check_docs.py` | Pre-registered Gate 0 evaluation protocols, 10,000 paired cluster bootstraps with dynamic budget recalculation, link and path hygiene validation, and deterministic progress accounting. |

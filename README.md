@@ -12,7 +12,7 @@
 
 ## 1. Project Overview & Core Thesis
 
-In Internet-facing SSH honeypots, the overwhelming majority of sessions are one-shot automated scans and credential brute-force probes. A published LLM-honeypot deployment recorded **147,752 non-interactive sessions out of 148,850 total (99.26%)**, and only **150 interactive sessions (0.10%)** ([CLAIMS.md](CLAIMS.md) P2). Serving high-interaction deception (rich emulated environments, real sandboxed VMs, or LLM-driven backends) indiscriminately wastes significant compute and financial budget on shallow noise.
+In Internet-facing SSH honeypots, the overwhelming majority of sessions are one-shot automated scans and credential brute-force probes. A published LLM-honeypot deployment recorded **147,752 non-interactive sessions out of 148,850 total (99.26%)**, and only **150 interactive sessions (0.10%)** ([CLAIMS.md](CLAIMS.md) P2). This motivates the budgeted triage question (SPEC.md).
 
 > Research question: can early session evidence guide escalation within a limited budget? Offline controls leave this question open.
 
@@ -39,14 +39,8 @@ The official weighted checklist records **52.5% (10.5/20)**. Experiment 1 is rep
 | Docker edge hides the client address | Visitor memory merges distinct clients under one masked ID. | Verify that ingress preserves the source and that two loopback clients receive distinct masked IDs. [Handoff](HANDOFF.md) |
 | S5 has different live and offline boundaries | Live dispatch starts on command two. Experiment 1 evaluates command three. | Agree on the intended live boundary and test dispatch on commands two and three before using the offline result for live decisions. [Protocol](docs/EXPERIMENT1.md) |
 | Peak decision latency exceeds the sensor deadline | Threaded HTTP handling improved the measured workload, but some round trips still exceeded 200 ms. | Measure sensor fallback events alongside round-trip latency under concurrent load. [Concurrency probe](results/cost/concurrency_probe.json) |
-| IPv4 audit remains open | The audit reports FAIL with 30 findings previously triaged as benign fixtures. | Reconcile the findings with the audit rules and retain visibility of unexpected addresses. [Safety audit](results/safety_check.json) |
+| IPv4 audit remains open | The audit reports FAIL with findings listed by file and line. | Reconcile the findings with the audit rules and retain visibility of unexpected addresses. [Safety audit](results/safety_check.json) |
 | Experiment 1 fixture tests require an explicit command | Default pytest discovery skips their filenames. | Run the command below until discovery includes both fixtures. [Test configuration](pytest.ini) |
-
----|---|
-| Done | S3 aggregate base rates (`results/base_rates.json`), event-schema check (`results/s3_event_schema.json`), T1/T2 personas and native Cowrie integration, offline/live parity, durable session budget, decision dashboard, native demo runbook (`docs/DEMO_RUNBOOK.md`), opt-in sensor prefix logging (`docs/EVENT_LOG.md`), and human study protocol (`docs/STUDY_PROTOCOL.md`) (see `docs/STATUS.md`, `HANDOFF.md`). |
-| Partial | Experiment 0 aggregate S1–S3 with leakage controls (null-control diagnosis recorded; early ML remains unconfirmed), Docker lab (only `edge` publishes on loopback; source address merged at edge; direct-IP and named sensor egress failed), safety check (`ipv4` `FAIL` with 30 findings triaged as benign fixtures, see `results/safety_check.json`), matched final-tier lab workloads (CPU and memory measured in one shared sensor process, see `results/cost/COST_PER_TIER.md`), and working reports (final reviewed pack absent) (see `docs/STATUS.md`, `HANDOFF.md`). |
-| Not done | Isolated T1 vs T2 container cost comparison, persona natural experiment, third-party detector evaluation (`EVAL.md` H4), replay of real held-out traces, and human-study execution (see `docs/STATUS.md`). |
-| Future | T3 guest, public trial, human blind study, persona natural experiment, third-party detector evaluation, and held-out trace replay (see `SPEC.md`, `EVAL.md`). |
 
 Experiment 1 found no validated ML gain on the audited days. S2 and S4 failed the shuffle control, and S5 was underpowered. [Experiment 1 results](results/exp1/EXPERIMENT1_RESULT.md).
 
