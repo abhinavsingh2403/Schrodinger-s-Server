@@ -11,25 +11,34 @@
   --surface: #14232C;
   --surface-elevated: #1B2D35;
   --surface-inset: #101D25;
+
   --border-subtle: #2B4048;
   --border-strong: #3E5B66;
   --border-focus: #87C6B9;
+
   --text-primary: #F0F3EF;
   --text-secondary: #A5B6BA;
   --text-tertiary: #7C9297;
-  --accent-seaglass: #87C6B9;
-  --accent-brass: #D6B48D;
-  --accent-coral: #D88D81;
-  --accent-amethyst: #9A9BCF;
-  --t1-surface: #23464A;
-  --t1-text: #BCE8DC;
-  --t1-border: #3B7075;
-  --t2-surface: #4B392E;
-  --t2-text: #E7C7A7;
-  --t2-border: #7A5E4D;
-  --t3-surface: #362C42;
-  --t3-text: #D9CCE8;
-  --t3-border: #5D4D72;
+
+  --sea-glass: #87C6B9;
+  --soft-brass: #D6B48D;
+  --muted-coral: #D88D81;
+  --research-lavender: #9A9BCF;
+
+  --t1: #BCE8DC;
+  --t2: #E7C7A7;
+
+  --success: #9ACBB2;
+  --warning: #E7CDA0;
+  --invalid: #E8ABA6;
+
+  --t1-surface: #163336;
+  --t1-border: #2B575B;
+  --t2-surface: #38281F;
+  --t2-border: #634735;
+  --t3-surface: #2E253B;
+  --t3-border: #524268;
+
   font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   background: var(--canvas);
   color: var(--text-primary);
@@ -123,6 +132,55 @@ h3 { font-size: 14px; margin: 0 0 8px 0; font-weight: 600; }
 }
 @media (max-width: 900px) {
   .grid-2 { grid-template-columns: 1fr; }
+}
+.grid-forensics {
+  display: grid;
+  grid-template-columns: 310px 1.25fr 340px;
+  gap: 16px;
+  align-items: start;
+}
+@media (max-width: 1200px) {
+  .grid-forensics {
+    grid-template-columns: 290px 1fr;
+  }
+  .forensics-inspector {
+    grid-column: span 2;
+  }
+}
+@media (max-width: 768px) {
+  .grid-forensics {
+    grid-template-columns: 1fr;
+  }
+  .forensics-inspector {
+    grid-column: span 1;
+  }
+}
+.context-inspector-panel {
+  background: var(--surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: 10px;
+  padding: 16px;
+  position: sticky;
+  top: 16px;
+}
+.timeline-step.selected {
+  outline: 2px solid var(--border-focus);
+  background: var(--surface-elevated);
+}
+.timeline-step {
+  cursor: pointer;
+  transition: background .15s ease, border-color .15s ease;
+}
+.timeline-step:hover {
+  background: var(--surface-elevated);
+}
+.constellation-wrap {
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  background: var(--surface-inset);
+  padding: 12px;
+  margin-top: 12px;
+  overflow: hidden;
 }
 .grid-3 {
   display: grid;
@@ -1202,8 +1260,21 @@ async function initCost() {
 }
 
 // =============================================================
-// 4. Session Forensics (/session)
+// 4. Session Forensics (/session) — 3-Level Investigative Architecture
 // =============================================================
+const RULE_EXPLANATIONS = {
+  'rule_r1_login_success': 'Authentication Success Heuristic — Verifies valid SSH login credentials before evaluating command stream activity.',
+  'rule_r2_pty_requested': 'Interactive Terminal Heuristic — Checks whether the SSH transport requested a pseudoterminal (PTY) session, indicating an interactive operator.',
+  'rule_r6_failed_logins': 'Brute-Force Threshold Rule — Evaluates failed authentication frequency prior to connection establishment.',
+  'rule_r7_decision_tree': 'Pre-registered Baseline Decision Tree — Evaluates authentication timing and terminal parameters against historical honeypot splits.',
+  'lab_pty_mechanism': 'Laboratory Demonstration Policy — Deterministic escalation trigger on interactive PTY allocation (S3: T1 → T2) for live defense inspection.',
+  'LAB_DEMO_NOT_ML_s5_command_count': 'Command Count Threshold (Lab) — Triggers escalation after observed benign command threshold in synthetic demonstration.',
+  'heuristic_command_chain': 'Command Chaining Heuristic — Identifies multi-command pipelines or shell scripting operators.',
+  'heuristic_command_base': 'Baseline Single-Command Heuristic — Evaluates individual executable invocation without shell piping.',
+  'fail_cheap_fallback': 'Fail-Cheap Safeguard — Defaults safely to T1 on missing features or evaluation timeouts.',
+  'ml_model_s3': 'Trained Decision Tree Model (Stage S3) — Evaluates extracted feature vector against supervised training split.'
+};
+
 async function initSession() {
   const content = document.getElementById('content');
   content.replaceChildren(el('p', 'Loading recorded sessions and decision logs...', 'muted mono'));
@@ -1223,16 +1294,16 @@ async function initSession() {
   setStatus(`Loaded ${sessions.length} recorded sessions`);
 
   const container = el('div');
-  const grid = el('div', '', 'grid-2');
+  const grid = el('div', '', 'grid-forensics');
 
+  // Level 1: Left — Session Navigator
   const listCard = el('section', '', 'card');
-  listCard.appendChild(el('h2', 'Recorded SSH Sessions'));
+  listCard.appendChild(el('h2', 'Session Navigator'));
 
   let queryText = '';
   let tierFilter = 'all';
   let activeSessionId = null;
 
-  // Support URL query param ?id=ses_...
   const urlParamId = new URLSearchParams(window.location.search).get('id');
   if (urlParamId) activeSessionId = urlParamId;
 
@@ -1255,18 +1326,100 @@ async function initSession() {
   const listWrap = el('div', '', 'scroll');
   listCard.appendChild(listWrap);
 
+  // Level 2: Center — Observation Timeline
   const timelineCard = el('section', '', 'card');
-  timelineCard.appendChild(el('h2', 'Session Investigation & Stage Progression Timeline'));
+  timelineCard.appendChild(el('h2', 'Observation Timeline'));
   const timelineMeta = el('div', '', 'muted');
   timelineMeta.appendChild(el('p', 'Select a session from the left to inspect its complete recorded decision trajectory.'));
   const timelineBody = el('div');
   timelineCard.append(timelineMeta, timelineBody);
+
+  // Level 3: Right — Context Inspector
+  const inspectorCard = el('section', '', 'card forensics-inspector');
+  inspectorCard.appendChild(el('h2', 'Context Inspector'));
+  const inspectorBody = el('div');
+  inspectorBody.appendChild(el('p', 'Click any stage decision in the timeline to inspect its recorded policy fields and rationale.', 'muted'));
+  inspectorCard.appendChild(inspectorBody);
+
+  function renderInspector(dec, isTransition, sessionMeta) {
+    inspectorBody.replaceChildren();
+    if (!dec) {
+      inspectorBody.appendChild(el('p', 'Click any stage decision in the timeline to inspect its recorded policy fields and rationale.', 'muted'));
+      return;
+    }
+
+    const tier = dec.tier_decided || dec.tier || 'T1';
+    const stageName = `Stage ${dec.stage}`;
+
+    const headRow = el('div', '', 'tools');
+    headRow.appendChild(el('h3', `${stageName} Decision Context`));
+    headRow.appendChild(el('span', tier, `badge ${tier}`));
+    if (isTransition) {
+      headRow.appendChild(el('span', 'Escalation Event (T1 → T2)', 'badge warn'));
+    }
+    inspectorBody.appendChild(headRow);
+
+    // Rule explanation section
+    const ruleBox = el('div', '', 'card');
+    ruleBox.style.background = 'var(--surface-inset)';
+    ruleBox.style.margin = '10px 0';
+    ruleBox.style.padding = '12px';
+
+    const sourceName = dec.score_source || 'UNKNOWN';
+    ruleBox.appendChild(el('div', 'Decision Rule / Source:', 'muted mono'));
+    const sourceTitle = el('strong', sourceName, 'mono');
+    sourceTitle.style.color = 'var(--sea-glass)';
+    ruleBox.appendChild(sourceTitle);
+
+    const explanation = RULE_EXPLANATIONS[sourceName] ||
+      'Recorded decision rule evaluated by the Gatekeeper policy engine.';
+    const expText = el('p', explanation);
+    expText.style.margin = '6px 0 0 0';
+    expText.style.fontSize = '13px';
+    ruleBox.appendChild(expText);
+    inspectorBody.appendChild(ruleBox);
+
+    // Decision Fields Table
+    const fieldsTable = el('table');
+    const fTbody = el('tbody');
+
+    const addRow = (label, value, isMono = true) => {
+      const tr = el('tr');
+      const th = el('td', label, 'muted');
+      th.style.width = '120px';
+      const td = el('td', String(value), isMono ? 'mono' : '');
+      tr.append(th, td);
+      fTbody.appendChild(tr);
+    };
+
+    addRow('Assigned Tier', tier);
+    addRow('Evaluation Stage', stageName);
+    addRow('Score Value', (dec.score !== undefined && dec.score !== null) ? dec.score : 'None');
+    addRow('Policy Source', dec.score_source || 'UNKNOWN');
+
+    const latVal = (dec.latency_ms !== undefined && dec.latency_ms !== null)
+      ? `${Number(dec.latency_ms).toFixed(2)} ms`
+      : 'NO DATA';
+    addRow('Compute Latency', latVal);
+    addRow('Provenance', dec.provenance || 'LAB');
+    addRow('Policy Profile', dec.policy_profile || 'LAB_DEMO');
+    if (dec.timestamp) addRow('Event Timestamp', dec.timestamp);
+
+    fieldsTable.appendChild(fTbody);
+    inspectorBody.appendChild(fieldsTable);
+
+    const latNotice = el('div', 'Latency Note: Engine compute latency measures isolated Gatekeeper policy calculation duration, excluding network transmission.', 'muted mono');
+    latNotice.style.fontSize = '11px';
+    latNotice.style.marginTop = '10px';
+    inspectorBody.appendChild(latNotice);
+  }
 
   async function loadTimeline(sessionId) {
     activeSessionId = sessionId;
     renderSessionList();
     timelineMeta.replaceChildren(el('p', `Loading decision log for ${sessionId}...`, 'muted mono'));
     timelineBody.replaceChildren();
+    inspectorBody.replaceChildren(el('p', 'Loading decision context...', 'muted mono'));
 
     try {
       const res = await fetchJson(`/api/session/${encodeURIComponent(sessionId)}`);
@@ -1301,11 +1454,16 @@ async function initSession() {
       const decisions = (sData && Array.isArray(sData.decisions)) ? sData.decisions : [];
       if (!decisions.length) {
         timelineBody.replaceChildren(el('p', 'NO DATA · No decision rows recorded for this session.', 'muted mono'));
+        inspectorBody.replaceChildren(el('p', 'No decisions available to inspect.', 'muted mono'));
         return;
       }
 
       const timelineWrap = el('div', '', 'timeline');
-      for (const d of decisions) {
+      let defaultSelectedStep = null;
+      let defaultDecision = null;
+      let defaultIsTransition = false;
+
+      decisions.forEach((d, idx) => {
         const tier = d.tier_decided || d.tier || 'T1';
         const isTransition = tier === 'T2' || tier === 'T3';
         const step = el('div', '', 'timeline-step' + (isTransition ? ' tier-transition' : ''));
@@ -1323,20 +1481,42 @@ async function initSession() {
         const scoreText = (d.score !== undefined && d.score !== null) ? `Score: ${d.score}` : 'Score: NO DATA';
         const sourceText = d.score_source ? `Source: ${d.score_source}` : 'Source: UNKNOWN';
         const latText = (d.latency_ms !== undefined && d.latency_ms !== null)
-          ? `Engine Compute Latency: ${Number(d.latency_ms).toFixed(2)} ms (engine compute time, not end-to-end)`
-          : 'Engine Compute Latency: NO DATA';
+          ? `Latency: ${Number(d.latency_ms).toFixed(2)} ms`
+          : 'Latency: NO DATA';
 
         details.appendChild(el('div', `${scoreText} · ${sourceText}`));
         details.appendChild(el('div', `Provenance: ${d.provenance || 'UNKNOWN'} · Policy: ${d.policy_profile || 'UNKNOWN'}`));
         details.appendChild(el('div', latText));
         if (d.timestamp) details.appendChild(el('div', `Timestamp: ${d.timestamp}`, 'mono'));
         step.appendChild(details);
+
+        // Click to inspect
+        step.addEventListener('click', () => {
+          for (const c of timelineWrap.children) c.classList.remove('selected');
+          step.classList.add('selected');
+          renderInspector(d, isTransition, sessMeta);
+        });
+
+        if (isTransition || !defaultDecision) {
+          defaultSelectedStep = step;
+          defaultDecision = d;
+          defaultIsTransition = isTransition;
+        }
+
         timelineWrap.appendChild(step);
-      }
+      });
+
       timelineBody.replaceChildren(timelineWrap);
+
+      // Select default decision (escalated or first)
+      if (defaultSelectedStep && defaultDecision) {
+        defaultSelectedStep.classList.add('selected');
+        renderInspector(defaultDecision, defaultIsTransition, sessMeta);
+      }
     } catch (e) {
       timelineMeta.replaceChildren(el('p', 'NO DATA · Failed to load session timeline.', 'muted mono'));
       timelineBody.replaceChildren();
+      inspectorBody.replaceChildren(el('p', 'NO DATA', 'muted mono'));
     }
   }
 
@@ -1390,7 +1570,7 @@ async function initSession() {
   });
 
   renderSessionList();
-  grid.append(listCard, timelineCard);
+  grid.append(listCard, timelineCard, inspectorCard);
   container.appendChild(grid);
   content.replaceChildren(container);
 
@@ -1479,6 +1659,113 @@ async function initVisitors() {
   kpis.append(k1, k2, k3);
   container.appendChild(kpis);
 
+  // Visitor Constellation Explorer Card
+  let selectedVisitorId = new URLSearchParams(window.location.search).get('id') || (visitors.length ? visitors[0].id : null);
+
+  const constellCard = el('section', '', 'card');
+  constellCard.appendChild(el('h2', 'Visitor Observation Constellation'));
+  const constellMeta = el('div', '', 'muted mono');
+  const constellSvgWrap = el('div', '', 'constellation-wrap');
+  constellCard.append(constellMeta, constellSvgWrap);
+  container.appendChild(constellCard);
+
+  function renderConstellation(vId) {
+    selectedVisitorId = vId;
+    const vObj = visitorMap.get(vId);
+    if (!vObj) {
+      constellMeta.textContent = 'Select a visitor profile below to inspect its session relationship constellation.';
+      constellSvgWrap.replaceChildren(el('p', 'No visitor selected.', 'muted mono'));
+      return;
+    }
+
+    constellMeta.textContent = `Active Cluster: ${vId} · Total Recorded Sessions: ${vObj.sessions.length}${vObj.returning ? ' (Recurring)' : ''}`;
+    constellSvgWrap.replaceChildren();
+
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    const w = 760;
+    const sessCount = Math.min(vObj.sessions.length, 8);
+    const h = Math.max(220, sessCount * 36 + 60);
+    svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
+    svg.setAttribute('class', 'chart');
+    svg.style.maxHeight = `${h}px`;
+
+    // Center Visitor Node
+    const cx = 110;
+    const cy = h / 2;
+
+    const vCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    vCircle.setAttribute('cx', String(cx));
+    vCircle.setAttribute('cy', String(cy));
+    vCircle.setAttribute('r', '32');
+    vCircle.setAttribute('fill', 'var(--surface-elevated)');
+    vCircle.setAttribute('stroke', 'var(--border-focus)');
+    vCircle.setAttribute('stroke-width', '2');
+    svg.appendChild(vCircle);
+
+    const vText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    vText.setAttribute('x', String(cx));
+    vText.setAttribute('y', String(cy + 4));
+    vText.setAttribute('text-anchor', 'middle');
+    vText.setAttribute('fill', 'var(--sea-glass)');
+    vText.setAttribute('font-size', '10');
+    vText.setAttribute('font-family', 'ui-monospace, monospace');
+    vText.setAttribute('font-weight', '700');
+    vText.textContent = vId.length > 12 ? vId.slice(0, 10) + '..' : vId;
+    svg.appendChild(vText);
+
+    // Satellite Session Nodes
+    const sx = 280;
+    const stepY = (h - 40) / Math.max(sessCount, 1);
+
+    vObj.sessions.slice(0, 8).forEach((s, idx) => {
+      const sy = 30 + idx * stepY + stepY / 2;
+      const isEscalated = s.reached_t2;
+      const tierColor = isEscalated ? 'var(--soft-brass)' : 'var(--sea-glass)';
+
+      // Connecting spoke
+      const spoke = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+      spoke.setAttribute('x1', String(cx + 32));
+      spoke.setAttribute('y1', String(cy));
+      spoke.setAttribute('x2', String(sx));
+      spoke.setAttribute('y2', String(sy));
+      spoke.setAttribute('stroke', isEscalated ? 'rgba(214, 180, 141, 0.4)' : 'rgba(135, 198, 185, 0.3)');
+      spoke.setAttribute('stroke-width', isEscalated ? '2' : '1.5');
+      svg.appendChild(spoke);
+
+      // Session Node Box
+      const sRect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+      sRect.setAttribute('x', String(sx));
+      sRect.setAttribute('y', String(sy - 14));
+      sRect.setAttribute('width', '450');
+      sRect.setAttribute('height', '28');
+      sRect.setAttribute('rx', '6');
+      sRect.setAttribute('fill', isEscalated ? 'var(--t2-surface)' : 'var(--surface)');
+      sRect.setAttribute('stroke', tierColor);
+      sRect.setAttribute('stroke-width', '1');
+      sRect.style.cursor = 'pointer';
+      sRect.addEventListener('click', () => {
+        window.location.href = `/session?id=${encodeURIComponent(s.session_id)}`;
+      });
+      svg.appendChild(sRect);
+
+      const sText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+      sText.setAttribute('x', String(sx + 10));
+      sText.setAttribute('y', String(sy + 4));
+      sText.setAttribute('fill', 'var(--text-primary)');
+      sText.setAttribute('font-size', '10.5');
+      sText.setAttribute('font-family', 'ui-monospace, monospace');
+      sText.style.cursor = 'pointer';
+      sText.addEventListener('click', () => {
+        window.location.href = `/session?id=${encodeURIComponent(s.session_id)}`;
+      });
+      const stSummary = s.stages ? Object.entries(s.stages).map(([k,v]) => `${k}:${v}`).join(' ') : '—';
+      sText.textContent = `${s.session_id} [${isEscalated ? 'T2 ↑' : 'T1'}] · ${stSummary}`;
+      svg.appendChild(sText);
+    });
+
+    constellSvgWrap.appendChild(svg);
+  }
+
   // Visitor Grid Card
   const atlasCard = el('section', '', 'card');
   atlasCard.appendChild(el('h2', 'Visitor Profiles & Trajectory Catalog'));
@@ -1549,6 +1836,17 @@ async function initVisitors() {
       }
       vCard.appendChild(sessList);
 
+      const inspectBtn = document.createElement('button');
+      inspectBtn.type = 'button';
+      inspectBtn.textContent = 'View Constellation Topology →';
+      inspectBtn.style.marginTop = '8px';
+      inspectBtn.style.width = '100%';
+      inspectBtn.addEventListener('click', () => {
+        renderConstellation(v.id);
+        constellCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      });
+      vCard.appendChild(inspectBtn);
+
       gridWrap.appendChild(vCard);
     }
   }
@@ -1559,6 +1857,9 @@ async function initVisitors() {
   });
 
   renderVisitorGrid();
+  if (selectedVisitorId) {
+    renderConstellation(selectedVisitorId);
+  }
   container.appendChild(atlasCard);
   content.replaceChildren(container);
 }
@@ -1768,10 +2069,10 @@ async function initLab() {
   const tTbody = el('tbody');
 
   const comps = [
-    ['Cowrie Sensor', 'SSH deception listener & telemetry extractor', 'Port 2222 (Loopback strictly)', 'ONLINE / AUDITED'],
-    ['Gatekeeper Policy Engine', 'FastAPI decision service (S1–S5 evaluation)', 'Port 8080 (Loopback only)', 'ONLINE / AUDITED'],
-    ['SQLite Audit Store', 'Persistent append-only decision_log schema', 'Local filesystem (gatekeeper.db)', 'ONLINE / AUDITED'],
-    ['Verification Dashboard', 'Offline research artifact inspector & telemetry UI', 'Port 8080 (/ and /api/*)', 'ONLINE / AUDITED']
+    ['Cowrie Sensor', 'SSH deception listener & telemetry extractor', 'Port 2222 (Loopback strictly)', 'ONLINE / ACTIVE'],
+    ['Gatekeeper Policy Engine', 'Decision service (S1–S5 policy evaluation)', 'Port 15000 (Loopback strictly)', 'ONLINE / ACTIVE'],
+    ['SQLite Audit Store', 'Persistent append-only decision_log schema', 'Local filesystem (gatekeeper.db)', 'ONLINE / ACTIVE'],
+    ['Verification Dashboard', 'Offline research artifact inspector & telemetry UI', 'Port 8080 (Loopback strictly)', 'ONLINE / ACTIVE']
   ];
 
   for (const c of comps) {

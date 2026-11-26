@@ -11,25 +11,34 @@
       --surface: #14232C;
       --surface-elevated: #1B2D35;
       --surface-inset: #101D25;
+
       --border-subtle: #2B4048;
       --border-strong: #3E5B66;
       --border-focus: #87C6B9;
+
       --text-primary: #F0F3EF;
       --text-secondary: #A5B6BA;
       --text-tertiary: #7C9297;
-      --accent-seaglass: #87C6B9;
-      --accent-brass: #D6B48D;
-      --accent-coral: #D88D81;
-      --accent-amethyst: #9A9BCF;
-      --t1-surface: #23464A;
-      --t1-text: #BCE8DC;
-      --t1-border: #3B7075;
-      --t2-surface: #4B392E;
-      --t2-text: #E7C7A7;
-      --t2-border: #7A5E4D;
-      --t3-surface: #362C42;
-      --t3-text: #D9CCE8;
-      --t3-border: #5D4D72;
+
+      --sea-glass: #87C6B9;
+      --soft-brass: #D6B48D;
+      --muted-coral: #D88D81;
+      --research-lavender: #9A9BCF;
+
+      --t1: #BCE8DC;
+      --t2: #E7C7A7;
+
+      --success: #9ACBB2;
+      --warning: #E7CDA0;
+      --invalid: #E8ABA6;
+
+      --t1-surface: #163336;
+      --t1-border: #2B575B;
+      --t2-surface: #38281F;
+      --t2-border: #634735;
+      --t3-surface: #2E253B;
+      --t3-border: #524268;
+
       font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       background: var(--canvas);
       color: var(--text-primary);
@@ -44,10 +53,11 @@
       padding: 14px;
       line-height: 1.55;
       min-width: 320px;
+      font-size: 14px;
     }
     @media (min-width: 768px) { body { padding: 24px; } }
-    a { color: var(--accent-seaglass); text-decoration: none; }
-    a:hover { text-decoration: underline; }
+    a { color: var(--sea-glass); text-decoration: none; transition: color .15s; }
+    a:hover { text-decoration: underline; color: #a3ded3; }
     .topnav {
       display: flex;
       gap: 8px;
@@ -76,7 +86,7 @@
     .topnav a.active {
       background: var(--surface-elevated);
       border-color: var(--border-focus);
-      color: var(--accent-seaglass);
+      color: var(--sea-glass);
     }
     .topnav a.nav-archive {
       margin-left: auto;
@@ -100,28 +110,80 @@
       align-items: center;
     }
     #banner.warn {
-      background: #3d2812;
-      border: 2px solid #fb923c;
+      background: #382412;
+      border: 1px solid #ea580c;
       color: #fed7aa;
     }
     #banner[hidden] { display: none; }
+
+    /* Observatory Hero */
     header.mission-head {
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
       gap: 16px;
       flex-wrap: wrap;
-      margin-bottom: 18px;
+      margin-bottom: 20px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border-subtle);
     }
-    h1 { font-size: 24px; margin: 0; font-weight: 700; letter-spacing: -0.025em; }
-    h2 { font-size: 17px; margin: 0 0 10px 0; font-weight: 600; }
+    .hero-eyebrow {
+      letter-spacing: 0.08em;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--sea-glass);
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+    h1 {
+      font-size: 26px;
+      margin: 0;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      color: var(--text-primary);
+    }
+    .hero-subtitle {
+      font-size: 14px;
+      color: var(--text-secondary);
+      margin-top: 4px;
+    }
+    h2 { font-size: 17px; margin: 0 0 10px 0; font-weight: 600; letter-spacing: -0.01em; }
     h3 { font-size: 14px; margin: 0 0 8px 0; font-weight: 600; }
     .muted { color: var(--text-secondary); font-size: 13px; }
     .mono { font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace; font-size: 12px; }
+
+    /* System Status Indicators Strip */
+    .status-strip {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-items: center;
+      padding: 10px 14px;
+      background: var(--surface-inset);
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      margin-bottom: 18px;
+      font-size: 12px;
+    }
+    .status-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--success);
+      display: inline-block;
+    }
+    .status-dot.warm { background: var(--soft-brass); }
+
+    /* KPI Cards */
     .kpis {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 12px;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 14px;
       margin-bottom: 18px;
     }
     .card {
@@ -129,10 +191,15 @@
       border: 1px solid var(--border-subtle);
       border-radius: 10px;
       padding: 16px;
+      transition: border-color .15s ease;
+    }
+    .card:hover {
+      border-color: var(--border-strong);
     }
     .kpi-title { font-size: 12px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.04em; }
     .kpi-value { font-size: 26px; font-weight: 700; margin: 6px 0 4px 0; font-family: ui-monospace, monospace; }
     .kpi-sub { font-size: 12px; color: var(--text-tertiary); }
+
     .summary-strip {
       display: flex;
       gap: 16px;
@@ -145,10 +212,12 @@
       margin-bottom: 18px;
       font-size: 13px;
     }
+
+    /* Distribution Breakdowns */
     .breakdowns {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 14px;
+      gap: 16px;
       margin-top: 14px;
     }
     .bar-row {
@@ -159,7 +228,7 @@
       font-size: 12px;
       font-family: ui-monospace, monospace;
     }
-    .bar-label { min-width: 75px; color: var(--text-secondary); }
+    .bar-label { min-width: 80px; color: var(--text-secondary); }
     .bar-track {
       flex: 1;
       height: 8px;
@@ -168,7 +237,86 @@
       border-radius: 4px;
       overflow: hidden;
     }
-    .bar-fill { height: 100%; border-radius: 4px; background: var(--accent-seaglass); }
+    .bar-fill { height: 100%; border-radius: 4px; background: var(--sea-glass); transition: width .2s ease; }
+
+    /* Transitions Feed */
+    .transitions-feed {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 10px;
+    }
+    .feed-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 14px;
+      background: var(--surface-inset);
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      font-size: 13px;
+      font-family: ui-monospace, monospace;
+      transition: background .15s ease;
+    }
+    .feed-item:hover {
+      background: var(--surface-elevated);
+    }
+
+    /* Trajectory Badges & Connectors (Master Visual Motif) */
+    .trajectory-container {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      vertical-align: middle;
+    }
+    .traj-step {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      padding: 3px 7px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 600;
+      font-family: ui-monospace, monospace;
+      border: 1px solid var(--border-subtle);
+      background: var(--surface-inset);
+    }
+    .traj-step.T1 { background: var(--t1-surface); color: var(--t1); border-color: var(--t1-border); }
+    .traj-step.T2 { background: var(--t2-surface); color: var(--t2); border-color: var(--t2-border); }
+    .traj-step.T3 { background: var(--t3-surface); color: var(--research-lavender); border-color: var(--t3-border); }
+    .traj-step.missing { color: var(--text-tertiary); opacity: 0.5; }
+    .traj-step.escalated {
+      outline: 2px solid var(--soft-brass);
+      box-shadow: 0 0 6px rgba(214, 180, 141, 0.3);
+      font-weight: 700;
+    }
+    .traj-arrow {
+      color: var(--border-strong);
+      font-size: 11px;
+      user-select: none;
+    }
+    .traj-arrow.escalated {
+      color: var(--soft-brass);
+      font-weight: 700;
+    }
+
+    /* Badges */
+    .badge {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 6px;
+      margin: 2px;
+      font-size: 11px;
+      font-weight: 600;
+      font-family: ui-monospace, monospace;
+      border: 1px solid var(--border-subtle);
+      background: var(--surface-inset);
+    }
+    .badge.T1 { background: var(--t1-surface); color: var(--t1); border-color: var(--t1-border); }
+    .badge.T2 { background: var(--t2-surface); color: var(--t2); border-color: var(--t2-border); }
+    .badge.return { background: rgba(135, 198, 185, 0.12); color: var(--sea-glass); border-color: var(--border-focus); }
+
+    /* Tools & Table */
     .tools {
       display: flex;
       gap: 10px;
@@ -189,7 +337,7 @@
     .scroll {
       overflow-x: auto;
       max-width: 100%;
-      max-height: 520px;
+      max-height: 540px;
       margin-top: 14px;
       -webkit-overflow-scrolling: touch;
       border: 1px solid var(--border-subtle);
@@ -213,43 +361,11 @@
       border-bottom: 1px solid var(--border-subtle);
       vertical-align: top;
     }
-    tr:hover { background: rgba(135, 198, 185, 0.05); }
-    .chip, .badge {
-      display: inline-block;
-      padding: 3px 8px;
-      border-radius: 6px;
-      margin: 2px;
-      font-size: 11px;
-      font-weight: 600;
-      font-family: ui-monospace, monospace;
-      border: 1px solid var(--border-subtle);
-      background: var(--surface-inset);
-    }
-    .chip.T1, .badge.T1 { background: var(--t1-surface); color: var(--t1-text); border-color: var(--t1-border); }
-    .chip.T2, .badge.T2 { background: var(--t2-surface); color: var(--t2-text); border-color: var(--t2-border); }
-    .chip.T3, .badge.T3 { background: var(--t3-surface); color: var(--t3-text); border-color: var(--t3-border); }
-    .chip.missing { color: var(--text-tertiary); }
-    .chip.transition { outline: 2px solid var(--accent-brass); font-weight: bold; }
-    .badge.return { background: rgba(135, 198, 185, 0.15); color: var(--accent-seaglass); border-color: var(--accent-seaglass); }
-    .session-id { font-family: ui-monospace, monospace; font-size: 12px; font-weight: 600; }
+    tr { transition: background .12s ease; }
+    tr:hover { background: rgba(135, 198, 185, 0.04); }
+    .session-id { font-family: ui-monospace, monospace; font-size: 13px; font-weight: 600; }
     #empty { padding: 32px; text-align: center; color: var(--text-secondary); }
-    .transitions-feed {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      margin-top: 10px;
-    }
-    .feed-item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 8px 12px;
-      background: var(--surface-inset);
-      border: 1px solid var(--border-subtle);
-      border-radius: 6px;
-      font-size: 12px;
-      font-family: ui-monospace, monospace;
-    }
+
     footer {
       margin-top: 24px;
       padding-top: 16px;
@@ -258,8 +374,9 @@
       font-size: 12px;
     }
     details { margin-top: 8px; }
-    summary { cursor: pointer; color: var(--accent-seaglass); }
+    summary { cursor: pointer; color: var(--sea-glass); }
     #status { min-height: 20px; font-weight: 600; }
+
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after {
         animation-duration: 0.01ms !important;
@@ -294,8 +411,9 @@
 
 <header class="mission-head">
   <div>
-    <div class="muted mono" style="letter-spacing: 0.05em; font-size: 11px;">ADAPTIVE SSH DECEPTION OBSERVATORY · OPERATIONAL DEFENSE</div>
-    <h1>Mission Control</h1>
+    <div class="hero-eyebrow">SCHRÖDINGER'S SERVER</div>
+    <h1>Adaptive SSH Deception Observatory</h1>
+    <div class="hero-subtitle">Operational mission control and live Gatekeeper policy telemetry stream.</div>
   </div>
   <div style="text-align: right;">
     <div id="status" role="status" aria-live="polite" class="mono">NO DATA · waiting for API</div>
@@ -303,6 +421,30 @@
   </div>
 </header>
 
+<!-- System Status Indicators Strip -->
+<section class="status-strip" aria-label="System Connectivity Status">
+  <div class="status-item">
+    <span class="status-dot"></span>
+    <span class="muted">Dashboard:</span>
+    <strong class="mono" style="color: var(--text-primary);">127.0.0.1:8080 (Loopback)</strong>
+  </div>
+  <div class="status-item">
+    <span class="status-dot warm"></span>
+    <span class="muted">SSH Sensor:</span>
+    <strong class="mono" style="color: var(--soft-brass);">Port 2222 (Cowrie Listener)</strong>
+  </div>
+  <div class="status-item">
+    <span class="status-dot"></span>
+    <span class="muted">Decision Engine:</span>
+    <strong class="mono" style="color: var(--text-primary);">Port 15000 (SQLite WAL)</strong>
+  </div>
+  <div class="status-item" style="margin-left: auto;">
+    <span class="muted">Profile:</span>
+    <span id="policy-profile-badge" class="badge">LAB_DEMO</span>
+  </div>
+</section>
+
+<!-- KPI Cards -->
 <section class="kpis" aria-label="Database session metrics">
   <div class="card">
     <div class="kpi-title">Recorded SSH Sessions</div>
@@ -311,11 +453,11 @@
   </div>
   <div class="card">
     <div class="kpi-title">Escalated Sessions (Reached T2)</div>
-    <div class="kpi-value" id="escalated" style="color: var(--accent-brass);">NO DATA</div>
+    <div class="kpi-value" id="escalated" style="color: var(--soft-brass);">NO DATA</div>
     <div class="kpi-sub">Migrated to enhanced T2 persona</div>
   </div>
   <div class="card">
-    <div class="kpi-title">Escalation Ratio</div>
+    <div class="kpi-title">Escalation Fraction</div>
     <div class="kpi-value" id="fraction">NO DATA</div>
     <div class="kpi-sub">Escalated / recorded sessions</div>
   </div>
@@ -330,7 +472,7 @@
   <span><strong>Recorded decisions:</strong> <span id="sum-total" class="mono">NO DATA</span></span>
   <span><strong>Tiers:</strong> <span id="sum-tiers" class="mono">NO DATA</span></span>
   <span><strong>P95 engine compute time:</strong> <span id="sum-p95" class="mono">NO DATA</span></span>
-  <span style="margin-left: auto;"><strong>Telemetry Polling:</strong> <span id="ticker-status" class="mono" style="color: var(--accent-seaglass);">Live (5s poll)</span></span>
+  <span style="margin-left: auto;"><strong>Telemetry Polling:</strong> <span id="ticker-status" class="mono" style="color: var(--sea-glass);">Live (5s poll)</span></span>
 </section>
 
 <!-- Breakdown Bars Card -->
@@ -374,11 +516,11 @@
       <option value="no">T1 only (Unescalated)</option>
     </select>
   </div>
-  <p class="muted">S1 → S5: observed stage decisions. ↑ marks a tier escalation. A dash (—) indicates stage was not evaluated.</p>
+  <p class="muted">S1 → S5: observation trajectory sequence. Light teal denotes T1, warm brass denotes T2. ↑ indicates an escalation transition event. A dash (—) indicates stage was not evaluated.</p>
   <div class="scroll">
     <table>
       <thead>
-        <tr><th>Session / Visitor Identity</th><th>Stage Timeline (S1–S5)</th><th>Provenance / Policy / Decisions</th></tr>
+        <tr><th>Session / Visitor Identity</th><th>Observation Trajectory (S1–S5)</th><th>Provenance / Policy / Decisions</th></tr>
       </thead>
       <tbody id="rows"></tbody>
     </table>
@@ -466,31 +608,66 @@ function renderTransitions(sessions) {
   }
 
   feed.replaceChildren();
-  // Show up to 10 most prominent transitions
+  // Show recent transitions
   for (const tr of transitions.slice(0, 10)) {
     const item = document.createElement('div');
     item.className = 'feed-item';
 
     const left = document.createElement('div');
-    left.appendChild(text('strong', tr.sessionId));
+    const sLink = document.createElement('a');
+    sLink.href = `/session?id=${encodeURIComponent(tr.sessionId)}`;
+    sLink.textContent = tr.sessionId;
+    sLink.style.fontWeight = '700';
+    left.appendChild(sLink);
     left.appendChild(text('span', ` (${tr.visitorId}) `, 'muted'));
     item.appendChild(left);
 
     const right = document.createElement('div');
+    right.style.whiteSpace = 'nowrap';
     right.appendChild(text('span', `Stage ${tr.stage}: `, 'muted'));
-    const tBadge = text('span', `${tr.from} → ${tr.to}`, 'chip transition T2');
+    const tBadge = text('span', `${tr.from} → ${tr.to}`, 'traj-step T2 escalated');
     right.appendChild(tBadge);
 
     const foreLink = document.createElement('a');
     foreLink.href = `/session?id=${encodeURIComponent(tr.sessionId)}`;
     foreLink.textContent = ' Investigate →';
-    foreLink.style.marginLeft = '10px';
-    foreLink.style.fontSize = '11px';
+    foreLink.style.marginLeft = '12px';
+    foreLink.style.fontSize = '12px';
     right.appendChild(foreLink);
 
     item.appendChild(right);
     feed.appendChild(item);
   }
+}
+
+function renderTrajectoryTrack(session) {
+  const container = document.createElement('div');
+  container.className = 'trajectory-container';
+
+  const stages = ['S1', 'S2', 'S3', 'S4', 'S5'];
+  let prevActive = false;
+
+  for (let i = 0; i < stages.length; i++) {
+    const st = stages[i];
+    const tier = session.stages && session.stages[st];
+    const changes = (session.transitions || []).filter(t => t.stage === st);
+    const hasTransition = changes.length > 0;
+
+    if (i > 0) {
+      const arrow = document.createElement('span');
+      arrow.textContent = '→';
+      arrow.className = 'traj-arrow' + (hasTransition ? ' escalated' : '');
+      container.appendChild(arrow);
+    }
+
+    const step = document.createElement('span');
+    step.className = 'traj-step ' + (tier || 'missing') + (hasTransition ? ' escalated' : '');
+    step.textContent = `${st} ${tier || '—'}${hasTransition ? ' ↑' : ''}`;
+    step.title = hasTransition ? changes.map(t => `${t.from} → ${t.to}`).join(', ') : (tier ? `Assigned ${tier}` : 'Stage not observed');
+    container.appendChild(step);
+  }
+
+  return container;
 }
 
 function render() {
@@ -543,98 +720,110 @@ function render() {
     }
 
     const timeline = document.createElement('td');
-    for (const stage of ['S1', 'S2', 'S3', 'S4', 'S5']) {
-      const tier = s.stages && s.stages[stage];
-      const changes = (s.transitions || []).filter(t => t.stage === stage);
-      const chip = text('span', stage + ' ' + (tier || '—') + (changes.length ? ' ↑' : ''), 'chip ' + (tier || 'missing') + (changes.length ? ' transition' : ''));
-      chip.title = changes.map(t => t.from + ' → ' + t.to).join(', ') || 'No observed tier change';
-      timeline.appendChild(chip);
-    }
+    timeline.appendChild(renderTrajectoryTrack(s));
 
-    const badges = document.createElement('td');
-    for (const p of new Set((s.decisions || []).map(d => d.provenance))) {
-      badges.appendChild(text('span', p, 'badge'));
-    }
-    for (const p of new Set((s.decisions || []).map(d => d.policy_profile))) {
-      badges.appendChild(text('span', p, 'badge'));
-    }
+    const meta = document.createElement('td');
+    const decCount = (s.decisions || []).length;
+    const decBtn = document.createElement('a');
+    decBtn.href = `/session?id=${encodeURIComponent(s.session_id)}`;
+    decBtn.textContent = `${decCount} Recorded Decision${decCount === 1 ? '' : 's'}`;
+    decBtn.className = 'badge';
+    decBtn.style.color = 'var(--sea-glass)';
+    meta.appendChild(decBtn);
 
-    const details = document.createElement('details');
-    details.appendChild(text('summary', `${(s.decisions || []).length} Recorded Decisions`));
-    for (const d of (s.decisions || [])) {
-      const latFmt = (d.latency_ms !== null && d.latency_ms !== undefined) ? Number(d.latency_ms).toFixed(2) + ' ms' : 'NO DATA';
-      details.appendChild(text('div', `${d.stage} · ${d.tier} · ${d.provenance} · score ${d.score} · compute ${latFmt} · ${d.timestamp}`, 'muted mono'));
-    }
-    badges.appendChild(details);
+    const detailLine = document.createElement('div');
+    detailLine.className = 'muted mono';
+    detailLine.style.marginTop = '4px';
+    const firstDec = (s.decisions && s.decisions[0]) || {};
+    const latFormatted = (firstDec.latency_ms !== undefined && firstDec.latency_ms !== null)
+      ? `${Number(firstDec.latency_ms).toFixed(2)} ms`
+      : 'NO DATA';
+    detailLine.textContent = `Provenance: ${firstDec.provenance || 'LAB'} · Latency: ${latFormatted}`;
+    meta.appendChild(detailLine);
 
-    row.append(identity, timeline, badges);
+    row.append(identity, timeline, meta);
   }
 
-  for (const r of existing.values()) r.remove();
-  el('empty').hidden = visible.length > 0;
-  el('empty').textContent = sessions.length ? 'No matching sessions for filter criteria' : 'NO DATA · No decisions recorded in database';
+  for (const remaining of existing.values()) remaining.remove();
+  el('empty').style.display = visible.length ? 'none' : 'block';
+  el('empty').textContent = sessions.length ? 'No sessions match your filter criteria.' : 'NO DATA · No sessions recorded in database.';
+}
+
+async function poll() {
+  try {
+    const res = await fetch('/api/sessions');
+    if (!res.ok) throw new Error('API returned ' + res.status);
+    data = await res.json();
+
+    const meta = data.metadata || {};
+    const banner = el('banner');
+    if (meta.demo_label) {
+      banner.hidden = false;
+      banner.textContent = meta.demo_label + ' · Synthetic laboratory demonstration profile active. Decisions are scripted for defense demonstration, NOT generated by machine learning.';
+    } else {
+      banner.hidden = true;
+    }
+
+    const k = data.kpis || {};
+    const totalSess = (k.sessions !== undefined) ? k.sessions : (k.total_sessions !== undefined ? k.total_sessions : (data.sessions ? data.sessions.length : 0));
+    const reachedT2 = (k.reached_t2 !== undefined) ? k.reached_t2 : 0;
+    const fracVal = (k.escalation_fraction !== undefined) ? k.escalation_fraction : k.escalation_rate;
+    const fracText = (fracVal !== undefined && fracVal !== null) ? `${(Number(fracVal) * (Number(fracVal) <= 1 ? 100 : 1)).toFixed(1)}%` : '0.0%';
+    const latVal = (k.median_compute_ms !== undefined && k.median_compute_ms !== null)
+      ? k.median_compute_ms
+      : ((k.mean_latency_ms !== undefined && k.mean_latency_ms !== null) ? k.mean_latency_ms : null);
+    const latText = latVal !== null ? `${Number(latVal).toFixed(2)} ms` : 'NO DATA';
+
+    el('sessions').textContent = totalSess;
+    el('escalated').textContent = reachedT2;
+    el('fraction').textContent = fracText;
+    el('latency').textContent = latText;
+    el('status').textContent = 'Connected · ' + (data.sessions ? data.sessions.length : 0) + ' sessions';
+    el('updated').textContent = 'Last updated: ' + new Date().toLocaleTimeString();
+    el('source').textContent = meta.scope || 'UNKNOWN';
+    el('foot-scope').textContent = `Scope: ${meta.scope || 'UNKNOWN'} · Profile: ${meta.policy_profile || 'UNKNOWN'}`;
+
+    const profBadge = el('policy-profile-badge');
+    if (profBadge) profBadge.textContent = meta.policy_profile || 'LAB_DEMO';
+
+    render();
+  } catch (e) {
+    el('status').textContent = 'API unavailable';
+    el('empty').textContent = 'NO DATA · Failed to connect to /api/sessions.';
+    el('empty').style.display = 'block';
+  }
+}
+
+async function pollSummary() {
+  try {
+    const res = await fetch('/api/decisions/summary');
+    if (!res.ok) return;
+    const raw = await res.json();
+    const sum = (raw && raw.data) ? raw.data : raw;
+    const counts = sum.counts || {};
+    const tiers = counts.tier || sum.tiers || {};
+    const stages = counts.stage || sum.stages || {};
+    const prov = counts.provenance || sum.provenance || {};
+    const totalDecs = Object.values(tiers).reduce((a, b) => a + b, 0) || sum.total_decisions || '0';
+    el('sum-total').textContent = totalDecs;
+    el('sum-tiers').textContent = Object.entries(tiers).length ? Object.entries(tiers).map(([k,v]) => `${k}:${v}`).join(' ') : 'none';
+    const latObj = sum.latency_ms || sum.latency || {};
+    const p95Val = (latObj.p95 !== undefined && latObj.p95 !== null) ? latObj.p95 : latObj.p95_ms;
+    el('sum-p95').textContent = (p95Val !== undefined && p95Val !== null) ? `${Number(p95Val).toFixed(2)} ms` : 'NO DATA';
+
+    renderBars('bars-tier', tiers, 'var(--soft-brass)');
+    renderBars('bars-stage', stages, 'var(--sea-glass)');
+    renderBars('bars-provenance', prov, 'var(--research-lavender)');
+  } catch (e) {}
 }
 
 el('search').addEventListener('input', render);
 el('tier').addEventListener('change', render);
 
-async function refresh() {
-  try {
-    const response = await fetch('/api/sessions', { cache: 'no-store', signal: AbortSignal.timeout(5000) });
-    if (!response.ok) throw new Error('API HTTP error');
-    const next = await response.json();
-    data = next;
-
-    el('banner').hidden = !data.has_lab_demo;
-    el('source').textContent = data.source || 'UNKNOWN';
-    el('sessions').textContent = data.kpis ? data.kpis.sessions : 0;
-    el('escalated').textContent = data.kpis ? data.kpis.reached_t2 : 0;
-    el('fraction').textContent = (data.kpis && data.kpis.escalation_fraction !== null)
-      ? (data.kpis.escalation_fraction * 100).toFixed(1) + '%'
-      : 'NO DATA';
-    el('latency').textContent = (data.kpis && data.kpis.median_compute_ms !== null)
-      ? data.kpis.median_compute_ms.toFixed(2) + ' ms'
-      : 'NO DATA';
-    el('status').textContent = 'Connected · ' + (data.source || 'UNKNOWN');
-    el('updated').textContent = 'Last updated: ' + new Date().toLocaleTimeString();
-    el('ticker-status').textContent = 'Live (5s poll)';
-    el('foot-scope').textContent = `Scope: ${data.source || 'UNKNOWN'} · Profile: ${data.metadata ? data.metadata.policy_profile : 'UNKNOWN'}`;
-
-    render();
-
-    try {
-      const sRes = await fetch('/api/decisions/summary', { cache: 'no-store', signal: AbortSignal.timeout(5000) });
-      if (sRes.ok) {
-        const sJson = await sRes.json();
-        if (sJson.data) {
-          const d = sJson.data;
-          el('sum-total').textContent = d.counts && d.counts.tier ? Object.values(d.counts.tier).reduce((a, b) => a + b, 0) : 'NO DATA';
-          el('sum-tiers').textContent = d.counts && d.counts.tier ? Object.entries(d.counts.tier).map(([k, v]) => k + ':' + v).join(' ') : 'NO DATA';
-          el('sum-p95').textContent = d.latency_ms && d.latency_ms.p95 !== null && d.latency_ms.p95 !== undefined ? d.latency_ms.p95.toFixed(2) + ' ms' : 'NO DATA';
-
-          if (d.counts) {
-            renderBars('bars-tier', d.counts.tier, '#87C6B9');
-            renderBars('bars-stage', d.counts.stage, '#9A9BCF');
-            renderBars('bars-provenance', d.counts.provenance, '#D6B48D');
-          }
-        }
-      }
-    } catch (e) {}
-  } catch (e) {
-    el('status').textContent = 'NO DATA · API unavailable';
-    el('ticker-status').textContent = 'Stale / Disconnected';
-    for (const id of ['sessions', 'escalated', 'fraction', 'latency', 'sum-total', 'sum-tiers', 'sum-p95']) {
-      if (el(id)) el(id).textContent = 'NO DATA';
-    }
-    el('rows').replaceChildren();
-    el('empty').hidden = false;
-    el('empty').textContent = 'NO DATA · awaiting a successful refresh';
-    signature = '';
-  } finally {
-    setTimeout(refresh, 5000);
-  }
-}
-refresh();
+poll();
+pollSummary();
+setInterval(poll, 5000);
+setInterval(pollSummary, 5000);
 </script>
 </body>
 </html>
