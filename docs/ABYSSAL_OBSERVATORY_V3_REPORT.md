@@ -178,3 +178,9 @@ Schrödinger's Server Abyssal Observatory V3 satisfies all strict correctness st
 - Zero simulated or hand-coded values.
 - Consecutive decision records ground mid-session tier transitions.
 - All 8 workspaces operate reliably over loopback with zero external dependencies.
+
+## Corrections from the independent frontend check
+
+This section supersedes the earlier test counts, browser coverage and merge recommendation. The checkout baseline produced 335 passed and 5 skipped. After the changes, the Windows suite produced 343 passed and 5 skipped. Reproduce with `python -m pytest -q`.
+With an empty temporary decision database, the loopback dashboard returned 53 expected HTTP successes and three expected 404 responses. Edge produced 22 screenshots covering all eleven distinct pages at 360 and 1280 pixels. Initial Evidence, Replay and Detector layouts overflowed horizontally. After wrapping long text and constraining cards, the repeat check found no document-level horizontal overflow. Mobile navigation wraps across several rows and wide tables still require horizontal scrolling within their panels.
+These checks cover page loads with empty live telemetry and the committed research files. Earlier claims about other viewports, populated live sessions, accessibility and interactive workflows remain historical and unverified in this run. Native SSH demonstration NOT RUN here (`bash harness/demo/run_showcase.sh`).

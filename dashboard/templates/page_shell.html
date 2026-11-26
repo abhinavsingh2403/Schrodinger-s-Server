@@ -406,6 +406,9 @@ footer.page-foot {
   .topnav, #banner { display: none; }
   .card { border: 1px solid #ccc; background: #fff; color: #000; }
 }
+pre { white-space: pre-wrap; overflow-wrap: anywhere; }
+.card, .grid-2 > * { min-width: 0; }
+.tools { max-width: 100%; overflow-x: auto; }
 </style>
 </head>
 <body>
@@ -892,7 +895,7 @@ async function initCost() {
   // Mandatory verbatim limitation callout from COST_PER_TIER
   const limitCard = el('section', '', 'card warn');
   limitCard.appendChild(el('h2', 'Matched Laboratory Methodology & Confounding Limitation'));
-  let matchedParagraph = 'Matched session count and pacing window. Sampling includes pauses and early T1 time inside T2-final sessions. Both personas share one sensor process. Terminal allocation also differs, so this cannot isolate a persona-only resource effect.';
+  let matchedParagraph = 'NO DATA';
   if (costTierRes && costTierRes.body && costTierRes.body.data && typeof costTierRes.body.data.text === 'string') {
     const rawText = costTierRes.body.data.text;
     const parts = rawText.split(/\r?\n\r?\n/);
@@ -915,11 +918,11 @@ async function initCost() {
     const allRuns = [
       ...t1Runs.map((r) => ({ target: 'T1', ...r })),
       ...t2Runs.map((r) => ({ target: 'T2', ...r }))
-    ];
+    ].filter(r => Number.isFinite(r.stats?.mean_cpu_pct) && Number.isFinite(r.stats?.max_cpu_pct));
 
     let peakCpu = 0;
     for (const r of allRuns) {
-      const c = r.stats ? r.stats.max_cpu_pct || 0 : 0;
+      const c = r.stats.max_cpu_pct;
       if (c > peakCpu) peakCpu = c;
     }
     const maxCpu = Math.max(peakCpu * 1.25, 2.5);
@@ -961,8 +964,8 @@ async function initCost() {
     const slotW = Math.floor(chartW / (allRuns.length || 1));
     for (let i = 0; i < allRuns.length; i++) {
       const r = allRuns[i];
-      const meanCpu = r.stats ? r.stats.mean_cpu_pct || 0 : 0;
-      const maxC = r.stats ? r.stats.max_cpu_pct || 0 : 0;
+      const meanCpu = r.stats.mean_cpu_pct;
+      const maxC = r.stats.max_cpu_pct;
       const x = startX + i * slotW + slotW / 2;
 
       const yMax = startY + chartH - Math.min(chartH, (maxC / maxCpu) * chartH);

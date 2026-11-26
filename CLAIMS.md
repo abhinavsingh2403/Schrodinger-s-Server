@@ -126,3 +126,4 @@ Event-log ordering observations are recorded by analysis/exp0_event_order.py aga
 | Recorded SSH completion and decision-log tiers are paired for each attempted replay. | [Observations](results/replay/observations.json) | Lab, exploratory |
 | Both final-tier arms received the selected inputs in every repeat. | [Replay result](results/replay/REPLAY_RESULT.md) | Lab, exploratory |
 | The lab dashboard serves allowlisted evidence and read-only decision summaries with masked session links. | [Dashboard contract](docs/FRONTEND_CONTRACT.md) | Lab |
+| The lab dashboard truthfulness audit traced rule explanations and experiment verdicts to repository evidence. | [Frontend claims audit](docs/FRONTEND_CLAIMS_AUDIT.md) | Lab |

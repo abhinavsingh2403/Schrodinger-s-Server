@@ -344,3 +344,9 @@ Start from repo root: `python -m dashboard.app --db gatekeeper/gatekeeper.db`. P
 Bash: `base=http://127.0.0.1:8080; for p in evidence/index evidence/metrics progress decisions/summary sessions decisions stats arms model exp0 natural_experiment detector; do curl -sS "$base/api/$p"; done`.
 Timeline: `sid=$(curl -sS "$base/api/sessions" | python -c "import json,sys; print(json.load(sys.stdin)['sessions'][0]['session_id'])"); curl -sS "$base/api/session/$sid"` requires a recorded session.
 Front-end page rendering is pending. Optional event-log API omitted; the timeline uses decision rows.
+
+### Frontend corrections
+DONE — Corrected rule and ML descriptions, audited persona and deployment claims, added replay/detector evidence and configurable loopback health.
+DONE — Windows suite, loopback HTTP smoke and Edge viewport checks recorded in docs/FINAL_FRONTEND_VERIFICATION.md. Audit retained IPv4 findings.
+Run `python -m pytest -q` and `python -m dashboard.app --mode LAB --port 8093 --db demo.sqlite`.
+Optional static-file service omitted. Native SSH NOT RUN in this frontend check: `bash harness/demo/run_showcase.sh`.
