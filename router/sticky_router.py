@@ -89,7 +89,25 @@ class StickyRouter:
     ) -> None:
         """Handle incoming TCP connection and splice to backend with graceful half-close handling."""
         peer = client_writer.get_extra_info("peername")
-        client_ip = peer[0] if peer else "127.0.0.1"
+        peer_ip = peer[0] if peer else "127.0.0.1"
+        client_ip = peer_ip
+        initial_payload = b""
+
+        try:
+            from infra.proxy import is_trusted_proxy, parse_proxy_v1
+            if is_trusted_proxy(peer_ip):
+                try:
+                    chunk = await asyncio.wait_for(client_reader.read(512), timeout=0.1)
+                    parsed = parse_proxy_v1(chunk)
+                    if parsed:
+                        client_ip, _, remainder = parsed
+                        initial_payload = remainder
+                    else:
+                        initial_payload = chunk
+                except (asyncio.TimeoutError, Exception):
+                    pass
+        except ImportError:
+            pass
 
         tier, backend_port = self.select_backend(client_ip)
         backend_host = (
@@ -98,10 +116,13 @@ class StickyRouter:
             else self.backends.t1_host
         )
 
-        logger.info("Routing client %s to %s backend on port %d", client_ip, tier, backend_port)
+        logger.info("Routing client %s (peer %s) to %s backend on port %d", client_ip, peer_ip, tier, backend_port)
 
         try:
             b_reader, b_writer = await asyncio.open_connection(backend_host, backend_port)
+            if initial_payload:
+                b_writer.write(initial_payload)
+                await b_writer.drain()
         except Exception as exc:
             logger.error("Failed to connect to %s backend (%s:%d): %s", tier, backend_host, backend_port, exc)
             client_writer.close()

@@ -9,7 +9,7 @@ COPY gatekeeper gatekeeper
 COPY analysis analysis
 COPY models models
 COPY config config
-COPY infra/sensor_entrypoint.py infra/
+COPY infra infra
 RUN mkdir -p sensor/personas && chown -R sensor sensor/personas
 USER sensor
 ENTRYPOINT ["python","infra/sensor_entrypoint.py"]

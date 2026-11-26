@@ -63,6 +63,32 @@ def install(bridge):
     from sensor import adaptive_server
     original_dispatch = EventDispatcher.dispatch
     original_newkeys = HoneyPotSSHTransport.ssh_NEWKEYS
+    original_data_received = getattr(HoneyPotSSHTransport, "dataReceived", None)
+
+    def proxy_aware_data_received(self, data):
+        # On first incoming packet, check for PROXY protocol from an authorized trusted proxy
+        if not getattr(self, "_proxy_checked", False):
+            self._proxy_checked = True
+            try:
+                peer = getattr(self.transport, "getPeer", lambda: None)()
+                peer_ip = getattr(peer, "host", "")
+                from infra.proxy import is_trusted_proxy, parse_proxy_v1
+                if is_trusted_proxy(peer_ip):
+                    parsed = parse_proxy_v1(data)
+                    if parsed:
+                        real_ip, real_port, remainder = parsed
+                        from twisted.internet.address import IPv4Address
+                        self.transport.getPeer = lambda: IPv4Address("TCP", real_ip, real_port)
+                        if remainder and original_data_received:
+                            return original_data_received(self, remainder)
+                        return
+            except Exception:
+                adaptive_server.logger.exception("Error parsing proxy protocol header")
+        if original_data_received:
+            return original_data_received(self, data)
+
+    if original_data_received is not None:
+        HoneyPotSSHTransport.dataReceived = proxy_aware_data_received
 
     def dispatch(self, event):
         # Feature/decision failures must never suppress Cowrie's own event sinks.
