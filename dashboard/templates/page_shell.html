@@ -1636,6 +1636,8 @@ async function initVisitors() {
   const content = document.getElementById('content');
   content.replaceChildren(el('p', 'Loading visitor telemetry and grouped session trajectories...', 'muted mono'));
 
+  const MAX_GRAPH_NODES = 30;
+
   let sessRes;
   try {
     sessRes = await fetchJson('/api/sessions');
@@ -1648,7 +1650,7 @@ async function initVisitors() {
   const sData = sessRes.body;
   setBanner(sData ? sData.metadata : null);
   const sessions = (sData && Array.isArray(sData.sessions)) ? sData.sessions : [];
-  setStatus(`Loaded sessions for visitor clustering`);
+  setStatus("Loaded sessions for visitor clustering");
 
   const container = el('div');
 
@@ -1671,7 +1673,7 @@ async function initVisitors() {
     if (s.reached_t2) vObj.escalated = true;
     if (s.stages) {
       for (const [st, tr] of Object.entries(s.stages)) {
-        if (tr) vObj.stagesSeen.add(`${st}:${tr}`);
+        if (tr) vObj.stagesSeen.add(st + ':' + tr);
       }
     }
   }
@@ -1701,114 +1703,221 @@ async function initVisitors() {
   kpis.append(k1, k2, k3);
   container.appendChild(kpis);
 
-  // Visitor Constellation Explorer Card
+  // Limitation Notice Banner
+  const limitBox = el('div', '', 'card warn');
+  limitBox.style.marginBottom = '16px';
+  limitBox.appendChild(el('strong', 'Docker Network Bridge Limitation: '));
+  limitBox.appendChild(el('span', 'All containerized lab honeypot traffic traverses local loopback / bridge network interfaces. Visitor clustering reflects lab session grouping and synthetic or recorded pseudonym masks (vis_...), rather than geographically distinct remote IP addresses.'));
+  container.appendChild(limitBox);
+
+  // SVG Node Graph (Deterministic layout, capped nodes)
   let selectedVisitorId = new URLSearchParams(window.location.search).get('id') || (visitors.length ? visitors[0].id : null);
 
-  const constellCard = el('section', '', 'card');
-  constellCard.appendChild(el('h2', 'Visitor Observation Constellation'));
-  const constellMeta = el('div', '', 'muted mono');
-  const constellSvgWrap = el('div', '', 'constellation-wrap');
-  constellCard.append(constellMeta, constellSvgWrap);
-  container.appendChild(constellCard);
+  const graphCard = el('section', '', 'card');
+  graphCard.appendChild(el('h2', 'Visitor Observation Constellation Graph'));
+  const graphMeta = el('div', '', 'muted mono');
+  graphMeta.style.marginBottom = '8px';
+  const graphSvgWrap = el('div', '', 'constellation-wrap');
+  graphCard.append(graphMeta, graphSvgWrap);
+  container.appendChild(graphCard);
 
-  function renderConstellation(vId) {
+  // Detail / Focused Visitor Card
+  const focusCard = el('section', '', 'card');
+  focusCard.id = 'focused-visitor-card';
+  focusCard.appendChild(el('h2', 'Focused Visitor Trajectory & Tier Inheritance'));
+  const focusBody = el('div');
+  focusCard.appendChild(focusBody);
+  container.appendChild(focusCard);
+
+  function renderFocusedVisitor(vId) {
     selectedVisitorId = vId;
     const vObj = visitorMap.get(vId);
     if (!vObj) {
-      constellMeta.textContent = 'Select a visitor profile below to inspect its session relationship constellation.';
-      constellSvgWrap.replaceChildren(el('p', 'No visitor selected.', 'muted mono'));
+      focusBody.replaceChildren(el('p', 'Select a visitor from the constellation or catalog below to inspect historical session inheritance.', 'muted mono'));
       return;
     }
 
-    constellMeta.textContent = `Active Cluster: ${vId} · Total Recorded Sessions: ${vObj.sessions.length}${vObj.returning ? ' (Recurring)' : ''}`;
-    constellSvgWrap.replaceChildren();
+    focusBody.replaceChildren();
 
-    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-    const w = 760;
-    const sessCount = Math.min(vObj.sessions.length, 8);
-    const h = Math.max(220, sessCount * 36 + 60);
-    svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
-    svg.setAttribute('class', 'chart');
-    svg.style.maxHeight = `${h}px`;
+    const topRow = el('div', '', 'tools');
+    topRow.appendChild(el('h3', 'Visitor Profile: ' + vId));
+    if (vObj.returning || vObj.sessions.length > 1) {
+      topRow.appendChild(el('span', 'Returning Visitor', 'badge done'));
+    }
+    if (vObj.escalated) {
+      topRow.appendChild(el('span', 'Reached T2 Hardened', 'badge warn'));
+    }
+    topRow.appendChild(makeCopyButton(vId, 'Copy Visitor ID'));
+    focusBody.appendChild(topRow);
 
-    // Center Visitor Node
-    const cx = 110;
-    const cy = h / 2;
+    // Tier History Strip
+    const stripCard = el('div', '', 'card');
+    stripCard.style.background = 'var(--surface-inset)';
+    stripCard.style.margin = '10px 0';
+    stripCard.appendChild(el('h4', 'Historical Tier Trajectory Sequence', 'muted mono'));
 
-    const vCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-    vCircle.setAttribute('cx', String(cx));
-    vCircle.setAttribute('cy', String(cy));
-    vCircle.setAttribute('r', '32');
-    vCircle.setAttribute('fill', 'var(--surface-elevated)');
-    vCircle.setAttribute('stroke', 'var(--border-focus)');
-    vCircle.setAttribute('stroke-width', '2');
-    svg.appendChild(vCircle);
+    const stripTrack = el('div', '', 'tools');
+    stripTrack.style.marginTop = '6px';
 
-    const vText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-    vText.setAttribute('x', String(cx));
-    vText.setAttribute('y', String(cy + 4));
-    vText.setAttribute('text-anchor', 'middle');
-    vText.setAttribute('fill', 'var(--sea-glass)');
-    vText.setAttribute('font-size', '10');
-    vText.setAttribute('font-family', 'ui-monospace, monospace');
-    vText.setAttribute('font-weight', '700');
-    vText.textContent = vId.length > 12 ? vId.slice(0, 10) + '..' : vId;
-    svg.appendChild(vText);
+    vObj.sessions.forEach((s, idx) => {
+      const sBox = el('div', '', 'card');
+      sBox.style.padding = '8px 12px';
+      sBox.style.margin = '4px 0';
+      sBox.style.background = s.reached_t2 ? 'var(--t2-surface)' : 'var(--surface-elevated)';
+      sBox.style.border = '1px solid ' + (s.reached_t2 ? 'var(--t2-border)' : 'var(--t1-border)');
 
-    // Satellite Session Nodes
-    const sx = 280;
-    const stepY = (h - 40) / Math.max(sessCount, 1);
+      const sLink = document.createElement('a');
+      sLink.href = '/session?id=' + encodeURIComponent(s.session_id);
+      sLink.textContent = 'Session ' + (idx + 1) + ': ' + s.session_id;
+      sLink.className = 'mono';
+      sLink.style.fontWeight = '700';
+      sBox.appendChild(sLink);
 
-    vObj.sessions.slice(0, 8).forEach((s, idx) => {
-      const sy = 30 + idx * stepY + stepY / 2;
-      const isEscalated = s.reached_t2;
-      const tierColor = isEscalated ? 'var(--soft-brass)' : 'var(--sea-glass)';
+      const stagesList = el('div', '', 'tools');
+      stagesList.style.marginTop = '4px';
+      const stageEntries = Object.entries(s.stages || {});
+      for (const [st, tr] of stageEntries) {
+        stagesList.appendChild(el('span', st + ':' + tr, 'badge ' + tr));
+      }
+      sBox.appendChild(stagesList);
 
-      // Connecting spoke
-      const spoke = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-      spoke.setAttribute('x1', String(cx + 32));
-      spoke.setAttribute('y1', String(cy));
-      spoke.setAttribute('x2', String(sx));
-      spoke.setAttribute('y2', String(sy));
-      spoke.setAttribute('stroke', isEscalated ? 'rgba(214, 180, 141, 0.4)' : 'rgba(135, 198, 185, 0.3)');
-      spoke.setAttribute('stroke-width', isEscalated ? '2' : '1.5');
-      svg.appendChild(spoke);
+      // Relationship between earlier session end tier and subsequent session initial tier
+      if (idx > 0) {
+        const prevSess = vObj.sessions[idx - 1];
+        const prevStages = Object.entries(prevSess.stages || {});
+        const prevEndTier = prevStages.length ? prevStages[prevStages.length - 1][1] : 'T1';
+        const currStartTier = stageEntries.length ? stageEntries[0][1] : 'T1';
 
-      // Session Node Box
-      const sRect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-      sRect.setAttribute('x', String(sx));
-      sRect.setAttribute('y', String(sy - 14));
-      sRect.setAttribute('width', '450');
-      sRect.setAttribute('height', '28');
-      sRect.setAttribute('rx', '6');
-      sRect.setAttribute('fill', isEscalated ? 'var(--t2-surface)' : 'var(--surface)');
-      sRect.setAttribute('stroke', tierColor);
-      sRect.setAttribute('stroke-width', '1');
-      sRect.style.cursor = 'pointer';
-      sRect.addEventListener('click', () => {
-        window.location.href = `/session?id=${encodeURIComponent(s.session_id)}`;
-      });
-      svg.appendChild(sRect);
+        const relText = el('div', '', 'muted mono');
+        relText.style.fontSize = '11px';
+        relText.style.marginTop = '4px';
+        relText.textContent = 'Inheritance Relation: Preceding Session ended at ' + prevEndTier + ' → Initial evaluation at ' + currStartTier;
+        sBox.appendChild(relText);
+      }
 
-      const sText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-      sText.setAttribute('x', String(sx + 10));
-      sText.setAttribute('y', String(sy + 4));
-      sText.setAttribute('fill', 'var(--text-primary)');
-      sText.setAttribute('font-size', '10.5');
-      sText.setAttribute('font-family', 'ui-monospace, monospace');
-      sText.style.cursor = 'pointer';
-      sText.addEventListener('click', () => {
-        window.location.href = `/session?id=${encodeURIComponent(s.session_id)}`;
-      });
-      const stSummary = s.stages ? Object.entries(s.stages).map(([k,v]) => `${k}:${v}`).join(' ') : '—';
-      sText.textContent = `${s.session_id} [${isEscalated ? 'T2 ↑' : 'T1'}] · ${stSummary}`;
-      svg.appendChild(sText);
+      stripTrack.appendChild(sBox);
     });
 
-    constellSvgWrap.appendChild(svg);
+    stripCard.appendChild(stripTrack);
+    focusBody.appendChild(stripCard);
   }
 
-  // Visitor Grid Card
+  function renderGraph() {
+    graphSvgWrap.replaceChildren();
+
+    const activeVisitors = visitors.slice(0, MAX_GRAPH_NODES);
+    graphMeta.textContent = 'Displaying ' + activeVisitors.length + ' visitor clusters (capped at ' + MAX_GRAPH_NODES + ' nodes). Edge order denotes sequential session history.';
+
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    const w = 820;
+    const h = Math.max(260, activeVisitors.length * 44 + 40);
+    svg.setAttribute('viewBox', '0 0 ' + w + ' ' + h);
+    svg.setAttribute('class', 'chart');
+    svg.style.maxHeight = h + 'px';
+
+    activeVisitors.forEach((v, vIdx) => {
+      const vy = 35 + vIdx * 44;
+      const vx = 100;
+      const isSelected = selectedVisitorId === v.id;
+      const sessCount = v.sessions.length;
+      const ringWidth = Math.min(6, 1.5 + sessCount * 1.2);
+      const isEscalated = v.escalated;
+
+      // Visitor circle
+      const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+      circle.setAttribute('cx', String(vx));
+      circle.setAttribute('cy', String(vy));
+      circle.setAttribute('r', '16');
+      circle.setAttribute('fill', isSelected ? 'var(--surface-elevated)' : 'var(--surface-inset)');
+      circle.setAttribute('stroke', isEscalated ? 'var(--soft-brass)' : 'var(--sea-glass)');
+      circle.setAttribute('stroke-width', String(ringWidth));
+      circle.style.cursor = 'pointer';
+      circle.addEventListener('click', () => {
+        renderFocusedVisitor(v.id);
+        renderGraph();
+      });
+      svg.appendChild(circle);
+
+      const vLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+      vLabel.setAttribute('x', String(vx));
+      vLabel.setAttribute('y', String(vy + 4));
+      vLabel.setAttribute('text-anchor', 'middle');
+      vLabel.setAttribute('fill', 'var(--text-primary)');
+      vLabel.setAttribute('font-size', '9');
+      vLabel.setAttribute('font-family', 'ui-monospace, monospace');
+      vLabel.setAttribute('font-weight', '700');
+      vLabel.style.cursor = 'pointer';
+      vLabel.textContent = v.id.slice(4, 9);
+      vLabel.addEventListener('click', () => {
+        renderFocusedVisitor(v.id);
+        renderGraph();
+      });
+      svg.appendChild(vLabel);
+
+      // Session satellites with directional arrows
+      let prevSx = vx + 18;
+      let prevSy = vy;
+
+      v.sessions.slice(0, 5).forEach((s, sIdx) => {
+        const sx = 200 + sIdx * 120;
+        const sy = vy;
+
+        // Connecting edge with arrow indicating session order
+        const edge = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        edge.setAttribute('x1', String(prevSx));
+        edge.setAttribute('y1', String(prevSy));
+        edge.setAttribute('x2', String(sx));
+        edge.setAttribute('y2', String(sy));
+        edge.setAttribute('stroke', s.reached_t2 ? 'var(--soft-brass)' : 'var(--border-strong)');
+        edge.setAttribute('stroke-width', '1.5');
+        svg.appendChild(edge);
+
+        // Arrow head
+        const arrow = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+        const ax = sx - 4;
+        arrow.setAttribute('points', ax + ',' + (sy - 3) + ' ' + sx + ',' + sy + ' ' + ax + ',' + (sy + 3));
+        arrow.setAttribute('fill', s.reached_t2 ? 'var(--soft-brass)' : 'var(--border-strong)');
+        svg.appendChild(arrow);
+
+        // Session Box
+        const sBox = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+        sBox.setAttribute('x', String(sx));
+        sBox.setAttribute('y', String(sy - 12));
+        sBox.setAttribute('width', '100');
+        sBox.setAttribute('height', '24');
+        sBox.setAttribute('rx', '4');
+        sBox.setAttribute('fill', s.reached_t2 ? 'var(--t2-surface)' : 'var(--surface)');
+        sBox.setAttribute('stroke', s.reached_t2 ? 'var(--t2-border)' : 'var(--border-subtle)');
+        sBox.setAttribute('stroke-width', '1');
+        sBox.style.cursor = 'pointer';
+        sBox.addEventListener('click', () => {
+          window.location.href = '/session?id=' + encodeURIComponent(s.session_id);
+        });
+        svg.appendChild(sBox);
+
+        const sText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        sText.setAttribute('x', String(sx + 50));
+        sText.setAttribute('y', String(sy + 4));
+        sText.setAttribute('text-anchor', 'middle');
+        sText.setAttribute('fill', s.reached_t2 ? 'var(--t2)' : 'var(--text-secondary)');
+        sText.setAttribute('font-size', '9');
+        sText.setAttribute('font-family', 'ui-monospace, monospace');
+        sText.style.cursor = 'pointer';
+        sText.textContent = s.session_id.slice(4, 10) + ' [' + (s.reached_t2 ? 'T2' : 'T1') + ']';
+        sText.addEventListener('click', () => {
+          window.location.href = '/session?id=' + encodeURIComponent(s.session_id);
+        });
+        svg.appendChild(sText);
+
+        prevSx = sx + 100;
+        prevSy = sy;
+      });
+    });
+
+    graphSvgWrap.appendChild(svg);
+  }
+
+  // Catalog Grid
   const atlasCard = el('section', '', 'card');
   atlasCard.appendChild(el('h2', 'Visitor Profiles & Trajectory Catalog'));
 
@@ -1847,45 +1956,26 @@ async function initVisitors() {
       }
       vCard.appendChild(head);
 
-      vCard.appendChild(el('div', `Total Sessions: ${v.sessions.length}`, 'muted mono'));
+      vCard.appendChild(el('div', 'Total Sessions: ' + v.sessions.length, 'muted mono'));
 
       // Trajectory chips
       const trajWrap = el('div', '', 'tools');
       trajWrap.style.marginTop = '8px';
       for (const st of [...v.stagesSeen].sort()) {
         const parts = st.split(':');
-        trajWrap.appendChild(el('span', st, `badge ${parts[1] || ''}`));
+        trajWrap.appendChild(el('span', st, 'badge ' + (parts[1] || '')));
       }
       vCard.appendChild(trajWrap);
 
-      // Associated sessions list with deep links
-      const sessList = el('div');
-      sessList.style.marginTop = '10px';
-      sessList.appendChild(el('div', 'Recorded Sessions:', 'muted mono'));
-      for (const s of v.sessions.slice(0, 4)) {
-        const row = el('div', '', 'tools');
-        const sLink = document.createElement('a');
-        sLink.href = `/session?id=${encodeURIComponent(s.session_id)}`;
-        sLink.textContent = s.session_id;
-        sLink.className = 'mono';
-        sLink.style.fontSize = '11px';
-        row.appendChild(sLink);
-        if (s.reached_t2) row.appendChild(el('span', 'T2', 'badge warn'));
-        sessList.appendChild(row);
-      }
-      if (v.sessions.length > 4) {
-        sessList.appendChild(el('div', `+${v.sessions.length - 4} more sessions`, 'muted mono'));
-      }
-      vCard.appendChild(sessList);
-
       const inspectBtn = document.createElement('button');
       inspectBtn.type = 'button';
-      inspectBtn.textContent = 'View Constellation Topology →';
+      inspectBtn.textContent = 'Focus in Topology Graph →';
       inspectBtn.style.marginTop = '8px';
       inspectBtn.style.width = '100%';
       inspectBtn.addEventListener('click', () => {
-        renderConstellation(v.id);
-        constellCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        renderFocusedVisitor(v.id);
+        renderGraph();
+        focusCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
       });
       vCard.appendChild(inspectBtn);
 
@@ -1899,12 +1989,21 @@ async function initVisitors() {
   });
 
   renderVisitorGrid();
+  renderGraph();
   if (selectedVisitorId) {
-    renderConstellation(selectedVisitorId);
+    renderFocusedVisitor(selectedVisitorId);
   }
+
   container.appendChild(atlasCard);
+
+  const takeaway = el('div', '', 'takeaway-banner');
+  takeaway.appendChild(el('strong', 'Core Scientific Thesis: '));
+  takeaway.appendChild(el('span', 'Visitor memory tracks past interactions across sessions while Docker bridge limitations merge lab identities.'));
+  container.appendChild(takeaway);
+
   content.replaceChildren(container);
 }
+
 
 // =============================================================
 // 6. Deception Studio (/deception)
