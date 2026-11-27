@@ -147,6 +147,69 @@
     .muted { color: var(--text-secondary); font-size: 13px; }
     .mono { font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace; font-size: 12px; }
 
+    /* 2-Minute Tour Stepper */
+    .tour-box {
+      background: var(--surface-inset);
+      border: 1px solid var(--border-strong);
+      border-radius: 10px;
+      padding: 14px 18px;
+      margin-bottom: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .tour-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .tour-stepper {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .tour-step-btn {
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      background: var(--surface-elevated);
+      color: var(--text-secondary);
+      border: 1px solid var(--border-subtle);
+      cursor: pointer;
+    }
+    .tour-step-btn.active {
+      background: var(--t1-surface);
+      color: var(--sea-glass);
+      border-color: var(--sea-glass);
+    }
+    .tour-caption {
+      font-size: 13px;
+      color: var(--text-primary);
+      background: var(--surface);
+      padding: 8px 12px;
+      border-radius: 6px;
+      border-left: 3px solid var(--sea-glass);
+    }
+    .tour-actions {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+    .btn-sm {
+      padding: 5px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      background: var(--surface-elevated);
+      color: var(--text-primary);
+      border: 1px solid var(--border-subtle);
+      cursor: pointer;
+    }
+    .btn-sm:hover { background: var(--surface); border-color: var(--border-focus); }
+
     /* System Status Indicators Strip */
     .status-strip {
       display: flex;
@@ -176,6 +239,59 @@
     .status-dot.neutral { background: var(--text-tertiary); opacity: 0.7; }
     .status-dot.invalid { background: var(--invalid); }
 
+    /* Pipeline Illustration Card */
+    .pipeline-card {
+      background: var(--surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: 10px;
+      padding: 16px;
+      margin-bottom: 18px;
+    }
+    .pipeline-svg {
+      width: 100%;
+      height: auto;
+      max-height: 140px;
+      display: block;
+    }
+
+    /* Decision Galaxy Card */
+    .galaxy-card {
+      background: var(--surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: 10px;
+      padding: 16px;
+      margin-bottom: 18px;
+      position: relative;
+    }
+    .galaxy-canvas {
+      width: 100%;
+      height: 180px;
+      background: var(--surface-inset);
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      display: block;
+    }
+    .galaxy-legend {
+      display: flex;
+      gap: 14px;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-top: 8px;
+      font-size: 12px;
+    }
+    .galaxy-alt-list {
+      max-height: 100px;
+      overflow-y: auto;
+      font-size: 11px;
+      margin-top: 8px;
+      padding: 6px 10px;
+      background: var(--surface-inset);
+      border-radius: 6px;
+      border: 1px solid var(--border-subtle);
+      list-style: none;
+    }
+    .galaxy-alt-list li { margin-bottom: 3px; font-family: ui-monospace, monospace; }
+
     /* KPI Cards */
     .kpis {
       display: grid;
@@ -190,13 +306,12 @@
       padding: 16px;
       transition: border-color .15s ease;
     }
-    .card:hover {
-      border-color: var(--border-strong);
-    }
+    .card:hover { border-color: var(--border-strong); }
     .kpi-title { font-size: 12px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.04em; }
     .kpi-value { font-size: 26px; font-weight: 700; margin: 6px 0 4px 0; font-family: ui-monospace, monospace; }
     .kpi-sub { font-size: 12px; color: var(--text-tertiary); }
 
+    /* Telemetry Live Strip */
     .summary-strip {
       display: flex;
       gap: 16px;
@@ -209,6 +324,81 @@
       margin-bottom: 18px;
       font-size: 13px;
     }
+
+    /* Latency Metric Strip */
+    .latency-strip {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      align-items: center;
+      padding: 10px 14px;
+      background: var(--surface-elevated);
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      margin-top: 10px;
+      font-size: 12px;
+      font-family: ui-monospace, monospace;
+    }
+
+    /* Demo Readiness Checklist */
+    .checklist-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .check-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      background: var(--surface-inset);
+      border: 1px solid var(--border-subtle);
+      border-radius: 6px;
+      font-size: 12px;
+    }
+
+    /* Activity Sparkline */
+    .sparkline-box {
+      margin-top: 10px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .sparkline-svg {
+      flex: 1;
+      height: 36px;
+      background: var(--surface-inset);
+      border: 1px solid var(--border-subtle);
+      border-radius: 4px;
+    }
+
+    /* Stage Funnel */
+    .funnel-container {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 12px;
+    }
+    .funnel-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 12px;
+      font-family: ui-monospace, monospace;
+    }
+    .funnel-label { min-width: 90px; color: var(--text-secondary); }
+    .funnel-bar-track {
+      flex: 1;
+      height: 14px;
+      background: var(--surface-inset);
+      border: 1px solid var(--border-subtle);
+      border-radius: 4px;
+      overflow: hidden;
+      display: flex;
+    }
+    .funnel-bar-t1 { height: 100%; background: var(--sea-glass); }
+    .funnel-bar-t2 { height: 100%; background: var(--soft-brass); }
 
     /* Distribution Breakdowns */
     .breakdowns {
@@ -225,7 +415,7 @@
       font-size: 12px;
       font-family: ui-monospace, monospace;
     }
-    .bar-label { min-width: 80px; color: var(--text-secondary); }
+    .bar-label { min-width: 90px; color: var(--text-secondary); }
     .bar-track {
       flex: 1;
       height: 8px;
@@ -255,11 +445,9 @@
       font-family: ui-monospace, monospace;
       transition: background .15s ease;
     }
-    .feed-item:hover {
-      background: var(--surface-elevated);
-    }
+    .feed-item:hover { background: var(--surface-elevated); }
 
-    /* Trajectory Badges & Connectors (Master Visual Motif) */
+    /* Trajectory Badges & Connectors */
     .trajectory-container {
       display: inline-flex;
       align-items: center;
@@ -363,6 +551,17 @@
     .session-id { font-family: ui-monospace, monospace; font-size: 13px; font-weight: 600; }
     #empty { padding: 32px; text-align: center; color: var(--text-secondary); }
 
+    .takeaway-banner {
+      background: var(--surface-inset);
+      border: 1px solid var(--border-subtle);
+      border-left: 4px solid var(--sea-glass);
+      border-radius: 6px;
+      padding: 10px 14px;
+      margin-top: 20px;
+      font-size: 13px;
+      color: var(--text-primary);
+    }
+
     footer {
       margin-top: 24px;
       padding-top: 16px;
@@ -374,6 +573,15 @@
     summary { cursor: pointer; color: var(--sea-glass); }
     #status { min-height: 20px; font-weight: 600; }
 
+    @keyframes gk-pulse {
+      0% { r: 18; opacity: 0.8; }
+      50% { r: 24; opacity: 0.2; }
+      100% { r: 18; opacity: 0.8; }
+    }
+    .gk-pulse-circle {
+      animation: gk-pulse 2s ease-in-out infinite;
+    }
+
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after {
         animation-duration: 0.01ms !important;
@@ -381,11 +589,14 @@
         transition-duration: 0.01ms !important;
         scroll-behavior: auto !important;
       }
+      .gk-pulse-circle { animation: none !important; }
     }
     @media print {
-      body { background: #fff; color: #000; }
-      .topnav, #banner { display: none; }
-      .card { border: 1px solid #ccc; background: #fff; color: #000; }
+      body { background: #fff; color: #000; font-size: 11pt; padding: 0; }
+      .topnav, #banner, .tour-box, .tools, .scroll, .status-strip { display: none !important; }
+      .card, .pipeline-card, .galaxy-card { border: 1px solid #ccc; background: #fff; color: #000; box-shadow: none; break-inside: avoid; }
+      .takeaway-banner { border: 1px solid #333; background: #f8f8f8; color: #000; }
+      footer { border-top: 1px solid #999; color: #333; }
     }
   </style>
 </head>
@@ -408,8 +619,30 @@
   </div>
 </header>
 
+<!-- 2-Minute Demonstration Tour Stepper -->
+<section id="tour-section" class="tour-box" aria-label="Interactive Tour">
+  <div class="tour-header">
+    <strong style="color: var(--sea-glass); font-size: 13px;">Interactive 2-Minute Tour: Operational Flow</strong>
+    <div class="tour-actions">
+      <button id="tour-prev" class="btn-sm" aria-label="Previous tour step">← Prev</button>
+      <button id="tour-next" class="btn-sm" aria-label="Next tour step">Next →</button>
+      <button id="tour-skip" class="btn-sm" aria-label="Dismiss tour">Dismiss</button>
+    </div>
+  </div>
+  <div class="tour-stepper" role="tablist" aria-label="Tour steps">
+    <button class="tour-step-btn active" data-step="0" aria-label="Step 1: Visitor Connects">1. Visitor Connects</button>
+    <button class="tour-step-btn" data-step="1" aria-label="Step 2: Sensor Records">2. Sensor Records</button>
+    <button class="tour-step-btn" data-step="2" aria-label="Step 3: Gatekeeper Decides">3. Gatekeeper Decides</button>
+    <button class="tour-step-btn" data-step="3" aria-label="Step 4: Tier Escalation">4. Tier Escalation</button>
+    <button class="tour-step-btn" data-step="4" aria-label="Step 5: Evidence &amp; Audit">5. Evidence &amp; Audit</button>
+  </div>
+  <div id="tour-caption" class="tour-caption mono">
+    Step 1: Simulated lab visitor initiates SSH connection via Kali adversary harness.
+  </div>
+</section>
+
 <!-- System Status Indicators Strip -->
-<section class="status-strip" aria-label="System Connectivity Status">
+<section id="sec-status-strip" class="status-strip" aria-label="System Connectivity Status">
   <div class="status-item">
     <span id="dot-dash" class="status-dot"></span>
     <span class="muted">Dashboard:</span>
@@ -429,6 +662,74 @@
     <span class="muted">Profile:</span>
     <span id="policy-profile-badge" class="badge">UNKNOWN</span>
   </div>
+</section>
+
+<!-- Hero Pipeline Illustration -->
+<section id="sec-pipeline" class="pipeline-card" aria-label="Pipeline Architecture Illustration">
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+    <h2>Deception Architecture Pipeline</h2>
+    <span class="badge">Illustration</span>
+  </div>
+  <svg class="pipeline-svg" viewBox="0 0 860 110" role="img" aria-label="Adaptive honeypot deception pipeline architecture illustration">
+    <!-- Connector paths -->
+    <path d="M 140 55 L 230 55" stroke="var(--border-strong)" stroke-width="2" stroke-dasharray="4,3" fill="none"/>
+    <path d="M 370 55 L 460 55" stroke="var(--border-strong)" stroke-width="2" fill="none"/>
+    <path d="M 570 55 C 620 55, 620 30, 670 30" stroke="var(--border-strong)" stroke-width="2" fill="none"/>
+    <path d="M 570 55 C 620 55, 620 80, 670 80" stroke="var(--border-strong)" stroke-width="2" fill="none"/>
+    <path d="M 770 30 C 795 30, 800 55, 810 55" stroke="var(--border-strong)" stroke-width="2" fill="none"/>
+    <path d="M 770 80 C 795 80, 800 55, 810 55" stroke="var(--border-strong)" stroke-width="2" fill="none"/>
+
+    <!-- Node 1: Lab Visitor -->
+    <rect x="10" y="25" width="130" height="60" rx="8" fill="var(--surface-elevated)" stroke="var(--border-subtle)" stroke-width="1.5"/>
+    <text x="75" y="50" fill="var(--text-primary)" font-size="12" font-weight="600" text-anchor="middle">Lab Visitor</text>
+    <text x="75" y="68" fill="var(--text-tertiary)" font-size="10" font-family="monospace" text-anchor="middle">Kali Harness</text>
+
+    <!-- Node 2: Cowrie Sensor -->
+    <rect x="230" y="25" width="140" height="60" rx="8" fill="var(--surface-elevated)" stroke="var(--border-subtle)" stroke-width="1.5"/>
+    <text x="300" y="50" fill="var(--text-primary)" font-size="12" font-weight="600" text-anchor="middle">Cowrie Sensor</text>
+    <text x="300" y="68" fill="var(--text-tertiary)" font-size="10" font-family="monospace" text-anchor="middle">SSH Event Logger</text>
+
+    <!-- Node 3: Gatekeeper (with pulse) -->
+    <circle cx="515" cy="55" r="22" fill="none" stroke="var(--sea-glass)" stroke-width="1.5" class="gk-pulse-circle"/>
+    <rect x="460" y="25" width="110" height="60" rx="8" fill="var(--t1-surface)" stroke="var(--sea-glass)" stroke-width="1.5"/>
+    <text x="515" y="50" fill="var(--sea-glass)" font-size="12" font-weight="700" text-anchor="middle">Gatekeeper</text>
+    <text x="515" y="68" fill="var(--text-secondary)" font-size="10" font-family="monospace" text-anchor="middle">Stages S1..S5</text>
+
+    <!-- Node 4: T1 Lite Persona -->
+    <rect x="670" y="10" width="100" height="40" rx="6" fill="var(--t1-surface)" stroke="var(--t1-border)" stroke-width="1.5"/>
+    <text x="720" y="34" fill="var(--t1)" font-size="11" font-weight="700" text-anchor="middle">T1 Lite</text>
+
+    <!-- Node 5: T2 Hardened Persona -->
+    <rect x="670" y="60" width="100" height="40" rx="6" fill="var(--t2-surface)" stroke="var(--t2-border)" stroke-width="1.5"/>
+    <text x="720" y="84" fill="var(--t2)" font-size="11" font-weight="700" text-anchor="middle">T2 Hardened</text>
+
+    <!-- Node 6: Evidence & Store -->
+    <circle cx="820" cy="55" r="16" fill="var(--surface-elevated)" stroke="var(--border-strong)" stroke-width="1.5"/>
+    <text x="820" y="59" fill="var(--sea-glass)" font-size="11" font-weight="700" text-anchor="middle">DB</text>
+  </svg>
+</section>
+
+<!-- Decision Galaxy Replay Card -->
+<section id="sec-galaxy" class="galaxy-card" aria-label="Decision Galaxy Particle Replay">
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap; gap: 8px;">
+    <div>
+      <h2>Decision Galaxy: Multi-Stage Telemetry Track</h2>
+      <div class="muted">Replay of recorded decisions across stages S1 to S5. Particles represent recorded sessions.</div>
+    </div>
+    <span class="badge">Replay of recorded decisions</span>
+  </div>
+  <canvas id="galaxy-canvas" class="galaxy-canvas" width="860" height="180" role="img" aria-label="Animated particle track showing recorded sessions moving through stages S1 to S5"></canvas>
+  <div class="galaxy-legend">
+    <span><span class="status-dot" style="background: var(--sea-glass);"></span> <strong style="color: var(--t1);">T1 Lite Persona</strong></span>
+    <span><span class="status-dot warm" style="background: var(--soft-brass);"></span> <strong style="color: var(--t2);">T2 Hardened (Escalated)</strong></span>
+    <span class="muted mono" style="margin-left: auto;">Click particle or use list below to open Session Forensics</span>
+  </div>
+  <details style="margin-top: 10px;">
+    <summary class="muted mono">Keyboard-accessible session list alternative</summary>
+    <ul id="galaxy-alt-list" class="galaxy-alt-list" tabindex="0" aria-label="Recorded sessions list alternative">
+      <li class="muted">NO DATA · Loading recorded sessions...</li>
+    </ul>
+  </details>
 </section>
 
 <!-- KPI Cards -->
@@ -451,10 +752,11 @@
   <div class="card">
     <div class="kpi-title">Median Engine Compute Time</div>
     <div class="kpi-value" id="latency">NO DATA</div>
-    <div class="kpi-sub">Engine compute time (not end-to-end)</div>
+    <div class="kpi-sub">Engine compute time, not end-to-end</div>
   </div>
 </section>
 
+<!-- Telemetry Summary Strip -->
 <section id="summary-strip" class="summary-strip" aria-label="Decisions summary">
   <span><strong>Recorded decisions:</strong> <span id="sum-total" class="mono">NO DATA</span></span>
   <span><strong>Tiers:</strong> <span id="sum-tiers" class="mono">NO DATA</span></span>
@@ -462,10 +764,61 @@
   <span style="margin-left: auto;"><strong>Telemetry Polling:</strong> <span id="ticker-status" class="mono" style="color: var(--sea-glass);">Live (5s poll)</span></span>
 </section>
 
-<!-- Breakdown Bars Card -->
+<!-- Latency Strip & Activity Sparkline Card -->
+<section class="card" style="margin-bottom: 18px;">
+  <h2>Engine Compute Latency &amp; Activity Cadence</h2>
+  <div class="muted">Isolated engine calculation duration across decisions (excluding socket and network transit).</div>
+  <div class="latency-strip" aria-label="Engine Compute Latency Statistics">
+    <span>Min: <strong id="lat-min">NO DATA</strong></span>
+    <span>Median: <strong id="lat-med">NO DATA</strong></span>
+    <span>P95: <strong id="lat-p95">NO DATA</strong></span>
+    <span>Max: <strong id="lat-max">NO DATA</strong></span>
+    <span class="muted" style="margin-left: auto;">Engine compute time, not end-to-end</span>
+  </div>
+  <div class="sparkline-box">
+    <span class="muted mono" style="font-size: 11px; min-width: 130px;">Decisions / Hour:</span>
+    <svg id="activity-sparkline" class="sparkline-svg" viewBox="0 0 300 36" preserveAspectRatio="none" role="img" aria-label="Decisions per time bucket sparkline"></svg>
+    <span id="sparkline-source" class="muted mono" style="font-size: 10px;">Source: decision_log</span>
+  </div>
+</section>
+
+<!-- Demo Readiness Checklist Card -->
+<section class="card" id="readiness-card" style="margin-bottom: 18px;">
+  <h2>Demonstration Readiness Posture</h2>
+  <div class="muted">Verified operational readiness checks evaluated from local services and audit storage.</div>
+  <div class="checklist-grid">
+    <div class="check-item">
+      <span id="check-db-dot" class="status-dot neutral"></span>
+      <span>SQLite Decision Store: <strong id="check-db-val" class="mono">Checking...</strong></span>
+    </div>
+    <div class="check-item">
+      <span id="check-gk-dot" class="status-dot neutral"></span>
+      <span>Gatekeeper Engine: <strong id="check-gk-val" class="mono">Checking...</strong></span>
+    </div>
+    <div class="check-item">
+      <span id="check-sess-dot" class="status-dot neutral"></span>
+      <span>Recorded Sessions: <strong id="check-sess-val" class="mono">Checking...</strong></span>
+    </div>
+    <div class="check-item">
+      <span id="check-prov-dot" class="status-dot neutral"></span>
+      <span>Provenance Labels: <strong id="check-prov-val" class="mono">Checking...</strong></span>
+    </div>
+  </div>
+</section>
+
+<!-- Stage Funnel & Breakdown Bars Card -->
 <section class="card" id="breakdown-card" style="margin-bottom: 18px;">
   <h2>Decisions Distribution Breakdown</h2>
   <div class="muted">Live distribution of policy engine assignments across stored decision events.</div>
+
+  <!-- Stage Funnel -->
+  <div style="margin-top: 14px;">
+    <h3 class="muted">Stage Progression Funnel (S1 → S5)</h3>
+    <div id="funnel-track" class="funnel-container" aria-label="Stage progression funnel">
+      <div class="muted mono">NO DATA · Waiting for decisions summary</div>
+    </div>
+  </div>
+
   <div class="breakdowns">
     <div>
       <h3 class="muted">By Assigned Tier</h3>
@@ -474,6 +827,10 @@
     <div>
       <h3 class="muted">By Trigger Stage</h3>
       <div id="bars-stage"><div class="muted mono">NO DATA</div></div>
+    </div>
+    <div>
+      <h3 class="muted">By Decision Rule (score_source)</h3>
+      <div id="bars-rule"><div class="muted mono">NO DATA</div></div>
     </div>
     <div>
       <h3 class="muted">By Provenance</h3>
@@ -515,6 +872,10 @@
   </div>
 </section>
 
+<div class="takeaway-banner">
+  <strong>Core Scientific Thesis:</strong> A cheap gatekeeper decides from initial events which sessions receive higher-fidelity deception.
+</div>
+
 <p><a href="/lab">System health (Lab Console)</a></p>
 <footer>
   <nav aria-label="Evidence &amp; Proof"><strong>Evidence &amp; Proof</strong> {{secondary}}</nav>
@@ -531,8 +892,26 @@
 
 <script>
 'use strict';
+
+// Named constants and caps asserted in tests and documentation
+const MAX_GALAXY_PARTICLES = 50;
+const TIME_BUCKET_MINUTES = 60;
+const TOUR_STEPS = 5;
+const MAX_RECENT_SESSIONS = 50;
+
 const el = id => document.getElementById(id);
 let data = null, signature = '';
+let galaxyAnimationId = null;
+let galaxyParticles = [];
+let tourStepIndex = 0;
+
+const TOUR_DESCRIPTIONS = [
+  'Step 1: Simulated lab visitor initiates SSH connection via Kali adversary harness.',
+  'Step 2: Cowrie SSH sensor captures events and notifies Gatekeeper hook.',
+  'Step 3: Gatekeeper policy engine scores stage features (S1..S5) in real time.',
+  'Step 4: Observed escalation triggers dynamic persona transition from T1 Lite to T2 Hardened.',
+  'Step 5: Audit logs and empirical verification records are committed to the Evidence Vault.'
+];
 
 const text = (tag, value, cls = '') => {
   const n = document.createElement(tag);
@@ -540,6 +919,305 @@ const text = (tag, value, cls = '') => {
   if (cls) n.className = cls;
   return n;
 };
+
+// 2-Minute Tour Stepper Implementation
+function setTourStep(idx) {
+  if (idx < 0) idx = 0;
+  if (idx >= TOUR_STEPS) idx = TOUR_STEPS - 1;
+  tourStepIndex = idx;
+
+  const buttons = document.querySelectorAll('.tour-step-btn');
+  buttons.forEach((btn, i) => {
+    btn.classList.toggle('active', i === idx);
+  });
+  el('tour-caption').textContent = TOUR_DESCRIPTIONS[idx];
+
+  // Highlight corresponding sections smoothly
+  const highlights = ['sec-status-strip', 'sec-pipeline', 'sec-galaxy', 'transitions-card', 'readiness-card'];
+  highlights.forEach(id => {
+    const section = el(id);
+    if (section) section.style.borderColor = 'var(--border-subtle)';
+  });
+  const activeSec = el(highlights[idx]);
+  if (activeSec) {
+    activeSec.style.borderColor = 'var(--border-focus)';
+  }
+}
+
+el('tour-prev').addEventListener('click', () => setTourStep(tourStepIndex - 1));
+el('tour-next').addEventListener('click', () => setTourStep(tourStepIndex + 1));
+el('tour-skip').addEventListener('click', () => {
+  el('tour-section').style.display = 'none';
+});
+document.querySelectorAll('.tour-step-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const step = parseInt(btn.getAttribute('data-step'), 10);
+    setTourStep(step);
+  });
+});
+
+// Keyboard support for Tour Stepper
+document.addEventListener('keydown', e => {
+  if (e.target && ['input', 'select', 'textarea'].includes(e.target.tagName.toLowerCase())) return;
+  if (e.key === 'ArrowRight') setTourStep(tourStepIndex + 1);
+  if (e.key === 'ArrowLeft') setTourStep(tourStepIndex - 1);
+  if (e.key === 'Escape') el('tour-section').style.display = 'none';
+});
+
+// Decision Galaxy Canvas Implementation
+function initGalaxyParticles(sessions) {
+  galaxyParticles = [];
+  const listEl = el('galaxy-alt-list');
+  if (listEl) listEl.replaceChildren();
+
+  const subset = (sessions || []).slice(0, MAX_GALAXY_PARTICLES);
+  const stages = ['S1', 'S2', 'S3', 'S4', 'S5'];
+
+  subset.forEach((s, idx) => {
+    const reachedT2 = s.reached_t2 || Object.values(s.stages || {}).includes('T2');
+    const stageKeys = Object.keys(s.stages || {});
+    const maxStage = stageKeys.length ? stageKeys[stageKeys.length - 1] : 'S1';
+    const targetStageIndex = Math.max(0, stages.indexOf(maxStage));
+
+    galaxyParticles.push({
+      sessionId: s.session_id,
+      visitorId: s.visitor_id,
+      reachedT2: reachedT2,
+      tier: reachedT2 ? 'T2' : 'T1',
+      x: 40,
+      y: 50 + (idx % 8) * 14,
+      targetX: 80 + targetStageIndex * 160 + (idx % 5) * 12,
+      speed: 1.2 + (idx % 3) * 0.4,
+      jumped: false,
+      escalationStage: s.transitions && s.transitions.length ? s.transitions[0].stage : null
+    });
+
+    if (listEl) {
+      const li = document.createElement('li');
+      li.tabIndex = 0;
+      const a = document.createElement('a');
+      a.href = `/session?id=${encodeURIComponent(s.session_id)}`;
+      a.textContent = `${s.session_id} (${reachedT2 ? 'T2 Hardened' : 'T1 Lite'}) - Stages: ${stageKeys.join('→')}`;
+      li.appendChild(a);
+      listEl.appendChild(li);
+    }
+  });
+
+  if (!subset.length && listEl) {
+    listEl.replaceChildren(text('li', 'NO DATA · No sessions recorded in database.', 'muted'));
+  }
+}
+
+function runGalaxyLoop() {
+  const canvas = el('galaxy-canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  if (!ctx) return;
+
+  const w = canvas.width;
+  const h = canvas.height;
+  const stages = ['S1', 'S2', 'S3', 'S4', 'S5'];
+
+  function draw() {
+    if (document.hidden) {
+      galaxyAnimationId = requestAnimationFrame(draw);
+      return;
+    }
+
+    ctx.clearRect(0, 0, w, h);
+
+    // Draw Stage Lanes
+    ctx.strokeStyle = '#2B4048';
+    ctx.lineWidth = 1;
+    stages.forEach((st, i) => {
+      const sx = 80 + i * 160;
+      ctx.beginPath();
+      ctx.setLineDash([3, 3]);
+      ctx.moveTo(sx, 24);
+      ctx.lineTo(sx, h - 20);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      ctx.fillStyle = '#7C9297';
+      ctx.font = '11px monospace';
+      ctx.textAlign = 'center';
+      ctx.fillText(st, sx, 16);
+    });
+
+    // Lane divider: T1 (top) vs T2 (bottom)
+    ctx.strokeStyle = '#1B2D35';
+    ctx.beginPath();
+    ctx.moveTo(30, 95);
+    ctx.lineTo(w - 30, 95);
+    ctx.stroke();
+
+    ctx.font = '9px sans-serif';
+    ctx.fillStyle = '#3E5B66';
+    ctx.textAlign = 'left';
+    ctx.fillText('T1 LITE LANE', 35, 90);
+    ctx.fillText('T2 HARDENED LANE (ESCALATED)', 35, 108);
+
+    // Update & Draw Particles
+    for (const p of galaxyParticles) {
+      if (p.x < p.targetX) {
+        p.x += p.speed;
+      }
+      // Vertical transition when escalating
+      if (p.reachedT2 && p.x > 180 && !p.jumped) {
+        p.y = Math.min(155, p.y + 40);
+        p.jumped = true;
+      }
+
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.reachedT2 ? 4.5 : 3.5, 0, Math.PI * 2);
+      ctx.fillStyle = p.reachedT2 ? '#D6B48D' : '#87C6B9';
+      ctx.shadowColor = p.reachedT2 ? '#D6B48D' : '#87C6B9';
+      ctx.shadowBlur = 4;
+      ctx.fill();
+      ctx.shadowBlur = 0;
+    }
+
+    galaxyAnimationId = requestAnimationFrame(draw);
+  }
+
+  if (galaxyAnimationId) cancelAnimationFrame(galaxyAnimationId);
+  galaxyAnimationId = requestAnimationFrame(draw);
+}
+
+// Click on canvas navigates to nearest particle's session
+const galaxyCanvas = el('galaxy-canvas');
+if (galaxyCanvas) {
+  galaxyCanvas.addEventListener('click', e => {
+    const rect = galaxyCanvas.getBoundingClientRect();
+    const clickX = (e.clientX - rect.left) * (galaxyCanvas.width / rect.width);
+    const clickY = (e.clientY - rect.top) * (galaxyCanvas.height / rect.height);
+
+    for (const p of galaxyParticles) {
+      const dist = Math.hypot(p.x - clickX, p.y - clickY);
+      if (dist < 15) {
+        window.location.href = `/session?id=${encodeURIComponent(p.sessionId)}`;
+        return;
+      }
+    }
+  });
+}
+
+function renderStageFunnel(stageCounts, tierCounts) {
+  const container = el('funnel-track');
+  if (!container) return;
+  if (!stageCounts || !Object.keys(stageCounts).length) {
+    container.replaceChildren(text('div', 'NO DATA · No stage progression recorded.', 'muted mono'));
+    return;
+  }
+  container.replaceChildren();
+
+  const stages = ['S1', 'S2', 'S3', 'S4', 'S5'];
+  const maxCount = Math.max(...Object.values(stageCounts), 1);
+  const t1Total = (tierCounts && tierCounts.T1) || 0;
+  const t2Total = (tierCounts && tierCounts.T2) || 0;
+  const sumTiers = t1Total + t2Total || 1;
+
+  for (const st of stages) {
+    const count = stageCounts[st] || 0;
+    const row = document.createElement('div');
+    row.className = 'funnel-row';
+
+    row.appendChild(text('span', `${st} (${count})`, 'funnel-label'));
+
+    const track = document.createElement('div');
+    track.className = 'funnel-bar-track';
+
+    const barWidth = Math.min(100, Math.round((count / maxCount) * 100));
+    const t2Share = Math.round((t2Total / sumTiers) * barWidth);
+    const t1Share = barWidth - t2Share;
+
+    const fillT1 = document.createElement('div');
+    fillT1.className = 'funnel-bar-t1';
+    fillT1.style.width = `${t1Share}%`;
+    fillT1.title = `T1 share: ${t1Share}%`;
+
+    const fillT2 = document.createElement('div');
+    fillT2.className = 'funnel-bar-t2';
+    fillT2.style.width = `${t2Share}%`;
+    fillT2.title = `T2 share: ${t2Share}%`;
+
+    track.append(fillT1, fillT2);
+    row.appendChild(track);
+    container.appendChild(row);
+  }
+}
+
+function renderActivitySparkline(sessions) {
+  const svg = el('activity-sparkline');
+  if (!svg) return;
+  svg.replaceChildren();
+
+  const timestamps = [];
+  for (const s of sessions || []) {
+    for (const d of s.decisions || []) {
+      if (d.timestamp) {
+        const ts = new Date(d.timestamp).getTime();
+        if (!isNaN(ts)) timestamps.push(ts);
+      }
+    }
+  }
+
+  if (timestamps.length < 2) {
+    const txt = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    txt.setAttribute('x', '150');
+    txt.setAttribute('y', '20');
+    txt.setAttribute('fill', 'var(--text-tertiary)');
+    txt.setAttribute('font-size', '10');
+    txt.setAttribute('text-anchor', 'middle');
+    txt.textContent = 'NO DATA · Insufficient temporal points';
+    svg.appendChild(txt);
+    return;
+  }
+
+  timestamps.sort((a, b) => a - b);
+  const minTs = timestamps[0];
+  const maxTs = timestamps[timestamps.length - 1];
+  const duration = Math.max(maxTs - minTs, 1);
+  const bucketMs = TIME_BUCKET_MINUTES * 60 * 1000;
+  const numBuckets = Math.max(3, Math.min(20, Math.ceil(duration / bucketMs) || 5));
+  const counts = new Array(numBuckets).fill(0);
+
+  for (const t of timestamps) {
+    const b = Math.min(numBuckets - 1, Math.floor(((t - minTs) / duration) * numBuckets));
+    counts[b]++;
+  }
+
+  const maxVal = Math.max(...counts, 1);
+  const points = [];
+  for (let i = 0; i < counts.length; i++) {
+    const x = Math.round((i / (counts.length - 1)) * 300);
+    const y = Math.round(32 - (counts[i] / maxVal) * 26);
+    points.push(`${x},${y}`);
+  }
+
+  const poly = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
+  poly.setAttribute('fill', 'none');
+  poly.setAttribute('stroke', 'var(--sea-glass)');
+  poly.setAttribute('stroke-width', '1.5');
+  poly.setAttribute('points', points.join(' '));
+  svg.appendChild(poly);
+}
+
+function updateReadinessChecklist(dbAvailable, gkOnline, sessionCount, scope) {
+  const setCheck = (dotId, valId, isPass, textVal) => {
+    const dot = el(dotId);
+    const val = el(valId);
+    if (!dot || !val) return;
+    dot.className = isPass === true ? 'status-dot' : (isPass === false ? 'status-dot invalid' : 'status-dot neutral');
+    val.textContent = textVal;
+    val.style.color = isPass === true ? 'var(--text-primary)' : (isPass === false ? 'var(--invalid)' : 'var(--text-secondary)');
+  };
+
+  setCheck('check-db-dot', 'check-db-val', dbAvailable, dbAvailable ? 'Pass (Reachable)' : 'Fail (Unreachable)');
+  setCheck('check-gk-dot', 'check-gk-val', gkOnline === 'ONLINE' ? true : (gkOnline === 'UNAVAILABLE' ? false : null), gkOnline);
+  setCheck('check-sess-dot', 'check-sess-val', sessionCount > 0, sessionCount > 0 ? `Pass (${sessionCount} recorded)` : 'Fail (0 sessions)');
+  setCheck('check-prov-dot', 'check-prov-val', scope && scope !== 'UNKNOWN', scope && scope !== 'UNKNOWN' ? `Pass (${scope})` : 'UNKNOWN');
+}
 
 function renderBars(containerId, countMap, color) {
   const container = el(containerId);
@@ -597,7 +1275,6 @@ function renderTransitions(sessions) {
   }
 
   feed.replaceChildren();
-  // Show recent transitions
   for (const tr of transitions.slice(0, 10)) {
     const item = document.createElement('div');
     item.className = 'feed-item';
@@ -788,10 +1465,12 @@ async function poll() {
     // Live Gatekeeper verified via same-origin probe
     const dotGk = el('dot-gk');
     const statusGk = el('status-gk');
+    let gkStatus = 'UNKNOWN';
     try {
       const gkRes = await fetch('/api/gatekeeper/health');
       if (gkRes.ok) {
         const gkData = await gkRes.json();
+        gkStatus = gkData.status || 'UNAVAILABLE';
         if (gkData.status === 'ONLINE') {
           if (dotGk) dotGk.className = 'status-dot';
           if (statusGk) {
@@ -809,6 +1488,7 @@ async function poll() {
         throw new Error('Health probe returned ' + gkRes.status);
       }
     } catch (e) {
+      gkStatus = 'UNAVAILABLE';
       if (dotGk) dotGk.className = 'status-dot invalid';
       if (statusGk) {
         statusGk.textContent = 'Port 15000 (UNAVAILABLE)';
@@ -817,7 +1497,6 @@ async function poll() {
     }
 
     // SSH Sensor: Port 2222 raw SSH protocol is not web-verifiable.
-    // Clearly distinguish configured port from verified service:
     const dotCowrie = el('dot-cowrie');
     const statusCowrie = el('status-cowrie');
     if (dotCowrie) dotCowrie.className = 'status-dot neutral';
@@ -828,6 +1507,16 @@ async function poll() {
 
     const profBadge = el('policy-profile-badge');
     if (profBadge) profBadge.textContent = meta.policy_profile || 'UNKNOWN';
+
+    // Update Decision Galaxy Particles
+    initGalaxyParticles(data.sessions || []);
+    if (!galaxyAnimationId) runGalaxyLoop();
+
+    // Update Sparkline
+    renderActivitySparkline(data.sessions || []);
+
+    // Update Readiness Checklist
+    updateReadinessChecklist(true, gkStatus, totalSess, meta.scope);
 
     render();
   } catch (e) {
@@ -841,6 +1530,7 @@ async function poll() {
     el('status').textContent = 'API unavailable';
     el('empty').textContent = 'NO DATA · Failed to connect to /api/sessions.';
     el('empty').style.display = 'block';
+    updateReadinessChecklist(false, 'UNAVAILABLE', 0, 'UNKNOWN');
   }
 }
 
@@ -854,15 +1544,24 @@ async function pollSummary() {
     const tiers = counts.tier || sum.tiers || {};
     const stages = counts.stage || sum.stages || {};
     const prov = counts.provenance || sum.provenance || {};
+    const rules = counts.score_source || {};
     const totalDecs = Object.values(tiers).reduce((a, b) => a + b, 0) || sum.total_decisions || '0';
     el('sum-total').textContent = totalDecs;
     el('sum-tiers').textContent = Object.entries(tiers).length ? Object.entries(tiers).map(([k,v]) => `${k}:${v}`).join(' ') : 'none';
+
     const latObj = sum.latency_ms || sum.latency || {};
     const p95Val = (latObj.p95 !== undefined && latObj.p95 !== null) ? latObj.p95 : latObj.p95_ms;
     el('sum-p95').textContent = (p95Val !== undefined && p95Val !== null) ? `${Number(p95Val).toFixed(2)} ms` : 'NO DATA';
 
+    el('lat-min').textContent = (latObj.min !== undefined && latObj.min !== null) ? `${Number(latObj.min).toFixed(2)} ms` : 'NO DATA';
+    el('lat-med').textContent = (latObj.median !== undefined && latObj.median !== null) ? `${Number(latObj.median).toFixed(2)} ms` : 'NO DATA';
+    el('lat-p95').textContent = (p95Val !== undefined && p95Val !== null) ? `${Number(p95Val).toFixed(2)} ms` : 'NO DATA';
+    el('lat-max').textContent = (latObj.max !== undefined && latObj.max !== null) ? `${Number(latObj.max).toFixed(2)} ms` : 'NO DATA';
+
+    renderStageFunnel(stages, tiers);
     renderBars('bars-tier', tiers, 'var(--soft-brass)');
     renderBars('bars-stage', stages, 'var(--sea-glass)');
+    renderBars('bars-rule', rules, 'var(--sea-glass)');
     renderBars('bars-provenance', prov, 'var(--research-lavender)');
   } catch (e) {}
 }
