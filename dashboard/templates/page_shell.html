@@ -1909,8 +1909,47 @@ async function showReports(ids) {
   setStatus('Evidence request complete');
 }
 
+function evidenceLink(label, href) {
+  const link = el('a', label);
+  link.href = href;
+  return link;
+}
+
+async function relatedEvidence(path) {
+  const main = document.querySelector('main');
+  if (path === '/session') {
+    main.append(evidenceLink('Replay evidence', '/replay'), ' ', evidenceLink('Decision evidence', '/evidence'));
+  }
+  if (path !== '/ml') return;
+  const sections = [
+    ['Resource cost', '/cost', 'COST_PER_TIER'],
+    ['Replay', '/replay', 'REPLAY_RESULT'],
+    ['Detector', '/detector', 'DETECTOR_RESULT'],
+  ];
+  const badges = new Map();
+  for (const [label, href, id] of sections) {
+    const details = el('details');
+    const badge = el('span', 'NO DATA', 'badge');
+    details.append(el('summary', label), evidenceLink(label, href), ' ', badge);
+    main.append(details);
+    badges.set(id, badge);
+  }
+  main.append(evidenceLink('All evidence', '/evidence'));
+  try {
+    const {body} = await fetchJson('/api/evidence/index');
+    for (const item of body.items) {
+      const badge = badges.get(item.id);
+      if (badge && item.status) {
+        badge.textContent = item.status;
+        badge.className = statusClass(item.status);
+      }
+    }
+  } catch { /* Keep the unavailable state. */ }
+}
+
 (function boot() {
   const path = window.location.pathname;
+  relatedEvidence(path);
   if (path === '/evidence') initEvidence();
   else if (path === '/ml') initMl();
   else if (path === '/cost') initCost();
