@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Schrödinger's Server // Cyber Defense Dashboard</title>
+  <title>Research Archive</title>
   <style>
     :root {
       color-scheme: dark;
@@ -179,19 +179,7 @@
 <body class="cyber-grid-bg">
   <div style="max-width: 1280px; margin: 0 auto;">
 
-    <nav class="topnav" aria-label="Dashboard">
-      <a href="/">Mission Control</a>
-      <a href="/session">Session Forensics</a>
-      <a href="/visitors">Visitor Atlas</a>
-      <a href="/deception">Deception Studio</a>
-      <a href="/ml">Model Observatory</a>
-      <a href="/cost">Resource Observatory</a>
-      <a href="/evidence">Evidence Vault</a>
-      <a href="/lab">Lab Console</a>
-  <a href="/replay">Replay</a>
-  <a href="/detector">Detector</a>
-      <a href="/research" class="active">Research Archive</a>
-    </nav>
+    <nav class="topnav" aria-label="Dashboard">{{primary}}</nav>
 
     <!-- Top Status Bar & Header -->
     <header class="cyber-card">
@@ -429,6 +417,7 @@
 
     <!-- Footer -->
     <footer style="padding: 16px 0; border-top: 1px solid var(--card-border); display: flex; justify-content: space-between; font-size: 11px; color: var(--subtle-gray);" class="font-mono">
+  <nav aria-label="Evidence &amp; Proof"><strong>Evidence &amp; Proof</strong> {{secondary}}</nav>
       <div>SCHRÖDINGER'S SERVER &bull; RESEARCH DEFENSE ARTIFACT &bull; COWRIE PINNED V3.1.6</div>
       <div>RECORDED &bull; LAB &bull; LIVE &bull; SYNTHETIC &bull; UNKNOWN</div>
     </footer>

@@ -130,3 +130,28 @@ def test_interactive_elements_have_accessible_labels():
     for name in TARGET_TEMPLATES:
         content = (template_dir / name).read_text(encoding="utf-8")
         assert "aria-label" in content, f"aria-label accessibility attributes missing from {name}"
+
+
+PRIMARY_LABELS = {
+    "/": "Mission Control", "/session": "Session Forensics", "/visitors": "Visitor Atlas",
+    "/deception": "Deception Engine", "/ml": "Model & Research",
+}
+FOOTER_ROUTES = ["/evidence", "/cost", "/replay", "/detector", "/lab", "/research"]
+
+
+@pytest.mark.parametrize("route", [*PRIMARY_LABELS, *FOOTER_ROUTES, "/index.html"])
+def test_preserved_routes_and_navigation(route):
+    from html import unescape
+    import re
+
+    status, html = render_route(route)
+    assert status == 200
+    nav = re.search(r'<nav class="topnav"[^>]*>(.*?)</nav>', html, re.S)[1]
+    links = re.findall(r'<a href="([^"]+)"[^>]*>([^<]+)</a>', unescape(nav))
+    assert links == list(PRIMARY_LABELS.items())
+    footer = re.search(r'<footer[^>]*>.*?<nav aria-label="Evidence &amp; Proof">(.*?)</nav>', html, re.S)[1]
+    assert re.findall(r'href="([^"]+)"', footer) == FOOTER_ROUTES
+    current = "/" if route == "/index.html" else route
+    assert re.findall(r'href="([^"]+)" class="active" aria-current="page"', nav + footer) == [current]
+    title = re.search(r'<title>(.*?)</title>', html)[1]
+    assert PRIMARY_LABELS.get(current, PAGE_TITLES.get(current, "Research Archive")) in unescape(title)

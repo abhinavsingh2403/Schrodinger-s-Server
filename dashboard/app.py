@@ -13,6 +13,7 @@ from __future__ import annotations
 
 import argparse
 import http.server
+from html import escape
 import json
 import logging
 import os
@@ -408,14 +409,14 @@ class DashboardServer:
 
     def render_live_html(self) -> str:
         """Render the session-first demo view, without research cost panels."""
-        return (Path(__file__).resolve().parent / 'templates/live.html').read_text(encoding='utf-8')
+        return navigation((Path(__file__).resolve().parent / 'templates/live.html').read_text(encoding='utf-8'), '/')
 
     def render_index_html(self) -> str:
         """Renders responsive single page application with embedded charts."""
         template_path = Path(__file__).resolve().parent / "templates" / "index.html"
         if template_path.exists():
             try:
-                return template_path.read_text(encoding="utf-8")
+                return navigation(template_path.read_text(encoding="utf-8"), "/research")
             except Exception as e:
                 logger.warning("Could not read template %s: %s", template_path, e)
 
@@ -450,14 +451,32 @@ class DashboardServer:
 PAGE_TITLES = {
     "/evidence": "Evidence Vault",
     "/cost": "Resource Observatory",
-    "/ml": "Model Observatory",
+    "/ml": "Model & Research",
     "/session": "Session Forensics",
     "/visitors": "Visitor Atlas",
-    "/deception": "Deception Studio",
+    "/deception": "Deception Engine",
     "/lab": "Lab Console",
     "/replay": "Replay",
     "/detector": "Detector",
 }
+
+
+PRIMARY = ("/", "/session", "/visitors", "/deception", "/ml")
+SECONDARY = ("/evidence", "/cost", "/replay", "/detector", "/lab", "/research")
+
+
+def navigation(html, current):
+    """Use the same page titles and accessible links across the three templates."""
+    titles = {**PAGE_TITLES, "/": "Mission Control", "/research": "Research Archive"}
+
+    def links(routes):
+        result = []
+        for route in routes:
+            active = ' class="active" aria-current="page"' if route == current else ''
+            result.append(f'<a href="{route}"{active}>{escape(titles[route])}</a>')
+        return " ".join(result)
+
+    return html.replace("{{primary}}", links(PRIMARY)).replace("{{secondary}}", links(SECONDARY))
 
 
 LEGACY = {
@@ -614,6 +633,7 @@ def make_dashboard_handler(server_instance: DashboardServer):
             elif path in PAGE_TITLES:
                 template = Path(__file__).with_name("templates") / "page_shell.html"
                 html = template.read_text(encoding="utf-8-sig").replace("{{title}}", PAGE_TITLES[path])
+                html = navigation(html, path)
                 self.send_response(200)
                 self.send_header("Content-Type", "text/html; charset=utf-8")
                 self.end_headers()

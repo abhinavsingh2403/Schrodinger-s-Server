@@ -72,3 +72,5 @@ To route the new workspaces while preserving backend isolation:
 - **Browser Visual Verification:**
   - Browser subagent executed across all 8 workspaces on `http://127.0.0.1:8080/`.
   - Visual hierarchy, contrast, responsive grids, and interactive inspection drawers confirmed.
+
+Baseline HTML routes (including alias): /, /index.html, /session, /visitors, /deception, /ml, /cost, /evidence, /lab, /replay, /detector, /research.
