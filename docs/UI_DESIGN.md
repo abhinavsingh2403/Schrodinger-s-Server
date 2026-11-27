@@ -90,17 +90,9 @@
 
 ## 4. Workspaces & Navigation Structure
 
-Top-level navigation connects eight primary investigation workspaces plus one secondary archive:
+Primary navigation: Mission Control, Session Forensics, Visitor Atlas, Deception Engine, Model & Research.
 
-1. **Mission Control (`/`)** — Live operational overview, polling status ticker, KPI strip, tier escalation monitor, recent session activity stream.
-2. **Session Forensics (`/session`)** — 2-column forensic timeline: searchable session selector on left, ordered vertical stage progression (S1–S5) on right, engine compute latency, decision attribute inspector.
-3. **Visitor Atlas (`/visitors`)** — Masked recurring visitor trajectories (`vis_...`), multi-session clustering, stage progression distribution, and Docker network bridge loopback IP limitation notice.
-4. **Deception Studio (`/deception`)** — Persona comparison (T1 fake shell vs T2 enhanced shell), SVG architecture pipeline diagram, verified transition proof citations, `LAB_DEMO_NOT_ML` explanation, deferred T3 notice.
-5. **Model Observatory (`/ml`)** — Exp 0 vs Exp 1 evaluation, stage selector (S2, S4, S5), budget ladders, dynamic SVG charts with random-reference baseline, validity inspector explaining `INVALID` and `INCONCLUSIVE` verdicts, mandatory banner: *"NO VALIDATED ML GAIN"*.
-6. **Resource Observatory (`/cost`)** — Matched final-tier lab measurements (mean/max CPU & memory), dynamic SVG chart scaling, repeat-spread range bars, verbatim limitation paragraph from `COST_PER_TIER.md`, zero financial/rupee savings claims.
-7. **Evidence Vault (`/evidence`)** — Allowlisted evidence browser, search, active kind filter (`All`, `JSON`, `Markdown`), sort, detail drawer with preformatted Markdown, collapsible JSON tree, copy buttons for paths and raw data.
-8. **Lab Console (`/lab`)** — Read-only topology (Cowrie, Gatekeeper, SQLite DB, Dashboard), demo runbook guide, honest display of safety check results (`FAIL` preserved on IPv4 binding, no fake `PASS`), known research boundaries.
-9. **Research Archive (`/research`)** — Legacy research interface retained for backward compatibility and test coverage.
+Evidence & Proof footer: Evidence Vault, Resource Observatory, Replay, Detector, Lab Console, Research Archive.
 
 ---
 

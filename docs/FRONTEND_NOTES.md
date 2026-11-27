@@ -74,3 +74,9 @@ To route the new workspaces while preserving backend isolation:
   - Visual hierarchy, contrast, responsive grids, and interactive inspection drawers confirmed.
 
 Baseline HTML routes (including alias): /, /index.html, /session, /visitors, /deception, /ml, /cost, /evidence, /lab, /replay, /detector, /research.
+
+Previous navigation: Mission Control, Session Forensics, Visitor Atlas, Deception Studio, Model Observatory, Resource Observatory, Evidence Vault, Lab Console, Replay, Detector, Research Archive.
+Current navigation: Mission Control, Session Forensics, Visitor Atlas, Deception Engine, Model & Research. Remaining destinations share the Evidence & Proof footer.
+New labels: Deception Engine, Model & Research, Evidence & Proof, System health (Lab Console), Resource cost, Replay, Detector, All evidence, Replay evidence, Decision evidence.
+Lab consolidation NOT DONE inline: the Lab renderer owns its page content. Mission Control links to it. Model & Research links to the original cost, replay and detector renderers in collapsed sections with evidence-index status chips. Session Forensics links to replay and decision evidence.
+Verification on Windows: baseline 343 passed, 5 skipped. Final suite 355 passed, 5 skipped. The loopback smoke check covered 54 URLs including the traversal rejection. Headless Edge captured all five primary pages at both requested widths. Screenshot dimensions were checked automatically.
