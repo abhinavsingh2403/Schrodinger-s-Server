@@ -404,6 +404,92 @@ footer.page-foot {
 pre { white-space: pre-wrap; overflow-wrap: anywhere; }
 .card, .grid-2 > * { min-width: 0; }
 .tools { max-width: 100%; overflow-x: auto; }
+
+.scrubber-card {
+  background: var(--surface-inset);
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  padding: 14px;
+  margin-bottom: 16px;
+}
+.scrubber-track-horiz {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+  margin: 16px 8px 12px 8px;
+}
+.scrubber-track-line {
+  position: absolute;
+  left: 20px;
+  right: 20px;
+  top: 14px;
+  height: 4px;
+  background: var(--border-subtle);
+  z-index: 1;
+}
+.scrubber-stage-node {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+}
+.scrubber-node-dot {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--surface-elevated);
+  border: 2px solid var(--border-strong);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 700;
+  transition: all .2s ease;
+}
+.scrubber-node-dot.active {
+  border-color: var(--sea-glass);
+  background: var(--t1-surface);
+  color: var(--sea-glass);
+}
+.scrubber-node-dot.escalated {
+  border-color: var(--soft-brass);
+  background: var(--t2-surface);
+  color: var(--t2);
+}
+.escalation-moment-badge {
+  background: rgba(214, 180, 141, 0.15);
+  border: 1px solid var(--soft-brass);
+  color: var(--soft-brass);
+  border-radius: 6px;
+  padding: 4px 8px;
+  font-size: 11px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.highlight-300ms {
+  animation: flash-highlight 300ms ease;
+}
+@keyframes flash-highlight {
+  0% { outline: 2px solid var(--soft-brass); box-shadow: 0 0 14px rgba(214, 180, 141, 0.8); }
+  100% { outline: 2px solid transparent; box-shadow: none; }
+}
+.takeaway-banner {
+  background: var(--surface-inset);
+  border: 1px solid var(--border-subtle);
+  border-left: 4px solid var(--sea-glass);
+  border-radius: 6px;
+  padding: 10px 14px;
+  margin-top: 20px;
+  font-size: 13px;
+  color: var(--text-primary);
+}
+
 </style>
 </head>
 <body>
@@ -1052,7 +1138,7 @@ async function initSession() {
   const sData = sessRes.body;
   setBanner(sData ? sData.metadata : null);
   const sessions = (sData && Array.isArray(sData.sessions)) ? sData.sessions : [];
-  setStatus(`Loaded ${sessions.length} recorded sessions`);
+  setStatus(Loaded  recorded sessions);
 
   const container = el('div');
   const grid = el('div', '', 'grid-forensics');
@@ -1063,6 +1149,7 @@ async function initSession() {
 
   let queryText = '';
   let tierFilter = 'all';
+  let provFilter = 'all';
   let activeSessionId = null;
 
   const urlParamId = new URLSearchParams(window.location.search).get('id');
@@ -1082,25 +1169,181 @@ async function initSession() {
   const optNo = el('option', 'T1 Only (Unescalated)'); optNo.value = 'no';
   filterSelect.append(optAll, optYes, optNo);
   tools.appendChild(filterSelect);
+
+  const provSelect = document.createElement('select');
+  provSelect.setAttribute('aria-label', 'Filter by provenance');
+  const pAll = el('option', 'All Provenances'); pAll.value = 'all';
+  const pLab = el('option', 'LAB'); pLab.value = 'LAB';
+  const pSyn = el('option', 'SYNTHETIC'); pSyn.value = 'SYNTHETIC';
+  const pLive = el('option', 'LIVE'); pLive.value = 'LIVE';
+  provSelect.append(pAll, pLab, pSyn, pLive);
+  tools.appendChild(provSelect);
+
   listCard.appendChild(tools);
 
   const listWrap = el('div', '', 'scroll');
   listCard.appendChild(listWrap);
 
-  // Level 2: Center — Observation Timeline
+  // Level 2: Center — Observation Timeline & Scrubber
   const timelineCard = el('section', '', 'card');
-  timelineCard.appendChild(el('h2', 'Observation Timeline'));
+  timelineCard.appendChild(el('h2', 'Forensic Observation Timeline'));
   const timelineMeta = el('div', '', 'muted');
   timelineMeta.appendChild(el('p', 'Select a session from the left to inspect its complete recorded decision trajectory.'));
+
+  // Horizontal Scrubber Card
+  const scrubberBox = el('div', '', 'scrubber-card');
+  scrubberBox.id = 'forensics-scrubber-box';
+  scrubberBox.style.display = 'none';
+
+  const scrubberTitleRow = el('div', '', 'tools');
+  scrubberTitleRow.appendChild(el('strong', 'Horizontal Stage Scrubber', 'mono'));
+  const speedBtn = el('button', '1x Speed', 'btn');
+  speedBtn.type = 'button';
+  speedBtn.setAttribute('aria-label', 'Toggle replay speed');
+  let playbackSpeed = 800; // ms per step
+  speedBtn.addEventListener('click', () => {
+    playbackSpeed = playbackSpeed === 800 ? 400 : 800;
+    speedBtn.textContent = playbackSpeed === 400 ? '2x Speed' : '1x Speed';
+  });
+  scrubberTitleRow.appendChild(speedBtn);
+  scrubberBox.appendChild(scrubberTitleRow);
+
+  const scrubberTrackHoriz = el('div', '', 'scrubber-track-horiz');
+  scrubberBox.appendChild(scrubberTrackHoriz);
+
+  // Controls Row: Play/Pause, Step Back, Step Forward, Slider
+  const controlsRow = el('div', '', 'tools');
+  controlsRow.style.marginTop = '12px';
+  const playBtn = el('button', '▶ Play', 'btn');
+  playBtn.type = 'button';
+  playBtn.setAttribute('aria-label', 'Play or pause scrubber replay');
+  const prevBtn = el('button', '⏮ Step', 'btn');
+  prevBtn.type = 'button';
+  prevBtn.setAttribute('aria-label', 'Step backward in timeline');
+  const nextBtn = el('button', '⏭ Step', 'btn');
+  nextBtn.type = 'button';
+  nextBtn.setAttribute('aria-label', 'Step forward in timeline');
+
+  const slider = document.createElement('input');
+  slider.type = 'range';
+  slider.min = '0';
+  slider.max = '0';
+  slider.value = '0';
+  slider.setAttribute('aria-label', 'Scrubber position slider');
+  slider.style.flex = '1';
+
+  controlsRow.append(playBtn, prevBtn, nextBtn, slider);
+  scrubberBox.appendChild(controlsRow);
+
+  // Escalation Moment Callout
+  const escalationCallout = el('div', '', 'escalation-moment-badge');
+  escalationCallout.id = 'escalation-callout';
+  escalationCallout.style.marginTop = '10px';
+  escalationCallout.style.display = 'none';
+  scrubberBox.appendChild(escalationCallout);
+
   const timelineBody = el('div');
-  timelineCard.append(timelineMeta, timelineBody);
+  timelineCard.append(timelineMeta, scrubberBox, timelineBody);
 
   // Level 3: Right — Context Inspector
   const inspectorCard = el('section', '', 'card forensics-inspector');
   inspectorCard.appendChild(el('h2', 'Context Inspector'));
   const inspectorBody = el('div');
-  inspectorBody.appendChild(el('p', 'Click any stage decision in the timeline to inspect its recorded policy fields and rationale.', 'muted'));
+  inspectorBody.appendChild(el('p', 'Click any stage decision in the timeline or use the scrubber to inspect its recorded policy fields and rationale.', 'muted'));
   inspectorCard.appendChild(inspectorBody);
+
+  let currentDecisions = [];
+  let currentSessionMeta = null;
+  let scrubberIndex = 0;
+  let isPlaying = false;
+  let playTimer = null;
+
+  function flashHighlight() {
+    timelineCard.classList.remove('highlight-300ms');
+    inspectorCard.classList.remove('highlight-300ms');
+    void timelineCard.offsetWidth; // trigger reflow
+    timelineCard.classList.add('highlight-300ms');
+    inspectorCard.classList.add('highlight-300ms');
+    setTimeout(() => {
+      timelineCard.classList.remove('highlight-300ms');
+      inspectorCard.classList.remove('highlight-300ms');
+    }, 300);
+  }
+
+  function setScrubberIndex(idx) {
+    if (!currentDecisions.length) return;
+    if (idx < 0) idx = 0;
+    if (idx >= currentDecisions.length) idx = currentDecisions.length - 1;
+    scrubberIndex = idx;
+    slider.value = String(idx);
+
+    // Update node highlights
+    const nodes = scrubberTrackHoriz.querySelectorAll('.scrubber-node-dot');
+    nodes.forEach((n, i) => {
+      n.classList.toggle('active', i === idx);
+    });
+
+    const activeDec = currentDecisions[idx];
+    const prevTier = idx > 0 ? (currentDecisions[idx - 1].tier_decided || currentDecisions[idx - 1].tier || 'T1') : null;
+    const isEscalation = prevTier !== null && prevTier !== (activeDec.tier_decided || activeDec.tier) && (activeDec.tier_decided === 'T2' || activeDec.tier === 'T2');
+
+    if (isEscalation) {
+      flashHighlight();
+    }
+
+    // Highlight timeline row
+    const timelineWrap = timelineBody.querySelector('.timeline');
+    if (timelineWrap && timelineWrap.children[idx]) {
+      for (const c of timelineWrap.children) c.classList.remove('selected');
+      timelineWrap.children[idx].classList.add('selected');
+    }
+
+    renderInspector(activeDec, isEscalation, currentSessionMeta);
+  }
+
+  playBtn.addEventListener('click', () => {
+    if (isPlaying) {
+      clearInterval(playTimer);
+      isPlaying = false;
+      playBtn.textContent = '▶ Play';
+    } else {
+      isPlaying = true;
+      playBtn.textContent = '⏸ Pause';
+      if (scrubberIndex >= currentDecisions.length - 1) scrubberIndex = -1;
+      playTimer = setInterval(() => {
+        if (scrubberIndex < currentDecisions.length - 1) {
+          setScrubberIndex(scrubberIndex + 1);
+        } else {
+          clearInterval(playTimer);
+          isPlaying = false;
+          playBtn.textContent = '▶ Play';
+        }
+      }, playbackSpeed);
+    }
+  });
+
+  prevBtn.addEventListener('click', () => {
+    if (isPlaying) { clearInterval(playTimer); isPlaying = false; playBtn.textContent = '▶ Play'; }
+    setScrubberIndex(scrubberIndex - 1);
+  });
+  nextBtn.addEventListener('click', () => {
+    if (isPlaying) { clearInterval(playTimer); isPlaying = false; playBtn.textContent = '▶ Play'; }
+    setScrubberIndex(scrubberIndex + 1);
+  });
+  slider.addEventListener('input', () => {
+    if (isPlaying) { clearInterval(playTimer); isPlaying = false; playBtn.textContent = '▶ Play'; }
+    setScrubberIndex(parseInt(slider.value, 10));
+  });
+
+  document.addEventListener('keydown', e => {
+    if (e.target && ['input', 'select', 'textarea'].includes(e.target.tagName.toLowerCase())) return;
+    if (e.key === 'ArrowRight') setScrubberIndex(scrubberIndex + 1);
+    if (e.key === 'ArrowLeft') setScrubberIndex(scrubberIndex - 1);
+    if (e.key === ' ') {
+      e.preventDefault();
+      playBtn.click();
+    }
+  });
 
   function renderInspector(dec, isTransition, sessionMeta) {
     inspectorBody.replaceChildren();
@@ -1110,11 +1353,11 @@ async function initSession() {
     }
 
     const tier = dec.tier_decided || dec.tier || 'T1';
-    const stageName = `Stage ${dec.stage}`;
+    const stageName = Stage ;
 
     const headRow = el('div', '', 'tools');
-    headRow.appendChild(el('h3', `${stageName} Decision Context`));
-    headRow.appendChild(el('span', tier, `badge ${tier}`));
+    headRow.appendChild(el('h3', ${stageName} Decision Context));
+    headRow.appendChild(el('span', tier, adge ));
     if (isTransition) {
       headRow.appendChild(el('span', 'Escalation Event (T1 → T2)', 'badge warn'));
     }
@@ -1132,8 +1375,7 @@ async function initSession() {
     sourceTitle.style.color = 'var(--sea-glass)';
     ruleBox.appendChild(sourceTitle);
 
-    const explanation = RULE_EXPLANATIONS[sourceName] ||
-      sourceName;
+    const explanation = RULE_EXPLANATIONS[sourceName] || sourceName;
     const expText = el('p', explanation);
     expText.style.margin = '6px 0 0 0';
     expText.style.fontSize = '13px';
@@ -1159,7 +1401,7 @@ async function initSession() {
     addRow('Policy Source', dec.score_source || 'UNKNOWN');
 
     const latVal = (dec.latency_ms !== undefined && dec.latency_ms !== null)
-      ? `${Number(dec.latency_ms).toFixed(2)} ms`
+      ? ${Number(dec.latency_ms).toFixed(2)} ms
       : 'NO DATA';
     addRow('Compute Latency', latVal);
     addRow('Provenance', dec.provenance || 'LAB');
@@ -1169,7 +1411,7 @@ async function initSession() {
     fieldsTable.appendChild(fTbody);
     inspectorBody.appendChild(fieldsTable);
 
-    const latNotice = el('div', 'Latency Note: Engine compute latency measures isolated Gatekeeper policy calculation duration, excluding network transmission.', 'muted mono');
+    const latNotice = el('div', 'Latency Note: Engine compute latency, not end-to-end (measures isolated Gatekeeper calculation duration).', 'muted mono');
     latNotice.style.fontSize = '11px';
     latNotice.style.marginTop = '10px';
     inspectorBody.appendChild(latNotice);
@@ -1178,15 +1420,17 @@ async function initSession() {
   async function loadTimeline(sessionId) {
     activeSessionId = sessionId;
     renderSessionList();
-    timelineMeta.replaceChildren(el('p', `Loading decision log for ${sessionId}...`, 'muted mono'));
+    timelineMeta.replaceChildren(el('p', Loading decision log for ..., 'muted mono'));
     timelineBody.replaceChildren();
     inspectorBody.replaceChildren(el('p', 'Loading decision context...', 'muted mono'));
+    scrubberBox.style.display = 'none';
 
     try {
-      const res = await fetchJson(`/api/session/${encodeURIComponent(sessionId)}`);
+      const res = await fetchJson(/api/session/);
       timelineMeta.replaceChildren();
 
       const sessMeta = sessions.find(x => x.session_id === sessionId) || {};
+      currentSessionMeta = sessMeta;
       const visitorId = sessMeta.visitor_id || 'UNKNOWN';
       const returningVisitor = sessMeta.returning_visitor || false;
       const sData = (res.body && res.body.data) ? res.body.data : res.body;
@@ -1198,8 +1442,8 @@ async function initSession() {
 
       const vLine = el('div', '', 'tools');
       const vLink = document.createElement('a');
-      vLink.href = `/visitors?id=${encodeURIComponent(visitorId)}`;
-      vLink.textContent = `Visitor: ${visitorId}`;
+      vLink.href = /visitors?id=;
+      vLink.textContent = Visitor: ;
       vLink.className = 'mono';
       vLine.appendChild(vLink);
       if (returningVisitor) vLine.appendChild(el('span', 'Returning Visitor', 'badge done'));
@@ -1213,17 +1457,57 @@ async function initSession() {
       timelineMeta.appendChild(disclaim);
 
       const decisions = (sData && Array.isArray(sData.decisions)) ? sData.decisions : [];
+      currentDecisions = decisions;
+
       if (!decisions.length) {
         timelineBody.replaceChildren(el('p', 'NO DATA · No decision rows recorded for this session.', 'muted mono'));
         inspectorBody.replaceChildren(el('p', 'No decisions available to inspect.', 'muted mono'));
         return;
       }
 
-      const timelineWrap = el('div', '', 'timeline');
-      let defaultSelectedStep = null;
-      let defaultDecision = null;
-      let defaultIsTransition = false;
+      // Configure Horizontal Scrubber
+      scrubberBox.style.display = 'block';
+      slider.max = String(decisions.length - 1);
+      slider.value = '0';
+      scrubberIndex = 0;
 
+      scrubberTrackHoriz.replaceChildren();
+      const trackLine = el('div', '', 'scrubber-track-line');
+      scrubberTrackHoriz.appendChild(trackLine);
+
+      // Find escalation moment if any
+      let escalationEvent = null;
+      decisions.forEach((d, idx) => {
+        const tier = d.tier_decided || d.tier || 'T1';
+        const prevTier = idx > 0 ? (decisions[idx-1].tier_decided || decisions[idx-1].tier || 'T1') : null;
+        if (prevTier !== null && prevTier !== tier && (tier === 'T2' || tier === 'T3')) {
+          escalationEvent = { stage: d.stage, from: prevTier, to: tier, rule: d.score_source, idx: idx };
+        }
+
+        const node = el('div', '', 'scrubber-stage-node');
+        node.setAttribute('aria-label', Stage : );
+        const dot = el('div', d.stage, 'scrubber-node-dot' + (tier === 'T2' ? ' escalated' : (idx === 0 ? ' active' : '')));
+        const sub = el('span', tier, 'muted mono');
+        sub.style.fontSize = '10px';
+        node.append(dot, sub);
+        node.addEventListener('click', () => setScrubberIndex(idx));
+        scrubberTrackHoriz.appendChild(node);
+      });
+
+      if (escalationEvent) {
+        escalationCallout.style.display = 'inline-flex';
+        escalationCallout.replaceChildren();
+        escalationCallout.appendChild(el('span', ⚡ Escalation Moment at Stage :  →  ()));
+        if (sessMeta.policy_profile === 'LAB_DEMO' || (decisions[0] && decisions[0].policy_profile === 'LAB_DEMO')) {
+          const badgeDemo = el('span', 'LAB_DEMO_NOT_ML', 'badge warn');
+          badgeDemo.style.marginLeft = '6px';
+          escalationCallout.appendChild(badgeDemo);
+        }
+      } else {
+        escalationCallout.style.display = 'none';
+      }
+
+      const timelineWrap = el('div', '', 'timeline');
       decisions.forEach((d, idx) => {
         const tier = d.tier_decided || d.tier || 'T1';
         const prevTier = idx > 0 ? (decisions[idx-1].tier_decided || decisions[idx-1].tier || 'T1') : null;
@@ -1231,50 +1515,33 @@ async function initSession() {
         const step = el('div', '', 'timeline-step' + (isTransition ? ' tier-transition' : ''));
 
         const sRow = el('div', '', 'tools');
-        sRow.appendChild(el('strong', `Stage ${d.stage}`));
-        sRow.appendChild(el('span', tier, `badge ${tier}`));
+        sRow.appendChild(el('strong', Stage ));
+        sRow.appendChild(el('span', tier, adge ));
         if (isTransition) {
-          sRow.appendChild(el('span', `Escalation Event (${prevTier} → ${tier})`, 'badge warn'));
+          sRow.appendChild(el('span', Escalation Event ( → ), 'badge warn'));
         }
         step.appendChild(sRow);
 
         const details = el('div', '', 'mono muted');
         details.style.marginTop = '6px';
-        const scoreText = (d.score !== undefined && d.score !== null) ? `Score: ${d.score}` : 'Score: NO DATA';
-        const sourceText = d.score_source ? `Source: ${d.score_source}` : 'Source: UNKNOWN';
+        const scoreText = (d.score !== undefined && d.score !== null) ? Score:  : 'Score: NO DATA';
+        const sourceText = d.score_source ? Source:  : 'Source: UNKNOWN';
         const latText = (d.latency_ms !== undefined && d.latency_ms !== null)
-          ? `Latency: ${Number(d.latency_ms).toFixed(2)} ms`
-          : 'Latency: NO DATA';
+          ? Engine compute latency, not end-to-end:  ms
+          : 'Engine compute latency, not end-to-end: NO DATA';
 
-        details.appendChild(el('div', `${scoreText} · ${sourceText}`));
-        details.appendChild(el('div', `Provenance: ${d.provenance || 'UNKNOWN'} · Policy: ${d.policy_profile || 'UNKNOWN'}`));
+        details.appendChild(el('div', ${scoreText} · ));
+        details.appendChild(el('div', Provenance:  · Policy: ));
         details.appendChild(el('div', latText));
-        if (d.timestamp) details.appendChild(el('div', `Timestamp: ${d.timestamp}`, 'mono'));
+        if (d.timestamp) details.appendChild(el('div', Timestamp: , 'mono'));
         step.appendChild(details);
 
-        // Click to inspect
-        step.addEventListener('click', () => {
-          for (const c of timelineWrap.children) c.classList.remove('selected');
-          step.classList.add('selected');
-          renderInspector(d, isTransition, sessMeta);
-        });
-
-        if (isTransition || !defaultDecision) {
-          defaultSelectedStep = step;
-          defaultDecision = d;
-          defaultIsTransition = isTransition;
-        }
-
+        step.addEventListener('click', () => setScrubberIndex(idx));
         timelineWrap.appendChild(step);
       });
 
       timelineBody.replaceChildren(timelineWrap);
-
-      // Select default decision (escalated or first)
-      if (defaultSelectedStep && defaultDecision) {
-        defaultSelectedStep.classList.add('selected');
-        renderInspector(defaultDecision, defaultIsTransition, sessMeta);
-      }
+      setScrubberIndex(0);
     } catch (e) {
       timelineMeta.replaceChildren(el('p', 'NO DATA · Failed to load session timeline.', 'muted mono'));
       timelineBody.replaceChildren();
@@ -1286,9 +1553,11 @@ async function initSession() {
     listWrap.replaceChildren();
     const q = queryText.trim().toLowerCase();
     const filtered = sessions.filter((s) => {
-      const matchText = `${s.session_id} ${s.visitor_id}`.toLowerCase().includes(q);
+      const matchText = ${s.session_id} .toLowerCase().includes(q);
       const matchTier = tierFilter === 'all' || (tierFilter === 'yes' ? s.reached_t2 : !s.reached_t2);
-      return matchText && matchTier;
+      const sProv = (s.decisions && s.decisions[0] && s.decisions[0].provenance) || 'LAB';
+      const matchProv = provFilter === 'all' || sProv === provFilter;
+      return matchText && matchTier && matchProv;
     });
 
     if (!filtered.length) {
@@ -1305,7 +1574,7 @@ async function initSession() {
       idLine.style.fontWeight = '600';
       btn.appendChild(idLine);
 
-      const subLine = el('div', `Visitor: ${s.visitor_id}${s.returning_visitor ? ' (Returning)' : ''}`, 'muted mono');
+      const subLine = el('div', Visitor: , 'muted mono');
       btn.appendChild(subLine);
 
       const stageLine = el('div', '', 'tools');
@@ -1314,7 +1583,7 @@ async function initSession() {
         const stageOrder = { 'S1': 1, 'S2': 2, 'S3': 3, 'S4': 4, 'S5': 5 };
         const observedStages = Object.entries(s.stages).sort((a, b) => (stageOrder[a[0]] || 99) - (stageOrder[b[0]] || 99));
         for (const [st, tier] of observedStages) {
-          stageLine.appendChild(el('span', `${st}:${tier}`, `badge ${tier}`));
+          stageLine.appendChild(el('span', ${st}:, adge ));
         }
       } else {
         stageLine.appendChild(el('span', 'No stages observed', 'muted mono'));
@@ -1336,9 +1605,20 @@ async function initSession() {
     renderSessionList();
   });
 
+  provSelect.addEventListener('change', () => {
+    provFilter = provSelect.value;
+    renderSessionList();
+  });
+
   renderSessionList();
   grid.append(listCard, timelineCard, inspectorCard);
   container.appendChild(grid);
+
+  const takeaway = el('div', '', 'takeaway-banner');
+  takeaway.appendChild(el('strong', 'Core Scientific Thesis: '));
+  takeaway.appendChild(el('span', 'Individual session progression reveals the exact moment and mechanism of tier escalation.'));
+  container.appendChild(takeaway);
+
   content.replaceChildren(container);
 
   if (activeSessionId) {
@@ -1347,6 +1627,7 @@ async function initSession() {
     loadTimeline(sessions[0].session_id);
   }
 }
+
 
 // =============================================================
 // 5. Visitor Atlas (/visitors)
