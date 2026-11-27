@@ -1013,6 +1013,7 @@ async function initMl() {
 
       // Stem
       const stem = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+      stem.setAttribute('class', 'chart-bar');
       stem.setAttribute('x1', '50');
       stem.setAttribute('y1', String(c.y));
       stem.setAttribute('x2', String(cx));
@@ -1510,7 +1511,7 @@ async function initSession() {
   timelineCard.append(timelineMeta, scrubberBox, timelineBody);
 
   // Level 3: Right — Context Inspector
-  const inspectorCard = el('section', '', 'card forensics-inspector');
+  const inspectorCard = el('section', '', 'card forensics-inspector context-inspector-panel');
   inspectorCard.appendChild(el('h2', 'Context Inspector'));
   const inspectorBody = el('div');
   inspectorBody.appendChild(el('p', 'Click any stage decision in the timeline or use the scrubber to inspect its recorded policy fields and rationale.', 'muted'));
@@ -2937,6 +2938,52 @@ async function relatedEvidence(path) {
   else if (path === '/replay') showReports(['REPLAY_RESULT', 'selection', 'observations']);
   else if (path === '/detector') showReports(['DETECTOR_RESULT']);
   else if (path === '/lab') initLab();
+
+// Presentation Mode Implementation
+const PRIMARY_PAGES = ['/', '/session', '/visitors', '/deception', '/ml'];
+
+function initPresentationMode() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const isPresent = urlParams.get('present') === '1';
+
+  function togglePresentation(enable) {
+    document.body.classList.toggle('presentation-mode', enable);
+    const btn = document.getElementById('btn-presentation-mode');
+    if (btn) btn.textContent = enable ? 'Exit Presentation (Esc)' : 'Presentation Mode';
+  }
+
+  if (isPresent) togglePresentation(true);
+
+  const btn = document.getElementById('btn-presentation-mode');
+  if (btn) {
+    btn.addEventListener('click', () => {
+      const active = document.body.classList.contains('presentation-mode');
+      togglePresentation(!active);
+    });
+  }
+
+  document.addEventListener('keydown', e => {
+    if (e.target && ['input', 'select', 'textarea'].includes(e.target.tagName.toLowerCase())) return;
+    if (e.key === 'Escape') {
+      if (document.body.classList.contains('presentation-mode')) {
+        togglePresentation(false);
+      }
+    }
+    if (document.body.classList.contains('presentation-mode')) {
+      const curPath = window.location.pathname.replace(/\/index\.html$/, '') || '/';
+      const curIdx = PRIMARY_PAGES.indexOf(curPath);
+      if (e.key === 'ArrowRight' && curIdx !== -1) {
+        const nextIdx = (curIdx + 1) % PRIMARY_PAGES.length;
+        window.location.href = PRIMARY_PAGES[nextIdx] + '?present=1';
+      } else if (e.key === 'ArrowLeft' && curIdx !== -1) {
+        const prevIdx = (curIdx - 1 + PRIMARY_PAGES.length) % PRIMARY_PAGES.length;
+        window.location.href = PRIMARY_PAGES[prevIdx] + '?present=1';
+      }
+    }
+  });
+}
+initPresentationMode();
+
 })();
 </script>
 </body>

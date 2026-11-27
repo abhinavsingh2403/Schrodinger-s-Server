@@ -67,10 +67,12 @@ The following requests are noted for future backend enhancement (no modification
 
 ---
 
-## 5. Phase H Status
+## 5. NOT RUN Items
 
-**NOT RUN: waiting for docs/UI_PICKS.md**  
-(Implementation of React Bits / Motion primitives deferred until specification is provided).
+1. **Phase H**: **NOT RUN: waiting for docs/UI_PICKS.md**  
+   (Implementation of React Bits / Motion primitives deferred until specification is provided).
+2. **Visual Inspection Screenshots**: **NOT RUN: Chromium / Playwright not installed in local environment**  
+   (Environment strictly preserved with zero unapproved external dependencies per project safety rules).
 
 ---
 
