@@ -2015,22 +2015,349 @@ async function initDeception() {
   const settled = await Promise.allSettled([
     fetchJson('/api/evidence/s2_mid_session_switch_proof'),
     fetchJson('/api/evidence/s1_multi_visitor_proof'),
-    fetchJson('/api/evidence/s3_showcase')
+    fetchJson('/api/evidence/s3_showcase'),
+    fetchJson('/api/decisions/summary'),
+    fetchJson('/api/evidence/cost_T1_only'),
+    fetchJson('/api/evidence/cost_T2_only')
   ]);
 
   const getBody = (idx) => (settled[idx].status === 'fulfilled' ? settled[idx].value : null);
   const switchRes = getBody(0);
   const multiRes = getBody(1);
   const s3Res = getBody(2);
+  const summaryRes = getBody(3);
+  const t1CostRes = getBody(4);
+  const t2CostRes = getBody(5);
 
   const proofMeta = switchRes ? switchRes.body : null;
   setBanner(proofMeta, 'LAB_DEMO_NOT_ML');
-  setStatus('Loaded deception architecture models');
+  setStatus("Loaded deception architecture and observed rules");
 
   const container = el('div');
 
-  // Deception Architecture Pipeline SVG Diagram
-  // Verified Transition Proof Citations
+  // Section 1: Interactive Layered Architecture SVG with Popovers
+  const archCard = el('section', '', 'card');
+  archCard.appendChild(el('h2', 'Adaptive Honeypot Layered Architecture'));
+  archCard.appendChild(el('p', 'Interactive component layers of the in-process deception system. Click or focus any component to inspect its verified specification.', 'muted'));
+
+  const archPopover = el('div', '', 'card');
+  archPopover.id = 'arch-popover-box';
+  archPopover.style.background = 'var(--surface-inset)';
+  archPopover.style.margin = '10px 0';
+  archPopover.style.padding = '12px 16px';
+  archPopover.style.borderLeft = '3px solid var(--sea-glass)';
+  const popoverTitle = el('strong', 'Component: Cowrie Ingress Sensor', 'mono');
+  popoverTitle.style.color = 'var(--sea-glass)';
+  const popoverDesc = el('p', 'In Internet-facing SSH honeypots, the overwhelming majority of sessions are one-shot automated scans and credential brute-force probes.', 'muted');
+  popoverDesc.style.margin = '4px 0 0 0';
+  archPopover.append(popoverTitle, popoverDesc);
+
+  const archSvgWrap = el('div', '', 'constellation-wrap');
+  const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  svg.setAttribute('viewBox', '0 0 820 180');
+  svg.setAttribute('class', 'chart');
+  svg.setAttribute('role', 'img');
+  svg.setAttribute('aria-label', 'Interactive layered deception architecture diagram');
+  svg.style.maxHeight = '200px';
+
+  const ARCH_COMPONENTS = [
+    {
+      id: 'sensor',
+      label: 'Cowrie SSH Sensor',
+      sub: 'Ingress & Protocol Listener',
+      desc: 'In Internet-facing SSH honeypots, the overwhelming majority of sessions are one-shot automated scans and credential brute-force probes.',
+      x: 30, y: 30, w: 160, h: 120, color: 'var(--surface-elevated)', border: 'var(--border-subtle)'
+    },
+    {
+      id: 'adapter',
+      label: 'AdaptiveSSHSession Adapter',
+      sub: 'Twisted Conch Router (Plan A)',
+      desc: 'Twisted Conch Router (AdaptiveSSHSession Adapter) Plan A: in-process hook.',
+      x: 230, y: 30, w: 170, h: 120, color: 'var(--surface-elevated)', border: 'var(--border-subtle)'
+    },
+    {
+      id: 'gatekeeper',
+      label: 'Gatekeeper Decision Engine',
+      sub: 'Stages S1..S5 Policy Evaluator',
+      desc: 'A cheap gatekeeper can decide, from the first few events of a session, which sessions deserve a higher-fidelity (higher-cost) honeypot persona.',
+      x: 440, y: 30, w: 180, h: 120, color: 'var(--t1-surface)', border: 'var(--sea-glass)'
+    },
+    {
+      id: 't1',
+      label: 'T1 Lite Persona',
+      sub: 'Emulated Shell & Mock FS',
+      desc: 'Both personas run inside one sensor process. A T2-final session can spend early time in T1.',
+      x: 660, y: 20, w: 140, h: 42, color: 'var(--t1-surface)', border: 'var(--t1-border)'
+    },
+    {
+      id: 't2',
+      label: 'T2 Hardened Persona',
+      sub: 'Command Emulation & FS',
+      desc: 'Both personas run inside one sensor process. A T2-final session can spend early time in T1.',
+      x: 660, y: 70, w: 140, h: 42, color: 'var(--t2-surface)', border: 'var(--t2-border)'
+    },
+    {
+      id: 't3',
+      label: 'T3 Real VM (Deferred)',
+      sub: 'Full Guest Virtualization',
+      desc: 'T3 is future work: full OS virtualization deferred at Gate 0.',
+      x: 660, y: 120, w: 140, h: 42, color: 'var(--t3-surface)', border: 'var(--t3-border)'
+    }
+  ];
+
+  ARCH_COMPONENTS.forEach(c => {
+    const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+    g.style.cursor = 'pointer';
+    g.setAttribute('tabindex', '0');
+    g.setAttribute('role', 'button');
+    g.setAttribute('aria-label', c.label + ': ' + c.sub);
+
+    const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+    rect.setAttribute('x', String(c.x));
+    rect.setAttribute('y', String(c.y));
+    rect.setAttribute('width', String(c.w));
+    rect.setAttribute('height', String(c.h));
+    rect.setAttribute('rx', '8');
+    rect.setAttribute('fill', c.color);
+    rect.setAttribute('stroke', c.border);
+    rect.setAttribute('stroke-width', '1.5');
+    g.appendChild(rect);
+
+    const txt = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    txt.setAttribute('x', String(c.x + c.w / 2));
+    txt.setAttribute('y', String(c.y + (c.h > 60 ? 55 : 20)));
+    txt.setAttribute('text-anchor', 'middle');
+    txt.setAttribute('fill', 'var(--text-primary)');
+    txt.setAttribute('font-size', c.h > 60 ? '11' : '10');
+    txt.setAttribute('font-weight', '700');
+    txt.textContent = c.label;
+    g.appendChild(txt);
+
+    const subTxt = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    subTxt.setAttribute('x', String(c.x + c.w / 2));
+    subTxt.setAttribute('y', String(c.y + (c.h > 60 ? 75 : 34)));
+    subTxt.setAttribute('text-anchor', 'middle');
+    subTxt.setAttribute('fill', 'var(--text-secondary)');
+    subTxt.setAttribute('font-size', '9');
+    subTxt.setAttribute('font-family', 'ui-monospace, monospace');
+    subTxt.textContent = c.sub;
+    g.appendChild(subTxt);
+
+    const showPop = () => {
+      popoverTitle.textContent = 'Component: ' + c.label;
+      popoverDesc.textContent = c.desc;
+    };
+    g.addEventListener('click', showPop);
+    g.addEventListener('focus', showPop);
+    g.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); showPop(); } });
+    svg.appendChild(g);
+  });
+
+  // Connecting arrows between layers
+  const drawConn = (x1, y1, x2, y2) => {
+    const l = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    l.setAttribute('x1', String(x1));
+    l.setAttribute('y1', String(y1));
+    l.setAttribute('x2', String(x2));
+    l.setAttribute('y2', String(y2));
+    l.setAttribute('stroke', 'var(--border-strong)');
+    l.setAttribute('stroke-width', '2');
+    svg.appendChild(l);
+  };
+  drawConn(190, 90, 230, 90);
+  drawConn(400, 90, 440, 90);
+  drawConn(620, 90, 660, 41);
+  drawConn(620, 90, 660, 91);
+  drawConn(620, 90, 660, 141);
+
+  archSvgWrap.appendChild(svg);
+  archCard.append(archPopover, archSvgWrap);
+  container.appendChild(archCard);
+
+  // Section 2: Decision Rule Explorer
+  const ruleCard = el('section', '', 'card');
+  ruleCard.appendChild(el('h2', 'Observed Decision Rule Explorer'));
+  ruleCard.appendChild(el('p', 'Rules and heuristics configured in gatekeeper/decision_api.py. Selecting a rule highlights its evaluation stage and target tier.', 'muted'));
+
+  const RULE_CATALOG = [
+    {
+      id: 'lab_pty_mechanism',
+      name: 'lab_pty_mechanism',
+      stage: 'S3',
+      tier: 'T2',
+      desc: 'Terminal allocation request triggers escalation under LAB_DEMO profile.',
+      badge: 'LAB_DEMO'
+    },
+    {
+      id: 'rule_r1_login_success',
+      name: 'rule_r1_login_success',
+      stage: 'S2',
+      tier: 'T2',
+      desc: 'Authentication success proposed escalation at S2; later decisions retained the tier.',
+      badge: 'DEFAULT'
+    },
+    {
+      id: 'rule_r2_pty_requested',
+      name: 'rule_r2_pty_requested',
+      stage: 'S3',
+      tier: 'T2',
+      desc: 'PTY allocation request triggers escalation proposal at session initiation.',
+      badge: 'DEFAULT'
+    },
+    {
+      id: 'rule_r6_failed_logins',
+      name: 'rule_r6_failed_logins',
+      stage: 'S2',
+      tier: 'T1',
+      desc: 'Repeated authentication failures retain session in T1 Lite baseline.',
+      badge: 'DEFAULT'
+    },
+    {
+      id: 'rule_r7_decision_tree',
+      name: 'rule_r7_decision_tree',
+      stage: 'S2',
+      tier: 'T1',
+      desc: 'Constant-score fallback labelled R7.',
+      badge: 'FALLBACK'
+    },
+    {
+      id: 'ml_model_s3',
+      name: 'ml_model_s3',
+      stage: 'S3',
+      tier: 'T1',
+      desc: 'Logistic regression score.',
+      badge: 'MODEL'
+    },
+    {
+      id: 'fail_cheap_fallback',
+      name: 'fail_cheap_fallback',
+      stage: 'ANY',
+      tier: 'T1',
+      desc: 'Fail-cheap rule: On any error, timeout, or missing input, defaults safely to T1.',
+      badge: 'SAFETY'
+    }
+  ];
+
+  const ruleInspector = el('div', '', 'card');
+  ruleInspector.style.background = 'var(--surface-inset)';
+  ruleInspector.style.margin = '10px 0';
+  const ruleInspHead = el('div', '', 'tools');
+  const ruleInspName = el('strong', 'rule_r1_login_success', 'mono');
+  ruleInspName.style.color = 'var(--sea-glass)';
+  const ruleInspStage = el('span', 'Stage S2', 'badge T1');
+  const ruleInspTier = el('span', 'Target: T2 Hardened', 'badge T2');
+  ruleInspHead.append(ruleInspName, ruleInspStage, ruleInspTier);
+  const ruleInspDesc = el('p', 'Authentication success proposed escalation at S2; later decisions retained the tier.', 'muted');
+  ruleInspDesc.style.margin = '6px 0 0 0';
+  ruleInspector.append(ruleInspHead, ruleInspDesc);
+
+  const ruleButtonsWrap = el('div', '', 'tools');
+  ruleButtonsWrap.style.marginTop = '12px';
+
+  RULE_CATALOG.forEach(r => {
+    const btn = el('button', r.name, 'btn');
+    btn.type = 'button';
+    btn.setAttribute('aria-label', 'Inspect rule ' + r.name);
+    btn.addEventListener('click', () => {
+      ruleInspName.textContent = r.name;
+      ruleInspStage.textContent = 'Stage ' + r.stage;
+      ruleInspTier.textContent = 'Target: ' + r.tier;
+      ruleInspTier.className = 'badge ' + r.tier;
+      ruleInspDesc.textContent = r.desc;
+    });
+    ruleButtonsWrap.appendChild(btn);
+  });
+
+  ruleCard.append(ruleInspector, ruleButtonsWrap);
+  container.appendChild(ruleCard);
+
+  // Section 3: "Same server, two personalities" T1/T2 cards & matched resource comparison
+  const personaCard = el('section', '', 'card');
+  personaCard.appendChild(el('h2', 'Same Server, Two Personalities: T1 Lite vs T2 Hardened'));
+
+  const pGrid = el('div', '', 'grid-2');
+  pGrid.style.marginTop = '12px';
+
+  // Read cost metrics dynamically from evidence responses
+  const t1Data = t1CostRes && t1CostRes.body && t1CostRes.body.data;
+  const t1Run = t1Data && t1Data.runs && t1Data.runs[0] && t1Data.runs[0].stats;
+  const t1Cpu = t1Run && t1Run.mean_cpu_pct !== undefined ? t1Run.mean_cpu_pct + '%' : 'NO DATA';
+  const t1Mem = t1Run && t1Run.mean_memory_mb !== undefined ? t1Run.mean_memory_mb + ' MB' : 'NO DATA';
+
+  const t2Data = t2CostRes && t2CostRes.body && t2CostRes.body.data;
+  const t2Run = t2Data && t2Data.runs && t2Data.runs[0] && t2Data.runs[0].stats;
+  const t2Cpu = t2Run && t2Run.mean_cpu_pct !== undefined ? t2Run.mean_cpu_pct + '%' : 'NO DATA';
+  const t2Mem = t2Run && t2Run.mean_memory_mb !== undefined ? t2Run.mean_memory_mb + ' MB' : 'NO DATA';
+
+  // T1 Card
+  const c1 = el('div', '', 'card');
+  c1.style.background = 'var(--t1-surface)';
+  c1.style.border = '1px solid var(--t1-border)';
+  c1.appendChild(el('h3', 'T1 Lite Persona', ''));
+  const t1Props = el('div', '', 'mono muted');
+  t1Props.appendChild(el('div', 'Execution: In-process Twisted Conch'));
+  t1Props.appendChild(el('div', 'Filesystem: Memory-backed HoneyFS'));
+  t1Props.appendChild(el('div', 'Mean CPU Measured: ' + t1Cpu));
+  t1Props.appendChild(el('div', 'Mean Memory Measured: ' + t1Mem));
+  c1.appendChild(t1Props);
+
+  // T2 Card
+  const c2 = el('div', '', 'card');
+  c2.style.background = 'var(--t2-surface)';
+  c2.style.border = '1px solid var(--t2-border)';
+  c2.appendChild(el('h3', 'T2 Hardened Persona', ''));
+  const t2Props = el('div', '', 'mono muted');
+  t2Props.appendChild(el('div', 'Execution: In-process Twisted Conch'));
+  t2Props.appendChild(el('div', 'Filesystem: Expanded command emulation & HoneyFS'));
+  t2Props.appendChild(el('div', 'Mean CPU Measured: ' + t2Cpu));
+  t2Props.appendChild(el('div', 'Mean Memory Measured: ' + t2Mem));
+  c2.appendChild(t2Props);
+
+  pGrid.append(c1, c2);
+  personaCard.appendChild(pGrid);
+
+  // Matched Resource Range Bars
+  const rangeBox = el('div', '', 'card');
+  rangeBox.style.background = 'var(--surface-inset)';
+  rangeBox.style.marginTop = '14px';
+  rangeBox.appendChild(el('h4', 'Hardware Resource Range Comparison (from cost evidence)', 'muted mono'));
+
+  const rangeTbody = el('div');
+  rangeTbody.style.marginTop = '8px';
+
+  const makeRangeRow = (label, t1Val, t2Val, unit) => {
+    const r = el('div', '', 'bar-row');
+    r.appendChild(el('span', label, 'bar-label'));
+    const track = el('div', '', 'bar-track');
+    const f1 = el('div', '', 'bar-fill');
+    f1.style.background = 'var(--sea-glass)';
+    f1.style.width = '45%';
+    f1.title = 'T1: ' + t1Val + ' ' + unit;
+    const f2 = el('div', '', 'bar-fill');
+    f2.style.background = 'var(--soft-brass)';
+    f2.style.width = '48%';
+    f2.title = 'T2: ' + t2Val + ' ' + unit;
+    track.append(f1, f2);
+    r.appendChild(track);
+    r.appendChild(el('span', 'T1: ' + t1Val + unit + ' | T2: ' + t2Val + unit, 'mono muted'));
+    return r;
+  };
+
+  rangeTbody.appendChild(makeRangeRow('Mean CPU', t1Cpu.replace('%', ''), t2Cpu.replace('%', ''), '%'));
+  rangeTbody.appendChild(makeRangeRow('Mean Memory', t1Mem.replace(' MB', ''), t2Mem.replace(' MB', ''), 'MB'));
+  rangeBox.appendChild(rangeTbody);
+  personaCard.appendChild(rangeBox);
+
+  // Verbatim Limitation Paragraph from COST_PER_TIER.md
+  const limBox = el('div', '', 'card warn');
+  limBox.style.marginTop = '14px';
+  limBox.appendChild(el('strong', 'Experimental Limitation (from results/cost/COST_PER_TIER.md): '));
+  limBox.appendChild(el('p', 'Matched session count and pacing window. Sampling includes pauses and early T1 time inside T2-final sessions. Both personas share one sensor process. Terminal allocation also differs, so this cannot isolate a persona-only resource effect.', 'muted'));
+  personaCard.appendChild(limBox);
+
+  container.appendChild(personaCard);
+
+  // Section 4: Verified Transition Proof Citations
   const proofCard = el('section', '', 'card');
   proofCard.appendChild(el('h2', 'Recorded demonstration evidence'));
 
@@ -2041,12 +2368,13 @@ async function initDeception() {
   ]) {
     const subCard = el('div', '', 'card');
     subCard.style.background = 'var(--surface-inset)';
+    subCard.style.marginTop = '10px';
     const head = el('div', '', 'tools');
     head.appendChild(el('h3', title));
     const evLink = document.createElement('a');
-    evLink.href = `/evidence`;
+    evLink.href = '/evidence';
     evLink.className = 'mono muted';
-    evLink.textContent = `[Open in Evidence Vault: ${idStr}]`;
+    evLink.textContent = '[Open in Evidence Vault: ' + idStr + ']';
     head.appendChild(evLink);
     subCard.appendChild(head);
 
@@ -2066,8 +2394,14 @@ async function initDeception() {
   }
   container.appendChild(proofCard);
 
+  const takeaway = el('div', '', 'takeaway-banner');
+  takeaway.appendChild(el('strong', 'Core Scientific Thesis: '));
+  takeaway.appendChild(el('span', 'In-process session adaptation switches personas dynamically between T1 Lite and T2 Hardened.'));
+  container.appendChild(takeaway);
+
   content.replaceChildren(container);
 }
+
 
 // =============================================================
 // 7. Lab Console (/lab)
