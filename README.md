@@ -1,6 +1,6 @@
 # Schrödinger's Server
 
-**A cost-aware adaptive SSH honeypot: spend expensive deception only where it pays.**
+**An adaptive SSH honeypot for studying session triage under a fixed budget.**
 
 [![Pre-registration Tag: eval-v1](https://img.shields.io/badge/pre--registration-eval--v1-blue.svg)](https://github.com/abhinavsingh2403/Schrodinger-s-Server/tree/eval-v1)
 [![Pre-registration Tag: exp0-v1](https://img.shields.io/badge/pre--registration-exp0--v1-blueviolet.svg)](https://github.com/abhinavsingh2403/Schrodinger-s-Server/tree/exp0-v1)
@@ -80,9 +80,9 @@ The aggregate analysis reports these summaries (analysis/s3_base_rates.py, resul
 - **Login Success Count**: `4,374,446` (11.47% authentication success rate)
 - **Command Input Sessions**: `3,335,870` (8.75%)
   - Zero recorded commands: `34,790,178` (91.25%)
-  - 1–4 commands: `2,185,616` (5.73%)
-  - 5–9 commands: `992,305` (2.60%)
-  - 10+ commands: `157,949` (0.41%)
+  - 1–4 commands: `3,115,939` (8.17%)
+  - 5–9 commands: `58,543` (0.15%)
+  - 10+ commands: `161,388` (0.42%)
   - Command Quantiles: **p50 = 0, p90 = 0, p99 = 2**
 - **File Transfers**: `755,225` sessions (1.98%)
 - **Direct-TCPIP Requests**: `467,551` sessions (1.23%)
@@ -187,7 +187,7 @@ Schrodinger-s-Server/
 │   └── MANIFEST.json       # Run manifest: hashes, versions, commit IDs, timestamps
 ├── infra/                  # Infrastructure scripts and firewall definitions
 ├── gatekeeper/             # Feature extractor, Model V, and visitor memory
-├── router/                 # In-process escalation hooks
+├── router/                 # Routing components (in-process persona switching lives in sensor/)
 ├── harness/                # Lab test harness and adversary runners
 └── dashboard/              # Read-only offline visualization dashboard
 ```
@@ -207,7 +207,7 @@ python -m venv .venv
 ```powershell
 .\.venv\Scripts\python -m pytest -q
 ```
-Recorded Windows suite result: **267 passed, 3 skipped**. Run the two Experiment 1 fixtures explicitly:
+Run the two Experiment 1 fixtures explicitly because their filenames fall outside the discovery pattern in pytest.ini:
 
 ```powershell
 python -m pytest -q analysis/experiment1_dataset_test.py analysis/experiment1_eval_test.py

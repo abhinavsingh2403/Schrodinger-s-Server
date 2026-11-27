@@ -22,12 +22,12 @@ Every bullet cites its primary supporting source document.
 - Strict cross-split source IP purging applied to prevent botnet identity leakage across temporal sets [DATA.md, results/exp0/AUDIT.md].
 
 ### Slide 5: Gate 0 Pre-Registered Protocol
-- Pre-declared test evaluates whether learned models beat simple rules by absolute recall difference at the declared threshold in EXPERIMENT0.md at a 10% escalation budget [EXPERIMENT0.md, DECISIONS.md].
+- Compare the learned scorer with the validation-selected rule at the same session budget. Apply the registered absolute recall threshold and minimum sample size (EXPERIMENT0.md).
 - Mandates Bonferroni-adjusted confidence intervals strictly above zero for a conclusive pass [EXPERIMENT0.md, DECISIONS.md].
 
 ### Slide 6: Gate 0 Empirical Results
 - Early stages S1 and S2 showed rules matching or exceeding ML classifiers [results/exp0/AUDIT.md, results/exp0/table.csv].
-- Stage S3 reported ML recall of 0.2919 versus baseline rule recall of 0.1151 [results/exp0/AUDIT.md, results/exp0/table.csv].
+- In the registered S3 comparison, test recall was 0.292 for ML and 0.1118 for the validation-selected rule R6_failed_logins (results/exp0/table.csv).
 
 ### Slide 7: Scientific Audit & Sensitivity Caveats
 - S3 advantage is exploratory: driven predominantly by transfer-labelled sessions and aggregate counter proxies [results/exp0/AUDIT.md].

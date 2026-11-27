@@ -129,4 +129,4 @@ Event-log ordering observations are recorded by analysis/exp0_event_order.py aga
 | The viva claims review distinguishes measured results from design assumptions. | [Claims audit](docs/DOCS_CLAIMS_AUDIT.md) | Lab, exploratory |
 | The installed detector exposes separate handshake and deep modes. Controlled persona scores remain unavailable. | [Detector check](results/detector/DETECTOR_RESULT.md) | Lab, exploratory |
 
-| Viva documentation review now traces masking, fallback, simulation and remaining work to implementation and tests. | [Completed inventory](docs/DOCS_CLAIMS_AUDIT.md) | Lab, documentation review |
+| The documentation audit traces masking, fallback and simulation to repository evidence. The previous line-classification totals are withdrawn. | [Grouped findings](docs/DOCS_CLAIMS_AUDIT.md) | Lab, documentation review |

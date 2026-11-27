@@ -32,7 +32,7 @@ graph TD
         COWRIE_DAEMON["Cowrie SSH Daemon v3.1.6<br/>[infra/cowrie.cfg]"]
         ID_PROFILE["identity.yaml<br/>(srv-app-01, OpenSSH_9.2p1, Debian 12)"]
         CONCH_ADAPTER["CowrieSSHSessionAdapter<br/>[sensor/adaptive_server.py]<br/>(Status: lab-verified on loopback only;<br/>see results/exp0/ASTRA2_REPORT.md and HANDOFF.md)"]
-        HOOKS["Lifecycle Hooks:<br/>• ssh_version_received (S1)<br/>• user_authenticated (S2)<br/>• pty_requested (S3)<br/>• command_received (S4/S5)"]
+        HOOKS["Decision stages: handshake, authentication, channel setup and command activity"]
     end
 
     DOCKER_PORT -->|routes| COWRIE_DAEMON
@@ -46,7 +46,7 @@ graph TD
     subgraph GATEKEEPER_TIER ["3. Gatekeeper Microservice [gatekeeper/]"]
         CLIENT["GatekeeperClient<br/>[decision_api.py]"]
         HTTP_HANDLER["GatekeeperHTTPHandler<br/>(/health, /decide, /record_session)"]
-        SERVER["GatekeeperServer :5000<br/>[decision_api.py]"]
+        SERVER["ThreadingHTTPServer (configurable port)<br/>[decision_api.py]"]
         ENGINE["DecisionEngine<br/>[decision_api.py]"]
         EXTRACTOR["SessionFeatureExtractor<br/>[feature_extractor.py]"]
         POLICY["EscalationPolicy<br/>[policy.py]"]
@@ -213,11 +213,11 @@ sequenceDiagram
     Sensor->>Adapter: connection_made() & ssh_kex_received()
     Adapter->>Gatekeeper: POST /decide (stage="S1", ip, features)
     Gatekeeper->>Engine: decide(session_id, ip, stage, features)
-    Engine->>Memory: get_visitor(visitor_id)
+    Engine->>Memory: get_visitor(source_ip)
     Memory-->>Engine: VisitorState (prior sessions, highest_tier)
     Engine->>Policy: decide_tier(current_tier="T1", score, stage="S1")
     Policy-->>Engine: assigned_tier="T1"
-    Engine->>Memory: record_decision(session_id, S1, score, T1)
+    Engine->>Engine: Insert decision into decision_log
     Engine-->>Gatekeeper: DecisionResponse(tier="T1", recorded score)
     Gatekeeper-->>Adapter: 200 OK {"tier": "T1"}
     Adapter-->>Sensor: Retain Tier T1 Emulation Shell
@@ -235,8 +235,8 @@ sequenceDiagram
     Note over Engine: LAB_DEMO_NOT_ML (config/policy_lab.yaml)
     Engine->>Policy: decide_tier(current_tier="T1", demo rule requests escalation)
     Policy-->>Engine: assigned_tier="T2" (Escalate!)
-    Engine->>Memory: record_decision(session_id, S3, score, T2)
-    Engine-->>Adapter: 200 OK {"tier": "T2", "escalated": true}
+    Engine->>Engine: Insert decision into decision_log
+    Engine-->>Adapter: 200 OK with target tier T2
     Adapter->>Sensor: Activate T2 Filesystem Overlay & Decoy Artifacts
 ```
 

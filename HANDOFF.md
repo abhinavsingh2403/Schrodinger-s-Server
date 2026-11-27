@@ -355,3 +355,5 @@ DONE — Remaining documentation inventory and scoped descriptions recorded in d
 DONE — Q15 now answers its heading. UTF-8 and mojibake checks cover the reviewed documents.
 NOT RUN — Detector preflight awaits confirmation that port is free. Then use the isolated environment: `honeypot-auditor --help` (docs/DETECTOR_PROTOCOL.md).
 Verification command: `python -m pytest -q`.
+
+Verification follow-up: withdrew edit-based audit totals, corrected the S2/S3 comparisons against results/exp0/table.csv and the README command bins against results/base_rates.json. External reference metadata remains unverified.

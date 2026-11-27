@@ -27,16 +27,16 @@ T1 and T2 are in-process shell personas. T2 exposes additional decoy content. T3
 ## Group 2: Dataset & Preprocessing
 
 ### Q6: What dataset was used for training and evaluating Experiment 0?
-The project utilizes a 52-day multi-instance public Cowrie dataset comprising over 38 million recorded sessions, with 5,292,235 sessions across the partitioned training, validation, and test splits [results/base_rates.json, results/exp0/AUDIT.md].
+Experiment 0 sampled days from the public multi-instance Cowrie corpus. The frozen split file identifies the days used for each partition (DATA.md, results/exp0/splits.json).
 
 ### Q7: What is the empirical base rate of high-value sessions in the dataset?
 Across the 38.1 million recorded sessions, only 1,232,570 sessions (3.23%) exhibited high-value activity under the Value=1 aggregate approximation criteria [results/base_rates.json].
 
 ### Q8: How were dataset splits partitioned to prevent data leakage?
-Splits are partitioned chronologically into training, validation, and test sets. Furthermore, disjoint source-IP purging was executed to eliminate cross-split recurring scanner botnets from contaminating the test set [results/exp0/AUDIT.md, analysis/exp0_train.py].
+The chronological split purges overlapping source addresses. Different addresses may still represent related activity (results/exp0/AUDIT.md).
 
 ### Q9: Why was `session_aggregation.jsonl.gz` used instead of raw packet captures?
-The 1.3 GB session aggregation file contains pre-aggregated event counters per session, allowing rapid training and statistical bootstrapping across millions of sessions without the 19.4 GB storage overhead of unindexed event streams [analysis/README.md, DATA.md].
+Each aggregate row supplies whole-session event counters. Those counters support aggregate proxy labels but cannot reconstruct the order of commands (DATA.md, EXPERIMENT0.md).
 
 ### Q10: What limitation does aggregate session data impose on evaluating command stages?
 Aggregate session counters record whole-session counts rather than timestamped event chronologies. Consequently, command stages S4 and S5 are honestly reported as NOT EVALUABLE on aggregate data [results/exp0/AUDIT.md, docs/STATUS.md].
@@ -46,13 +46,13 @@ Aggregate session counters record whole-session counts rather than timestamped e
 ## Group 3: Gate 0 Evaluation & Statistical Findings
 
 ### Q11: What was the pre-registered Gate 0 evaluation criteria?
-Per EXPERIMENT0.md, a learned model must beat the best pre-declared baseline rule by at least 5% absolute recall at a 10% escalation budget, with a Bonferroni-adjusted confidence interval strictly greater than zero [EXPERIMENT0.md §12, results/exp0/AUDIT.md].
+The gate requires an absolute recall improvement of at least five percentage points at the ten-percent budget, a positive adjusted lower confidence bound and the minimum positive sample size (EXPERIMENT0.md, section 12).
 
 ### Q12: What were the results at Stage S1 (Handshake)?
 The S1 rule captured more labelled positives than the fitted scorer at the registered budget. The label measures observed activity. (results/exp0/table.csv)
 
 ### Q13: What were the results at Stage S2 (Authentication)?
-At S2, baseline rule R1 (login success) captured the bulk of positive sessions (0.5632 recall vs 0.5497 ML recall); machine learning did not provide a statistically significant advantage over simple rules [results/exp0/table.csv, results/exp0/AUDIT.md].
+The validation-selected rule was R7_decision_tree. Its test recall was 0.5609, compared with 0.5477 for the learned scorer (results/exp0/table.csv, EXPERIMENT0.md).
 
 ### Q14: What was the result at Stage S3 (Session Setup), and what is the mechanical verdict?
 S3 cleared the original mechanical gate. Post-hoc controls leave the learned advantage unconfirmed. (results/exp0/POSTHOC_ML_EVAL.md)
@@ -92,7 +92,7 @@ Tests check for random updates, literal session arrays and selected copied base-
 ### Q23: How do the Kali adversary scripts ensure safety during live demonstrations?
 The shared destination guard delegates to the detector harness allowlist. A separate source-address validator accepts IPv4 loopback bindings. These guardrails are exercised by tests (harness/attackers/common.py, harness/detector_runner.py, harness/attackers/test_source_ip.py).
 
-### Q24: What is the purpose of the Docker smoke test script?
+### Q24: Which Docker network settings do the infrastructure tests check?
 Infra tests check network membership and loopback publication on the edge. (infra/test_infra_configs.py)
 
 ### Q25: How is offline/live feature parity verified?
