@@ -106,3 +106,37 @@ Evidence & Proof footer: Evidence Vault, Resource Observatory, Replay, Detector,
   - Never fabricate numbers or metrics; empty states must strictly read `NO DATA` or `NOT RUN`.
   - Negative and inconclusive results must use warning amber/coral tints, never green.
   - No `innerHTML` assignments with dynamic data; strictly DOM nodes and `textContent`.
+
+---
+
+## 6. Extended Tokens & Shared Component System
+
+### Extended Design Tokens
+```css
+/* Typography Scale */
+--text-xs: 0.6875rem; /* 11px */
+--text-sm: 0.8125rem; /* 13px */
+--text-base: 0.9375rem; /* 15px */
+--text-lg: 1.125rem; /* 18px */
+--text-xl: 1.375rem; /* 22px */
+/* Spacing Scale (4px/8px rhythm) */
+--space-1: 4px; --space-2: 8px; --space-3: 12px; --space-4: 16px; --space-6: 24px; --space-8: 32px;
+/* Radii & Motion */
+--radius-sm: 4px; --radius-md: 8px; --radius-lg: 12px;
+--duration-fast: 150ms; --duration-base: 250ms; --duration-slow: 400ms;
+--ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+/* Elevation & Z-Index */
+--z-base: 1; --z-dropdown: 20; --z-sticky: 40; --z-modal: 100; --z-tour: 200;
+```
+
+### Shared Components Specification
+- **Page Header & Banner**: Top banner with scope, policy profile, and demo label; sticky header with 5-link primary nav.
+- **Card & Inset Surface**: Bordered containers (`--border-subtle`), elevated backgrounds (`--surface`), rounded corners (`--radius-md`).
+- **Status & Verdict Chips**: Scoped styling for T1, T2, done, exploratory, INVALID, INCONCLUSIVE, NOT RUN.
+- **Interactive Scrubber**: Draggable stage scrubber with play/pause/step controls and keyboard arrows.
+- **Tooltip & Popover**: Accessible focus/hover info cards with sourced explanation text only.
+- **Collapsible Drawer / Section**: `<details>`/`<summary>` disclosure widgets with keyboard support.
+- **Telemetry & Funnel Legend**: Distinct SVG color swatches and text descriptions.
+- **Empty / Error / Loading States**: Explicit skeleton pulse and "NO DATA" / "NOT RUN" placards.
+- **Print Stylesheet**: Black-on-white high contrast print view for Mission Control and Model & Research.
+
