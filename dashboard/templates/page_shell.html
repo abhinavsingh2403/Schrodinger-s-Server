@@ -836,12 +836,15 @@ async function initEvidence() {
 // =============================================================
 async function initMl() {
   const content = document.getElementById('content');
-  content.replaceChildren(el('p', 'Loading ML experiment metrics and diagnostic reports...', 'muted mono'));
+  content.replaceChildren(el('p', 'Loading ML experiment metrics, controls court, and diagnostic reports...', 'muted mono'));
+
   const settled = await Promise.allSettled([
     fetchJson('/api/evidence/metrics'),
     fetchJson('/api/evidence/EXPERIMENT1_RESULT'),
     fetchJson('/api/evidence/NULL_ROOT_CAUSE'),
-    fetchJson('/api/evidence/ROOT_CAUSE')
+    fetchJson('/api/evidence/ROOT_CAUSE'),
+    fetchJson('/api/progress'),
+    fetchJson('/api/evidence/index')
   ]);
 
   const getBody = (idx) => (settled[idx].status === 'fulfilled' ? settled[idx].value : null);
@@ -849,90 +852,321 @@ async function initMl() {
   const exp1Res = getBody(1);
   const nullRcRes = getBody(2);
   const rcRes = getBody(3);
+  const progressRes = getBody(4);
+  const indexRes = getBody(5);
 
   const metricsMeta = metricsRes ? metricsRes.body : null;
-  const report = exp1Res?.body?.data?.text || '';
-  setBanner(metricsMeta, report.split(/\r?\n/).find(line => /^NO [A-Z ]+GAIN$/.test(line)) || '');
+  const report = (exp1Res && exp1Res.body && exp1Res.body.data && exp1Res.body.data.text) ? exp1Res.body.data.text : '';
+  const overallVerdict = report.split(/\r?\n/).find(line => /^NO [A-Z ]+GAIN$/.test(line)) || (metricsMeta && metricsMeta.status ? String(metricsMeta.status).toUpperCase() : '');
+
+  setBanner(metricsMeta, overallVerdict);
   if (!metricsRes && !exp1Res && !nullRcRes && !rcRes) {
     setStatus('NO DATA · API unavailable');
     content.replaceChildren(el('div', 'NO DATA · ML evidence endpoints unavailable.', 'card'));
     return;
   }
-  setStatus('Loaded ML experiment evidence');
+  setStatus("Loaded ML empirical evidence and controls court");
 
   const container = el('div');
 
-  // Experiment 1 Stage Verdicts Table
-  const verdictCard = el('section', '', 'card');
-  verdictCard.appendChild(el('h2', 'Experiment 1 Stage Verdicts (metrics.json)'));
-  if (metricsMeta) verdictCard.appendChild(makeBadgeRow(metricsMeta));
-  const mData = metricsMeta && metricsMeta.data ? metricsMeta.data : null;
-  if (!mData || typeof mData !== 'object') {
-    verdictCard.appendChild(el('p', (metricsMeta && metricsMeta.empty) || 'NO DATA · metrics.json unavailable.', 'muted mono'));
-  } else {
-    const tbl = el('table');
-    const thead = el('thead');
-    const htr = el('tr');
-    for (const h of ['Stage', 'Day Window', 'Baseline Heuristic', 'Delta vs Baseline', 'Reported Interval', 'Recorded Verdict']) {
-      htr.appendChild(el('th', h));
-    }
-    thead.appendChild(htr);
-    const tbody = el('tbody');
-    for (const [stage, st] of Object.entries(mData)) {
-      const tr = el('tr');
-      tr.appendChild(el('td', stage, 'mono'));
-      tr.appendChild(el('td', st.day || 'UNKNOWN'));
-      tr.appendChild(el('td', st.baseline || 'UNKNOWN'));
-      tr.appendChild(el('td', st.delta !== undefined && st.delta !== null ? String(st.delta) : 'NO DATA', 'mono'));
-      tr.appendChild(el('td', Array.isArray(st.interval) ? `[${st.interval.join(', ')}]` : 'NO DATA', 'mono'));
-      const vTd = el('td');
-      vTd.appendChild(el('span', st.verdict || 'UNKNOWN', statusClass(st.verdict)));
-      tr.appendChild(vTd);
-      tbody.appendChild(tr);
-    }
-    tbl.append(thead, tbody);
-    verdictCard.appendChild(el('div', '', 'scroll')).appendChild(tbl);
+  // Page Heading & Full-Width Verdict Banner
+  const headBox = el('div', '', 'card');
+  headBox.style.marginBottom = '18px';
+  const h1 = el('h1', 'What we measured, and what we could not prove');
+  h1.style.fontSize = '24px';
+  h1.style.margin = '0 0 8px 0';
+  headBox.appendChild(h1);
+  headBox.appendChild(el('div', 'Pre-registered empirical evaluation of the core Gatekeeper hypothesis against null controls.', 'muted'));
+
+  if (overallVerdict) {
+    const vBanner = el('div', '', 'card warn');
+    vBanner.style.marginTop = '12px';
+    vBanner.style.borderLeft = '4px solid var(--invalid)';
+    vBanner.appendChild(el('strong', 'Official Empirical Finding: ' + overallVerdict, 'mono'));
+    vBanner.appendChild(el('p', 'Rigorous offline evaluation against label-shuffled and constant-output baselines demonstrated that learned features do not provide validated predictive power over random selection at evaluation budget.', 'muted'));
+    headBox.appendChild(vBanner);
   }
-  container.appendChild(verdictCard);
+  container.appendChild(headBox);
 
-  if (mData) container.appendChild(renderJsonTree(mData));
+  // Section 1: "Controls Court" - Grouped Bar / Lollipop Visualization
+  const courtCard = el('section', '', 'card');
+  courtCard.appendChild(el('h2', 'Controls Court: Recall Under Null Hypotheses'));
+  courtCard.appendChild(el('p', 'Per-stage comparison of recall at 10% primary budget (0.10) across Learned Model, Shuffled-Label Control, Constant-Label Control, and Strongest Baseline. Dashed line denotes random-selection reference.', 'muted'));
 
-  // Diagnostic Root Cause Reports
-  for (const [label, res, idStr] of [
-    ['Experiment 1 Verdict Summary', exp1Res, 'EXPERIMENT1_RESULT'],
-    ['Experiment 0 Null Root Cause Analysis', nullRcRes, 'NULL_ROOT_CAUSE'],
-    ['Experiment 1 Post-Hoc Root Cause Diagnosis', rcRes, 'ROOT_CAUSE']
-  ]) {
-    const mdCard = el('section', '', 'card');
-    const headRow = el('div', '', 'tools');
-    headRow.appendChild(el('h2', label));
+  const mData = metricsMeta && metricsMeta.data ? metricsMeta.data : {};
+  const stages = ['S2', 'S4', 'S5'];
+
+  const courtGrid = el('div', '', 'grid-3');
+  courtGrid.style.marginTop = '14px';
+
+  stages.forEach(st => {
+    const sObj = mData[st];
+    const sCard = el('div', '', 'card');
+    sCard.style.background = 'var(--surface-inset)';
+    sCard.style.padding = '14px';
+
+    const sHead = el('div', '', 'tools');
+    sHead.appendChild(el('strong', 'Stage ' + st + ' Evaluation', 'mono'));
+    sCard.appendChild(sHead);
+
+    if (!sObj || !sObj.metrics) {
+      sCard.appendChild(el('p', 'NO DATA for ' + st, 'muted mono'));
+      courtGrid.appendChild(sCard);
+      return;
+    }
+
+    const mModels = sObj.metrics;
+    const baseName = sObj.baseline || 'baseline';
+    const budgetKey = '0.1';
+
+    const getRecall = (mKey) => {
+      const bObj = mModels[mKey] && mModels[mKey].budgets && mModels[mKey].budgets[budgetKey];
+      return bObj && bObj.recall !== undefined ? bObj.recall : 0;
+    };
+
+    const lRecall = getRecall('learned');
+    const sRecall = getRecall('shuffle');
+    const cRecall = getRecall('constant');
+    const bRecall = getRecall(baseName);
+    const maxRecall = Math.max(lRecall, sRecall, cRecall, bRecall, 0.12, 0.01);
+
+    // SVG Lollipop Chart
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svg.setAttribute('viewBox', '0 0 240 140');
+    svg.setAttribute('class', 'chart');
+    svg.setAttribute('role', 'img');
+    svg.setAttribute('aria-label', 'Stage ' + st + ' controls court lollipop chart');
+    svg.style.maxHeight = '140px';
+
+    // Dashed Random Reference Line at 0.10
+    const randX = Math.round(50 + (0.10 / maxRecall) * 170);
+    const refLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    refLine.setAttribute('x1', String(randX));
+    refLine.setAttribute('y1', '10');
+    refLine.setAttribute('x2', String(randX));
+    refLine.setAttribute('y2', '120');
+    refLine.setAttribute('stroke', 'var(--text-tertiary)');
+    refLine.setAttribute('stroke-width', '1');
+    refLine.setAttribute('stroke-dasharray', '3,3');
+    svg.appendChild(refLine);
+
+    const refText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    refText.setAttribute('x', String(randX));
+    refText.setAttribute('y', '132');
+    refText.setAttribute('text-anchor', 'middle');
+    refText.setAttribute('fill', 'var(--text-tertiary)');
+    refText.setAttribute('font-size', '8');
+    refText.setAttribute('font-family', 'ui-monospace, monospace');
+    refText.textContent = 'Random (0.10)';
+    svg.appendChild(refText);
+
+    const candidates = [
+      { name: 'Learned', val: lRecall, color: 'var(--sea-glass)', y: 25 },
+      { name: 'Shuffle', val: sRecall, color: 'var(--muted-coral)', y: 50 },
+      { name: 'Constant', val: cRecall, color: 'var(--soft-brass)', y: 75 },
+      { name: 'Baseline', val: bRecall, color: 'var(--research-lavender)', y: 100 }
+    ];
+
+    candidates.forEach(c => {
+      const cx = Math.round(50 + (c.val / maxRecall) * 170);
+
+      // Label
+      const txt = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+      txt.setAttribute('x', '45');
+      txt.setAttribute('y', String(c.y + 3));
+      txt.setAttribute('text-anchor', 'end');
+      txt.setAttribute('fill', 'var(--text-secondary)');
+      txt.setAttribute('font-size', '9');
+      txt.setAttribute('font-family', 'ui-monospace, monospace');
+      txt.textContent = c.name;
+      svg.appendChild(txt);
+
+      // Stem
+      const stem = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+      stem.setAttribute('x1', '50');
+      stem.setAttribute('y1', String(c.y));
+      stem.setAttribute('x2', String(cx));
+      stem.setAttribute('y2', String(c.y));
+      stem.setAttribute('stroke', c.color);
+      stem.setAttribute('stroke-width', '1.5');
+      svg.appendChild(stem);
+
+      // Circle head
+      const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+      circle.setAttribute('cx', String(cx));
+      circle.setAttribute('cy', String(c.y));
+      circle.setAttribute('r', '4');
+      circle.setAttribute('fill', c.color);
+      circle.setAttribute('tabindex', '0');
+      const tipText = c.name + ' Recall: ' + Number(c.val).toFixed(4) + ' (results/exp1/metrics.json)';
+      circle.setAttribute('aria-label', tipText);
+      const titleElem = document.createElementNS('http://www.w3.org/2000/svg', 'title');
+      titleElem.textContent = tipText;
+      circle.appendChild(titleElem);
+      svg.appendChild(circle);
+    });
+
+    sCard.appendChild(svg);
+
+    const valSummary = el('div', '', 'muted mono');
+    valSummary.style.fontSize = '11px';
+    valSummary.style.marginTop = '6px';
+    valSummary.textContent = 'Learned: ' + Number(lRecall).toFixed(4) + ' | Shuffle: ' + Number(sRecall).toFixed(4) + ' | Constant: ' + Number(cRecall).toFixed(4);
+    sCard.appendChild(valSummary);
+
+    courtGrid.appendChild(sCard);
+  });
+
+  courtCard.appendChild(courtGrid);
+  container.appendChild(courtCard);
+
+  // Section 2: Experiment Ledger Timeline
+  const ledgerCard = el('section', '', 'card');
+  ledgerCard.appendChild(el('h2', 'Experiment Ledger Timeline'));
+  ledgerCard.appendChild(el('p', 'Chronological investigation sequence from pre-registered protocol through null diagnostics and root-cause analysis.', 'muted'));
+
+  const timelineList = el('div', '', 'timeline');
+  timelineList.style.marginTop = '14px';
+
+  const LEDGER_STEPS = [
+    { title: 'Experiment 0: Protocol Baseline', id: 'exp0', status: 'done', src: 'results/exp0/rules_summary.json', desc: 'Pre-registered baseline analysis establishing event-rate bounds and feature boundaries.' },
+    { title: 'Null Control Diagnosis', id: 'NULL_DIAGNOSIS', status: 'exploratory', src: 'results/exp0/NULL_DIAGNOSIS.md', desc: 'Label-shuffling diagnosis reproducing identical ranking metrics under randomized labels.' },
+    { title: 'Post-Hoc ML Feasibility Evaluation', id: 'POSTHOC_ML_EVAL', status: 'exploratory', src: 'results/exp0/POSTHOC_ML_EVAL.md', desc: 'Ablation and leakage testing across temporal and group boundaries.' },
+    { title: 'Pre-Command Audit Inspection', id: 'PRECOMMAND_NOT_VERIFIABLE', status: 'inconclusive', src: 'results/exp0/PRECOMMAND_NOT_VERIFIABLE.md', desc: 'Audit establishing unobservability of pre-command features without live execution.' },
+    { title: 'Experiment 1: Audited Three-Day Evaluation', id: 'EXPERIMENT1_RESULT', status: 'inconclusive', src: 'results/exp1/EXPERIMENT1_RESULT.md', desc: 'Multi-day evaluation against null controls confirming no validated predictive gain.' },
+    { title: 'Root Cause Synthesis Report', id: 'ROOT_CAUSE', status: 'exploratory', src: 'results/exp1/ROOT_CAUSE.md', desc: 'Identification of label sparsity and uniform feature profiles causing baseline parity.' }
+  ];
+
+  LEDGER_STEPS.forEach(st => {
+    const item = el('div', '', 'timeline-step');
+    const iHead = el('div', '', 'tools');
+    iHead.appendChild(el('strong', st.title));
+    iHead.appendChild(el('span', st.status, statusClass(st.status)));
     const evLink = document.createElement('a');
-    evLink.href = `/evidence`;
+    evLink.href = '/evidence';
     evLink.className = 'mono muted';
-    evLink.textContent = `[Open in Evidence Vault: ${idStr}]`;
-    headRow.appendChild(evLink);
-    mdCard.appendChild(headRow);
+    evLink.textContent = '[Vault: ' + st.id + ']';
+    iHead.appendChild(evLink);
+    item.appendChild(iHead);
 
-    if (!res || !res.body) {
-      mdCard.appendChild(el('p', 'NO DATA · Report unavailable.', 'muted mono'));
+    const desc = el('p', st.desc, 'muted');
+    desc.style.margin = '4px 0';
+    item.appendChild(desc);
+
+    const src = el('div', 'Source: ' + st.src, 'mono muted');
+    src.style.fontSize = '11px';
+    item.appendChild(src);
+
+    timelineList.appendChild(item);
+  });
+
+  ledgerCard.appendChild(timelineList);
+  container.appendChild(ledgerCard);
+
+  // Section 3: "Proved / Not Proved" Two-Column Panel (from /api/progress)
+  const provedCard = el('section', '', 'card');
+  provedCard.appendChild(el('h2', 'Evidence-Based Progress: Proved vs Not Proved'));
+
+  const pData = progressRes && progressRes.body && progressRes.body.data;
+  const pItems = pData && Array.isArray(pData.items) ? pData.items : [];
+  const pNote = (progressRes && progressRes.body && progressRes.body.note) || 'Weighted checklist of project work, not a performance measure.';
+
+  const provedGrid = el('div', '', 'grid-2');
+  provedGrid.style.marginTop = '12px';
+
+  const colProved = el('div', '', 'card');
+  colProved.style.background = 'var(--surface-inset)';
+  colProved.appendChild(el('h3', 'Proved & Verified Milestones', ''));
+  const provedList = el('div');
+
+  const colUnproved = el('div', '', 'card');
+  colUnproved.style.background = 'var(--surface-inset)';
+  colUnproved.appendChild(el('h3', 'Not Proved / Open Limitations', ''));
+  const unprovedList = el('div');
+
+  pItems.forEach(it => {
+    const title = it[0];
+    const weight = it[1];
+    const status = String(it[2] || '');
+    const evText = it[3];
+
+    const row = el('div', '', 'card');
+    row.style.padding = '8px 12px';
+    row.style.margin = '6px 0';
+
+    const rHead = el('div', '', 'tools');
+    rHead.appendChild(el('strong', title, 'mono'));
+    rHead.appendChild(el('span', status, statusClass(status)));
+    row.appendChild(rHead);
+
+    const rSub = el('div', 'Weight: ' + weight + ' · ' + evText, 'muted mono');
+    rSub.style.fontSize = '11px';
+    rSub.style.marginTop = '4px';
+    row.appendChild(rSub);
+
+    if (status.toLowerCase() === 'done') {
+      provedList.appendChild(row);
     } else {
-      mdCard.appendChild(makeBadgeRow(res.body));
-      if (!res.ok || !res.body.data || typeof res.body.data.text !== 'string') {
-        mdCard.appendChild(el('p', res.body.empty || 'NO DATA · Markdown unavailable.', 'muted mono'));
-      } else {
-        const pre = el('pre', res.body.data.text, 'md-view');
-        mdCard.appendChild(pre);
-      }
+      unprovedList.appendChild(row);
     }
-    container.appendChild(mdCard);
-  }
+  });
+
+  colProved.appendChild(provedList);
+  colUnproved.appendChild(unprovedList);
+  provedGrid.append(colProved, colUnproved);
+  provedCard.appendChild(provedGrid);
+
+  const noteBox = el('div', pNote, 'muted mono');
+  noteBox.style.marginTop = '10px';
+  noteBox.style.fontSize = '11px';
+  provedCard.appendChild(noteBox);
+  container.appendChild(provedCard);
+
+  // Section 4: Collapsible Cards for Secondary Evidence
+  const secCard = el('section', '', 'card');
+  secCard.appendChild(el('h2', 'Secondary Evidence & Extended Studies'));
+  secCard.appendChild(el('p', 'Supporting investigations and downstream validations preserved in the Evidence Vault.', 'muted'));
+
+  const EXTENDED_SECTIONS = [
+    { title: 'Resource Cost Observatory', route: '/cost', status: 'exploratory', desc: 'Matched Docker measurements comparing T1 Lite vs T2 Hardened hardware utilization under cohabitation.' },
+    { title: 'Trace Replay Evaluation', route: '/replay', status: 'exploratory', desc: 'Reconstruction of command sequences from aggregate telemetry logs.' },
+    { title: 'Third-Party Detector Evaluation (EVAL H4)', route: '/detector', status: 'inconclusive', desc: 'Preliminary assessment of third-party detection heuristics.' },
+    { title: 'Structured Audit Logging', route: '/evidence', status: 'done', desc: 'Cryptographically masked session logging schema in SQLite audit store.' },
+    { title: 'Human Study Status', route: '/evidence', status: 'not run', desc: 'Interactive adversary evaluation deferred past current experimental boundary.' }
+  ];
+
+  EXTENDED_SECTIONS.forEach(s => {
+    const det = el('details');
+    det.style.marginTop = '8px';
+    const sum = el('summary');
+    sum.appendChild(el('strong', s.title + ' '));
+    sum.appendChild(el('span', s.status, statusClass(s.status)));
+    det.appendChild(sum);
+
+    const body = el('div', '', 'card');
+    body.style.background = 'var(--surface-inset)';
+    body.style.margin = '8px 0 0 16px';
+    body.appendChild(el('p', s.desc, 'muted'));
+    const link = document.createElement('a');
+    link.href = s.route;
+    link.textContent = 'View full findings in ' + s.title + ' →';
+    body.appendChild(link);
+    det.appendChild(body);
+
+    secCard.appendChild(det);
+  });
+
+  container.appendChild(secCard);
+
+  const takeaway = el('div', '', 'takeaway-banner');
+  takeaway.appendChild(el('strong', 'Core Scientific Thesis: '));
+  takeaway.appendChild(el('span', 'Rigorous empirical evaluation against null controls showed no validated ML gain over simple baselines.'));
+  container.appendChild(takeaway);
 
   content.replaceChildren(container);
 }
 
-// =============================================================
-// 3. Resource Observatory (/cost)
-// =============================================================
+
 async function initCost() {
   const content = document.getElementById('content');
   content.replaceChildren(el('p', 'Loading matched resource measurements and cost study...', 'muted mono'));
